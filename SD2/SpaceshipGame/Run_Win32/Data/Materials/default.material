@@ -1,0 +1,48 @@
+<Material name = "default">
+    
+    <Shader name = "default" />
+
+</Material>
+
+
+
+
+
+
+
+<!--
+
+    Rules:
+        texture path:
+            - Start at "Data/" so if you do sub folders you'll have to add /paths
+
+        Textures with Samplers
+            - I put  them together so it was easier to figure out what went with what, plus if it's null then use default sampler
+
+        shader name:
+            - Its the part after "Data/Shaders" and before the ".shader"
+
+    TEMPLATE
+
+<Material name = "theName">
+    
+    <Shader name = "thePartBeforeTheExtension" />
+
+    <Textures>
+        <Texture
+        bind = "index"
+        path = "fileName.ext"
+        sampler = "default | more"
+        />
+    </Textures>
+
+    <Properties>
+        <Property 
+        type = "float| vec4 | color | specular | etc"
+        name = "attributeName" 
+        value = "basedOffTheType"
+        />
+    </Properties>
+
+</Material>
+-->

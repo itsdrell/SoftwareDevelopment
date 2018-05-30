@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="General">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{fb8bf250-19da-41bd-a804-13cbf29cf8d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Shaders">
+      <UniqueIdentifier>{152a50d7-ac74-4fcb-be0b-24d7186448a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Shaders\glsl">
+      <UniqueIdentifier>{7c3bf7bd-81ab-4262-b2b8-e86e8cc021ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main_Win32.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="TheApp.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommon.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Ship.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Explosion.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TheApp.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommon.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineBuildPreferences.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Ship.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">
+      <Filter>Data</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Run_Win32\Data\Shaders\lit.shader">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\lit_alpha.shader">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\lit.fs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\mvp_lit.vs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugRender.fs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugRender.vs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugNormal.fs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugNormal.vs">
+      <Filter>Data\Shaders\glsl</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\default.shader">
+      <Filter>Data\Shaders</Filter>
+    </None>
+    <None Include="..\..\Run_Win32\Data\Shaders\debugNormal.shader">
+      <Filter>Data\Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
