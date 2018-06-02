@@ -1,0 +1,9 @@
+<Material name = "ship">
+    
+    <Shader name = "lit" />
+
+    <Textures>
+        <Texture bind = "0" path = "Model/scifi_fighter_mk6/SciFi_Fighter-MK6-diffuse.jpg" sampler = "default"/>
+    </Textures>
+
+</Material>

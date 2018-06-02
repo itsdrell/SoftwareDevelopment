@@ -131,6 +131,7 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 void ForwardRenderingPath::SortDrawsBySortOrder(std::vector<DrawCall>* dc, Camera& currentCam) const
 {
 	//std::vector<DrawCall> result = dc;
+	if(dc->size() == 0) return;
 	
 	// layer first
 	std::sort(dc->begin(), dc->end(), CompareSortOrder);
