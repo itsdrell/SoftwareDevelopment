@@ -37,7 +37,7 @@ App::App()
 	g_theGame = new Game(); // this needs to be last
 
 	// Clean up render log so we only get fresh data
-	LogStringToFile("Log/Shader.log", std::string(CurrentDateTime() + "\n--------------------------------------\n\n").c_str(), true);
+	//LogStringToFile("Log/Shader.log", std::string(CurrentDateTime() + "\n--------------------------------------\n\n").c_str(), true);
 
 	m_isQuitting = false;
 
