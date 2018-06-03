@@ -178,6 +178,10 @@ void Renderer::PostStartup()
 	// Setup the default UI camera
 	m_defaultUICamera = new Camera();
 	m_defaultUICamera->SetColorTarget(m_defaultColorTarget);
+	
+	m_defaultUICamera->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
+	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
+	m_defaultUICamera->m_viewMatrix = view;
 	// UI doesn't need a depth
 
 	// Effect Camera
@@ -256,6 +260,7 @@ void Renderer::BeginFrame()
 
 	SetCamera(); // this needs to go here before we bind it so we can clear the buffers
 	ClearScreen(Rgba(0,0,0,0));
+	SetCurrentTexture();
 	EnableDepth(COMPARE_LESS, true);
 
 

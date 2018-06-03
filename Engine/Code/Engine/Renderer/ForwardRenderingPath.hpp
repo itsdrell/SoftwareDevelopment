@@ -36,12 +36,16 @@ class ForwardRenderingPath
 public:
 	ForwardRenderingPath() {}
 
-	void Render( Scene* scene) const;
+	void Render( Scene* scene ) const;
 
 	void RenderSceneForCamera( Camera* cam, Scene* scene ) const;
+	void RenderSkyBox( Scene* scene ) const;
+
 
 	void SortDrawsBySortOrder(std::vector<DrawCall>* dc, Camera& currentCam) const;
 	void EnableLightsForDrawCall(DrawCall dc, Scene* scene ) const;
+
+
 	
 public:
 };

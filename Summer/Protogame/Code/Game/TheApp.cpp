@@ -94,7 +94,7 @@ void App::Update()
 	
 	float deltaSeconds = GetDeltaTime();
 
-	g_theGame->Update(deltaSeconds);
+	g_theGame->Update();
 
 	//////////////////////////////////////////////////////////////////////////
 	// HotKeys

@@ -1,5 +1,7 @@
 #include "Camera.hpp"
 #include "EngineCommon.hpp"
+#include "..\Renderer\TextureCube.hpp"
+#include "..\Renderer\MeshBuilder.hpp"
 
 
 Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix44()*/, Matrix44 proj /*= Matrix44()*/)
@@ -9,6 +11,33 @@ Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix4
 	m_projMatrix = proj;
 
 	m_output = FrameBuffer();
+}
+
+void Camera::CreateSkyBox(std::string imagePath)
+{
+	m_skyBoxTexture = new TextureCube();
+	m_skyBoxTexture->make_from_image(imagePath.c_str());
+
+	MeshBuilder mb;
+	mb.AddCube(Vector3::ZERO, Vector3::ONE);
+	m_skyMesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	m_hasSkyBox = true;
+}
+
+void Camera::RenderSkyBox() const
+{
+	Renderer* r = Renderer::GetInstance();
+	
+	r->ClearDepth(1.f);
+	r->SetShader(Shader::CreateOrGetShader("Data/Shaders/skybox.shader"));
+	r->SetUniform("MODEL", m_cameraMatrix);
+								
+	r->SetCurrentCubeMapTexture(m_skyBoxTexture, 0);
+	r->DrawMesh(m_skyMesh);
+	r->ClearDepth(1.f);
+	r->SetShader();
+	r->SetCurrentTexture();
 }
 
 Vector3 Camera::GetForward()

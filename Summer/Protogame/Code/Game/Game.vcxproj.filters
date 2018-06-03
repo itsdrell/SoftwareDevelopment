@@ -31,6 +31,12 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Attract.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Playing.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TheApp.hpp">
@@ -46,6 +52,12 @@
       <Filter>General</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Attract.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Playing.hpp">
       <Filter>General</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,75 +1,62 @@
 #pragma once
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Math/Disc2.hpp"
-#include "Engine/Math/Vector3.hpp"
-#include "Engine/Math/Vector4.hpp"
-#include "Engine/Core/Rgba.hpp"
-#include "Engine/Renderer/Scene.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Stopwatch.hpp"
+#include "Engine\Math\Vector3.hpp"
+#include "Engine\Renderer\Scene.hpp"
+#include "Engine\Renderer\ForwardRenderingPath.hpp"
 
 //=============================================================
 // Forward Declare
 //=============================================================
-class Texture;
-class DevConsole;
-class Attract;
-class Playing;
+class Scene;
+class ForwardRenderingPath;
+class Camera;
+class Renderable;
+class Light;
 
 //=============================================================
 // ENUMS
 //=============================================================
-enum GameStates
-{
-	NONE = -1,
-	LOADING,
-	ATTRACT,
-	PLAY,
-	NUM_OF_GAME_STATES
-};
 
 //=============================================================
 // Structs
 //=============================================================
 
+
 //=============================================================
 // Classes
 //=============================================================
-class Game
+class Playing
 {
+
 public:
-	Game();
+	Playing();
 	
 	void		StartUp();
 
 	void		Update();
-	void		UpdateLoadingScreen();
-	void		ClockDebug();
 
 	void		Render() const;
-	void		RenderLoadingScreen() const;
 
 	void		CheckKeyBoardInputs();
+	void		CameraInput();
+	Vector3		GetMovement();
 
+	void		AddRenderable(Renderable* newRenderable) { m_scene->AddRenderable(newRenderable); }
+	void		RemoveRenderable(Renderable* toRemove) { m_scene->RemoveRenderable(toRemove); }
+	void		RemoveLight(Light* toRemove) { m_scene->RemoveLight(toRemove); }
 
 public:
 
-	DevConsole*		m_console;
-	Texture*		m_tileTexture;
+	Scene*					m_scene;
+	ForwardRenderingPath*	m_renderingPath;
 
-	GameStates		m_currentState;
-	Attract*		m_attractState;
-	Playing*		m_playingState;
-
-	Timer*			m_loadingScreenTimer;
-
+	Camera*					m_camera;
 };
+
+
 //=============================================================
 // Standalone C Functions
 //=============================================================
 
-
 //=============================================================
 // Externs
 //=============================================================
-extern Game* g_theGame;

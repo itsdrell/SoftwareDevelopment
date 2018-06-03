@@ -40,7 +40,7 @@ public:
 	void CreateDefaultCommands();
 
 	// Handles all input
-	void Update(float ds);
+	void Update();
 
 	// Renders the display
 	void Render(); 

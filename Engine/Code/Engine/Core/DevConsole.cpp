@@ -258,9 +258,11 @@ void DevConsole::CreateDefaultCommands()
 
 }
 
-void DevConsole::Update(float ds)
+void DevConsole::Update()
 {
 	if(m_isOpen == false) return;
+
+	float ds = g_theMasterClock->deltaTime;
 
 	UpdateTimer(ds);
 	UpdateFPS(ds);

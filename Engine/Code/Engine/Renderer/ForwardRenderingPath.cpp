@@ -50,6 +50,10 @@ bool CompareRenderQueue(DrawCall a, DrawCall b)
 //////////////////////////////////////////////////////////////////////////
 void ForwardRenderingPath::Render(Scene* scene) const
 {
+	// We have to render the sky box first, so find the camera with it and render it
+	// shouldn't be slow since camera 0 should have it but will check all
+	RenderSkyBox(scene);
+	
 	for(uint cameraIndex = 0; cameraIndex < scene->m_cameras.size(); cameraIndex++)
 	{
 		RenderSceneForCamera(scene->m_cameras.at(cameraIndex), scene);
@@ -126,6 +130,20 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 		}
 
 	
+}
+
+void ForwardRenderingPath::RenderSkyBox(Scene* scene) const
+{
+	for(uint cameraIndex = 0; cameraIndex < scene->m_cameras.size(); cameraIndex++)
+	{
+		Camera* currentCamera = scene->m_cameras.at(cameraIndex);
+		
+		if(currentCamera->m_hasSkyBox)
+		{
+			currentCamera->RenderSkyBox();
+			return;
+		}
+	}
 }
 
 void ForwardRenderingPath::SortDrawsBySortOrder(std::vector<DrawCall>* dc, Camera& currentCam) const

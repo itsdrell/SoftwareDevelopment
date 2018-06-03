@@ -30,6 +30,9 @@ public:
 	Camera(Matrix44 cameraMatrix = Matrix44(), Matrix44 view = Matrix44(), Matrix44 proj = Matrix44());
 	~Camera() {}
 
+	void CreateSkyBox(std::string imagePath);
+	void RenderSkyBox() const;
+
 	// Set + Get
 	void SetColorTarget( Texture *color_target ) { m_output.SetColorTarget(color_target); }
 	void SetDepthStencilTarget( Texture *depth_target ) { m_output.SetDepthStencilTarget(depth_target); }
@@ -66,4 +69,10 @@ public:
 	Matrix44			m_projMatrix;    // projection
 
 	FrameBuffer			m_output;
+
+
+	// Sky box options
+	bool				m_hasSkyBox;
+	TextureCube*		m_skyBoxTexture;
+	Mesh*				m_skyMesh;
 }; 
