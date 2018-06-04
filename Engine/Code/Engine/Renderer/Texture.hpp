@@ -2,7 +2,7 @@
 // Texture.hpp
 //
 #pragma once
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include <string>
 #include <map>

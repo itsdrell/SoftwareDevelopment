@@ -1,10 +1,10 @@
 #pragma once
 #include "Engine/Renderer/glfunctions.h"
 #include "VertexLayout.hpp"
-#include "../Math/Vector3.hpp"
-#include "../Math/Vector4.hpp"
+#include "../Math/Vectors/Vector3.hpp"
+#include "../Math/Vectors/Vector4.hpp"
 #include "../Core/General/Rgba.hpp"
-#include "../Math/Matrix44.hpp"
+#include "../Math/Matrices/Matrix44.hpp"
 
 
 

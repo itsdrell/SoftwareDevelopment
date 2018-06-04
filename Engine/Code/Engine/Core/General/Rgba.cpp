@@ -1,6 +1,6 @@
 #include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Math/FloatRange.hpp"
+#include "Engine/Math/Ranges/FloatRange.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // STATIC COLORS

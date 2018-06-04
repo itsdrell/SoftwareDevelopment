@@ -1,7 +1,7 @@
 #include "Sprite.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Core/Utils/XmlUtilities.hpp"
-#include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 std::map<std::string, Sprite*> Sprite::s_sprites;

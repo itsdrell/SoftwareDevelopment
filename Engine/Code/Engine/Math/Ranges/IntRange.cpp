@@ -1,4 +1,4 @@
-#include "Engine/Math/IntRange.hpp"
+#include "Engine/Math/Ranges/IntRange.hpp"
 #include "Engine/Math/MathUtils.hpp"
 
 IntRange::~IntRange()

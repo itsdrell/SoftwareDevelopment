@@ -1,6 +1,6 @@
 #include "Engine/Renderer/SpriteAnimationDefinition.hpp"
 #include "Engine/Core/Utils/XmlUtilities.hpp"
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Renderer/SpriteSheet.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Math/MathUtils.hpp"

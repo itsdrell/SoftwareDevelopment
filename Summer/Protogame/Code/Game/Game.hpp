@@ -1,8 +1,8 @@
 #pragma once
 #include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Math/Disc2.hpp"
-#include "Engine/Math/Vector3.hpp"
-#include "Engine/Math/Vector4.hpp"
+#include "Engine/Math/Geometry/Disc2.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
+#include "Engine/Math/Vectors/Vector4.hpp"
 #include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Renderer/Scene.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"

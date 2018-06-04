@@ -6,7 +6,7 @@
 #include "..\Core\Tools/Command.hpp"
 #include "MeshBuilder.hpp"
 #include "..\Core\General/Camera.hpp"
-#include "..\Math\Matrix44.hpp"
+#include "..\Math\Matrices/Matrix44.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 std::vector<DebugRenderTask*>	g_DebugRenderTask;

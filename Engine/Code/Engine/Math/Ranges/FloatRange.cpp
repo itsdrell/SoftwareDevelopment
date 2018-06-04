@@ -1,4 +1,4 @@
-#include "Engine/Math/FloatRange.hpp"
+#include "Engine/Math/Ranges/FloatRange.hpp"
 #include "Engine/Math/MathUtils.hpp"
 
 FloatRange::~FloatRange()

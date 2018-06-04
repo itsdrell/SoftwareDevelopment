@@ -19,20 +19,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Math\Vector2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Math\MathUtils.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Renderer.cpp">
       <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\AABB2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Disc2.cpp">
-      <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Input\InputSystem.cpp">
       <Filter>Input</Filter>
@@ -46,9 +37,6 @@
     <ClCompile Include="Renderer\Texture.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Math\IntVector2.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\SpriteSheet.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
@@ -61,25 +49,13 @@
     <ClCompile Include="Renderer\Image.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Math\FloatRange.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\IntRange.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\BitmapFont.cpp">
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\tinyxml\tinyxml2.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Math\Vector3.cpp">
-      <Filter>Math</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\SpriteAnimationDefinition.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix44.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\SpriteAnimSetDefinition.cpp">
@@ -92,9 +68,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\SquirrelNoise\SmoothNoise.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Vector4.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\CubicSpline.cpp">
@@ -115,9 +88,6 @@
     <ClCompile Include="Renderer\FrameBuffer.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Math\IntVector3.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\stbi\stb_image_write.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -136,9 +106,6 @@
     <ClCompile Include="Renderer\DebugRenderSystem.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Math\AABB3.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Input\Mouse.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -155,9 +122,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\Quaternion.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Math\Matrix33.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\Material.cpp">
@@ -232,22 +196,49 @@
     <ClCompile Include="Core\General\Transform.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Vectors\IntVector2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vectors\IntVector3.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vectors\Vector2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vectors\Vector3.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vectors\Vector4.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Geometry\AABB2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Geometry\AABB3.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Geometry\Disc2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Ranges\FloatRange.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Ranges\IntRange.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrices\Matrix33.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrices\Matrix44.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Math\Vector2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\MathUtils.hpp">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\Renderer.hpp">
       <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\AABB2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\Disc2.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputSystem.hpp">
       <Filter>Input</Filter>
@@ -260,9 +251,6 @@
     </ClInclude>
     <ClInclude Include="Renderer\Texture.hpp">
       <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\IntVector2.hpp">
-      <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\SpriteSheet.hpp">
       <Filter>Renderer</Filter>
@@ -300,28 +288,17 @@
     <ClInclude Include="Renderer\Image.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Math\FloatRange.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Math\IntRange.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\BitmapFont.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\ThirdParty\tinyxml\tinyxml2.h">
       <Filter>General</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Vector3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\SpriteAnimationDefinition.hpp" />
-    <ClInclude Include="Math\Matrix44.hpp" />
     <ClInclude Include="Renderer\SpriteAnimSetDefinition.hpp" />
     <ClInclude Include="Renderer\SpriteAnimationSet.hpp" />
     <ClInclude Include="..\ThirdParty\SquirrelNoise\RawNoise.hpp" />
     <ClInclude Include="..\ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
-    <ClInclude Include="Math\Vector4.hpp" />
     <ClInclude Include="Math\CubicSpline.hpp" />
     <ClInclude Include="Renderer\external\gl\glcorearb.h" />
     <ClInclude Include="Renderer\external\gl\glext.h" />
@@ -331,21 +308,18 @@
     <ClInclude Include="Renderer\renderbuffer.hpp" />
     <ClInclude Include="Renderer\Sampler.hpp" />
     <ClInclude Include="Renderer\FrameBuffer.hpp" />
-    <ClInclude Include="Math\IntVector3.hpp" />
     <ClInclude Include="..\ThirdParty\stbi\stb_image_write.h" />
     <ClInclude Include="Math\Trajectory.hpp" />
     <ClInclude Include="Renderer\Mesh.hpp" />
     <ClInclude Include="Renderer\MeshBuilder.hpp" />
     <ClInclude Include="Renderer\Sprite.hpp" />
     <ClInclude Include="Renderer\DebugRenderSystem.hpp" />
-    <ClInclude Include="Math\AABB3.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />
     <ClInclude Include="Renderer\Shader.hpp" />
     <ClInclude Include="Renderer\RendererTypes.hpp" />
     <ClInclude Include="Renderer\VertexLayout.hpp" />
     <ClInclude Include="..\ThirdParty\MikkT\mikktspace.h" />
     <ClInclude Include="Math\Quaternion.hpp" />
-    <ClInclude Include="Math\Matrix33.hpp" />
     <ClInclude Include="Renderer\Material.hpp" />
     <ClInclude Include="Renderer\Renderable.hpp" />
     <ClInclude Include="Renderer\Scene.hpp" />
@@ -370,5 +344,17 @@
     <ClInclude Include="Core\General\HeatMap.hpp" />
     <ClInclude Include="Core\General\Rgba.hpp" />
     <ClInclude Include="Core\General\Transform.hpp" />
+    <ClInclude Include="Math\Vectors\IntVector2.hpp" />
+    <ClInclude Include="Math\Vectors\IntVector3.hpp" />
+    <ClInclude Include="Math\Vectors\Vector2.hpp" />
+    <ClInclude Include="Math\Vectors\Vector3.hpp" />
+    <ClInclude Include="Math\Vectors\Vector4.hpp" />
+    <ClInclude Include="Math\Geometry\AABB2.hpp" />
+    <ClInclude Include="Math\Geometry\AABB3.hpp" />
+    <ClInclude Include="Math\Geometry\Disc2.hpp" />
+    <ClInclude Include="Math\Ranges\FloatRange.hpp" />
+    <ClInclude Include="Math\Ranges\IntRange.hpp" />
+    <ClInclude Include="Math\Matrices\Matrix33.hpp" />
+    <ClInclude Include="Math\Matrices\Matrix44.hpp" />
   </ItemGroup>
 </Project>

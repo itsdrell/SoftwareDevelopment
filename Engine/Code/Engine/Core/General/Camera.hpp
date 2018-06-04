@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Math/Vector3.hpp"
-#include "Engine/Math/Matrix44.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
+#include "Engine/Math/Matrices/Matrix44.hpp"
 #include "Engine/Renderer/FrameBuffer.hpp"
 #include "Transform.hpp"
 

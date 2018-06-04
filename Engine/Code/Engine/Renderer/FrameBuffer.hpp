@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Renderer/Texture.hpp"
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 
 class FrameBuffer
 {

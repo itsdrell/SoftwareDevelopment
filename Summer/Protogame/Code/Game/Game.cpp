@@ -8,9 +8,9 @@
 #include "Game/GameCommon.hpp"
 #include <vector>
 #include "Engine/Core/General/Rgba.hpp"
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
-#include "Engine/Math/Vector3.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include "Engine/Renderer/Texture.hpp"

@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Math/Vector2.hpp"
-#include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 #include "ThirdParty/tinyxml/tinyxml2.h"
 #include <string>
 #include <map>

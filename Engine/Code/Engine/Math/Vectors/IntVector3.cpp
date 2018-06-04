@@ -1,6 +1,6 @@
 #include "IntVector3.hpp"
-#include "Engine/Math/IntVector2.hpp"
-#include "Engine/Math/Vector3.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 
 

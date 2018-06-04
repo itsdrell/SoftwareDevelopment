@@ -1,11 +1,11 @@
 #pragma once
 #include "..\Core\General/Rgba.hpp"
-#include "..\Math\Vector3.hpp"
-#include "..\Math\AABB3.hpp"
+#include "..\Math\Vectors/Vector3.hpp"
+#include "..\Math\Geometry/AABB3.hpp"
 #include "Texture.hpp"
-#include "..\Math\Matrix44.hpp"
+#include "..\Math\Matrices/Matrix44.hpp"
 #include <vector>
-#include "..\Math\AABB2.hpp"
+#include "..\Math\Geometry/AABB2.hpp"
 #include <string>
 
 /************************************************************************/

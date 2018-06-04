@@ -1,6 +1,6 @@
 #include "Vector3.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Math/IntVector3.hpp"
+#include "Engine/Math/Vectors/IntVector3.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // Static variables

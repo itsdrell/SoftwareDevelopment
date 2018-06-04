@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Math/MathUtils.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

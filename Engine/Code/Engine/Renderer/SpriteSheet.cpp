@@ -1,5 +1,5 @@
 #include "Engine/Renderer/SpriteSheet.hpp"
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "../Core/General/EngineCommon.hpp"
 
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Math\Vector2.hpp"
+#include "..\Math\Vectors/Vector2.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 //		NOTES

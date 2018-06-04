@@ -6,7 +6,7 @@
 #include "Engine/Core/Platform/Window.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Core/Utils/StringUtils.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Core/General/Camera.hpp"

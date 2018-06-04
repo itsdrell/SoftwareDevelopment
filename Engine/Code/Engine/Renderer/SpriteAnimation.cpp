@@ -1,5 +1,5 @@
 #include "Engine/Renderer/SpriteAnimation.hpp"
-#include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/SpriteSheet.hpp"
 #include "Engine/Renderer/SpriteAnimationDefinition.hpp"

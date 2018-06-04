@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine\Math\Vector3.hpp"
+#include "Engine\Math\Vectors/Vector3.hpp"
 #include "Engine\Renderer\Scene.hpp"
 #include "Engine\Renderer\ForwardRenderingPath.hpp"
 

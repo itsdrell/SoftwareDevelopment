@@ -1,6 +1,6 @@
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include <math.h>
 #include "Engine/Core/Utils/StringUtils.hpp"
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Renderer/Texture.hpp"
-#include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 
 class SpriteSheet
 {

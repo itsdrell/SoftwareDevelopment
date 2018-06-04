@@ -1,6 +1,6 @@
 #include "HeatMap.hpp"
 #include <deque>
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 
 HeatMap::HeatMap(const IntVector2& dimensionOfMap, float valueToGive)

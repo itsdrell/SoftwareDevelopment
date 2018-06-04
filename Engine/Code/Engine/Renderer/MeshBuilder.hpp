@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include "Mesh.hpp"
-#include "..\Math\AABB2.hpp"
-#include "..\Math\AABB3.hpp"
+#include "..\Math\Geometry/AABB2.hpp"
+#include "..\Math\Geometry/AABB3.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////

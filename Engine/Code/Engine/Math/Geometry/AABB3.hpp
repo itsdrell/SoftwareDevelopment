@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector3.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
 
 
 class AABB3

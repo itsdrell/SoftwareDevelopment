@@ -1,6 +1,6 @@
 #pragma once
-#include "Engine/Math/Vector2.hpp"
-#include "Engine/Math/IntVector3.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Vectors/IntVector3.hpp"
 
 class Vector3
 {

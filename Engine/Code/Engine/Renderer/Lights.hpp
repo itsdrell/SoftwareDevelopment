@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Math\Vector3.hpp"
+#include "..\Math\Vectors/Vector3.hpp"
 #include "..\Core\General/Rgba.hpp"
 #include "Engine\Core\General/EngineCommon.hpp"
 

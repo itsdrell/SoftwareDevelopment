@@ -10,7 +10,7 @@
 
 #include "../Core/General/Transform.hpp"
 #include "MeshBuilder.hpp"
-#include "../Math/IntRange.hpp"
+#include "../Math/Ranges/IntRange.hpp"
 #include "../Core/Tools/Stopwatch.hpp"
 #include <vector>
 #include "../Core/General/Rgba.hpp"

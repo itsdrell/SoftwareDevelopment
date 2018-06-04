@@ -3,9 +3,9 @@
 //
 #include "ThirdParty/SquirrelNoise/RawNoise.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Math/Vector2.hpp"
-#include "Engine/Math/Vector3.hpp"
-#include "Engine/Math/Vector4.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
+#include "Engine/Math/Vectors/Vector4.hpp"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // For all fractal (and Perlin) noise functions, the following internal naming conventions

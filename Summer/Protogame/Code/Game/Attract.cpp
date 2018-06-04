@@ -1,6 +1,6 @@
 #include "Attract.hpp"
 #include "GameCommon.hpp"
-#include "Engine\Math\AABB2.hpp"
+#include "Engine\Math\Geometry/AABB2.hpp"
 #include "Engine\Core\Platform/Window.hpp"
 #include "Engine\Renderer\DebugRenderSystem.hpp"
 #include "TheApp.hpp"

@@ -1,5 +1,5 @@
 #include "Engine/Renderer/BitmapFont.hpp"
-#include "Engine/Math/AABB2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 #include "Engine/Renderer/SpriteSheet.hpp"
 #include <string>
 

@@ -1,10 +1,10 @@
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Math/Vector2.hpp"
-#include "Engine/Math/AABB2.hpp"
-#include "Engine/Math/Disc2.hpp"
-#include "Engine/Math/FloatRange.hpp"
-#include "Engine/Math/IntRange.hpp"
-#include "Engine/Math/IntVector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
+#include "Engine/Math/Geometry/Disc2.hpp"
+#include "Engine/Math/Ranges/FloatRange.hpp"
+#include "Engine/Math/Ranges/IntRange.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Core/General/Rgba.hpp"
 #include <math.h>
 #include <stdlib.h> 

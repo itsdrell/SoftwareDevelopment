@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Math/Vector2.hpp"
-#include "Engine/Math/Vector3.hpp"
-#include "Engine/Math/Vector4.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
+#include "Engine/Math/Vectors/Vector4.hpp"
 #include "Matrix33.hpp"
 
 class Matrix44

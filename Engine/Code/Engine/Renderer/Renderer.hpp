@@ -1,15 +1,15 @@
 #pragma once
-#include "Engine/Math/Vector2.hpp"
+#include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Math/Matrix44.hpp"
+#include "Engine/Math/Matrices/Matrix44.hpp"
 #include <vector>
 #include <string>
 #include <map>
 #include "Engine/Renderer/glfunctions.h"
 #include "Engine/Renderer/renderbuffer.hpp"
 #include "Engine/Renderer/Mesh.hpp"
-#include "../Math/AABB3.hpp"
+#include "../Math/Geometry/AABB3.hpp"
 #include "Shader.hpp"
 
 
