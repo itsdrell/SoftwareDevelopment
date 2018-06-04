@@ -258,11 +258,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\ThirdParty\MikkT\mikktspace.c" />
-    <ClCompile Include="..\ThirdParty\SquirrelNoise\RawNoise.cpp" />
-    <ClCompile Include="..\ThirdParty\SquirrelNoise\SmoothNoise.cpp" />
-    <ClCompile Include="..\ThirdParty\stbi\stb_image_write.cpp" />
-    <ClCompile Include="..\ThirdParty\tinyxml\tinyxml2.cpp" />
     <ClCompile Include="Audio\AudioSystem.cpp" />
     <ClCompile Include="Core\General\Blackboard.cpp" />
     <ClCompile Include="Core\General\Camera.cpp" />
@@ -330,21 +325,13 @@
     <ClCompile Include="Renderer\Systems\MeshBuilder.cpp" />
     <ClCompile Include="Renderer\Systems\ParticleEmitter.cpp" />
     <ClCompile Include="Renderer\Systems\Scene.cpp" />
+    <ClCompile Include="ThirdParty\MikkT\mikktspace.c" />
+    <ClCompile Include="ThirdParty\SquirrelNoise\RawNoise.cpp" />
+    <ClCompile Include="ThirdParty\SquirrelNoise\SmoothNoise.cpp" />
+    <ClCompile Include="ThirdParty\stbi\stb_image_write.cpp" />
+    <ClCompile Include="ThirdParty\tinyxml\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\ThirdParty\fmod\fmod.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod.hpp" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_codec.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_common.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_dsp.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_dsp_effects.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_errors.h" />
-    <ClInclude Include="..\ThirdParty\fmod\fmod_output.h" />
-    <ClInclude Include="..\ThirdParty\MikkT\mikktspace.h" />
-    <ClInclude Include="..\ThirdParty\SquirrelNoise\RawNoise.hpp" />
-    <ClInclude Include="..\ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
-    <ClInclude Include="..\ThirdParty\stbi\stb_image_write.h" />
-    <ClInclude Include="..\ThirdParty\tinyxml\tinyxml2.h" />
     <ClInclude Include="Audio\AudioSystem.hpp" />
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\General\Camera.hpp" />
@@ -415,6 +402,23 @@
     <ClInclude Include="Renderer\Systems\MeshBuilder.hpp" />
     <ClInclude Include="Renderer\Systems\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\Systems\Scene.hpp" />
+    <ClInclude Include="ThirdParty\fmod\fmod.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod.hpp" />
+    <ClInclude Include="ThirdParty\fmod\fmod_codec.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_common.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_dsp.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_errors.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_output.h" />
+    <ClInclude Include="ThirdParty\MikkT\mikktspace.h" />
+    <ClInclude Include="ThirdParty\SquirrelNoise\RawNoise.hpp" />
+    <ClInclude Include="ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
+    <ClInclude Include="ThirdParty\stbi\stb_image_write.h" />
+    <ClInclude Include="ThirdParty\tinyxml\tinyxml2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ThirdParty\fmod\fmod64_vc.lib" />
+    <Library Include="ThirdParty\fmod\fmod_vc.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

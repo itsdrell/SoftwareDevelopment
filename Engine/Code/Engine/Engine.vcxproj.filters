@@ -34,22 +34,10 @@
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\tinyxml\tinyxml2.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\SquirrelNoise\RawNoise.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\SquirrelNoise\SmoothNoise.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Math\CubicSpline.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\glfunctions.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\stbi\stb_image_write.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\Trajectory.cpp">
@@ -59,9 +47,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\RendererTypes.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ThirdParty\MikkT\mikktspace.c">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\Quaternion.cpp">
@@ -235,6 +220,21 @@
     <ClCompile Include="Core\General\GameObject.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="ThirdParty\tinyxml\tinyxml2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\MikkT\mikktspace.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\SquirrelNoise\RawNoise.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\SquirrelNoise\SmoothNoise.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\stbi\stb_image_write.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -252,45 +252,14 @@
     <ClInclude Include="Audio\AudioSystem.hpp">
       <Filter>Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod.hpp">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_codec.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_common.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_dsp.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_dsp_effects.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_errors.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\fmod\fmod_output.h">
-      <Filter>Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\tinyxml\tinyxml2.h">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ThirdParty\SquirrelNoise\RawNoise.hpp" />
-    <ClInclude Include="..\ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
     <ClInclude Include="Math\CubicSpline.hpp" />
     <ClInclude Include="Renderer\external\gl\glcorearb.h" />
     <ClInclude Include="Renderer\external\gl\glext.h" />
     <ClInclude Include="Renderer\external\gl\wglext.h" />
     <ClInclude Include="Renderer\glfunctions.h" />
-    <ClInclude Include="..\ThirdParty\stbi\stb_image_write.h" />
     <ClInclude Include="Math\Trajectory.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />
     <ClInclude Include="Renderer\RendererTypes.hpp" />
-    <ClInclude Include="..\ThirdParty\MikkT\mikktspace.h" />
     <ClInclude Include="Math\Quaternion.hpp" />
     <ClInclude Include="Renderer\BuiltInShader.hpp" />
     <ClInclude Include="Core\General\Blackboard.hpp" />
@@ -348,5 +317,22 @@
     <ClInclude Include="Renderer\external\stbi\stb_image.h" />
     <ClInclude Include="Renderer\Systems\MeshBuilder.hpp" />
     <ClInclude Include="Core\General\GameObject.hpp" />
+    <ClInclude Include="ThirdParty\tinyxml\tinyxml2.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod.hpp" />
+    <ClInclude Include="ThirdParty\fmod\fmod_codec.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_common.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_dsp.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_errors.h" />
+    <ClInclude Include="ThirdParty\fmod\fmod_output.h" />
+    <ClInclude Include="ThirdParty\MikkT\mikktspace.h" />
+    <ClInclude Include="ThirdParty\SquirrelNoise\RawNoise.hpp" />
+    <ClInclude Include="ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
+    <ClInclude Include="ThirdParty\stbi\stb_image_write.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ThirdParty\fmod\fmod_vc.lib" />
+    <Library Include="ThirdParty\fmod\fmod64_vc.lib" />
   </ItemGroup>
 </Project>

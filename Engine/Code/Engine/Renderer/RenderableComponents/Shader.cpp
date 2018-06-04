@@ -2,7 +2,7 @@
 #include "Shader.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
-#include "ThirdParty/tinyxml/tinyxml2.h"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Core/Utils/XmlUtilities.hpp"
 #include "Engine/Core/Utils/StringUtils.hpp"
 #include "Engine/Renderer/RenderableComponents/Material.hpp"

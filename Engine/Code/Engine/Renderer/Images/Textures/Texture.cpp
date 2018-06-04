@@ -8,7 +8,7 @@
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Renderer/Images/Image.hpp"
 #include "Engine/Renderer/glfunctions.h"
-#include "ThirdParty/stbi/stb_image_write.h"
+#include "Engine/ThirdParty/stbi/stb_image_write.h"
 
 
 //-----------------------------------------------------------------------------------------------

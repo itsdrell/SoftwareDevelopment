@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "ThirdParty/tinyxml/tinyxml2.h"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Renderer/RendererTypes.hpp"
 

@@ -1,7 +1,7 @@
 #pragma once
 #include <map>
 #include <string>
-#include "ThirdParty/tinyxml/tinyxml2.h"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 
 class Renderer;
 class SpriteAnimationDefinition;

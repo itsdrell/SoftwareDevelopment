@@ -23,9 +23,9 @@ AudioSystem* g_theAudioSystem = nullptr;
 // Link in the appropriate FMOD static library (32-bit or 64-bit)
 //
 #if defined( _WIN64 )
-#pragma comment( lib, "ThirdParty/fmod/fmod64_vc.lib" )
+#pragma comment( lib, "Engine/ThirdParty/fmod/fmod64_vc.lib" )
 #else
-#pragma comment( lib, "ThirdParty/fmod/fmod_vc.lib" )
+#pragma comment( lib, "Engine/ThirdParty/fmod/fmod_vc.lib" )
 #endif
 
 

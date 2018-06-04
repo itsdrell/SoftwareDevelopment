@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------------------------
 // RawNoise.cpp
 //
-#include "ThirdParty/SquirrelNoise/RawNoise.hpp"
+#include "Engine/ThirdParty/SquirrelNoise/RawNoise.hpp"
 
 
 //-----------------------------------------------------------------------------------------------

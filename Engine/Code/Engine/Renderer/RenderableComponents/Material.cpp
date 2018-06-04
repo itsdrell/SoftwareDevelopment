@@ -3,7 +3,7 @@
 #include "Engine/Renderer/Pipeline/Sampler.hpp"
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Renderer/Images/Textures/Texture.hpp"
-#include "ThirdParty/tinyxml/tinyxml2.h"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Core/Utils/XmlUtilities.hpp"
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 
