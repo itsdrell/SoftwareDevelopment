@@ -287,7 +287,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Attract.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
     <ClCompile Include="Main\Main_Win32.cpp" />
@@ -301,7 +300,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attract.hpp" />
-    <ClInclude Include="GameObject.hpp" />
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />
     <ClInclude Include="Main\Game.hpp" />
     <ClInclude Include="Main\GameCommon.hpp" />

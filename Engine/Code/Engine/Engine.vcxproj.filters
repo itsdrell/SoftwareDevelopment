@@ -232,6 +232,9 @@
     <ClCompile Include="Renderer\Systems\MeshBuilder.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\General\GameObject.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -344,5 +347,6 @@
     <ClInclude Include="Renderer\RenderableComponents\shaderprogram.hpp" />
     <ClInclude Include="Renderer\external\stbi\stb_image.h" />
     <ClInclude Include="Renderer\Systems\MeshBuilder.hpp" />
+    <ClInclude Include="Core\General\GameObject.hpp" />
   </ItemGroup>
 </Project>

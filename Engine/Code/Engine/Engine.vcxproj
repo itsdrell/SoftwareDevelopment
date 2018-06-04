@@ -267,6 +267,7 @@
     <ClCompile Include="Core\General\Blackboard.cpp" />
     <ClCompile Include="Core\General\Camera.cpp" />
     <ClCompile Include="Core\General\EngineCommon.cpp" />
+    <ClCompile Include="Core\General\GameObject.cpp" />
     <ClCompile Include="Core\General\HeatMap.cpp" />
     <ClCompile Include="Core\General\Rgba.cpp" />
     <ClCompile Include="Core\General\Transform.cpp" />
@@ -348,6 +349,7 @@
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\General\Camera.hpp" />
     <ClInclude Include="Core\General\EngineCommon.hpp" />
+    <ClInclude Include="Core\General\GameObject.hpp" />
     <ClInclude Include="Core\General\HeatMap.hpp" />
     <ClInclude Include="Core\General\Rgba.hpp" />
     <ClInclude Include="Core\General\Transform.hpp" />
