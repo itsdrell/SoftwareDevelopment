@@ -6,6 +6,10 @@
 #include "Engine\Core\Tools/Clock.hpp"
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"
+#include "Engine/Renderer/Systems/MeshBuilder.hpp"
+#include "../GameSpecific/Player.hpp"
+#include "Engine/Renderer/RenderableComponents/Material.hpp"
+#include "Engine/Renderer/Systems/Lights.hpp"
 
 Playing::Playing()
 {
@@ -24,10 +28,13 @@ void Playing::StartUp()
 	m_renderingPath = new ForwardRenderingPath();
 
 
+	m_player = AddPlayer();
+
+
 	//////////////////////////////////////////////////////////////////////////
 	// Cameras
 	m_camera = new Camera();
-	m_camera->CreateSkyBox("Data/Images/galaxy2.png");
+	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 
@@ -39,11 +46,31 @@ void Playing::StartUp()
 	//////////////////////////////////////////////////////////////////////////
 
 	g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
+
+	m_sun = new DirectionalLight(0, Vector3::ZERO, Vector3::DOWN, .6f);
+	m_scene->AddLight(m_sun);
+}
+
+Player* Playing::AddPlayer()
+{
+	Player* newPlayer = new Player();
+
+	MeshBuilder mb;
+	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
+	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
+
+	newPlayer->m_renderable->SetMaterial( Material::CreateOrGetMaterial("default") );
+	newPlayer->m_renderable->m_usesLight = true;
+
+	m_scene->AddRenderable(newPlayer->m_renderable);
+
+	return newPlayer;
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
+	m_player->Update();
 }
 
 void Playing::Render() const
@@ -53,13 +80,13 @@ void Playing::Render() const
 	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
 	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
 
-	//Matrix44 modelMatrix = Matrix44::LookAt(
-	//	m_ship->m_behindTransform.GetWorldPosition(), 
-	//	m_ship->m_frontTransform.GetWorldPosition() , 
-	//	m_ship->m_transform.GetLocalUp()); 
+	Matrix44 modelMatrix = Matrix44::LookAt(
+		m_player->m_cameraLocation.GetWorldPosition(), 
+		m_player->m_transform.GetWorldPosition() , 
+		m_player->m_transform.GetLocalUp()); 
 
-	m_camera->m_cameraMatrix = Matrix44();//modelMatrix;
-	m_camera->m_viewMatrix = InvertFast(Matrix44()); // model); // inverse this 
+	m_camera->m_cameraMatrix = modelMatrix;
+	m_camera->m_viewMatrix = InvertFast(modelMatrix); // inverse this 
 
 
 	// Set the camera
@@ -82,39 +109,39 @@ void Playing::CameraInput()
 {
 	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
 
-	float rotationSpeed = 2.0f;
+	//float rotationSpeed = 2.0f;
+	//
+	//// Apply Rotation
+	//Vector2 mouse_delta = g_theInput->GetMouseDelta();
+	////mouse_delta = mouse_delta.GetNormalized();
+	//
+	//// m_current_cam_euler; // defined, starts at zero
+	//Vector3 local_euler = Vector3::ZERO; 
+	//local_euler.y = mouse_delta.x * rotationSpeed * dt; 
+	//local_euler.x = mouse_delta.y * rotationSpeed * dt; 
+	//
+	//Vector3 currentRotation = m_player->m_transform.GetLocalEulerAngles();
+	//currentRotation.x += local_euler.x; 
+	//currentRotation.y += local_euler.y; 
 
-	// Apply Rotation
-	Vector2 mouse_delta = g_theInput->GetMouseDelta();
-	//mouse_delta = mouse_delta.GetNormalized();
+	//currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
+	//currentRotation.y = fmod(currentRotation.y, 360.f ); 
 
-	// m_current_cam_euler; // defined, starts at zero
-	Vector3 local_euler = Vector3::ZERO; 
-	local_euler.y = mouse_delta.x * rotationSpeed * dt; 
-	local_euler.x = mouse_delta.y * rotationSpeed * dt; 
-
-	Vector3 currentRotation = Vector3::ZERO; //->m_transform.GetLocalEulerAngles();
-	currentRotation.x += local_euler.x; 
-	currentRotation.y += local_euler.y; 
-
-	currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
-	currentRotation.y = fmod(currentRotation.y, 360.f ); 
-
-	//m_ship->m_transform.SetLocalRotationEuler( currentRotation);
+	//m_player->m_transform.SetLocalRotationEuler( currentRotation);
 
 	Vector3 movement = GetMovement();
 
 
 	//////////////////////////////////////////////////////////////////////////
 	// Trail
-	//Vector3 previousPosition = m_ship->m_transform.GetLocalPosition();
+	Vector3 previousPosition = m_player->m_transform.GetLocalPosition();
 	//Vector3 newPosition = m_camera->transform.GetLocalPosition() + movement;
 	//DebugRenderLineSegment(5.f,previousPosition,newPosition,DEBUG_RENDER_USE_DEPTH);
 	//////////////////////////////////////////////////////////////////////////
 
 	// Apply world offset (Method 1 & Method 2)
 	//m_camera->transform.position += world_offset; 
-	//m_ship->m_transform.SetLocalPosition(movement + previousPosition); 
+	m_player->m_transform.SetLocalPosition(movement + previousPosition); 
 
 
 }
@@ -122,74 +149,57 @@ void Playing::CameraInput()
 Vector3 Playing::GetMovement()
 {
 	Vector3 result = Vector3::ZERO;
-	//float speed = 2.f;
+	float speed = 2.f;
 
-	//float dt = g_theGameClock->deltaTime;
+	float dt = g_theGameClock->deltaTime;
 
-	//Camera& currentCamera = *m_camera;
-	//Matrix44 shipMatrix = m_ship->m_transform.GetLocalMatrix();
-	//Vector3 shipPos = m_ship->m_transform.GetLocalPosition();
+	Camera& currentCamera = *m_camera;
+	Matrix44 playerMatrix = m_player->m_transform.GetLocalMatrix();
+	Vector3 shipPos = m_player->m_transform.GetLocalPosition();
 
 	//DebuggerPrintf("Cam Location: %f , %f \n", camPos.x, camPos.y);
 
 	// Forward - Backwards
 	if(IsKeyPressed(G_THE_LETTER_W))
 	{
-		//result += (shipMatrix.GetForward() * speed * dt);
-		//m_ship->CreateParticleTrail();
+		result += (playerMatrix.GetForward() * speed * dt);
+	
 	}
 
 	if(IsKeyPressed(G_THE_LETTER_S))
 	{
-		//result -= (shipMatrix.GetForward() * speed * dt);
-		//m_ship->CreateParticleTrail();
-
+		result -= (playerMatrix.GetForward() * speed * dt);
 
 	}
 
 	// Left and Right
 	if(IsKeyPressed(G_THE_LETTER_D))
 	{
-		//result += (shipMatrix.GetRight() * speed * dt);
-		//m_ship->CreateParticleTrail();
+		result += (playerMatrix.GetRight() * speed * dt);
+	
 
 	}
 
 	if(IsKeyPressed(G_THE_LETTER_A))
 	{
-		//result -= (shipMatrix.GetRight() * speed * dt);
-		//m_ship->CreateParticleTrail();
+		result -= (playerMatrix.GetRight() * speed * dt);
 
 	}
-
-	// Up and Down
-	if(IsKeyPressed(KEYBOARD_SPACE)) // up
-	{
-		//result += (shipMatrix.GetUp() * speed * dt);
-		//m_ship->CreateParticleTrail();
-
-	}
-
-	if(IsKeyPressed(KEYBOARD_SHIFT))
-	{
-		//result -= (shipMatrix.GetUp() * speed * dt);
-		//m_ship->CreateParticleTrail();
-
-	}
+	
 
 	// reset rotation
-	if(IsKeyPressed(G_THE_LETTER_E))
-	{
-		// 		if(m_currentShootTimer <= 0)
-		// 		{
-		// 			Shoot();
-		// 			m_currentShootTimer = m_shootcooldown;
-		// 		}
-		// 		else
-		// 		{
-		// 			m_currentShootTimer -= g_theGameClock->deltaTime;
-		// 		}
-	}
+	//if(IsKeyPressed(G_THE_LETTER_E))
+	//{
+	//	if(m_currentShootTimer <= 0)
+	//	{
+	//		Shoot();
+	//		m_currentShootTimer = m_shootcooldown;
+	//	}
+	//	else
+	//	{
+	//		m_currentShootTimer -= g_theGameClock->deltaTime;
+	//	}
+	//}
 
 	return result;
 }

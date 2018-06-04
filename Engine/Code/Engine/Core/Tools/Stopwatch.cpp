@@ -47,7 +47,7 @@ float StopWatch::GetNormalizedElapsedTime()
 bool StopWatch::HasElapsed()
 {
 	
-	uint64_t endTime = (uint64_t) (m_startTime + m_length);
+	float endTime = m_startTime + m_length;
 
 	if(m_reference->total.seconds > endTime)
 	{

@@ -7,6 +7,7 @@ GameObject::GameObject(std::string name)
 
 	m_renderable = new Renderable();
 	m_transform = Transform();
+
 }
 
 GameObject::GameObject(std::string name, Renderable & renderable, Transform transform)

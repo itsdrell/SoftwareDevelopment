@@ -286,6 +286,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameSpecific\Player.cpp" />
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
     <ClCompile Include="GameStates\ReadyUp.cpp" />
@@ -301,6 +302,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameSpecific\Player.hpp" />
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="GameStates\ReadyUp.hpp" />

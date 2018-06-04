@@ -78,17 +78,17 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//  parent + children (D'awwww)
 	void SetParentTransform(Transform& parent);
-	void AddChild(Transform& newchild);
+	//void AddChild(Transform& newchild);
 
 	void SetIsDirty() { m_isDirty = true; }
-	void DirtyTheChildren();
+	//void DirtyTheChildren();
 
 private:
 	transform_t					m_local_transform; 
 
 	Transform*					m_parentTransform;
 
-	std::vector<Transform*>		m_childrenTransform;
+	//std::vector<Transform*>		m_childrenTransform;
 
 	bool						m_isDirty;
 	

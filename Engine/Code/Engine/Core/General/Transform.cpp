@@ -167,7 +167,7 @@ Vector3 Transform::GetLocalScale() const
 void Transform::SetParentTransform(Transform& parent)
 {
 	m_parentTransform = &parent; 
-	parent.m_childrenTransform.push_back(this);
+	//parent.m_childrenTransform.push_back(this);
 }
 
 Matrix44 Transform::GetWorldMatrix() const
@@ -194,17 +194,17 @@ Vector3 Transform::GetWorldPosition() const
 	return GetWorldMatrix().GetPosition();
 }
 
-void Transform::AddChild(Transform& newchild)
-{
-	m_childrenTransform.push_back(&newchild);
-	newchild.m_parentTransform = this;
-}
-
-void Transform::DirtyTheChildren()
-{
-	for(uint i = 0; i < m_childrenTransform.size(); i++)
-	{
-		m_childrenTransform.at(i)->SetIsDirty();
-	}
-}
+// void Transform::AddChild(Transform& newchild)
+// {
+// 	m_childrenTransform.push_back(&newchild);
+// 	newchild.m_parentTransform = this;
+// }
+// 
+// void Transform::DirtyTheChildren()
+// {
+// 	for(uint i = 0; i < m_childrenTransform.size(); i++)
+// 	{
+// 		m_childrenTransform.at(i)->SetIsDirty();
+// 	}
+// }
 

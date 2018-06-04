@@ -11,6 +11,7 @@ class ForwardRenderingPath;
 class Camera;
 class Renderable;
 class Light;
+class Player;
 
 //=============================================================
 // ENUMS
@@ -31,6 +32,7 @@ public:
 	Playing();
 	
 	void		StartUp();
+	Player*		AddPlayer();
 
 	void		Update();
 
@@ -50,6 +52,10 @@ public:
 	ForwardRenderingPath*	m_renderingPath;
 
 	Camera*					m_camera;
+
+	Player*					m_player;
+
+	Light*					m_sun;
 };
 
 
