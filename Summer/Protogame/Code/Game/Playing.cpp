@@ -1,6 +1,6 @@
 #include "Playing.hpp"
-#include "Engine\Renderer\Texture.hpp"
-#include "Engine\Renderer\SpriteSheet.hpp"
+#include "Engine\Renderer\Images/Textures/Texture.hpp"
+#include "Engine\Renderer\Images/Sprites/SpriteSheet.hpp"
 #include "Engine\Core\General/Camera.hpp"
 #include "GameCommon.hpp"
 #include "Engine\Core\Tools/Clock.hpp"

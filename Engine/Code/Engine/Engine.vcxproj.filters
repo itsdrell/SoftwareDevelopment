@@ -31,37 +31,10 @@
     <ClCompile Include="Input\XboxController.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\stb_image.c">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Texture.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\SpriteSheet.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\SpriteAnimation.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Image.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\BitmapFont.cpp">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\tinyxml\tinyxml2.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\SpriteAnimationDefinition.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\SpriteAnimSetDefinition.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\SpriteAnimationSet.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\SquirrelNoise\RawNoise.cpp">
@@ -76,46 +49,16 @@
     <ClCompile Include="Renderer\glfunctions.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\shaderprogram.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\renderbuffer.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Sampler.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\FrameBuffer.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="..\ThirdParty\stbi\stb_image_write.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\Trajectory.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Mesh.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\MeshBuilder.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Sprite.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\DebugRenderSystem.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Input\Mouse.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Shader.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\RendererTypes.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\VertexLayout.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\MikkT\mikktspace.c">
@@ -124,28 +67,7 @@
     <ClCompile Include="Math\Quaternion.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer\Material.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Renderable.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Scene.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\Lights.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\ForwardRenderingPath.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\BuiltInShader.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\ParticleEmitter.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\TextureCube.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Core\General\Blackboard.cpp">
@@ -232,6 +154,84 @@
     <ClCompile Include="Math\Matrices\Matrix44.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\Sprite.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimation.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimationDefinition.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimationSet.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimSetDefinition.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteSheet.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Textures\Texture.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Textures\TextureCube.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Image.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Images\Fonts\BitmapFont.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\DebugRenderSystem.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\ForwardRenderingPath.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\Lights.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\ParticleEmitter.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\Scene.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Pipeline\FrameBuffer.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Pipeline\renderbuffer.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Pipeline\Sampler.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Pipeline\VertexLayout.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\Material.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\Mesh.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\Renderable.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\Shader.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\shaderprogram.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\external\stbi\stb_image.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\MeshBuilder.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -245,15 +245,6 @@
     </ClInclude>
     <ClInclude Include="Input\XboxController.hpp">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\stb_image.h">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\Texture.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\SpriteSheet.hpp">
-      <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Audio\AudioSystem.hpp">
       <Filter>Audio</Filter>
@@ -282,21 +273,9 @@
     <ClInclude Include="..\ThirdParty\fmod\fmod_output.h">
       <Filter>Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\SpriteAnimation.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\Image.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\BitmapFont.hpp">
-      <Filter>Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="..\ThirdParty\tinyxml\tinyxml2.h">
       <Filter>General</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer\SpriteAnimationDefinition.hpp" />
-    <ClInclude Include="Renderer\SpriteAnimSetDefinition.hpp" />
-    <ClInclude Include="Renderer\SpriteAnimationSet.hpp" />
     <ClInclude Include="..\ThirdParty\SquirrelNoise\RawNoise.hpp" />
     <ClInclude Include="..\ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
     <ClInclude Include="Math\CubicSpline.hpp" />
@@ -304,30 +283,13 @@
     <ClInclude Include="Renderer\external\gl\glext.h" />
     <ClInclude Include="Renderer\external\gl\wglext.h" />
     <ClInclude Include="Renderer\glfunctions.h" />
-    <ClInclude Include="Renderer\shaderprogram.hpp" />
-    <ClInclude Include="Renderer\renderbuffer.hpp" />
-    <ClInclude Include="Renderer\Sampler.hpp" />
-    <ClInclude Include="Renderer\FrameBuffer.hpp" />
     <ClInclude Include="..\ThirdParty\stbi\stb_image_write.h" />
     <ClInclude Include="Math\Trajectory.hpp" />
-    <ClInclude Include="Renderer\Mesh.hpp" />
-    <ClInclude Include="Renderer\MeshBuilder.hpp" />
-    <ClInclude Include="Renderer\Sprite.hpp" />
-    <ClInclude Include="Renderer\DebugRenderSystem.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />
-    <ClInclude Include="Renderer\Shader.hpp" />
     <ClInclude Include="Renderer\RendererTypes.hpp" />
-    <ClInclude Include="Renderer\VertexLayout.hpp" />
     <ClInclude Include="..\ThirdParty\MikkT\mikktspace.h" />
     <ClInclude Include="Math\Quaternion.hpp" />
-    <ClInclude Include="Renderer\Material.hpp" />
-    <ClInclude Include="Renderer\Renderable.hpp" />
-    <ClInclude Include="Renderer\Scene.hpp" />
-    <ClInclude Include="Renderer\Lights.hpp" />
-    <ClInclude Include="Renderer\ForwardRenderingPath.hpp" />
     <ClInclude Include="Renderer\BuiltInShader.hpp" />
-    <ClInclude Include="Renderer\ParticleEmitter.hpp" />
-    <ClInclude Include="Renderer\TextureCube.hpp" />
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\Utils\StringUtils.hpp" />
     <ClInclude Include="Core\Utils\XmlUtilities.hpp" />
@@ -356,5 +318,31 @@
     <ClInclude Include="Math\Ranges\IntRange.hpp" />
     <ClInclude Include="Math\Matrices\Matrix33.hpp" />
     <ClInclude Include="Math\Matrices\Matrix44.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\Sprite.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimation.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimationDefinition.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimationSet.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimSetDefinition.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteSheet.hpp" />
+    <ClInclude Include="Renderer\Images\Textures\Texture.hpp" />
+    <ClInclude Include="Renderer\Images\Textures\TextureCube.hpp" />
+    <ClInclude Include="Renderer\Images\Image.hpp" />
+    <ClInclude Include="Renderer\Images\Fonts\BitmapFont.hpp" />
+    <ClInclude Include="Renderer\Systems\DebugRenderSystem.hpp" />
+    <ClInclude Include="Renderer\Systems\ForwardRenderingPath.hpp" />
+    <ClInclude Include="Renderer\Systems\Lights.hpp" />
+    <ClInclude Include="Renderer\Systems\ParticleEmitter.hpp" />
+    <ClInclude Include="Renderer\Systems\Scene.hpp" />
+    <ClInclude Include="Renderer\Pipeline\FrameBuffer.hpp" />
+    <ClInclude Include="Renderer\Pipeline\renderbuffer.hpp" />
+    <ClInclude Include="Renderer\Pipeline\Sampler.hpp" />
+    <ClInclude Include="Renderer\Pipeline\VertexLayout.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Material.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Mesh.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Renderable.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Shader.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\shaderprogram.hpp" />
+    <ClInclude Include="Renderer\external\stbi\stb_image.h" />
+    <ClInclude Include="Renderer\Systems\MeshBuilder.hpp" />
   </ItemGroup>
 </Project>

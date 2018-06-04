@@ -4,7 +4,7 @@
 #include "Engine/Math/Vectors/Vector3.hpp"
 #include "Engine/Math/Vectors/Vector4.hpp"
 #include "Engine/Core/General/Rgba.hpp"
-#include "Engine/Renderer/Scene.hpp"
+#include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
 

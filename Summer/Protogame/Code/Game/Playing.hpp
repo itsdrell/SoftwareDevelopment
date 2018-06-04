@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine\Math\Vectors/Vector3.hpp"
-#include "Engine\Renderer\Scene.hpp"
-#include "Engine\Renderer\ForwardRenderingPath.hpp"
+#include "Engine\Renderer\Systems/Scene.hpp"
+#include "Engine\Renderer\Systems/ForwardRenderingPath.hpp"
 
 //=============================================================
 // Forward Declare

@@ -12,7 +12,7 @@
 #include "Engine/Core/Tools/Clock.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Trajectory.hpp"
-#include "Engine/Renderer/Shader.hpp"
+#include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
 
 

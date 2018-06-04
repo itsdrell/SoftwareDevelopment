@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Renderer/glfunctions.h"
-#include "VertexLayout.hpp"
+#include "Pipeline/VertexLayout.hpp"
 #include "../Math/Vectors/Vector3.hpp"
 #include "../Math/Vectors/Vector4.hpp"
 #include "../Core/General/Rgba.hpp"

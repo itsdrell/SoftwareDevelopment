@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine\Core\General/Transform.hpp"
-#include "Engine\Renderer\Renderable.hpp"
+#include "Engine\Renderer\RenderableComponents/Renderable.hpp"
 
 class GameObject
 {

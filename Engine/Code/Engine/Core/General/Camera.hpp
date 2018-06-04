@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Math/Vectors/Vector3.hpp"
 #include "Engine/Math/Matrices/Matrix44.hpp"
-#include "Engine/Renderer/FrameBuffer.hpp"
+#include "Engine/Renderer/Pipeline/FrameBuffer.hpp"
 #include "Transform.hpp"
 
 //////////////////////////////////////////////////////////////////////////

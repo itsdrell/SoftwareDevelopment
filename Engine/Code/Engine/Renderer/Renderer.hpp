@@ -7,10 +7,10 @@
 #include <string>
 #include <map>
 #include "Engine/Renderer/glfunctions.h"
-#include "Engine/Renderer/renderbuffer.hpp"
-#include "Engine/Renderer/Mesh.hpp"
+#include "Engine/Renderer/Pipeline/renderbuffer.hpp"
+#include "Engine/Renderer/RenderableComponents/Mesh.hpp"
 #include "../Math/Geometry/AABB3.hpp"
-#include "Shader.hpp"
+#include "RenderableComponents/Shader.hpp"
 
 
 

@@ -1,6 +1,6 @@
 #include "Engine/Renderer/BuiltInShader.hpp"
-#include "Shader.hpp"
-#include "shaderprogram.hpp"
+#include "RenderableComponents/Shader.hpp"
+#include "RenderableComponents/shaderprogram.hpp"
 #include "Renderer.hpp"
 
 

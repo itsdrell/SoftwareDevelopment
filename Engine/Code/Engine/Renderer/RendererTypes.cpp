@@ -1,6 +1,6 @@
 #include "Engine/Renderer/RendererTypes.hpp"
 #include "../Math/MathUtils.hpp"
-#include "Lights.hpp"
+#include "Systems/Lights.hpp"
 
 
 GLenum ToGLCubeSide(eTextureCubeSide side)

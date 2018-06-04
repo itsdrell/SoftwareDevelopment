@@ -2,7 +2,7 @@
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 #include <stdarg.h>
 #include <vector>
-#include "Engine/Renderer/DebugRenderSystem.hpp"
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 #include <regex>
 #include <string>
 

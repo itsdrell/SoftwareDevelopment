@@ -1,7 +1,7 @@
 #include "EngineCommon.hpp"
 #include "Engine/Core/General/Blackboard.hpp"
-#include "Engine/Renderer/SpriteSheet.hpp"
-#include "Engine/Renderer/VertexLayout.hpp"
+#include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
+#include "Engine/Renderer/Pipeline/VertexLayout.hpp"
 
 
 
