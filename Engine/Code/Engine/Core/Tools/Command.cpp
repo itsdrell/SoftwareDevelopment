@@ -1,6 +1,6 @@
 #include "Command.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "StringUtils.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 
 // declare all static containers
 std::map<std::string, CommandRegistration*> CommandRegistration::s_mapOfCallBacks;

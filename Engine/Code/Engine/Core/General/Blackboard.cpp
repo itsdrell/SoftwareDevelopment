@@ -1,10 +1,10 @@
-#include "Blackboard.hpp"
+#include "Engine/Core/General/Blackboard.hpp"
 #include "ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Math/FloatRange.hpp"
 #include "Engine/Math/IntRange.hpp"
 #include "Engine/Math/IntVector2.hpp"
 #include "Engine/Math/Vector2.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 
 Blackboard::Blackboard()
 {

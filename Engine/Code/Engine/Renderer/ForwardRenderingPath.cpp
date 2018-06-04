@@ -1,5 +1,5 @@
 #include "ForwardRenderingPath.hpp"
-#include "Engine/Core/Camera.hpp"
+#include "Engine/Core/General/Camera.hpp"
 #include "Engine/Renderer/Material.hpp"
 #include "Engine/Renderer/Scene.hpp"
 #include "Engine/Renderer/Mesh.hpp"

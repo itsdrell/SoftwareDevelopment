@@ -34,20 +34,11 @@
     <ClCompile Include="Math\Disc2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Rgba.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Time.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Input\InputSystem.cpp">
       <Filter>Input</Filter>
     </ClCompile>
     <ClCompile Include="Input\XboxController.cpp">
       <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\EngineCommon.cpp">
-      <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\stb_image.c">
       <Filter>Renderer</Filter>
@@ -60,12 +51,6 @@
     </ClCompile>
     <ClCompile Include="Renderer\SpriteSheet.cpp">
       <Filter>Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\ErrorWarningAssert.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\StringUtils.cpp">
-      <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
       <Filter>Audio</Filter>
@@ -81,12 +66,6 @@
     </ClCompile>
     <ClCompile Include="Math\IntRange.cpp">
       <Filter>Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\XmlUtilities.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Blackboard.cpp">
-      <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\BitmapFont.cpp">
       <Filter>Renderer</Filter>
@@ -121,13 +100,7 @@
     <ClCompile Include="Math\CubicSpline.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Core\HeatMap.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\glfunctions.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\File.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\shaderprogram.cpp">
@@ -136,19 +109,7 @@
     <ClCompile Include="Renderer\renderbuffer.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Window.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\Sampler.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\DevConsole.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Command.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Camera.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\FrameBuffer.cpp">
@@ -158,12 +119,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="..\ThirdParty\stbi\stb_image_write.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Clock.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Stopwatch.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\Trajectory.cpp">
@@ -182,9 +137,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Math\AABB3.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Transform.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="Input\Mouse.cpp">
@@ -232,6 +184,54 @@
     <ClCompile Include="Renderer\TextureCube.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\General\Blackboard.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\StringUtils.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Utils\XmlUtilities.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Platform\File.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Platform\Time.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Platform\Window.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\Clock.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\Command.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\DevConsole.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\Stopwatch.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\Camera.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\EngineCommon.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\HeatMap.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\Rgba.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\Transform.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -249,20 +249,11 @@
     <ClInclude Include="Math\Disc2.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Rgba.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Time.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputSystem.hpp">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\XboxController.hpp">
       <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\EngineCommon.hpp">
-      <Filter>General</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\stb_image.h">
       <Filter>Renderer</Filter>
@@ -275,12 +266,6 @@
     </ClInclude>
     <ClInclude Include="Renderer\SpriteSheet.hpp">
       <Filter>Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\ErrorWarningAssert.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\StringUtils.hpp">
-      <Filter>General</Filter>
     </ClInclude>
     <ClInclude Include="Audio\AudioSystem.hpp">
       <Filter>Audio</Filter>
@@ -321,12 +306,6 @@
     <ClInclude Include="Math\IntRange.hpp">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Core\XmlUtilities.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Blackboard.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="Renderer\BitmapFont.hpp">
       <Filter>Renderer</Filter>
     </ClInclude>
@@ -344,31 +323,22 @@
     <ClInclude Include="..\ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
     <ClInclude Include="Math\Vector4.hpp" />
     <ClInclude Include="Math\CubicSpline.hpp" />
-    <ClInclude Include="Core\HeatMap.hpp" />
     <ClInclude Include="Renderer\external\gl\glcorearb.h" />
     <ClInclude Include="Renderer\external\gl\glext.h" />
     <ClInclude Include="Renderer\external\gl\wglext.h" />
     <ClInclude Include="Renderer\glfunctions.h" />
-    <ClInclude Include="Core\File.hpp" />
     <ClInclude Include="Renderer\shaderprogram.hpp" />
     <ClInclude Include="Renderer\renderbuffer.hpp" />
-    <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="Renderer\Sampler.hpp" />
-    <ClInclude Include="Core\Command.hpp" />
-    <ClInclude Include="Core\DevConsole.hpp" />
-    <ClInclude Include="Core\Camera.hpp" />
     <ClInclude Include="Renderer\FrameBuffer.hpp" />
     <ClInclude Include="Math\IntVector3.hpp" />
     <ClInclude Include="..\ThirdParty\stbi\stb_image_write.h" />
-    <ClInclude Include="Core\Clock.hpp" />
-    <ClInclude Include="Core\Stopwatch.hpp" />
     <ClInclude Include="Math\Trajectory.hpp" />
     <ClInclude Include="Renderer\Mesh.hpp" />
     <ClInclude Include="Renderer\MeshBuilder.hpp" />
     <ClInclude Include="Renderer\Sprite.hpp" />
     <ClInclude Include="Renderer\DebugRenderSystem.hpp" />
     <ClInclude Include="Math\AABB3.hpp" />
-    <ClInclude Include="Core\Transform.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />
     <ClInclude Include="Renderer\Shader.hpp" />
     <ClInclude Include="Renderer\RendererTypes.hpp" />
@@ -384,5 +354,21 @@
     <ClInclude Include="Renderer\BuiltInShader.hpp" />
     <ClInclude Include="Renderer\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\TextureCube.hpp" />
+    <ClInclude Include="Core\General\Blackboard.hpp" />
+    <ClInclude Include="Core\Utils\StringUtils.hpp" />
+    <ClInclude Include="Core\Utils\XmlUtilities.hpp" />
+    <ClInclude Include="Core\Platform\File.hpp" />
+    <ClInclude Include="Core\Platform\Time.hpp" />
+    <ClInclude Include="Core\Platform\Window.hpp" />
+    <ClInclude Include="Core\Tools\Clock.hpp" />
+    <ClInclude Include="Core\Tools\Command.hpp" />
+    <ClInclude Include="Core\Tools\DevConsole.hpp" />
+    <ClInclude Include="Core\Tools\ErrorWarningAssert.hpp" />
+    <ClInclude Include="Core\Tools\Stopwatch.hpp" />
+    <ClInclude Include="Core\General\Camera.hpp" />
+    <ClInclude Include="Core\General\EngineCommon.hpp" />
+    <ClInclude Include="Core\General\HeatMap.hpp" />
+    <ClInclude Include="Core\General\Rgba.hpp" />
+    <ClInclude Include="Core\General\Transform.hpp" />
   </ItemGroup>
 </Project>

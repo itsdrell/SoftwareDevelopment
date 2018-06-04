@@ -1,7 +1,7 @@
 #include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 //////////////////////////////////////////////////////////////////////////
 
 AudioSystem* g_theAudioSystem = nullptr;

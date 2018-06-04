@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 #include "EngineCommon.hpp"
-#include "..\Renderer\TextureCube.hpp"
-#include "..\Renderer\MeshBuilder.hpp"
+#include "Engine\Renderer\TextureCube.hpp"
+#include "Engine\Renderer\MeshBuilder.hpp"
 
 
 Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix44()*/, Matrix44 proj /*= Matrix44()*/)

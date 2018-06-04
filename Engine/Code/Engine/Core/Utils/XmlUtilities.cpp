@@ -1,6 +1,6 @@
-#include "XmlUtilities.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
 #include "Engine/Math/Vector2.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Math/IntRange.hpp"
 #include "Engine/Math/FloatRange.hpp"
 #include "Engine/Math/IntVector2.hpp"

@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Core\EngineCommon.hpp"
+#include "..\Core\General/EngineCommon.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 class Renderable;

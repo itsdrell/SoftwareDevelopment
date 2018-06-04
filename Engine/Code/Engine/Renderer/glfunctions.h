@@ -2,7 +2,7 @@
 #include "Engine/Renderer/external/gl/glcorearb.h"
 #include "Engine/Renderer/external/gl/glext.h"
 #include "Engine/Renderer/external/gl/wglext.h"
-#include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 
 
 // declare the variables (PFN + Function Name + Proc)

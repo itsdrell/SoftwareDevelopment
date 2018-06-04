@@ -1,6 +1,6 @@
 #include "Engine/Math/AABB2.hpp"
 #include "Engine/Math/Vector2.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 #include <string>
 
 AABB2::~AABB2()

@@ -3,10 +3,10 @@
 #include "Engine/Math/Disc2.hpp"
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Math/Vector4.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Renderer/Scene.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Stopwatch.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/Tools/Stopwatch.hpp"
 
 //=============================================================
 // Forward Declare

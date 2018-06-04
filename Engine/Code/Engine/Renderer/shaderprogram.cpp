@@ -1,10 +1,10 @@
 #include "shaderprogram.hpp"
 #include "Engine/Renderer/glfunctions.h"
-#include "Engine/Core/File.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/Platform/File.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 #include <string>
-#include "../Core/Time.hpp"
+#include "../Core/Platform/Time.hpp"
 #include "BuiltInShader.hpp"
 
 

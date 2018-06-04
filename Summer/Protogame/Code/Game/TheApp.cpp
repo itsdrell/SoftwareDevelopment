@@ -2,18 +2,18 @@
 #include "Game/Game.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Input/InputSystem.hpp"
-#include "Engine/Core/Blackboard.hpp"
+#include "Engine/Core/General/Blackboard.hpp"
 #include "Game/GameCommon.hpp"
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Time.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/Platform/Time.hpp"
 #include "ThirdParty/tinyxml/tinyxml2.h"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/XmlUtilities.hpp"
-#include "Engine/Core/Clock.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
+#include "Engine/Core/Tools/Clock.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Trajectory.hpp"
 #include "Engine/Renderer/Shader.hpp"
-#include "Engine/Core/File.hpp"
+#include "Engine/Core/Platform/File.hpp"
 
 
 //  For testing blackboard
@@ -92,7 +92,7 @@ void App::Render() const
 void App::Update()
 {
 	
-	float deltaSeconds = GetDeltaTime();
+	//float deltaSeconds = GetDeltaTime();
 
 	g_theGame->Update();
 

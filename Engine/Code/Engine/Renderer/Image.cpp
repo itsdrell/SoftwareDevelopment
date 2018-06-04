@@ -1,5 +1,5 @@
 #include "Engine/Renderer/Image.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Renderer/stb_image.h"
 #include "Engine/Math/MathUtils.hpp"
 

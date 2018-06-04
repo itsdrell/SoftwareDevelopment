@@ -8,7 +8,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "../Core/EngineCommon.hpp"
+#include "../Core/General/EngineCommon.hpp"
 #include "RendererTypes.hpp"
 
 

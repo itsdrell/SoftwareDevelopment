@@ -4,8 +4,8 @@
 #include "Engine/Renderer/Shader.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "ThirdParty/tinyxml/tinyxml2.h"
-#include "../Core/XmlUtilities.hpp"
-#include "../Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
+#include "../Core/Tools/ErrorWarningAssert.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 

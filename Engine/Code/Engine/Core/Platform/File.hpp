@@ -2,7 +2,7 @@
 // Loads a file to a memory buffer
 // Free using free(ptr); 
 #include <stdio.h>
-#include "EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 void* FileReadToNewBuffer( char const *filename );
 void LogStringToFile(const char* filename, const char* text, bool overwrite = false);

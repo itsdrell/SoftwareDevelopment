@@ -1,8 +1,8 @@
-#include "Engine/Core/File.hpp"
+#include "Engine/Core/Platform/File.hpp"
 #include <stdlib.h>     /* malloc, free, rand */
 #include <iostream>
 #include <fstream>
-#include "ErrorWarningAssert.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 
 void* FileReadToNewBuffer( char const *filename )
 {

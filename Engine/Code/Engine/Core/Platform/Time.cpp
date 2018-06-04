@@ -4,11 +4,11 @@
 
 //-----------------------------------------------------------------------------------------------
 #pragma warning(disable:4996) // for localtime
-#include "Engine/Core/Time.hpp"
+#include "Engine/Core/Platform/Time.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <time.h>
-#include "StringUtils.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 
 
 

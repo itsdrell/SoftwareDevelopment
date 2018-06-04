@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------

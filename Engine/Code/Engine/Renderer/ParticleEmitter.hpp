@@ -8,12 +8,12 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "../Core/Transform.hpp"
+#include "../Core/General/Transform.hpp"
 #include "MeshBuilder.hpp"
 #include "../Math/IntRange.hpp"
-#include "../Core/Stopwatch.hpp"
+#include "../Core/Tools/Stopwatch.hpp"
 #include <vector>
-#include "../Core/Rgba.hpp"
+#include "../Core/General/Rgba.hpp"
 
 
 /************************************************************************/

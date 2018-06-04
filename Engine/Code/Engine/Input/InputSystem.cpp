@@ -2,8 +2,8 @@
 #include <windows.h>
 #include "Engine/Input/InputSystem.hpp"
 #include "Mouse.hpp"
-#include "../Core/ErrorWarningAssert.hpp"
-#include "../Core/Window.hpp"
+#include "../Core/Tools/ErrorWarningAssert.hpp"
+#include "../Core/Platform/Window.hpp"
 
 InputSystem*		g_theInputSystem = nullptr;
 

@@ -1,7 +1,7 @@
 #define WIN32_LEAN_AND_MEAN		
 #include <windows.h>	
 #include "Mouse.hpp"
-#include "Engine/Core/Window.hpp"
+#include "Engine/Core/Platform/Window.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 bool g_isMouseHidden = true;

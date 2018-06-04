@@ -1,7 +1,7 @@
 #pragma once
 #include "..\Math\Vector3.hpp"
-#include "..\Core\Rgba.hpp"
-#include "Engine\Core\EngineCommon.hpp"
+#include "..\Core\General/Rgba.hpp"
+#include "Engine\Core\General/EngineCommon.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // Parent

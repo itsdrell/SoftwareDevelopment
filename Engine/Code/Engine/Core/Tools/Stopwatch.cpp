@@ -1,6 +1,6 @@
 #include "Stopwatch.hpp"
-#include "Engine/Core/Clock.hpp"
-#include "Engine/Core/Time.hpp"
+#include "Engine/Core/Tools/Clock.hpp"
+#include "Engine/Core/Platform/Time.hpp"
 
 StopWatch::StopWatch(Clock* ref_clock)
 {
@@ -47,7 +47,7 @@ float StopWatch::GetNormalizedElapsedTime()
 bool StopWatch::HasElapsed()
 {
 	
-	uint64_t endTime = m_startTime + m_length;
+	uint64_t endTime = (uint64_t) (m_startTime + m_length);
 
 	if(m_reference->total.seconds > endTime)
 	{

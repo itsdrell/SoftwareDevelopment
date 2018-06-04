@@ -10,8 +10,8 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Game/GameCommon.hpp"
 #include "Engine/Renderer/glfunctions.h"
-#include "Engine/Core/Window.hpp"
-#include "Engine/Core/DevConsole.hpp"
+#include "Engine/Core/Platform/Window.hpp"
+#include "Engine/Core/Tools/DevConsole.hpp"
 
 #pragma comment( lib, "opengl32" )	// Link in the OpenGL32.lib static library
 #pragma warning(disable: 4100) // we arent using the lparam here but still need it

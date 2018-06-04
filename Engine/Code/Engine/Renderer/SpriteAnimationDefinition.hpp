@@ -1,7 +1,7 @@
 #pragma once
 #include "ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Renderer/SpriteAnimation.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 #include <string>
 #include <map>
 #include <vector>

@@ -1,11 +1,11 @@
 #pragma once
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Math/IntVector2.hpp"
-#include "Engine/Core/Rgba.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/General/Rgba.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 #include <vector>
 #include <string>
-#include "../Math/Vector4.hpp"
+#include "Engine/Math/Vector4.hpp"
 
 
 ////////////////////////////////////////////////////////////////////////// 

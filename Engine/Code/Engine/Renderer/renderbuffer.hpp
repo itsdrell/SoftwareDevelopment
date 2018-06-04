@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Renderer/glfunctions.h"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 
 class RenderBuffer

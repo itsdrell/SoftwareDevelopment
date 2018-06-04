@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Math/Vector2.hpp"
-#include "Engine/Core/Rgba.hpp"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/General/Rgba.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Math/Matrix44.hpp"
 #include <vector>
 #include <string>

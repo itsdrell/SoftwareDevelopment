@@ -5,7 +5,7 @@
 #include "Engine/Math/FloatRange.hpp"
 #include "Engine/Math/IntRange.hpp"
 #include "Engine/Math/IntVector2.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 #include <math.h>
 #include <stdlib.h> 
 

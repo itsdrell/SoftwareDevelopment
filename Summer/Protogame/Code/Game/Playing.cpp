@@ -1,11 +1,11 @@
 #include "Playing.hpp"
 #include "Engine\Renderer\Texture.hpp"
 #include "Engine\Renderer\SpriteSheet.hpp"
-#include "Engine\Core\Camera.hpp"
+#include "Engine\Core\General/Camera.hpp"
 #include "GameCommon.hpp"
-#include "Engine\Core\Clock.hpp"
+#include "Engine\Core\Tools/Clock.hpp"
 #include "Engine\Math\MathUtils.hpp"
-#include "Engine\Core\DevConsole.hpp"
+#include "Engine\Core\Tools/DevConsole.hpp"
 
 Playing::Playing()
 {

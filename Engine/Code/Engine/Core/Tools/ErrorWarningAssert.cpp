@@ -10,8 +10,8 @@
 #endif
 
 //-----------------------------------------------------------------------------------------------
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 #include <stdarg.h>
 #include <iostream>
 

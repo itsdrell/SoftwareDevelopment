@@ -1,6 +1,6 @@
 #include "Sprite.hpp"
 #include "Engine/Renderer/Texture.hpp"
-#include "Engine/Core/XmlUtilities.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
 #include "Engine/Math/AABB2.hpp"
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 #include "Engine/Math/Vector2.hpp"
 #include "Engine/Math/MathUtils.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/StringUtils.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 #include "Engine/Math/IntVector2.hpp"
 #include <math.h>
 #include <vector>

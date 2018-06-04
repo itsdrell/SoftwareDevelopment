@@ -1,6 +1,6 @@
 #include "Engine/Math/Vector4.hpp"
-#include "..\Core\EngineCommon.hpp"
-#include "../Core/StringUtils.hpp"
+#include "..\Core\General/EngineCommon.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
 
 TODO("Make this and some utilities pls ");
 

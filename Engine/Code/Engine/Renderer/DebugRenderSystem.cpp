@@ -1,11 +1,11 @@
 #include "DebugRenderSystem.hpp"
-#include "..\Core\Clock.hpp"
+#include "..\Core\Tools/Clock.hpp"
 #include "..\Math\MathUtils.hpp"
 #include "Engine\Renderer\Renderer.hpp"
-#include "..\Core\DevConsole.hpp"
-#include "..\Core\Command.hpp"
+#include "..\Core\Tools/DevConsole.hpp"
+#include "..\Core\Tools/Command.hpp"
 #include "MeshBuilder.hpp"
-#include "..\Core\Camera.hpp"
+#include "..\Core\General/Camera.hpp"
 #include "..\Math\Matrix44.hpp"
 
 //////////////////////////////////////////////////////////////////////////

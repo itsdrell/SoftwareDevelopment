@@ -4,12 +4,12 @@
 /*                                                                      */
 /************************************************************************/
 #include "Engine/Renderer/ParticleEmitter.hpp"
-#include "../Core/Clock.hpp"
+#include "../Core/Tools/Clock.hpp"
 #include "Engine/Renderer/Renderable.hpp"
 #include "Engine/Renderer/Mesh.hpp"
 #include "Material.hpp"
 #include "../Input/InputSystem.hpp"
-#include "../Core/Camera.hpp"
+#include "../Core/General/Camera.hpp"
 #include "../Math/MathUtils.hpp"
 #include "DebugRenderSystem.hpp"
 

@@ -1,5 +1,5 @@
 #include "Engine/Renderer/SpriteAnimSetDefinition.hpp"
-#include "Engine/Core/XmlUtilities.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
 #include "Engine/Renderer/SpriteAnimationDefinition.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Math/IntVector2.hpp"

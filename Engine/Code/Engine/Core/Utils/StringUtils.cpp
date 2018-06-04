@@ -1,8 +1,8 @@
-#include "Engine/Core/StringUtils.hpp"
-#include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/Utils/StringUtils.hpp"
+#include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 #include <stdarg.h>
 #include <vector>
-#include "../Renderer/DebugRenderSystem.hpp"
+#include "Engine/Renderer/DebugRenderSystem.hpp"
 #include <regex>
 #include <string>
 

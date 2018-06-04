@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/stb_image.h"
-#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Renderer/Image.hpp"
 #include "Engine/Renderer/glfunctions.h"
 #include "ThirdParty/stbi/stb_image_write.h"

@@ -3,7 +3,7 @@
 #include "VertexLayout.hpp"
 #include "../Math/Vector3.hpp"
 #include "../Math/Vector4.hpp"
-#include "../Core/Rgba.hpp"
+#include "../Core/General/Rgba.hpp"
 #include "../Math/Matrix44.hpp"
 
 

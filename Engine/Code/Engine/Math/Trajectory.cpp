@@ -1,6 +1,6 @@
 ﻿#include "Trajectory.hpp"
 #include "MathUtils.hpp"
-#include "..\Core\ErrorWarningAssert.hpp"
+#include "..\Core\Tools/ErrorWarningAssert.hpp"
 
 Vector2 Trajectory::Evaluate(float gravity, float launch_speed, float launch_angle, float time)
 {

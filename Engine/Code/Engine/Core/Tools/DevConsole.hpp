@@ -1,10 +1,10 @@
 #pragma once
 #include "Engine/Math/AABB2.hpp"
-#include "Engine/Core/Rgba.hpp"
+#include "Engine/Core/General/Rgba.hpp"
 #include <vector>
 #include <string>
-#include "../Renderer/renderbuffer.hpp"
-#include "../Audio/AudioSystem.hpp"
+#include "Engine/Renderer/renderbuffer.hpp"
+#include "Engine/Audio/AudioSystem.hpp"
 
 
 class Renderer;
