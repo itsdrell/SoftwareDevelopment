@@ -2,7 +2,7 @@
 #include <windows.h>			
 #include "Engine/Core/Platform/Window.hpp"
 #include "Engine/Renderer/glfunctions.h"
-#include "Game/GameCommon.hpp"
+#include "Game/Main/GameCommon.hpp"
 #include <iosfwd>
 #include <sstream>
 //typedef void (*windows_message_handler_cb)( unsigned int msg, size_t wparam, size_t lparam ); 

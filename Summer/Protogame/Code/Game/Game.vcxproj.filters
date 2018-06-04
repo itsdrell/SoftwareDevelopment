@@ -16,18 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main_Win32.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="TheApp.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="GameCommon.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -37,20 +25,20 @@
     <ClCompile Include="Playing.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Main\Game.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\GameCommon.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\Main_Win32.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Main\TheApp.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TheApp.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="GameCommon.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineBuildPreferences.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.hpp">
       <Filter>General</Filter>
     </ClInclude>
@@ -60,42 +48,17 @@
     <ClInclude Include="Playing.hpp">
       <Filter>General</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\..\Run_Win32\Data\GameConfig.xml">
-      <Filter>Data</Filter>
-    </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\Run_Win32\Data\Shaders\lit.shader">
-      <Filter>Data\Shaders</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\lit_alpha.shader">
-      <Filter>Data\Shaders</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\lit.fs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\mvp_lit.vs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugRender.fs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugRender.vs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugNormal.fs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\glsl\DebugNormal.vs">
-      <Filter>Data\Shaders\glsl</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\default.shader">
-      <Filter>Data\Shaders</Filter>
-    </None>
-    <None Include="..\..\Run_Win32\Data\Shaders\debugNormal.shader">
-      <Filter>Data\Shaders</Filter>
-    </None>
+    <ClInclude Include="Main\EngineBuildPreferences.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\Game.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\GameCommon.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="Main\TheApp.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

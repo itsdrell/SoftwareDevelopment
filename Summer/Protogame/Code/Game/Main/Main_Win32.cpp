@@ -4,11 +4,11 @@
 #include <cassert>
 #include <crtdbg.h>
 #include "Engine/Math/MathUtils.hpp"
-#include "Game/TheApp.hpp"
+#include "Game/Main/TheApp.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Game/Main/Game.hpp"
 #include "Engine/Input/InputSystem.hpp"
-#include "Game/GameCommon.hpp"
+#include "Game/Main/GameCommon.hpp"
 #include "Engine/Renderer/glfunctions.h"
 #include "Engine/Core/Platform/Window.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"

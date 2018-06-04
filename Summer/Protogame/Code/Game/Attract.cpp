@@ -1,12 +1,12 @@
 #include "Attract.hpp"
-#include "GameCommon.hpp"
+#include "Game/Main/GameCommon.hpp"
 #include "Engine\Math\Geometry/AABB2.hpp"
 #include "Engine\Core\Platform/Window.hpp"
 #include "Engine\Renderer\Systems/DebugRenderSystem.hpp"
-#include "TheApp.hpp"
+#include "Game/Main/TheApp.hpp"
 #include "Engine/Core/General/Camera.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"
-#include "Game.hpp"
+#include "Game/Main/Game.hpp"
 #include "Game/Playing.hpp"
 
 Attract::Attract()

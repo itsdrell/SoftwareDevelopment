@@ -1,4 +1,4 @@
-#include "Game/GameCommon.hpp"
+#include "Game/Main/GameCommon.hpp"
 
 Renderer* g_theRenderer = nullptr;
 InputSystem* g_theInput = nullptr;

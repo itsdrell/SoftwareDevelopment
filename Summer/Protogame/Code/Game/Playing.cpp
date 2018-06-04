@@ -2,7 +2,7 @@
 #include "Engine\Renderer\Images/Textures/Texture.hpp"
 #include "Engine\Renderer\Images/Sprites/SpriteSheet.hpp"
 #include "Engine\Core\General/Camera.hpp"
-#include "GameCommon.hpp"
+#include "Main/GameCommon.hpp"
 #include "Engine\Core\Tools/Clock.hpp"
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"

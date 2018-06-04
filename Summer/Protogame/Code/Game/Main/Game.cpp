@@ -1,11 +1,11 @@
 #pragma warning(disable: 4100) // for commands
-#include "Game/Game.hpp"
-#include "Game/TheApp.hpp"
+#include "Game/Main/Game.hpp"
+#include "Game/Main/TheApp.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
-#include "Game/GameCommon.hpp"
+#include "Game/Main/GameCommon.hpp"
 #include <vector>
 #include "Engine/Core/General/Rgba.hpp"
 #include "Engine/Math/Vectors/Vector2.hpp"
@@ -23,8 +23,8 @@
 #include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Renderer/Systems/ForwardRenderingPath.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
-#include "Attract.hpp"
-#include "Playing.hpp"
+#include "Game/Attract.hpp"
+#include "Game/Playing.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
 
 
