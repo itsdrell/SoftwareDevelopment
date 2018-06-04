@@ -15,6 +15,8 @@ class Texture;
 class DevConsole;
 class Attract;
 class Playing;
+class Loading;
+class ReadyUp;
 
 //=============================================================
 // ENUMS
@@ -25,6 +27,7 @@ enum GameStates
 	LOADING,
 	ATTRACT,
 	PLAY,
+	READY_UP_NERDS,
 	NUM_OF_GAME_STATES
 };
 
@@ -43,11 +46,11 @@ public:
 	void		StartUp();
 
 	void		Update();
-	void		UpdateLoadingScreen();
+	
 	void		ClockDebug();
 
 	void		Render() const;
-	void		RenderLoadingScreen() const;
+
 
 	void		CheckKeyBoardInputs();
 
@@ -60,8 +63,9 @@ public:
 	GameStates		m_currentState;
 	Attract*		m_attractState;
 	Playing*		m_playingState;
+	Loading*		m_loadingState;
+	ReadyUp*		m_readyUpState;
 
-	Timer*			m_loadingScreenTimer;
 
 };
 //=============================================================

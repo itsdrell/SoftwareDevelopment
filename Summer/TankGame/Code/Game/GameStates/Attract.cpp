@@ -7,7 +7,7 @@
 #include "Engine/Core/General/Camera.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"
 #include "Game/Main/Game.hpp"
-#include "Game/Playing.hpp"
+#include "Game/GameStates/Playing.hpp"
 
 Attract::Attract()
 {
@@ -83,12 +83,11 @@ void Attract::KeyboardInput()
 	}
 
 	// Do the option
-	if(WasKeyJustPressed(KEYBOARD_ENTER))
+	if(WasKeyJustReleased(KEYBOARD_ENTER))
 	{
 		if(m_currentMenuItem == PLAY_BUTTON)
 		{
-			g_theGame->m_currentState = PLAY;
-			g_theGame->m_playingState->StartUp();
+			g_theGame->m_currentState = READY_UP_NERDS;
 		}
 		
 		if(m_currentMenuItem == QUIT_BUTTON)

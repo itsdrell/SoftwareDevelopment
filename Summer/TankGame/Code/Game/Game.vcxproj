@@ -286,12 +286,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Attract.cpp" />
+    <ClCompile Include="GameStates\Attract.cpp" />
+    <ClCompile Include="GameStates\Loading.cpp" />
+    <ClCompile Include="GameStates\ReadyUp.cpp" />
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
     <ClCompile Include="Main\Main_Win32.cpp" />
     <ClCompile Include="Main\TheApp.cpp" />
-    <ClCompile Include="Playing.cpp" />
+    <ClCompile Include="GameStates\Playing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Engine\Code\Engine\Engine.vcxproj">
@@ -299,12 +301,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attract.hpp" />
+    <ClInclude Include="GameStates\Attract.hpp" />
+    <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="GameStates\ReadyUp.hpp" />
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />
     <ClInclude Include="Main\Game.hpp" />
     <ClInclude Include="Main\GameCommon.hpp" />
     <ClInclude Include="Main\TheApp.hpp" />
-    <ClInclude Include="Playing.hpp" />
+    <ClInclude Include="GameStates\Playing.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

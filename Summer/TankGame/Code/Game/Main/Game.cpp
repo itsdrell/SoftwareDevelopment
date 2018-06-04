@@ -23,9 +23,11 @@
 #include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Renderer/Systems/ForwardRenderingPath.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
-#include "Game/Attract.hpp"
-#include "Game/Playing.hpp"
+#include "Game/GameStates/Attract.hpp"
+#include "Game/GameStates/Playing.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
+#include "../GameStates/Loading.hpp"
+#include "../GameStates/ReadyUp.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,15 +56,13 @@ Game::Game()
 	m_currentState = LOADING;
 	m_attractState = new Attract();
 	m_playingState = new Playing();
+	m_loadingState = new Loading();
+	m_readyUpState = new ReadyUp();
 	
 }
 
 void Game::StartUp()
 {
-	
-
-	m_loadingScreenTimer = new Timer(g_theGameClock);
-	m_loadingScreenTimer->SetTimer(3.f);
 
 	m_console->StartUp();
 	
@@ -78,13 +78,16 @@ void Game::Update()
 	case NONE:
 		break;
 	case LOADING:
-		UpdateLoadingScreen();
+		m_loadingState->Update();
 		break;
 	case ATTRACT:
 		m_attractState->Update();
 		break;
 	case PLAY:
 		m_playingState->Update();
+		break;
+	case READY_UP_NERDS:
+		m_readyUpState->Update();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;
@@ -96,12 +99,6 @@ void Game::Update()
 	
 	CheckKeyBoardInputs();
 	m_console->Update(); // using engine clock?
-}
-
-void Game::UpdateLoadingScreen()
-{
-	if(m_loadingScreenTimer->HasElapsed())
-		m_currentState = ATTRACT;
 }
 
 void Game::ClockDebug()
@@ -151,13 +148,16 @@ void Game::Render() const
 	case NONE:
 		break;
 	case LOADING:
-		RenderLoadingScreen();
+		m_loadingState->Render();
 		break;
 	case ATTRACT:
 		m_attractState->Render();
 		break;
 	case PLAY:
 		m_playingState->Render();
+		break;
+	case READY_UP_NERDS:
+		m_readyUpState->Render();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;
@@ -169,28 +169,6 @@ void Game::Render() const
 	// Show the console, we return instantly if its not open
 	m_console->Render();
 	
-}
-
-void Game::RenderLoadingScreen() const
-{
-	//=============================================================
-	// Set up camera
-	g_theRenderer->SetCamera(g_theRenderer->m_defaultUICamera);
-
-	// Prepare for draw
-	g_theRenderer->ClearDepth(1.f);
-	g_theRenderer->EnableDepth(COMPARE_ALWAYS, true);
-
-	g_theRenderer->DrawAABB2(AABB2(-200.f, -200.f, 200.f, 200.f), Rgba::GREEN);
-
-	//=============================================================
-	float cellHeight = 8.f;
-	float offsetX = -30.f;
-
-	// Play
-
-	g_theRenderer->DrawText2D(Vector2(offsetX, 0.f), "Loading", cellHeight, Rgba::WHITE);
-
 }
 
 

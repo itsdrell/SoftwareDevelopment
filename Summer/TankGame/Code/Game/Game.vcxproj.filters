@@ -16,12 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Attract.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="Playing.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="Main\Game.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -34,14 +28,20 @@
     <ClCompile Include="Main\TheApp.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameStates\Attract.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStates\Playing.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStates\Loading.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStates\ReadyUp.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attract.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
-    <ClInclude Include="Playing.hpp">
-      <Filter>General</Filter>
-    </ClInclude>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
       <Filter>General</Filter>
     </ClInclude>
@@ -54,5 +54,13 @@
     <ClInclude Include="Main\TheApp.hpp">
       <Filter>General</Filter>
     </ClInclude>
+    <ClInclude Include="GameStates\Attract.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStates\Playing.hpp">
+      <Filter>General</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="GameStates\ReadyUp.hpp" />
   </ItemGroup>
 </Project>
