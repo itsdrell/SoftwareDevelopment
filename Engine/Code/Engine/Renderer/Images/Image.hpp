@@ -14,6 +14,7 @@ public:
 
 	IntVector2 GetTilePosition(int indexToCheck);
 	Rgba GetColorAt(int x, int y) const;
+	Rgba GetColorAt(IntVector2 pos) const;
 	unsigned char* GetColorCharPointer() const;
 	
 	void* GetBuffer(uint xOffset, uint yOffset) const;

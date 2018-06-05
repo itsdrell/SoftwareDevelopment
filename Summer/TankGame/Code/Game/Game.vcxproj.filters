@@ -43,6 +43,9 @@
     <ClCompile Include="GameSpecific\Player.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameSpecific\GameMap.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -66,5 +69,6 @@
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="GameStates\ReadyUp.hpp" />
     <ClInclude Include="GameSpecific\Player.hpp" />
+    <ClInclude Include="GameSpecific\GameMap.hpp" />
   </ItemGroup>
 </Project>

@@ -96,6 +96,11 @@ Rgba Image::GetColorAt(int x, int y) const
 	return m_colors.at(x*y);
 }
 
+Rgba Image::GetColorAt(IntVector2 pos) const
+{
+	return GetColorAt(pos.x, pos.y);
+}
+
 unsigned char* Image::GetColorCharPointer() const
 {
 	return (unsigned char*) m_colors.data();
