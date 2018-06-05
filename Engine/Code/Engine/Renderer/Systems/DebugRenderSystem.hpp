@@ -178,10 +178,11 @@ void DebugRenderLog(float lifetime = 0.f, std::string text = "Hello", Rgba color
 void DebugRenderSet3DCamera( Camera *camera ); 
 
 void DebugRenderPoint( float lifetime, 
-	Vector3 const &position, 
+	Vector3 const &position,
+	float scale,
 	Rgba const &start_color, 
 	Rgba const &end_color,
-	DebugRenderMode const mode ); 
+	DebugRenderMode const mode = DEBUG_RENDER_IGNORE_DEPTH ); 
 
 // Forseths version
 // void DebugRenderLineSegment( float lifetime, 

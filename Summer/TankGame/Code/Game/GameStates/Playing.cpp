@@ -10,6 +10,7 @@
 #include "../GameSpecific/Player.hpp"
 #include "Engine/Renderer/RenderableComponents/Material.hpp"
 #include "Engine/Renderer/Systems/Lights.hpp"
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 Playing::Playing()
 {
@@ -59,7 +60,13 @@ Player* Playing::AddPlayer()
 	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
-	newPlayer->m_renderable->SetMaterial( Material::CreateOrGetMaterial("default") );
+	Material* playerMaterial = Material::CreateOrGetMaterial("ship");
+	playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	playerMaterial->SetTexture(1, g_theRenderer->m_defaultTexture);
+	playerMaterial->SetTexture(2, g_theRenderer->m_defaultTexture);
+
+
+	newPlayer->m_renderable->SetMaterial( playerMaterial );
 	newPlayer->m_renderable->m_usesLight = true;
 
 	m_scene->AddRenderable(newPlayer->m_renderable);
@@ -69,8 +76,10 @@ Player* Playing::AddPlayer()
 
 void Playing::Update()
 {
-	CheckKeyBoardInputs();
 	m_player->Update();
+	CheckKeyBoardInputs();
+
+	DebugRenderGrid(0.f, Vector3::ZERO, 20.f, 20.f);
 }
 
 void Playing::Render() const

@@ -18,12 +18,12 @@ Player::Player()
 
 void Player::Update()
 {
-	m_renderable->SetModelMatrix(m_transform.GetLocalMatrix());
+	GameObject::Update();
 
 	if(m_breadCrumbTimer->CheckAndReset())
 	{
-		DebugRenderPoint(4.f, m_transform.GetWorldPosition(), Rgba::GREEN, Rgba::RED, DEBUG_RENDER_IGNORE_DEPTH);
+		DebugRenderPoint(4.f, m_transform.GetLocalPosition(), .1f, Rgba::GREEN, Rgba::RED);
 
-		DebugRenderLog(1.f, "Breadcrumb");
 	}
+
 }

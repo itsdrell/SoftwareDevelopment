@@ -122,7 +122,7 @@ void DebugRenderTask::Render() const
 		r->DrawLine3D(m_options.position0, m_options.position1, currentColor);
 		break;
 	case RENDER_POINT:
-		r->HighlightPoint(m_options.position, .1f, currentColor);
+		r->HighlightPoint(m_options.position, m_options.scale, currentColor);
 		break;
 	case RENDER_BASIS:
 		r->DrawBasis(m_options.position, 1.f);
@@ -468,7 +468,7 @@ void DebugRenderSet3DCamera(Camera* camera)
 	r->m_debugCamera = camera;
 }
 
-void DebugRenderPoint(float lifetime, Vector3 const & position, Rgba const & start_color, Rgba const & end_color, DebugRenderMode const mode)
+void DebugRenderPoint(float lifetime, Vector3 const & position, float scale, Rgba const & start_color, Rgba const & end_color, DebugRenderMode const mode)
 {
 	DebugRenderTask* newTask = new DebugRenderTask();
 
@@ -483,6 +483,7 @@ void DebugRenderPoint(float lifetime, Vector3 const & position, Rgba const & sta
 	//////////////////////////////////////////////////////////////////////////
 	// Specific to this call
 	newTask->m_function = RENDER_POINT;
+	newTask->m_options.scale = scale;
 
 	newTask->m_options.position = position;
 

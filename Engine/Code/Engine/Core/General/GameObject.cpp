@@ -21,5 +21,5 @@ GameObject::GameObject(std::string name, Renderable & renderable, Transform tran
 
 void GameObject::Update()
 {
-
+	m_renderable->SetModelMatrix(m_transform.GetWorldMatrix());
 }

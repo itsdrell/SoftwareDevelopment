@@ -63,7 +63,7 @@ Game::Game()
 
 void Game::StartUp()
 {
-
+	
 	m_console->StartUp();
 	
 }

@@ -24,8 +24,11 @@ void main( void )
    // multiply it through - for now, local_pos
    // is being treated as view space position
    // this will be updated later once we introduce the other matrices
-    vec4 local_pos = vec4( POSITION, 1 ); 
-    vec4 clip_pos =  PROJECTION * (VIEW * local_pos); 
+    vec4 local_pos = vec4( POSITION, 1.0f );  
+
+   vec4 world_pos = MODEL * local_pos ; 
+   vec4 camera_pos = VIEW * world_pos; 
+   vec4 clip_pos = PROJECTION * camera_pos; 
    
     passColor = COLOR; // pass it on. 
     passUV = UV; // we have to set our outs.

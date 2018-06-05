@@ -333,26 +333,25 @@ void Renderer::HighlightPoint(const Vector3& position, float theScale, Rgba theC
 	float scale = theScale;
 	
 	// this draws a star at a point
-	Vector3 north = position + Vector3::UP;
-	Vector3 south = position - Vector3::UP;
-	Vector3 east =  position + Vector3::RIGHT;
-	Vector3 west = position - Vector3::RIGHT;
+	Vector3 north = position +	(Vector3::UP * scale);
+	Vector3 south = position -	(Vector3::UP * scale);
+	Vector3 east =  position +	(Vector3::RIGHT * scale);
+	Vector3 west = position -	(Vector3::RIGHT * scale);
 
-	Vector3 forward = position + Vector3::FORWARD;
-	Vector3 backward = position - Vector3::FORWARD;
+	Vector3 forward = position	+	(Vector3::FORWARD * scale);
+	Vector3 backward = position -	(Vector3::FORWARD * scale);
 
-	Vector3 ne = position + Vector3::UP + Vector3::RIGHT;
-	Vector3 nw = position + Vector3::UP - Vector3::RIGHT;
-	Vector3 se = position - Vector3::UP + Vector3::RIGHT;
-	Vector3 sw = position - Vector3::UP - Vector3::RIGHT;
+	Vector3 ne = position + ((Vector3::UP + Vector3::RIGHT) * scale);
+	Vector3 nw = position + ((Vector3::UP + Vector3::LEFT) * scale);
+	Vector3 se = position + ((Vector3::DOWN + Vector3::RIGHT) * scale);
+	Vector3 sw = position + ((Vector3::DOWN + Vector3::LEFT) * scale);
 
 
-
-	DrawLine3D(north * scale, south * scale, theColor);
-	DrawLine3D(east * scale, west * scale, theColor);
-	DrawLine3D(ne * scale , sw * scale, theColor);
-	DrawLine3D(nw * scale, se * scale, theColor);
-	DrawLine3D(forward * scale, backward * scale, theColor);
+	DrawLine3D(north , south , theColor);
+	DrawLine3D(east , west , theColor);
+	DrawLine3D(ne , sw , theColor);
+	DrawLine3D(nw , se , theColor);
+	DrawLine3D(forward , backward , theColor);
 }
 
 void Renderer::DrawLine2D(Vector2 startPoint, Vector2 endPoint, Rgba theColor)
