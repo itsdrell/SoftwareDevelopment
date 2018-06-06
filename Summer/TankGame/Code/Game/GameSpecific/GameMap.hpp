@@ -2,6 +2,7 @@
 #include "Engine\Core\General\EngineCommon.hpp"
 #include "Engine\Renderer\Images\Image.hpp"
 #include "Engine\Math\Geometry\AABB2.hpp"
+#include "Engine\Math\Ranges\FloatRange.hpp"
 
 //=============================================================
 // Forward Declare
@@ -54,30 +55,36 @@ public:
 	GameMap();
 	~GameMap() { FreeAllChunks(); }
 
-	void LoadFromImage( Image const &image, 
-		AABB2 const &extents, 
-		float min_height, 
-		float max_height,
-		IntVector2 chunk_counts );
+	//void LoadFromImage( Image const &image, 
+	//	AABB2 const &extents, 
+	//	float min_height, 
+	//	float max_height,
+	//	IntVector2 chunk_counts );
+
+	void LoadMap(const AABB2& bounds, const FloatRange& height, const IntVector2& amountOfChunks, float stepSize);
 
 	void CreateAllChunks();
 	
 	void FreeAllChunks(); 
 
+	float CreateHeight( Vector2 xz );
 	float GetHeight( Vector2 xz );
 
 	AABB2 GetChunkExtents( IntVector2 chunk_idx );
 
 
 public:
-	AABB2 m_extents; 
-	float m_min_height; 
-	float m_max_height; 
+	AABB2		m_mapBounds; 
+	FloatRange	m_height;
+	float		m_stepSize;
 
-	Image m_image; 
+	//Image m_image; 
+
+	std::vector<Vector3>		m_points;
 
 	std::vector<GameMapChunk*>	m_chunks; 
-	IntVector2					m_chunk_counts; 
+	IntVector2					m_chunkCount; 
+	Renderable*					m_test;
 }; 
 
 //=============================================================

@@ -708,3 +708,37 @@ void MeshBuilder::AddDeformedSphere(const Vector3& position, float radius, float
 	End();
 }
 
+void MeshBuilder::AddPlaneFromFourPoints(const Vector3& bl, const Vector3& br, const Vector3& tr, const Vector3& tl)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									  // this is assuming all the sides are the same color
+	SetColor(Rgba::WHITE);
+
+	//////////////////////////////////////////////////////////////////////////
+
+	SetUV(0,0);
+	uint idx = PushVertex(bl);
+
+	SetUV(1,0);
+	PushVertex(br);
+
+	SetUV(0,1);
+	PushVertex(tr);
+
+	SetUV(1,1);
+	PushVertex(tl);
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 2, idx + 3, idx);
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
+
+	//return mb.CreateMeshPCU();
+}
+

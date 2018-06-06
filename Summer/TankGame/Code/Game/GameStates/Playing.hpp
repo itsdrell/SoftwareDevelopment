@@ -12,6 +12,7 @@ class Camera;
 class Renderable;
 class Light;
 class Player;
+class GameMap;
 
 //=============================================================
 // ENUMS
@@ -56,6 +57,8 @@ public:
 	Player*					m_player;
 
 	Light*					m_sun;
+
+	GameMap*				m_map;
 };
 
 

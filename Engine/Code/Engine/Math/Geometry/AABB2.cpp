@@ -44,6 +44,12 @@ AABB2::AABB2(const Vector2& center, float radiusX, float radiusY)
 
 }
 
+AABB2::AABB2(const float theMins, const float theMaxs)
+{
+	mins = Vector2(theMins, theMins);
+	maxs = Vector2(theMaxs, theMaxs);
+}
+
 void AABB2::StretchToIncludePoint(float x, float y)
 {
 	if(IsPointInside(x,y) == false)
@@ -156,12 +162,12 @@ Vector2 AABB2::GetCenter() const
 	return answer;
 }
 
-float AABB2::GetWidth()
+float AABB2::GetWidth() const
 {
 	return maxs.x - mins.x;
 }
 
-float AABB2::GetHeight()
+float AABB2::GetHeight() const
 {
 	return maxs.y - mins.y;
 }

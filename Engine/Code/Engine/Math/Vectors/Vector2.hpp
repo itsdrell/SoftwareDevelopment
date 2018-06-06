@@ -28,6 +28,7 @@ public:
 
 	// helper
 	static Vector2 GetMidPoint(const Vector2& a, const Vector2& b);
+	static Vector2 RangeMap(const Vector2& inValue, const Vector2& inStart, const Vector2& inEnd, const Vector2& outStart, const Vector2& outEnd);
 	
 	// Operators
 	const Vector2 operator+( const Vector2& vecToAdd ) const;		// vec2 + vec2

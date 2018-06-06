@@ -52,6 +52,8 @@ public:
 
 	void AddDeformedSphere(const Vector3& position, float radius, float offsetRange, uint wedges, uint slices, Rgba color = Rgba::WHITE);
 
+	void AddPlaneFromFourPoints(const Vector3& bl, const Vector3& br, const Vector3& tr, const Vector3& tl);
+
 
 public:
 	VertexMaster 						m_stamp; // this is a value. We overwrite it

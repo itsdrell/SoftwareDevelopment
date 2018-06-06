@@ -11,6 +11,8 @@
 #include "Engine/Renderer/RenderableComponents/Material.hpp"
 #include "Engine/Renderer/Systems/Lights.hpp"
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
+#include "Engine/Math/Ranges/FloatRange.hpp"
+#include "Game/GameSpecific/GameMap.hpp"
 
 Playing::Playing()
 {
@@ -31,6 +33,9 @@ void Playing::StartUp()
 
 	m_player = AddPlayer();
 
+	m_map = new GameMap();
+	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// Cameras
@@ -46,9 +51,9 @@ void Playing::StartUp()
 	g_theRenderer->SetCamera();
 	//////////////////////////////////////////////////////////////////////////
 
-	g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
+	g_theRenderer->SetAmbientLight(.5f, Rgba::WHITE);
 
-	m_sun = new DirectionalLight(0, Vector3::ZERO, Vector3::DOWN, .6f);
+	m_sun = new DirectionalLight(0, Vector3(0.f, 100.f, 0.f), Vector3::DOWN, .6f);
 	m_scene->AddLight(m_sun);
 }
 
@@ -79,7 +84,7 @@ void Playing::Update()
 	m_player->Update();
 	CheckKeyBoardInputs();
 
-	DebugRenderGrid(0.f, Vector3::ZERO, 20.f, 20.f);
+	//DebugRenderGrid(0.f, Vector3::ZERO, 20.f, 20.f);
 }
 
 void Playing::Render() const
@@ -150,7 +155,13 @@ void Playing::CameraInput()
 
 	// Apply world offset (Method 1 & Method 2)
 	//m_camera->transform.position += world_offset; 
-	m_player->m_transform.SetLocalPosition(movement + previousPosition); 
+
+	// Check height of the map at that location
+	Vector3 translation = movement + previousPosition;
+	float height = m_map->GetHeight(translation.xz()) + 1.f;
+	Vector3 newLocation = Vector3(translation.x, height , translation.z);
+
+	m_player->m_transform.SetLocalPosition(newLocation); 
 
 
 }

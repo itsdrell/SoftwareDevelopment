@@ -39,6 +39,8 @@ public:
 	void SetDrawInstruction(PrimitiveType type, bool usesIndices, uint startIndex, uint elementCount);
 	void SetDrawInstruction(DrawInstruction theDraw);
 
+	void DrawAsWireFrame() { m_drawInstruction.primitiveType = PRIMITIVE_LINES; }
+
 	uint GetVertexStride() const { return m_layout->m_stride; }
 	
 

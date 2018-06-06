@@ -250,3 +250,11 @@ Vector2 Vector2::GetMidPoint(const Vector2& a, const Vector2& b)
 	return Vector2(((a.x + b.x) * .5f),((a.y + b.y) * .5f));
 }
 
+Vector2 Vector2::RangeMap(const Vector2& inValue, const Vector2& inStart, const Vector2& inEnd, const Vector2& outStart, const Vector2& outEnd)
+{
+	float newX = RangeMapFloat(inValue.x, inStart.x, inEnd.x, outStart.x, outEnd.x);
+	float newY = RangeMapFloat(inValue.y, inStart.y, inEnd.y, outStart.y, outEnd.y);
+
+	return Vector2(newX, newY);
+}
+
