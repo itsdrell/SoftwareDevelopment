@@ -23,29 +23,29 @@ class GameMap;
 //=============================================================
 // Classes
 //=============================================================
-class GameMapChunk 
-{
-public:
-	GameMapChunk()
-		: m_chunk_index(IntVector2::ZERO)
-		, m_renderable(nullptr)
-	{}
-
-	~GameMapChunk() { Cleanup(); }
-
-	void Setup( GameMap* theMap, uint idx );
-	void Cleanup();
-	void UpdateMesh(); 
-	void SetUpRenderable();
-
-	Vector3 GenerateTerrain( Vector2 pos ); 
-
-
-public:
-	GameMap*			m_map; 
-	IntVector2			m_chunk_index; 
-	Renderable*			m_renderable; 
-}; 
+// class GameMapChunk 
+// {
+// public:
+// 	GameMapChunk()
+// 		: m_chunk_index(IntVector2::ZERO)
+// 		, m_renderable(nullptr)
+// 	{}
+// 
+// 	~GameMapChunk() { Cleanup(); }
+// 
+// 	void Setup( GameMap* theMap, uint idx );
+// 	void Cleanup();
+// 	void UpdateMesh(); 
+// 	void SetUpRenderable();
+// 
+// 	Vector3 GenerateTerrain( Vector2 pos ); 
+// 
+// 
+// public:
+// 	GameMap*			m_map; 
+// 	IntVector2			m_chunk_index; 
+// 	Renderable*			m_renderable; 
+// }; 
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
@@ -82,7 +82,7 @@ public:
 
 	std::vector<Vector3>		m_points;
 
-	std::vector<GameMapChunk*>	m_chunks; 
+	//std::vector<GameMapChunk*>	m_chunks; 
 	IntVector2					m_chunkCount; 
 	Renderable*					m_test;
 }; 

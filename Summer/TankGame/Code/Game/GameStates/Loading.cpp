@@ -15,7 +15,7 @@ void Loading::LoadAssets()
 	g_theGame->m_playingState->StartUp();
 
 	// Make sure we see it before switching
-	Sleep(1.f);
+	Sleep((DWORD) 1.f);
 	g_theGame->m_currentState = ATTRACT;
 }
 

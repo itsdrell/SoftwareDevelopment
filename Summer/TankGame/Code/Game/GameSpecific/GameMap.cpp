@@ -35,14 +35,14 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 	MeshBuilder mb;
 
 	// amount of steps I can make in a direction
-	uint yRange = (uint) bounds.GetHeight() / stepSize;
-	uint xRange = (uint) bounds.GetWidth() / stepSize;
+	uint yRange = (uint) (bounds.GetHeight() / stepSize);
+	uint xRange = (uint) (bounds.GetWidth() / stepSize);
 
 	m_chunkCount = IntVector2(yRange, xRange);
 
 	Vector2 pos = bounds.mins;
 
-	uint idx = 0;
+	//uint idx = 0U;
 	for(uint y = 0; y < yRange; y++)
 	{
 		for(uint x = 0; x < xRange; x++)
@@ -91,7 +91,7 @@ void GameMap::CreateAllChunks()
 
 void GameMap::FreeAllChunks()
 {
-	m_chunks.erase(m_chunks.begin(), m_chunks.end());
+	//m_chunks.erase(m_chunks.begin(), m_chunks.end());
 }
 
 float GameMap::CreateHeight(Vector2 xz)
@@ -110,7 +110,7 @@ float GameMap::GetHeight(Vector2 xz)
 
 	Vector2 cell_uv = Vector2( m_chunkCount.x * uv.x , m_chunkCount.y * uv.y);
 	Vector2 cellFract = Vector2(GetFractionOf(cell_uv.x), GetFractionOf(cell_uv.y));
-	IntVector2 bl_Index = IntVector2(floor(cell_uv.x), floor(cell_uv.y));
+	IntVector2 bl_Index = IntVector2((int) floor(cell_uv.x), (int) floor(cell_uv.y));
 
 	float bl = m_points.at( bl_Index.y * m_chunkCount.x + bl_Index.x).y;
 	float tl = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + bl_Index.x).y;
@@ -131,54 +131,53 @@ AABB2 GameMap::GetChunkExtents(IntVector2 chunk_idx)
 }
 
 //=============================================================
-void GameMapChunk::Setup(GameMap* theMap, uint idx)
-{
-	m_map = theMap;
-
-	int index = (int) idx;
-//	int x = index % theMap->m_chunk_counts.x;
-	//int y = index / theMap->m_chunk_counts.x;
-
-	//m_chunk_index = IntVector2(x,y);
-	
-	SetUpRenderable();
-	UpdateMesh();
-}
-
-void GameMapChunk::Cleanup()
-{
-	delete m_renderable;
-}
-
-void GameMapChunk::UpdateMesh()
-{
-	uint index = m_chunk_index.x * m_chunk_index.y;
-
-	MeshBuilder mb;
-
-	for(uint height = 0; height < m_chunk_index.y; height++)
-	{
-		for(uint width = 0; width < m_chunk_index.x; width++)
-		{
-			
-			
-			Vector3 currentPos = GenerateTerrain(Vector2::ZERO);
-			mb.AddQuad(currentPos, AABB2());
-		}
-	}
-}
-
-void GameMapChunk::SetUpRenderable()
-{
-	m_renderable = new Renderable();
-	
-	Material* theMaterial = Material::CreateOrGetMaterial("terrain");
-	m_renderable->SetMaterial(theMaterial);
-
-}
-
-Vector3 GameMapChunk::GenerateTerrain(Vector2 pos)
-{
-	
-	return Vector3(pos.x, m_map->GetHeight(pos), pos.y);
-}
+// void GameMapChunk::Setup(GameMap* theMap, uint idx)
+// {
+// 	m_map = theMap;
+// 
+// //	int x = index % theMap->m_chunk_counts.x;
+// 	//int y = index / theMap->m_chunk_counts.x;
+// 
+// 	//m_chunk_index = IntVector2(x,y);
+// 	
+// 	SetUpRenderable();
+// 	UpdateMesh();
+// }
+// 
+// void GameMapChunk::Cleanup()
+// {
+// 	delete m_renderable;
+// }
+// 
+// void GameMapChunk::UpdateMesh()
+// {
+// 	uint index = m_chunk_index.x * m_chunk_index.y;
+// 
+// 	MeshBuilder mb;
+// 
+// 	for(uint height = 0; height < m_chunk_index.y; height++)
+// 	{
+// 		for(uint width = 0; width < m_chunk_index.x; width++)
+// 		{
+// 			
+// 			
+// 			Vector3 currentPos = GenerateTerrain(Vector2::ZERO);
+// 			mb.AddQuad(currentPos, AABB2());
+// 		}
+// 	}
+// }
+// 
+// void GameMapChunk::SetUpRenderable()
+// {
+// 	m_renderable = new Renderable();
+// 	
+// 	Material* theMaterial = Material::CreateOrGetMaterial("terrain");
+// 	m_renderable->SetMaterial(theMaterial);
+// 
+// }
+// 
+// Vector3 GameMapChunk::GenerateTerrain(Vector2 pos)
+// {
+// 	
+// 	return Vector3(pos.x, m_map->GetHeight(pos), pos.y);
+// }

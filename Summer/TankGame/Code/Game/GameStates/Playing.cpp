@@ -51,10 +51,12 @@ void Playing::StartUp()
 	g_theRenderer->SetCamera();
 	//////////////////////////////////////////////////////////////////////////
 
-	g_theRenderer->SetAmbientLight(.5f, Rgba::WHITE);
+	g_theRenderer->SetAmbientLight(.3f, Rgba::WHITE);
 
 	m_sun = new DirectionalLight(0, Vector3(0.f, 100.f, 0.f), Vector3::DOWN, .6f);
 	m_scene->AddLight(m_sun);
+
+	DebugRender2DText(20.f, Vector2(20.f, 20.f), "GO", 10.f);
 }
 
 Player* Playing::AddPlayer()
@@ -67,8 +69,8 @@ Player* Playing::AddPlayer()
 
 	Material* playerMaterial = Material::CreateOrGetMaterial("ship");
 	playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	playerMaterial->SetTexture(1, g_theRenderer->m_defaultTexture);
-	playerMaterial->SetTexture(2, g_theRenderer->m_defaultTexture);
+	//playerMaterial->SetTexture(1, g_theRenderer->m_defaultTexture);
+	//playerMaterial->SetTexture(2, g_theRenderer->m_defaultTexture);
 
 
 	newPlayer->m_renderable->SetMaterial( playerMaterial );
@@ -121,7 +123,7 @@ void Playing::CheckKeyBoardInputs()
 
 void Playing::CameraInput()
 {
-	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
+//	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
 
 	//float rotationSpeed = 2.0f;
 	//
@@ -173,7 +175,7 @@ Vector3 Playing::GetMovement()
 
 	float dt = g_theGameClock->deltaTime;
 
-	Camera& currentCamera = *m_camera;
+	//Camera& currentCamera = *m_camera;
 	Matrix44 playerMatrix = m_player->m_transform.GetLocalMatrix();
 	Vector3 shipPos = m_player->m_transform.GetLocalPosition();
 
