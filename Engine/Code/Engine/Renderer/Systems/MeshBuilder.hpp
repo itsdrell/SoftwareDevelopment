@@ -5,6 +5,9 @@
 #include "Engine\Math\Geometry/AABB3.hpp"
 
 
+//=============================================================
+class Sprite;
+
 //////////////////////////////////////////////////////////////////////////
 class MeshBuilder
 {
@@ -53,6 +56,8 @@ public:
 	void AddDeformedSphere(const Vector3& position, float radius, float offsetRange, uint wedges, uint slices, Rgba color = Rgba::WHITE);
 
 	void AddPlaneFromFourPoints(const Vector3& bl, const Vector3& br, const Vector3& tr, const Vector3& tl);
+
+	void AddFromSprite(const Vector2& pos, const Sprite& theSprite);
 
 
 public:

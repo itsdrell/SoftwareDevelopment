@@ -21,7 +21,7 @@ public:
 	bool IsNearZero();
 	
 	void SwapXAndZ();
-	Vector2 GetXAndY() const;
+	Vector2 xy() const;
 	Vector2 xz() const;
 	
 	std::string ToString();
@@ -50,7 +50,7 @@ public:
 
 
 	// Helper
-	static Vector2 GetXAndY(Vector3 vectorToUse);
+	static Vector2 xy(Vector3 vectorToUse);
 	IntVector3 GetAsIntVector3() const;
 
 public:

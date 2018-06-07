@@ -1,70 +1,48 @@
 #pragma once
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Math/Geometry/Disc2.hpp"
-#include "Engine/Math/Vectors/Vector3.hpp"
-#include "Engine/Math/Vectors/Vector4.hpp"
-#include "Engine/Core/General/Rgba.hpp"
-#include "Engine/Renderer/Systems/Scene.hpp"
-#include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Core/Tools/Stopwatch.hpp"
+#include <string>
+#include <vector>
+#include "Renderable2D.hpp"
+#include "Engine\Core\General\Camera.hpp"
 
 //=============================================================
 // Forward Declare
 //=============================================================
-class Texture;
-class DevConsole;
-class Attract;
-class Playing;
+
 
 //=============================================================
 // ENUMS
 //=============================================================
-enum GameStates
-{
-	NONE = -1,
-	LOADING,
-	ATTRACT,
-	PLAY,
-	NUM_OF_GAME_STATES
-};
+
 
 //=============================================================
 // Structs
 //=============================================================
 
+
 //=============================================================
 // Classes
 //=============================================================
-class Game
+class Scene2D
 {
 public:
-	Game();
-	
-	void		StartUp();
+	Scene2D(std::string name)
+		: m_name( name) {}
 
-	void		Update();
-	void		UpdateLoadingScreen();
-	void		ClockDebug();
 
-	void		Render() const;
-	void		RenderLoadingScreen() const;
+	void AddRenderable( Renderable2D* r) { m_renderables.push_back(r); }
+	void AddCamera( Camera* c) { m_cameras.push_back(c); }
 
-	void		CheckKeyBoardInputs();
+	void RemoveRenderable(Renderable2D* toRemove);
 
 
 public:
+	std::string		m_name;
 
-	DevConsole*		m_console;
-	Texture*		m_tileTexture;
-
-	GameStates		m_currentState;
-	Attract*		m_attractState;
-	Playing*		m_playingState;
-
-	Timer*			m_loadingScreenTimer;
-
-
+	// Containers
+	std::vector<Renderable2D*>		m_renderables;
+	std::vector<Camera*>			m_cameras;
 };
+
 //=============================================================
 // Standalone C Functions
 //=============================================================
@@ -73,4 +51,4 @@ public:
 //=============================================================
 // Externs
 //=============================================================
-extern Game* g_theGame;
+

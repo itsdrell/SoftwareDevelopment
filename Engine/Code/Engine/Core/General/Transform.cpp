@@ -71,10 +71,6 @@ void transform_t::SetPosition(Vector3 pos)
 	position = pos;
 }
 
-void transform_t::Translate(Vector3 offset)
-{
-	offset.x;
-}
 
 Vector3 transform_t::GetPosition() const
 {
@@ -129,10 +125,6 @@ void Transform::SetLocalPosition(Vector3 pos)
 	m_local_transform.SetPosition(pos);
 }
 
-void Transform::TranslateLocal(Vector3 offset)
-{
-	m_local_transform.Translate(offset);
-}
 
 Vector3 Transform::GetLocalPosition() const
 {

@@ -2,6 +2,7 @@
 #include "Engine/Renderer/RenderableComponents/Mesh.hpp"
 #include "Engine\Math\MathUtils.hpp"
 #include <stdio.h> //fopen
+#include "../Images/Sprites/Sprite.hpp"
 
 void MeshBuilder::Begin(PrimitiveType theType, bool useIndices)
 {
@@ -740,5 +741,43 @@ void MeshBuilder::AddPlaneFromFourPoints(const Vector3& bl, const Vector3& br, c
 	End();
 
 	//return mb.CreateMeshPCU();
+}
+
+void MeshBuilder::AddFromSprite(const Vector2& pos, const Sprite& theSprite)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									  // this is assuming all the sides are the same color
+	SetColor(Rgba::WHITE);
+
+	//////////////////////////////////////////////////////////////////////////
+	AABB2 uvs = theSprite.m_uv;
+	
+	// this may be wrong
+	Vector2 dims = theSprite.m_dimensions * theSprite.m_pixelsPerUnit;
+	AABB2 quad = AABB2(pos - (dims * .5f), pos + (dims * .5f));
+
+	//=============================================================
+	SetUV(uvs.mins);
+	uint idx = PushVertex(Vector3(quad.mins, 0.f));
+
+	SetUV(uvs.maxs.x, uvs.mins.y);
+	PushVertex(Vector3(quad.maxs.x, quad.mins.y, 0.f));
+
+	SetUV(uvs.mins.x, uvs.maxs.y);
+	PushVertex(Vector3(quad.mins.x, quad.maxs.y, 0.f));
+
+	SetUV(uvs.maxs);
+	PushVertex(Vector3(quad.maxs, 0.f));
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 3, idx + 2, idx);
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
 }
 

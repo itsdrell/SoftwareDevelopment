@@ -40,6 +40,21 @@
     <ClCompile Include="General\Tiles\TileDefinition.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="SystemsAndTools\SpriteRendering.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemsAndTools\GameObject2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemsAndTools\Scene2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemsAndTools\Renderable2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemsAndTools\Transform2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -62,5 +77,10 @@
     </ClInclude>
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
+    <ClInclude Include="SystemsAndTools\SpriteRendering.hpp" />
+    <ClInclude Include="SystemsAndTools\Transform2D.hpp" />
+    <ClInclude Include="SystemsAndTools\Renderable2D.hpp" />
+    <ClInclude Include="SystemsAndTools\Scene2D.hpp" />
+    <ClInclude Include="SystemsAndTools\GameObject2D.hpp" />
   </ItemGroup>
 </Project>

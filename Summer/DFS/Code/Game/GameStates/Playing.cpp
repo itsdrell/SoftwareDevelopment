@@ -6,6 +6,10 @@
 #include "Engine\Core\Tools/Clock.hpp"
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"
+#include "Engine/Renderer/RenderableComponents/Material.hpp"
+#include "Engine/Renderer/Images/Sprites/Sprite.hpp"
+#include "Game/SystemsAndTools/Scene2D.hpp"
+#include "Game/SystemsAndTools/SpriteRendering.hpp"
 
 Playing::Playing()
 {
@@ -20,8 +24,8 @@ void Playing::StartUp()
 
 	//////////////////////////////////////////////////////////////////////////
 	// For Test Scene
-	m_scene = new Scene("Test");
-	m_renderingPath = new ForwardRenderingPath();
+	m_scene = new Scene2D("Test");
+	m_renderingPath = new SpriteRendering();
 
 
 	//////////////////////////////////////////////////////////////////////////
@@ -34,11 +38,26 @@ void Playing::StartUp()
 
 	m_scene->AddCamera(m_camera);
 
+	//=============================================================
+	Material* newMaterial = Material::CreateOrGetMaterial("default");
+	newMaterial->SetTexture(0, TileTexture);
+	
+	Sprite* newSprite = new Sprite(*TileTexture);
+	newSprite->m_pixelsPerUnit = 1.f;
+
+	Renderable2D* newRenderable = new Renderable2D();
+	newRenderable->SetMaterial(newMaterial);
+	newRenderable->SetSprite(newSprite);
+	
+	m_test = new GameObject2D("test", *newRenderable, Transform2D());
+
+	m_scene->AddRenderable(newRenderable);
+
 
 	g_theRenderer->SetCamera();
 	//////////////////////////////////////////////////////////////////////////
 
-	g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
+	//g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
 }
 
 void Playing::Update()
@@ -50,16 +69,13 @@ void Playing::Render() const
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Set up Cameras
-	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
-	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
+	m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
+	//m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
 
-	//Matrix44 modelMatrix = Matrix44::LookAt(
-	//	m_ship->m_behindTransform.GetWorldPosition(), 
-	//	m_ship->m_frontTransform.GetWorldPosition() , 
-	//	m_ship->m_transform.GetLocalUp()); 
 
-	m_camera->m_cameraMatrix = Matrix44();//modelMatrix;
-	m_camera->m_viewMatrix = InvertFast(Matrix44()); // model); // inverse this 
+	Matrix44 cameraPos = Matrix44::MakeTranslation3D(Vector3(0.f, 0.f, -10.f));
+	m_camera->m_cameraMatrix = cameraPos;//modelMatrix;
+	m_camera->m_viewMatrix = InvertFast(cameraPos); // model); // inverse this 
 
 
 	// Set the camera

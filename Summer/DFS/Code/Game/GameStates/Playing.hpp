@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine\Math\Vectors/Vector3.hpp"
-#include "Engine\Renderer\Systems/Scene.hpp"
+#include "Game/SystemsAndTools/Scene2D.hpp"
 #include "Engine\Renderer\Systems/ForwardRenderingPath.hpp"
+#include "../SystemsAndTools/GameObject2D.hpp"
 
 //=============================================================
 // Forward Declare
@@ -11,6 +12,7 @@ class ForwardRenderingPath;
 class Camera;
 class Renderable;
 class Light;
+class SpriteRendering;
 
 //=============================================================
 // ENUMS
@@ -39,16 +41,20 @@ public:
 	void		CheckKeyBoardInputs();
 
 
-	void		AddRenderable(Renderable* newRenderable) { m_scene->AddRenderable(newRenderable); }
-	void		RemoveRenderable(Renderable* toRemove) { m_scene->RemoveRenderable(toRemove); }
-	void		RemoveLight(Light* toRemove) { m_scene->RemoveLight(toRemove); }
+	void		AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }
+	void		RemoveRenderable(Renderable2D* toRemove) { m_scene->RemoveRenderable(toRemove); }
 
 public:
 
-	Scene*					m_scene;
-	ForwardRenderingPath*	m_renderingPath;
+	//Scene*					m_scene;
+	//ForwardRenderingPath*	m_renderingPath;
+
+	SpriteRendering*		m_renderingPath;
+	Scene2D*				m_scene;
 
 	Camera*					m_camera;
+
+	GameObject2D*			m_test;
 };
 
 

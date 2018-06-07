@@ -294,6 +294,11 @@
     <ClCompile Include="Main\Main_Win32.cpp" />
     <ClCompile Include="Main\TheApp.cpp" />
     <ClCompile Include="GameStates\Playing.cpp" />
+    <ClCompile Include="SystemsAndTools\GameObject2D.cpp" />
+    <ClCompile Include="SystemsAndTools\Renderable2D.cpp" />
+    <ClCompile Include="SystemsAndTools\Scene2D.cpp" />
+    <ClCompile Include="SystemsAndTools\SpriteRendering.cpp" />
+    <ClCompile Include="SystemsAndTools\Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Engine\Code\Engine\Engine.vcxproj">
@@ -309,6 +314,11 @@
     <ClInclude Include="Main\GameCommon.hpp" />
     <ClInclude Include="Main\TheApp.hpp" />
     <ClInclude Include="GameStates\Playing.hpp" />
+    <ClInclude Include="SystemsAndTools\GameObject2D.hpp" />
+    <ClInclude Include="SystemsAndTools\Renderable2D.hpp" />
+    <ClInclude Include="SystemsAndTools\Scene2D.hpp" />
+    <ClInclude Include="SystemsAndTools\SpriteRendering.hpp" />
+    <ClInclude Include="SystemsAndTools\Transform2D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

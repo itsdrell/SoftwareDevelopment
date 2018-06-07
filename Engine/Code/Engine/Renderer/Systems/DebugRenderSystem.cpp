@@ -115,7 +115,7 @@ void DebugRenderTask::Render() const
 		r->DrawAABB2(m_options.twoDBounds,currentColor);
 		break;
 	case RENDER_2D_LINE:
-		r->DrawLine2D(m_options.position0.GetXAndY(), m_options.position1.GetXAndY(), currentColor);
+		r->DrawLine2D(m_options.position0.xy(), m_options.position1.xy(), currentColor);
 		//r->HighlightPoint(m_options.position1,.1f,Rgba::BLUE);
 		break;
 	case RENDER_LINE_SEGMENT: // 3d line basically

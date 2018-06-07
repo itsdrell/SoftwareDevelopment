@@ -7,7 +7,7 @@
 #include "Engine/Core/General/Camera.hpp"
 #include "Engine\Core\Tools/DevConsole.hpp"
 #include "Game/Main/Game.hpp"
-#include "Game/Playing.hpp"
+#include "Game/GameStates/Playing.hpp"
 
 Attract::Attract()
 {

@@ -23,8 +23,8 @@
 #include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Renderer/Systems/ForwardRenderingPath.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
-#include "Game/Attract.hpp"
-#include "Game/Playing.hpp"
+#include "Game/GameStates/Attract.hpp"
+#include "Game/GameStates/Playing.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
 
 

@@ -777,7 +777,7 @@ void Renderer::DrawText3D(const Vector3& drawMins, const std::string& asciiText,
 // 		DrawTexturedAABB2(AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight)),*font->m_spriteSheet->m_spriteSheetTexture,
 // 			font->GetUVsForGlyph(currentLetter).mins, font->GetUVsForGlyph(currentLetter).maxs,tint);
 
-		AABB2 bounds = AABB2(startPoint.GetXAndY(),Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight));
+		AABB2 bounds = AABB2(startPoint.xy(),Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight));
 		Vector2 texCoordsAtMins = font->GetUVsForGlyph(currentLetter).mins;
 		Vector2 texCoordsAtMaxs = font->GetUVsForGlyph(currentLetter).maxs;
 		

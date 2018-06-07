@@ -117,12 +117,12 @@ const Vector3 Vector3::operator-(const Vector3& vecToSubtract) const
 	return Vector3(xx,yy,zz);
 }
 
-Vector2 Vector3::GetXAndY(Vector3 vectorToUse)
+Vector2 Vector3::xy(Vector3 vectorToUse)
 {
 	return Vector2(vectorToUse.x,vectorToUse.y);
 }
 
-Vector2 Vector3::GetXAndY() const
+Vector2 Vector3::xy() const
 {
 	return Vector2(x,y);
 }

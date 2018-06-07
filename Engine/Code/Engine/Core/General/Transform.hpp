@@ -22,7 +22,7 @@ struct transform_t
 	void SetMatrix( Matrix44 const &mat ); 
 
 	void SetPosition( Vector3 pos ); 
-	void Translate( Vector3 offset ); 
+	//void Translate( Vector3 offset ); 
 	Vector3 GetPosition() const; 
 
 	void SetRotationEuler( Vector3 theEuler ); 

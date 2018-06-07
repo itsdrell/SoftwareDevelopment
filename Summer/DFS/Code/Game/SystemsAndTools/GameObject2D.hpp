@@ -1,70 +1,49 @@
 #pragma once
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Math/Geometry/Disc2.hpp"
-#include "Engine/Math/Vectors/Vector3.hpp"
-#include "Engine/Math/Vectors/Vector4.hpp"
-#include "Engine/Core/General/Rgba.hpp"
-#include "Engine/Renderer/Systems/Scene.hpp"
-#include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Core/Tools/Stopwatch.hpp"
+#include "Engine\Core\General\EngineCommon.hpp"
+#include "Transform2D.hpp"
+#include "Renderable2D.hpp"
 
 //=============================================================
 // Forward Declare
 //=============================================================
-class Texture;
-class DevConsole;
-class Attract;
-class Playing;
+
 
 //=============================================================
 // ENUMS
 //=============================================================
-enum GameStates
-{
-	NONE = -1,
-	LOADING,
-	ATTRACT,
-	PLAY,
-	NUM_OF_GAME_STATES
-};
+
 
 //=============================================================
 // Structs
 //=============================================================
 
+
 //=============================================================
 // Classes
 //=============================================================
-class Game
+class GameObject2D
 {
 public:
-	Game();
-	
-	void		StartUp();
+	GameObject2D() {};
+	GameObject2D(std::string name);
+	GameObject2D(std::string name, Renderable2D renderable, Transform2D transform);
 
-	void		Update();
-	void		UpdateLoadingScreen();
-	void		ClockDebug();
+	~GameObject2D() {};
 
-	void		Render() const;
-	void		RenderLoadingScreen() const;
+	void SetRenderable(Renderable2D& theRenderable);
 
-	void		CheckKeyBoardInputs();
-
+	virtual void Update();
 
 public:
+	std::string		m_name;
+	Transform2D		m_transform;
+	Renderable2D*	m_renderable;
 
-	DevConsole*		m_console;
-	Texture*		m_tileTexture;
-
-	GameStates		m_currentState;
-	Attract*		m_attractState;
-	Playing*		m_playingState;
-
-	Timer*			m_loadingScreenTimer;
-
+	bool			m_isDead;
+	uint			m_ID;
 
 };
+
 //=============================================================
 // Standalone C Functions
 //=============================================================
@@ -73,4 +52,3 @@ public:
 //=============================================================
 // Externs
 //=============================================================
-extern Game* g_theGame;

@@ -1,70 +1,50 @@
 #pragma once
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Math/Geometry/Disc2.hpp"
-#include "Engine/Math/Vectors/Vector3.hpp"
-#include "Engine/Math/Vectors/Vector4.hpp"
-#include "Engine/Core/General/Rgba.hpp"
-#include "Engine/Renderer/Systems/Scene.hpp"
-#include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Core/Tools/Stopwatch.hpp"
+#include "Engine\Math\Matrices\Matrix44.hpp"
+
 
 //=============================================================
 // Forward Declare
 //=============================================================
-class Texture;
-class DevConsole;
-class Attract;
-class Playing;
+class Mesh;
+class Material;
+class Scene2D;
+class Camera;
 
 //=============================================================
 // ENUMS
 //=============================================================
-enum GameStates
-{
-	NONE = -1,
-	LOADING,
-	ATTRACT,
-	PLAY,
-	NUM_OF_GAME_STATES
-};
+
 
 //=============================================================
 // Structs
 //=============================================================
+struct DrawCall2D
+{
+	DrawCall2D() {}
+
+	Matrix44	m_model;
+	Mesh*		m_mesh;
+	Material*	m_material;
+
+	int			m_sort;
+};
 
 //=============================================================
 // Classes
 //=============================================================
-class Game
+class SpriteRendering
 {
 public:
-	Game();
-	
-	void		StartUp();
+	SpriteRendering() {}
 
-	void		Update();
-	void		UpdateLoadingScreen();
-	void		ClockDebug();
+	void Render( Scene2D* scene ) const;
 
-	void		Render() const;
-	void		RenderLoadingScreen() const;
+	void RenderSceneForCamera(Camera* cam, Scene2D* scene) const;
 
-	void		CheckKeyBoardInputs();
-
-
-public:
-
-	DevConsole*		m_console;
-	Texture*		m_tileTexture;
-
-	GameStates		m_currentState;
-	Attract*		m_attractState;
-	Playing*		m_playingState;
-
-	Timer*			m_loadingScreenTimer;
-
+	// Make a sorting thing
 
 };
+
 //=============================================================
 // Standalone C Functions
 //=============================================================
@@ -73,4 +53,3 @@ public:
 //=============================================================
 // Externs
 //=============================================================
-extern Game* g_theGame;
