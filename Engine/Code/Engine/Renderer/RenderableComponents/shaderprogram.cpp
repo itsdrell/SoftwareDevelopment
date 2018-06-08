@@ -141,7 +141,7 @@ static GLuint LoadShader( char const *filename, GLenum type, Strings defines )
 		glDeleteShader(shader_id);
 		
 		// If you want to see what the shader looked like
-		LogStringToFile("Data/ShaderLog.txt", shader.c_str());
+		//LogStringToFile("Data/ShaderLog.txt", shader.c_str());
 
 		Strings blank;
 
@@ -222,7 +222,7 @@ GLuint LoadShaderFromLiteral(const char* shaderSource, GLenum type, Strings defi
 		glDeleteShader(shader_id);
 
 		// If you want to see what the shader looked like
-		LogStringToFile("Data/ShaderLog.txt", shader.c_str());
+		//LogStringToFile("Data/ShaderLog.txt", shader.c_str());
 
 		Strings blank;
 		
@@ -308,9 +308,9 @@ void FormatAndPrintShaderErrors(std::string log, std::string path, uint defineOf
 
 		//////////////////////////////////////////////////////////////////////////
 		// Log to file too
-		LogStringToFile("Log/Shader.log", "\n---------------------------------------------------- \n");
+		//LogStringToFile("Log/Shader.log", "\n---------------------------------------------------- \n");
 		//LogStringToFile("Data/ShaderLog.txt", std::string(CurrentDateTime() + "\n").c_str());
-		LogStringToFile("Log/Shader.log", std::string(path + ": " + errorString).c_str());
+		//LogStringToFile("Log/Shader.log", std::string(path + ": " + errorString).c_str());
 		//LogStringToFile("Data/ShaderLog.txt", "\n----------------------------------------------------- \n");
 		//////////////////////////////////////////////////////////////////////////
 
