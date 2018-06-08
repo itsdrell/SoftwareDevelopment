@@ -262,7 +262,7 @@ void Renderer::BeginFrame()
 	ClearScreen(Rgba(0,0,0,0));
 	SetCurrentTexture();
 	EnableDepth(COMPARE_LESS, true);
-
+	ClearDepth(1.f);
 
 	// Update and bind the time buffer
 	m_timeBuffer.CopyToGPU( sizeof(m_timeData), &m_timeData ); 

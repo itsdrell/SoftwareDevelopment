@@ -24,8 +24,8 @@ void Playing::StartUp()
 	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_32x32.png");
 	g_tileSpriteSheet = SpriteSheet(TileTexture,32,32);
 
-
-	//////////////////////////////////////////////////////////////////////////
+	
+	//---------------------------------------------------------
 	// For Test Scene
 	m_scene = new Scene("Test");
 	m_renderingPath = new ForwardRenderingPath();
@@ -37,7 +37,7 @@ void Playing::StartUp()
 	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
 
 
-	//////////////////////////////////////////////////////////////////////////
+	//---------------------------------------------------------
 	// Cameras
 	m_camera = new Camera();
 	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
@@ -49,7 +49,7 @@ void Playing::StartUp()
 
 
 	g_theRenderer->SetCamera();
-	//////////////////////////////////////////////////////////////////////////
+	//---------------------------------------------------------
 
 	g_theRenderer->SetAmbientLight(.3f, Rgba::WHITE);
 

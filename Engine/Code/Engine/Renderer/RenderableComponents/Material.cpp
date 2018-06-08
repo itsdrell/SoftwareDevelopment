@@ -77,6 +77,8 @@ Material::Material(Material& copyFrom)
 {
 	m_isResource = false;
 
+	m_name = copyFrom.m_name;
+
 	m_shader = copyFrom.m_shader;
 	m_properties = copyFrom.m_properties;
 	m_textures = copyFrom.m_textures;

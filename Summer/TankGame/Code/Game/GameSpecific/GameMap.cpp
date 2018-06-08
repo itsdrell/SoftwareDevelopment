@@ -105,17 +105,38 @@ float GameMap::CreateHeight(Vector2 xz)
 
 float GameMap::GetHeight(Vector2 xz)
 {
-	
-	Vector2 uv = Vector2::RangeMap(xz, m_mapBounds.mins, m_mapBounds.maxs, Vector2::ZERO, Vector2::ONE);
+	float cellSizeX = floor(m_mapBounds.GetWidth() / m_stepSize);
+	float cellSizeY = floor(m_mapBounds.GetHeight() / m_stepSize);
 
-	Vector2 cell_uv = Vector2( m_chunkCount.x * uv.x , m_chunkCount.y * uv.y);
+	float maxBoundsX = (m_mapBounds.mins.x) + ((cellSizeX -1) * m_stepSize);
+	float maxBoundsY = (m_mapBounds.mins.y) + ((cellSizeY -1) * m_stepSize);
+
+	// 92 is the max
+	Vector2 actualMaxBounds = Vector2( maxBoundsX, maxBoundsY);
+	Vector2 uv = Vector2::RangeMap(xz, m_mapBounds.mins, actualMaxBounds, Vector2::ZERO, Vector2::ONE);
+
+	Vector2 cell_uv = Vector2( (m_chunkCount.x -1) * uv.x , (m_chunkCount.y -1) * uv.y);
 	Vector2 cellFract = Vector2(GetFractionOf(cell_uv.x), GetFractionOf(cell_uv.y));
 	IntVector2 bl_Index = IntVector2((int) floor(cell_uv.x), (int) floor(cell_uv.y));
 
-	float bl = m_points.at( bl_Index.y * m_chunkCount.x + bl_Index.x).y;
-	float tl = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + bl_Index.x).y;
-	float br = m_points.at(bl_Index.y * m_chunkCount.x + (bl_Index.x + 1)).y;
-	float tr = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + (bl_Index.x + 1)).y;
+	Vector3 theBl = m_points.at( bl_Index.y * m_chunkCount.x + bl_Index.x);
+	Vector3 theTl = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + bl_Index.x);
+	Vector3 theBr = m_points.at(bl_Index.y * m_chunkCount.x + (bl_Index.x + 1));
+	Vector3 theTr = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + (bl_Index.x + 1));
+	
+	// heights
+	float bl = theBl.y;
+	float tl = theTl.y;
+	float br = theBr.y;
+	float tr = theTr.y;
+
+	//=============================================================
+	// Debug
+	DebugRenderWireSphere(0.f, theBl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	DebugRenderWireSphere(0.f, theTl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	DebugRenderWireSphere(0.f, theBr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	DebugRenderWireSphere(0.f, theTr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	//=============================================================
 
 	float h1 = Interpolate(bl, br, cellFract.x);
 	float h2 = Interpolate(tl, tr, cellFract.x);

@@ -726,12 +726,13 @@ void MeshBuilder::AddPlaneFromFourPoints(const Vector3& bl, const Vector3& br, c
 	SetUV(1,0);
 	PushVertex(br);
 
-	SetUV(0,1);
+	SetUV(1,1);
 	PushVertex(tr);
 
-	SetUV(1,1);
+	SetUV(0,1);
 	PushVertex(tl);
 
+	
 	AddFace(idx + 0, idx + 1, idx + 2);
 	AddFace(idx + 2, idx + 3, idx);
 
@@ -756,9 +757,9 @@ void MeshBuilder::AddFromSprite(const Vector2& pos, const Sprite& theSprite)
 	AABB2 uvs = theSprite.m_uv;
 	
 	// this may be wrong
-	Vector2 dims = theSprite.m_dimensions * theSprite.m_pixelsPerUnit;
+	Vector2 dims = theSprite.m_dimensions; //* theSprite.m_pixelsPerUnit;
 	AABB2 quad = AABB2(pos - (dims * .5f), pos + (dims * .5f));
-
+	quad = AABB2(-1.f, -1.f, 1.f, 1.f);
 	//=============================================================
 	SetUV(uvs.mins);
 	uint idx = PushVertex(Vector3(quad.mins, 0.f));
@@ -772,8 +773,8 @@ void MeshBuilder::AddFromSprite(const Vector2& pos, const Sprite& theSprite)
 	SetUV(uvs.maxs);
 	PushVertex(Vector3(quad.maxs, 0.f));
 
-	AddFace(idx + 0, idx + 1, idx + 2);
-	AddFace(idx + 3, idx + 2, idx);
+	AddFace(idx + 0, idx + 1, idx + 3);
+	AddFace(idx + 0, idx + 3, idx + 2);
 
 
 	//////////////////////////////////////////////////////////////////////////
