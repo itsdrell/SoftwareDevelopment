@@ -85,6 +85,19 @@ bool ShaderProgram::LoadFromFiles(std::string name, std::string vertexPath, std:
 	return (program_handle != NULL); 
 }
 
+//////////////////////////////////////////////////////////////////////////
+// C4 - Advance a string past hte BOM character
+// since it will breka compilation; 
+static char const* AdvancePastBOM( char const *str ) 
+{
+   char const BOM[] = { 0xEF, 0xBB, 0xBF }; 
+   if (memcmp( str, BOM, 3 ) == 0) {
+      return str + 3; 
+   } else {
+      return str; 
+   }
+}
+
 static GLuint LoadShader( char const *filename, GLenum type, Strings defines )
 {
 	char *src = (char*)FileReadToNewBuffer(filename);// nullptr);
@@ -128,6 +141,7 @@ static GLuint LoadShader( char const *filename, GLenum type, Strings defines )
 	//GLint shader_length = (GLint)strlen(src);
 	GLint shader_length = (GLint)shader.length();
 	const char* newSrc = shader.c_str();
+   newSrc = AdvancePastBOM(newSrc); 
 
 	glShaderSource(shader_id, 1, &newSrc, &shader_length);
 	glCompileShader(shader_id);
