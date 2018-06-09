@@ -1,8 +1,5 @@
 #pragma once
-#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
-#include <map>
-#include "Engine/Math/Vectors/IntVector2.hpp"
-#include "Engine/Math/Geometry/AABB2.hpp"
+
 
 //=============================================================
 // Forward Declare
@@ -18,31 +15,32 @@
 // Structs
 //=============================================================
 
-
 //=============================================================
 // Classes
 //=============================================================
-class TileDefinition
+class Loading
 {
 public:
-	TileDefinition(const tinyxml2::XMLElement& definitionNode);
+
+	Loading();
+
+	void LoadAssets();
+	void LoadDefinitions();
+	void LoadTileDefinitions();
+
+	void Update();
+
+	void Render();
 
 public:
-	std::string			m_name;
-	IntVector2			m_spriteCoords; // index of sprite in sprite sheet
-	AABB2				m_uvCoords;
 
-	// Maybe add tags for movement
-
-
-	static std::map<std::string, TileDefinition*>	s_definitions;
+	bool		m_readyToLoad;
 
 };
 
 //=============================================================
 // Standalone C Functions
 //=============================================================
-TileDefinition* GetTileDefinition(std::string name);
 
 //=============================================================
 // Externs

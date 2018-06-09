@@ -22,10 +22,13 @@ class TileDefinition;
 class Tile
 {
 public:
+	Tile();
+	Tile(const IntVector2& pos, TileDefinition& def);
 
+	void ChangeTileType(TileDefinition& newDef) { m_definition = &newDef; }
 
 public:
-	IntVector2			m_tilePosition;
+	IntVector2			m_position;
 	TileDefinition*		m_definition;
 };
 

@@ -15,6 +15,7 @@ class Texture;
 class DevConsole;
 class Attract;
 class Playing;
+class Loading;
 
 //=============================================================
 // ENUMS
@@ -39,15 +40,15 @@ class Game
 {
 public:
 	Game();
-	
+
 	void		StartUp();
 
 	void		Update();
-	void		UpdateLoadingScreen();
+
 	void		ClockDebug();
 
 	void		Render() const;
-	void		RenderLoadingScreen() const;
+
 
 	void		CheckKeyBoardInputs();
 
@@ -60,6 +61,7 @@ public:
 	GameStates		m_currentState;
 	Attract*		m_attractState;
 	Playing*		m_playingState;
+	Loading*		m_loadingState;
 
 	Timer*			m_loadingScreenTimer;
 

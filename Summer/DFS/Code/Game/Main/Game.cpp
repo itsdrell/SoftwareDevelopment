@@ -26,6 +26,7 @@
 #include "Game/GameStates/Attract.hpp"
 #include "Game/GameStates/Playing.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
+#include "../GameStates/Loading.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -54,6 +55,7 @@ Game::Game()
 	m_currentState = LOADING;
 	m_attractState = new Attract();
 	m_playingState = new Playing();
+	m_loadingState = new Loading();
 	
 }
 
@@ -78,7 +80,7 @@ void Game::Update()
 	case NONE:
 		break;
 	case LOADING:
-		UpdateLoadingScreen();
+		m_loadingState->Update();
 		break;
 	case ATTRACT:
 		m_attractState->Update();
@@ -93,15 +95,10 @@ void Game::Update()
 	}
 
 
+
 	
 	CheckKeyBoardInputs();
 	m_console->Update(); // using engine clock?
-}
-
-void Game::UpdateLoadingScreen()
-{
-	if(m_loadingScreenTimer->HasElapsed())
-		m_currentState = ATTRACT;
 }
 
 void Game::ClockDebug()
@@ -151,7 +148,7 @@ void Game::Render() const
 	case NONE:
 		break;
 	case LOADING:
-		RenderLoadingScreen();
+		m_loadingState->Render();
 		break;
 	case ATTRACT:
 		m_attractState->Render();
@@ -170,29 +167,6 @@ void Game::Render() const
 	m_console->Render();
 	
 }
-
-void Game::RenderLoadingScreen() const
-{
-	//=============================================================
-	// Set up camera
-	g_theRenderer->SetCamera(g_theRenderer->m_defaultUICamera);
-
-	// Prepare for draw
-	g_theRenderer->ClearDepth(1.f);
-	g_theRenderer->EnableDepth(COMPARE_ALWAYS, true);
-
-	g_theRenderer->DrawAABB2(AABB2(-200.f, -200.f, 200.f, 200.f), Rgba::GREEN);
-
-	//=============================================================
-	float cellHeight = 8.f;
-	float offsetX = -30.f;
-
-	// Play
-
-	g_theRenderer->DrawText2D(Vector2(offsetX, 0.f), "Loading", cellHeight, Rgba::WHITE);
-
-}
-
 
 void Game::CheckKeyBoardInputs()
 {

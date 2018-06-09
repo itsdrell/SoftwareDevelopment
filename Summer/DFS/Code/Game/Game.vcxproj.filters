@@ -55,6 +55,12 @@
     <ClCompile Include="SystemsAndTools\Transform2D.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameStates\Loading.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\Map.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -82,5 +88,9 @@
     <ClInclude Include="SystemsAndTools\Renderable2D.hpp" />
     <ClInclude Include="SystemsAndTools\Scene2D.hpp" />
     <ClInclude Include="SystemsAndTools\GameObject2D.hpp" />
+    <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="General\Map.hpp" />
+    <ClInclude Include="General\GameObjects\Unit.hpp" />
+    <ClInclude Include="General\GameObjects\Building.hpp" />
   </ItemGroup>
 </Project>

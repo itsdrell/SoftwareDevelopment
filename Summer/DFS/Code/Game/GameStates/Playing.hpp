@@ -13,6 +13,7 @@ class Camera;
 class Renderable;
 class Light;
 class SpriteRendering;
+class Map;
 
 //=============================================================
 // ENUMS
@@ -55,6 +56,8 @@ public:
 	Camera*					m_camera;
 
 	GameObject2D*			m_test;
+
+	Map*					m_testMap;
 };
 
 

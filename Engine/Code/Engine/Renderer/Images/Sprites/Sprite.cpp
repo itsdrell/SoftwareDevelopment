@@ -7,22 +7,37 @@
 std::map<std::string, Sprite*> Sprite::s_sprites;
 
 //////////////////////////////////////////////////////////////////////////
-Sprite::Sprite(Texture& theTextureToUse, Vector2 pivot, AABB2 theUVs)
+Sprite::Sprite(Texture& theTextureToUse, Vector2 dimensions, float pixelsPerUnit, Vector2 pivot, AABB2 theUVs)
 {
 	m_image = &theTextureToUse;
-	m_dimensions = theTextureToUse.GetDimensions().GetAsVector2();
+	//m_dimensions = theTextureToUse.GetDimensions().GetAsVector2();
 	m_pivot = pivot;
 	m_uv = theUVs;
+	m_pixelsPerUnit = pixelsPerUnit;
+
+	// Gonna do the ppu conversion here instead of everytime we draw
+	Vector2 a = theTextureToUse.GetDimensions().GetAsVector2();
+	float xdim = dimensions.x * m_pixelsPerUnit;
+	float ydim = dimensions.y * m_pixelsPerUnit;
+
+	m_dimensions = Vector2(xdim,ydim);
 
 }
 
-Sprite::Sprite(std::string pathOfTexture, Vector2 pivot, AABB2 theUVs /*= AABB2(0.f,0.f,1.f,1.f)*/)
+Sprite::Sprite(std::string pathOfTexture, Vector2 dimensions, float pixelsPerUnit, Vector2 pivot, AABB2 theUVs /*= AABB2(0.f,0.f,1.f,1.f)*/)
 {
 	m_image = Renderer::GetInstance()->CreateOrGetTexture(pathOfTexture);
 
-	m_dimensions = m_image->GetDimensions().GetAsVector2();
+	//m_dimensions = m_image->GetDimensions().GetAsVector2();
 	m_pivot = pivot;
 	m_uv = theUVs;
+	m_pixelsPerUnit = pixelsPerUnit;
+
+	// Gonna do the ppu conversion here instead of everytime we draw
+	float xdim = (m_uv.maxs.x - m_uv.mins.x) / m_pixelsPerUnit;
+	float ydim = (m_uv.maxs.y - m_uv.mins.y) / m_pixelsPerUnit;
+
+	m_dimensions = Vector2(xdim,ydim);
 }
 
 Sprite::Sprite(tinyxml2::XMLElement& definition)

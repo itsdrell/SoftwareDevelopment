@@ -9,6 +9,7 @@
 //=============================================================
 class Sprite;
 class Material;
+class Mesh;
 
 //=============================================================
 // ENUMS
@@ -33,6 +34,9 @@ public:
 	void SetSprite( Sprite* sprite) { m_sprite = sprite; }
 	Sprite* GetSprite() const { return m_sprite; }
 
+	void SetMesh( Mesh*	mesh);
+	Mesh* GetMesh() const {return m_mesh; }
+
 	void SetMaterial( Material *mat ) { m_material = mat; } 
 	Material* GetMaterial() { return m_material; } 
 
@@ -49,11 +53,17 @@ public:
 
 private:
 	Transform2D		m_transform;
-	Sprite*			m_sprite;
 	Material*		m_material;
+	
+	//---------------------------------------------------------
+	// Adding both a mesh and sprite so that if I wanted to make
+	// a render able at the start that's batched I can
+	Mesh*			m_mesh;
+	Sprite*			m_sprite;
 
 public:
-	int			m_layer;
+	int				m_layer;
+	bool			m_usesMesh = false;
 
 	// later could add lights but for now, no
 };

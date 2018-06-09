@@ -757,7 +757,7 @@ void MeshBuilder::AddFromSprite(const Vector2& pos, const Sprite& theSprite)
 	AABB2 uvs = theSprite.m_uv;
 	
 	// this may be wrong
-	Vector2 dims = theSprite.m_dimensions * theSprite.m_pixelsPerUnit;
+	Vector2 dims = theSprite.m_dimensions;
 	AABB2 quad = AABB2(pos - (dims * .5f), pos + (dims * .5f));
 	//quad = AABB2(-1.f, -1.f, 1.f, 1.f);
 	

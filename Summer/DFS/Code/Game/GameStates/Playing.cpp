@@ -11,6 +11,9 @@
 #include "Game/SystemsAndTools/Scene2D.hpp"
 #include "Game/SystemsAndTools/SpriteRendering.hpp"
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
+#include "../General/Tiles/TileDefinition.hpp"
+#include "../General/Tiles/Tile.hpp"
+#include "../General/Map.hpp"
 
 
 Playing::Playing()
@@ -19,21 +22,16 @@ Playing::Playing()
 
 void Playing::StartUp()
 {
-	// Create the global sprite sheet for all the textures to use
-	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_32x32.png");
-	g_tileSpriteSheet = SpriteSheet(TileTexture,32,32);
 
-
-	//////////////////////////////////////////////////////////////////////////
+	//---------------------------------------------------------
 	// For Test Scene
 	m_scene = new Scene2D("Test");
 	m_renderingPath = new SpriteRendering();
 
 
-	//////////////////////////////////////////////////////////////////////////
+	//---------------------------------------------------------
 	// Cameras
 	m_camera = new Camera();
-	//m_camera->CreateSkyBox("Data/Images/galaxy2.png");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 
@@ -41,12 +39,12 @@ void Playing::StartUp()
 	m_scene->AddCamera(m_camera);
 
 	//=============================================================
-	Material* newMaterial = Material::CreateOrGetMaterial("default");
+	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
 	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/testSprite.png");
 	newMaterial->SetTexture(0, testSprite);
 	
-	Sprite* newSprite = new Sprite(*testSprite);
-	newSprite->m_pixelsPerUnit = 1.f;
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, 16.f);
+	newSprite->m_pixelsPerUnit = 16.f;
 
 	Renderable2D* newRenderable = new Renderable2D();
 	newRenderable->SetMaterial(newMaterial);
@@ -61,17 +59,19 @@ void Playing::StartUp()
 	//////////////////////////////////////////////////////////////////////////
 	
 	//g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
+
+	Tile newTile = Tile();
+	TileDefinition* def = GetTileDefinition("default");
+	newTile.ChangeTileType(*def);
+
+	m_testMap = new Map("test", IntVector2(8,8));
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
 
-	Renderable2D* r =  m_test->m_renderable;
 
-	m_test->m_transform.TranslateLocal(Vector2(1.f, 0.f));
-	DebugRenderLog(0.f, m_test->m_transform.GetLocalPosition().ToString());
-	DebugRenderLog(0.f, m_test->m_renderable->GetPosition().ToString());
 }
 
 void Playing::Render() const

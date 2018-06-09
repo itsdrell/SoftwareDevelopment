@@ -287,6 +287,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameStates\Attract.cpp" />
+    <ClCompile Include="GameStates\Loading.cpp" />
+    <ClCompile Include="General\Map.cpp" />
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />
     <ClCompile Include="Main\Game.cpp" />
@@ -307,6 +309,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameStates\Attract.hpp" />
+    <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="General\GameObjects\Building.hpp" />
+    <ClInclude Include="General\GameObjects\Unit.hpp" />
+    <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />

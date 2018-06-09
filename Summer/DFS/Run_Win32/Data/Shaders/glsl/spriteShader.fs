@@ -19,5 +19,13 @@ void main( void )
 {
    // sample (gather) our texel colour for this UV
    vec4 diffuse = texture( gTexDiffuse, passUV ); 
+   vec4 final_color = diffuse * passColor;
+
+   if (final_color.a <= .5f) {
+      discard; 
+   }
+
+   outColor = final_color; 
+   
    outColor = diffuse * passColor;
 }

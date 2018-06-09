@@ -1,8 +1,7 @@
 #pragma once
-#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
-#include <map>
-#include "Engine/Math/Vectors/IntVector2.hpp"
-#include "Engine/Math/Geometry/AABB2.hpp"
+#include "..\SystemsAndTools\Renderable2D.hpp"
+#include "Tiles\Tile.hpp"
+
 
 //=============================================================
 // Forward Declare
@@ -22,27 +21,26 @@
 //=============================================================
 // Classes
 //=============================================================
-class TileDefinition
+class Map
 {
 public:
-	TileDefinition(const tinyxml2::XMLElement& definitionNode);
+	Map(std::string name, const IntVector2& dimensions);
 
+	void CreateMapRenderable();
+	
 public:
-	std::string			m_name;
-	IntVector2			m_spriteCoords; // index of sprite in sprite sheet
-	AABB2				m_uvCoords;
+	std::string				m_name;
+	IntVector2				m_dimensions;
+	Renderable2D*			m_mapRenderable; // batched renderable
 
-	// Maybe add tags for movement
-
-
-	static std::map<std::string, TileDefinition*>	s_definitions;
-
+	std::vector<Tile>		m_tiles;
 };
+
 
 //=============================================================
 // Standalone C Functions
 //=============================================================
-TileDefinition* GetTileDefinition(std::string name);
+
 
 //=============================================================
 // Externs

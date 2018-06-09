@@ -88,7 +88,6 @@ void Attract::KeyboardInput()
 		if(m_currentMenuItem == PLAY_BUTTON)
 		{
 			g_theGame->m_currentState = PLAY;
-			g_theGame->m_playingState->StartUp();
 		}
 		
 		if(m_currentMenuItem == QUIT_BUTTON)

@@ -36,10 +36,6 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		 
 		Renderable2D* currentRenderable = scene->m_renderables.at(renderableIndex);
 
-		// This is for if we have an empty mesh (particle emitter) we don't crash renderdoc
-		if(currentRenderable->GetSprite() == nullptr)
-			continue;
-
 
 		DrawCall2D dc;
 
@@ -48,11 +44,19 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		dc.m_model = currentRenderable->GetModelMatrix();
 		dc.m_sort = currentRenderable->GetLayer();
 
-		//=============================================================
-		// This could be optimized with something like this
-		mb.AddFromSprite( currentRenderable->GetPosition().xy(), *currentRenderable->GetSprite());
-		dc.m_mesh = mb.CreateMesh<Vertex3D_PCU>();
-		//dc.m_sprite = currentRenderable->GetSprite();
+		//---------------------------------------------------------
+		// Checking if the renderable has a mesh, otherwise make one
+		if(currentRenderable->m_usesMesh == true)
+		{
+			dc.m_mesh = currentRenderable->GetMesh();
+		}
+		else
+		{
+			// We can sort by sprites later if we want
+			mb.AddFromSprite( currentRenderable->GetPosition().xy(), *currentRenderable->GetSprite());
+			dc.m_mesh = mb.CreateMesh<Vertex3D_PCU>();
+		}
+		
 
 		drawCalls.push_back(dc);
 
