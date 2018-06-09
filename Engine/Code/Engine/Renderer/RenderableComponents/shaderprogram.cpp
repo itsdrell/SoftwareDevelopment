@@ -7,6 +7,11 @@
 #include "Engine/Core/Platform/Time.hpp"
 #include "Engine/Renderer/BuiltInShader.hpp"
 
+//=========================================================
+// Forseth gave me code and im not touching it
+#pragma warning(disable: 4838)
+#pragma warning(disable: 4309)
+//=========================================================
 
 
 ShaderProgram::ShaderProgram()

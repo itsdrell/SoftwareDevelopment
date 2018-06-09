@@ -59,10 +59,6 @@ void ForwardRenderingPath::Render(Scene* scene) const
 		RenderSceneForCamera(scene->m_cameras.at(cameraIndex), scene);
 	}
 
-
-	// Render all the Debug Render stuff, this is assuming main camera is index 0
-	DebugRenderSet3DCamera(scene->m_cameras.at(0));
-	DebugRenderUpdateAndRender();
 }
 
 void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) const
@@ -110,25 +106,31 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 		
 	}
 		
-		//////////////////////////////////////////////////////////////////////////
-		// Sort the draw calls by sort order
-		// had to do it this way cause const..?
-		SortDrawsBySortOrder(&drawCalls, *cam);
+	//////////////////////////////////////////////////////////////////////////
+	// Sort the draw calls by sort order
+	// had to do it this way cause const..?
+	SortDrawsBySortOrder(&drawCalls, *cam);
 
-		//////////////////////////////////////////////////////////////////////////
-		// Do the Draw
-		for(uint drawIndex = 0; drawIndex < drawCalls.size(); drawIndex++)
-		{
-			DrawCall current = drawCalls.at(drawIndex);
-			
-			r->BindMaterial(current.m_material);
-			r->SetUniform("MODEL", current.m_model);
+	//////////////////////////////////////////////////////////////////////////
+	// Do the Draw
+	for(uint drawIndex = 0; drawIndex < drawCalls.size(); drawIndex++)
+	{
+		DrawCall current = drawCalls.at(drawIndex);
+		
+		r->BindMaterial(current.m_material);
+		r->SetUniform("MODEL", current.m_model);
 
-			EnableLightsForDrawCall(current, scene);
+		EnableLightsForDrawCall(current, scene);
 
-			r->DrawMesh(current.m_mesh);
-		}
+		r->DrawMesh(current.m_mesh);
+	}
 
+
+
+
+	// Render all the Debug Render stuff, this is assuming main camera is index 0
+	DebugRenderSet3DCamera(cam);
+	DebugRenderUpdateAndRender();
 	
 }
 

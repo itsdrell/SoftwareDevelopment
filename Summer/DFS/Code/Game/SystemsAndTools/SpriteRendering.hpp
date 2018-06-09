@@ -9,6 +9,7 @@ class Mesh;
 class Material;
 class Scene2D;
 class Camera;
+class Sprite;
 
 //=============================================================
 // ENUMS
@@ -23,8 +24,10 @@ struct DrawCall2D
 	DrawCall2D() {}
 
 	Matrix44	m_model;
-	Mesh*		m_mesh;
 	Material*	m_material;
+	
+	Mesh*		m_mesh;
+	Sprite*		m_sprite;
 
 	int			m_sort;
 };

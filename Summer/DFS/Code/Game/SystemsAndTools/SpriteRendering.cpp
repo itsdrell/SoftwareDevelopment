@@ -12,10 +12,6 @@ void SpriteRendering::Render(Scene2D* scene) const
 		RenderSceneForCamera(scene->m_cameras.at(cameraIndex), scene);
 	}
 
-
-	// shouldn't have 3D stuff..?
-	DebugRenderUpdateAndRender();
-
 }
 
 void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
@@ -48,11 +44,15 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		DrawCall2D dc;
 
 		// Set the variables for draw call
-		mb.AddFromSprite( currentRenderable->GetPosition().xy(), *currentRenderable->GetSprite());
-		dc.m_mesh = mb.CreateMesh<Vertex3D_PCU>();
 		dc.m_material = currentRenderable->GetMaterial();
 		dc.m_model = currentRenderable->GetModelMatrix();
 		dc.m_sort = currentRenderable->GetLayer();
+
+		//=============================================================
+		// This could be optimized with something like this
+		mb.AddFromSprite( currentRenderable->GetPosition().xy(), *currentRenderable->GetSprite());
+		dc.m_mesh = mb.CreateMesh<Vertex3D_PCU>();
+		//dc.m_sprite = currentRenderable->GetSprite();
 
 		drawCalls.push_back(dc);
 
@@ -72,7 +72,13 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		r->BindMaterial(current.m_material);
 		r->SetUniform("MODEL", current.m_model);
 
+		// optimize here as well
+		//r->DrawSprite( current.m_model.GetPosition(), *current.m_sprite);
 		r->DrawMesh(current.m_mesh);
 	}
+
+
+	DebugRenderSet3DCamera(cam);
+	DebugRenderUpdateAndRender();
 
 }

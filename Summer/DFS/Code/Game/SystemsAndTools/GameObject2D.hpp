@@ -26,7 +26,7 @@ class GameObject2D
 public:
 	GameObject2D() {};
 	GameObject2D(std::string name);
-	GameObject2D(std::string name, Renderable2D renderable, Transform2D transform);
+	GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform);
 
 	~GameObject2D() {};
 

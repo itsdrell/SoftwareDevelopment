@@ -28,7 +28,7 @@ struct Transform_T
 
 
 	void SetPosition( const Vector2& pos);
-	//void Translate( const Vector2& offset);
+	void Translate( const Vector2& offset);
 	Vector2 GetPosition() const;
 
 	void SetRotation( float rotation );
@@ -61,7 +61,7 @@ public:
 	void SetLocalMatrix( const Matrix44& mat );
 
 	void SetLocalPosition( Vector2 pos); 
-	//void TranslateLocal( Vector2 offset );
+	void TranslateLocal( Vector2 offset );
 	Vector2 GetLocalPosition() const;
 
 	void SetLocalRotation( float rotation );

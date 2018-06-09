@@ -26,6 +26,11 @@ void Transform2D::SetLocalPosition(Vector2 pos)
 	m_localTransform.SetPosition(pos);
 }
 
+void Transform2D::TranslateLocal(Vector2 offset)
+{
+	m_localTransform.Translate(offset);
+}
+
 Vector2 Transform2D::GetLocalPosition() const
 {
 	return m_localTransform.GetPosition();
@@ -97,6 +102,14 @@ void Transform_T::SetMatrix(const Matrix44 & theMatrix)
 void Transform_T::SetPosition(const Vector2 & pos)
 {
 	position = pos;
+}
+
+void Transform_T::Translate(const Vector2& offset)
+{
+	Vector2 currentPos = GetPosition();
+	Vector2 newPos = currentPos + offset;
+
+	SetPosition(newPos);
 }
 
 Vector2 Transform_T::GetPosition() const

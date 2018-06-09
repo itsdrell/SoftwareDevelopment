@@ -11,14 +11,14 @@ GameObject2D::GameObject2D(std::string name)
 	m_renderable->SetParentTransform(m_transform);
 }
 
-GameObject2D::GameObject2D(std::string name, Renderable2D renderable, Transform2D transform)
+GameObject2D::GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform)
 {
 	m_name = name; 
 	m_renderable = &renderable;
 	m_transform = transform;
 	
 	// so it can watch it
-	m_renderable->SetParentTransform(m_transform);
+  	m_renderable->SetParentTransform(m_transform);
 }
 
 void GameObject2D::SetRenderable(Renderable2D& theRenderable)
