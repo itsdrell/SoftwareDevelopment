@@ -61,6 +61,12 @@
     <ClCompile Include="General\Map.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\GameObjects\Unit.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\GameObjects\Building.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">

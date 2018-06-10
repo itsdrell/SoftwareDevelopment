@@ -38,23 +38,6 @@ void Playing::StartUp()
 
 	m_scene->AddCamera(m_camera);
 
-	//=============================================================
-	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
-	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/testSprite.png");
-	newMaterial->SetTexture(0, testSprite);
-	
-	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, 16.f);
-	newSprite->m_pixelsPerUnit = 16.f;
-
-	Renderable2D* newRenderable = new Renderable2D();
-	newRenderable->SetMaterial(newMaterial);
-	newRenderable->SetSprite(newSprite);
-
-	m_test = new GameObject2D("test", *newRenderable, Transform2D());
-
-	m_scene->AddRenderable(newRenderable);
-
-
 	g_theRenderer->SetCamera();
 	//////////////////////////////////////////////////////////////////////////
 	
@@ -71,6 +54,7 @@ void Playing::Update()
 {
 	CheckKeyBoardInputs();
 
+	DebugRenderGrid2D(0.f, Vector3(0.f, 0.f, 0.f), 8, 8, 16.f);
 
 }
 

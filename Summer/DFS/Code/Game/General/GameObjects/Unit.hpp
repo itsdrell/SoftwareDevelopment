@@ -1,4 +1,5 @@
 #pragma once
+#include "Game\SystemsAndTools\GameObject2D.hpp"
 
 
 //=============================================================
@@ -19,9 +20,10 @@
 //=============================================================
 // Classes
 //=============================================================
-class Unit
+class Unit : public GameObject2D
 {
 public:
+	Unit();
 
 public:
 

@@ -7,11 +7,24 @@
 #include "Engine\Renderer\RenderableComponents\Material.hpp"
 #include "..\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
+#include "GameObjects\Unit.hpp"
+#include "..\SystemsAndTools\GameObject2D.hpp"
+#include "GameObjects\Building.hpp"
 
 Map::Map(std::string name, const IntVector2 & dimensions)
 {
 	m_name = name;
 	m_dimensions = dimensions;
+
+
+	//---------------------------------------------------------
+	// Creating a test scene
+	GameObject2D* newUnit = new Unit();
+	m_gameObjects.push_back(newUnit);
+
+	GameObject2D* newBuilding = new Building();
+	newBuilding->m_transform.TranslateLocal(Vector2(16.f,16.f));
+	m_gameObjects.push_back(newBuilding);
 
 	CreateMapRenderable();
 }
@@ -42,7 +55,9 @@ void Map::CreateMapRenderable()
 		currentPos.y += stepSize;
 	}
 
-	m_mapRenderable->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
+	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	m_mapRenderable->SetMesh(theMesh);
 
 	Material* mapMat = Material::CreateOrGetMaterial("default");
 	mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
@@ -52,3 +67,4 @@ void Map::CreateMapRenderable()
 	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
 
 }
+

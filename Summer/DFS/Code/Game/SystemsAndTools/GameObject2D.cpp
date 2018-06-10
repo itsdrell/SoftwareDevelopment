@@ -4,7 +4,7 @@
 GameObject2D::GameObject2D(std::string name)
 {
 	m_name = name;
-	m_renderable = nullptr;
+	m_renderable = new Renderable2D();
 	m_transform = Transform2D();
 
 	// so it can watch it

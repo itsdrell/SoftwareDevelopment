@@ -153,6 +153,9 @@ void DebugRenderTask::Render() const
 	case RENDER_GRID:
 		RenderGrid();
 		break;
+	case RENDER_GRID_2D:
+		RenderGrid2D();
+		break;
 	case NUM_OF_DEBUG_FUNCTIONS:
 		break;
 	default:
@@ -201,6 +204,45 @@ void DebugRenderTask::RenderGrid() const
 		collStartPoint -= Vector3(cellSize,0.f,0.f);
 		collEndPoint -= Vector3(cellSize, 0.f, 0.f);
 	}
+}
+
+void DebugRenderTask::RenderGrid2D() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	Vector3 center = m_options.position;
+	float rows = m_options.rows;
+	float columns = m_options.columns;
+	float cellSize = m_options.cellSize;
+
+	MeshBuilder mb;
+
+	// horizontal (top right point to top left point)
+	Vector3 rowStartPoint = Vector3(center.x + (rows * .5f), center.y + (columns * .5f), center.z );
+	Vector3 rowEndPoint =  Vector3(center.x - (rows * .5f), center.y + (columns * .5f), center.z );
+	for(uint h = 0; h <= rows; h++)
+	{
+		r->DrawLine2D(Vector2(rowStartPoint.x, rowStartPoint.y), Vector2(rowEndPoint.x, rowEndPoint.y), m_options.start_color);
+		//mb.AddLine(Vector3(rowStartPoint.x, rowStartPoint.y, -.1f), Vector3(rowEndPoint.x, rowEndPoint.y, -.1f));
+
+		// Increase the Y
+		rowStartPoint += Vector3(0.f, cellSize,0.f);
+		rowEndPoint += Vector3(0.f, cellSize, 0.f);
+	}
+
+	// Vertical (top left, bottom right)
+	Vector3 collStartPoint = Vector3(center.x + (rows * .5f), center.y + (columns * .5f), center.z);
+	Vector3 collEndPoint = Vector3(center.x + (rows * .5f), center.y - (columns * .5f), center.z );
+	for(uint c = 0; c <= columns; c++)
+	{
+		r->DrawLine2D(Vector2(collStartPoint.x, collStartPoint.y), Vector2(collEndPoint.x, collEndPoint.y), m_options.start_color);
+		//mb.AddLine(Vector3(collStartPoint.x, collStartPoint.y, -.1f), Vector3(collEndPoint.x, collEndPoint.y, -.1f));
+
+		collStartPoint += Vector3(cellSize,0.f,0.f);
+		collEndPoint += Vector3(cellSize, 0.f, 0.f);
+	}
+
+	r->DrawMesh(mb.CreateMesh<Vertex3D_PCU>());
 }
 
 float DebugRenderTask::GetNormalizeAge()
@@ -457,6 +499,33 @@ void DebugRenderLog(float lifetime /*= 0.f*/, std::string text /*= "Hello"*/, Rg
 	newTask->m_options.scale = 1;
 	newTask->m_options.cellHeight = 2;
 	newTask->m_options.alignment = Vector2(.5f,.5f);
+
+	//////////////////////////////////////////////////////////////////////////
+	g_DebugRenderTask.push_back(newTask);
+}
+
+
+void DebugRenderGrid2D(float lifetime, Vector3 centerPos, float rows, float collums, float cellSize /*= 1.f*/)
+{
+	DebugRenderTask* newTask = new DebugRenderTask();
+
+	//////////////////////////////////////////////////////////////////////////
+	// Generic Info
+	newTask->m_options.start_color = Rgba::WHITE;
+	newTask->m_options.end_color = Rgba::WHITE;
+	newTask->m_options.lifetime = lifetime;
+	newTask->m_timeToLive = lifetime;
+	newTask->m_options.mode = DEBUG_RENDER_IGNORE_DEPTH;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Specific to this call
+	newTask->m_function = RENDER_GRID_2D;
+
+	newTask->m_options.position = centerPos;
+	newTask->m_options.rows = rows;
+	newTask->m_options.columns = collums;
+	newTask->m_options.cellSize = cellSize;
+
 
 	//////////////////////////////////////////////////////////////////////////
 	g_DebugRenderTask.push_back(newTask);

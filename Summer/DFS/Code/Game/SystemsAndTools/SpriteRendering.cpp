@@ -58,7 +58,7 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		}
 		
 
-		drawCalls.push_back(dc);
+		//drawCalls.push_back(dc);
 
 	}
 

@@ -35,6 +35,7 @@ enum DebugFunctions
 	RENDER_UV_SPHERE,
 	RENDER_AABB3,
 	RENDER_GRID,
+	RENDER_GRID_2D,
 	NUM_OF_DEBUG_FUNCTIONS
 };
 
@@ -93,6 +94,7 @@ public:
 	void Age();
 	void Render() const;
 	void RenderGrid() const;
+	void RenderGrid2D() const;
 	float GetNormalizeAge();
 	Rgba GetCurrentColor() const;
 	void SetDepthMode() const;
@@ -170,6 +172,9 @@ void DebugRender2DText( float lifetime,
 
 // Default options so if i want to know if something is getting called its super fast!
 void DebugRenderLog(float lifetime = 0.f, std::string text = "Hello", Rgba color = GetRandomColor());
+
+void DebugRenderGrid2D(float lifetime, Vector3 centerPos, float rows, float collums, float cellSize = 1.f);
+
 
 
 /************************************************************************/

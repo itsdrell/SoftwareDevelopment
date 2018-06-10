@@ -288,6 +288,8 @@
   <ItemGroup>
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
+    <ClCompile Include="General\GameObjects\Building.cpp" />
+    <ClCompile Include="General\GameObjects\Unit.cpp" />
     <ClCompile Include="General\Map.cpp" />
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />

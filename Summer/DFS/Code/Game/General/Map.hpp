@@ -6,7 +6,7 @@
 //=============================================================
 // Forward Declare
 //=============================================================
-
+class GameObject2D;
 
 //=============================================================
 // ENUMS
@@ -27,13 +27,15 @@ public:
 	Map(std::string name, const IntVector2& dimensions);
 
 	void CreateMapRenderable();
+	void CreateDebugMap();
 	
 public:
 	std::string				m_name;
 	IntVector2				m_dimensions;
 	Renderable2D*			m_mapRenderable; // batched renderable
 
-	std::vector<Tile>		m_tiles;
+	std::vector<Tile>					m_tiles;
+	std::vector<GameObject2D*>			m_gameObjects;
 };
 
 
