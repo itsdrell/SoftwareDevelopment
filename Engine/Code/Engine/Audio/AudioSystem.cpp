@@ -16,6 +16,8 @@ AudioSystem* g_theAudioSystem = nullptr;
 //	Downside: ALL games must now have this Code/Game/EngineBuildPreferences.hpp file.
 //
 #include "Game/Main/EngineBuildPreferences.hpp"
+#include "../Core/Utils/XmlUtilities.hpp"
+#include "../Math/MathUtils.hpp"
 #if !defined( ENGINE_DISABLE_AUDIO )
 
 
@@ -62,6 +64,30 @@ AudioSystem* AudioSystem::GetInstance()
 	return g_theAudioSystem;
 }
 
+void AudioSystem::StartUp()
+{
+	LoadFromXML("Data/Audio/AudioClips.xml");
+}
+
+void AudioSystem::LoadFromXML(std::string path)
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( path.c_str() );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: " + path);
+
+	tinyxml2::XMLElement* current = rootElement->FirstChildElement();
+
+	//---------------------------------------------------------
+	while (current)
+	{
+		CreateAndStoreAudioClip(*current);
+
+		current = current->NextSiblingElement();
+	}
+}
+
 //-----------------------------------------------------------------------------------------------
 void AudioSystem::BeginFrame()
 {
@@ -99,6 +125,61 @@ SoundID AudioSystem::CreateOrGetSound( const std::string& soundFilePath )
 	return MISSING_SOUND_ID;
 }
 
+
+void AudioSystem::CreateAndStoreAudioClip(tinyxml2::XMLElement& node)
+{
+	std::string name = ParseXmlAttribute(node, "name", "NoName");
+	std::string group = ParseXmlAttribute(node, "group", "NoGroup");
+	std::string path = ParseXmlAttribute(node, "path", "ERROR");
+	std::string fullPath = relativePath + path;
+
+	SoundID newID = CreateOrGetSound(fullPath);
+	
+
+	AudioClip* newAudioClip = new AudioClip(name, path, group, newID);
+
+	m_audioClips.push_back(newAudioClip);
+}
+
+AudioClip* AudioSystem::GetAudioClipByName(std::string name)
+{
+	for(uint i = 0; i < m_audioClips.size(); i++)
+	{
+		AudioClip* current = m_audioClips.at(i);
+
+		if(current->m_name == name)
+			return current;
+	}
+
+	// Return the error sound
+	return GetAudioClipByName("default");
+}
+
+std::vector<AudioClip*> AudioSystem::GetAudioClipsByGroupName(std::string groupName)
+{
+	std::vector<AudioClip*>	clips;
+	
+	for(uint i = 0; i < m_audioClips.size(); i++)
+	{
+		AudioClip* current = m_audioClips.at(i);
+
+		if(current->m_group == groupName)
+			clips.push_back(current);
+	}
+
+	// If we didn't find anything just return the default
+	if(clips.size() == 0U)
+	{
+		AudioClip* d = GetAudioClipByName("default");
+		clips.push_back(d);
+	}
+	else
+	{
+		return clips;
+	}
+
+		
+}
 
 //-----------------------------------------------------------------------------------------------
 SoundPlaybackID AudioSystem::PlaySound( SoundID soundID, bool isLooped, float volume, float balance, float speed, bool isPaused )
@@ -213,3 +294,45 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
 
 
 #endif // !defined( ENGINE_DISABLE_AUDIO )
+
+//====================================================================================
+void PlayLoopingSound(std::string name, float volume, float balance, float speed, bool isPaused)
+{
+	AudioClip*	soundToPlay = g_theAudioSystem->GetAudioClipByName(name);
+
+	// Check to make sure it's not already playing?
+	if(soundToPlay->m_playbackID == MISSING_SOUND_ID)
+		soundToPlay->m_playbackID = g_theAudioSystem->PlaySound(soundToPlay->m_soundID, true, volume, balance, speed, isPaused);
+}
+
+void StopSound(std::string name)
+{
+	AudioClip*	soundToPlay = g_theAudioSystem->GetAudioClipByName(name);
+
+	// Check to make sure it's not already playing?
+	if(soundToPlay->m_playbackID != MISSING_SOUND_ID)
+	{
+		g_theAudioSystem->StopSound(soundToPlay->m_playbackID);
+		soundToPlay->m_playbackID = MISSING_SOUND_ID;
+	}
+}
+
+void PlayOneShot(std::string name, float volume, float balance, float speed, bool isPaused)
+{
+	AudioClip*	soundToPlay = g_theAudioSystem->GetAudioClipByName(name);
+
+	// We don't check to see if its already playing cause a one shot can be spammed? (think bullets)
+	soundToPlay->m_playbackID = g_theAudioSystem->PlaySound(soundToPlay->m_soundID, false, volume, balance, speed, isPaused);
+}
+
+void PlayOneShotFromGroup(std::string groupName, float volume, float balance, float speed, bool isPaused)
+{
+	std::vector<AudioClip*> clips = g_theAudioSystem->GetAudioClipsByGroupName(groupName);
+
+	int indexToUse = GetRandomIntRange(0, ((int) clips.size()) - 1);
+
+	AudioClip* oneToPlay = clips.at(indexToUse);
+
+	oneToPlay->m_playbackID = g_theAudioSystem->PlaySound(oneToPlay->m_soundID, false, volume, balance, speed, isPaused);
+
+}

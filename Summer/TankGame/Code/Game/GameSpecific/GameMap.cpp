@@ -47,7 +47,6 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 	{
 		for(uint x = 0; x < xRange; x++)
 		{
-			//float height = GetHeight(pos);
 			
 			Vector3 topLeft =		Vector3(pos.x, CreateHeight(Vector2(pos.x , pos.y + stepSize)), pos.y + stepSize);
 			Vector3 topRight =		Vector3(pos.x + stepSize, CreateHeight(Vector2(pos.x  + stepSize, pos.y + stepSize)), pos.y + stepSize);
@@ -57,11 +56,6 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 			m_points.push_back(bottomLeft);
 
 			mb.AddPlaneFromFourPoints(bottomLeft, bottomRight, topRight, topLeft);
-			//DebugRenderLineSegment(100.f, topRight, bottomLeft, DEBUG_RENDER_IGNORE_DEPTH);
-
-			//idx += 4;
-			
-			//mb.AddPlane(Vector3(pos.x, height, pos.y), Vector3(stepSize));
 			
 			pos.x += stepSize;
 		}
@@ -69,8 +63,6 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 		pos.x = bounds.mins.x;
 		pos.y += stepSize;
 	}
-
-	//mb.AddPlaneFromFourPoints(Vector3(-5.f, 1.f, -5.f), Vector3(5.f, 0.f, -5.f), Vector3(5.f, 1.f, 5.f), Vector3(-5.f, 0.f, 5.f));
 
 	Mesh* plane = mb.CreateMesh<VertexLit>();
 	//plane->DrawAsWireFrame();

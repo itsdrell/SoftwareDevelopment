@@ -11,6 +11,7 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
+	g_theAudioSystem->StartUp();
 
 	g_theGame->m_playingState->StartUp();
 

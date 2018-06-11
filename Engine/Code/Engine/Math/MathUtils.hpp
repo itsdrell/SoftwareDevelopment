@@ -137,6 +137,7 @@ void ClearBits( unsigned int& bitFlags32, unsigned int flagToClear );
 
 bool NearlyEqual(float a, float b, float tolerance = .00001f);
 bool FloatEqual(float a, float b);
+bool IsNearZero(float a);
 
 
 //////////////////////////////////////////////////////////////////////////

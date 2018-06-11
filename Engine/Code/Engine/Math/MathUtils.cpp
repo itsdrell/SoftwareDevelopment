@@ -341,6 +341,13 @@ bool FloatEqual(float a, float b)
 	return NearlyEqual( a, b, .000001f);
 }
 
+bool IsNearZero(float a)
+{
+	if(NearlyEqual(a, 0.f) == false) { return false; }
+
+	return true;
+}
+
 bool Quadratic(Vector2* out, float a, float b, float c)
 {
 	// Guide : https://www.programiz.com/cpp-programming/examples/quadratic-roots
