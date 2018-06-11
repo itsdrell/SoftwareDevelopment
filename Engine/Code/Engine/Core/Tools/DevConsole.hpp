@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "Engine/Renderer/Pipeline/renderbuffer.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
+
 
 
 class Renderer;
@@ -150,27 +150,13 @@ private:
 	float			m_timer;
 	uint			m_currentSpriteIndex;
 
-	// error sound
-	SoundID			m_errorSound;
-
 	// FPS timer
-	float	m_fpsTimer;
+	float		m_fpsTimer;
 	uint		m_fpsTracker;
 	uint		m_displayFPS;
 
 public:
 	
-	// Deku stuff
-	float m_lengthOfTimeToShowDeku;
-	float m_currentTimeOfDeku;
-	Texture* m_dekuTexture;
-	bool m_showDeku;
-	
-	// Best girl
-	float m_lengthOfTimeToShowBestGirl;
-	float m_currentTimeOfBestGirl;
-	Texture* m_bestGirlTexture;
-	bool m_showBestGirl;
 
 };
 

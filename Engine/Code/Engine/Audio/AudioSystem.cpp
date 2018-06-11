@@ -131,12 +131,13 @@ void AudioSystem::CreateAndStoreAudioClip(tinyxml2::XMLElement& node)
 	std::string name = ParseXmlAttribute(node, "name", "NoName");
 	std::string group = ParseXmlAttribute(node, "group", "NoGroup");
 	std::string path = ParseXmlAttribute(node, "path", "ERROR");
+	uint weight = (uint) ParseXmlAttribute(node, "weight", 0);
 	std::string fullPath = relativePath + path;
 
 	SoundID newID = CreateOrGetSound(fullPath);
 	
 
-	AudioClip* newAudioClip = new AudioClip(name, path, group, newID);
+	AudioClip* newAudioClip = new AudioClip(name, path, group, weight, newID);
 
 	m_audioClips.push_back(newAudioClip);
 }
@@ -155,7 +156,7 @@ AudioClip* AudioSystem::GetAudioClipByName(std::string name)
 	return GetAudioClipByName("default");
 }
 
-std::vector<AudioClip*> AudioSystem::GetAudioClipsByGroupName(std::string groupName)
+std::vector<AudioClip*> AudioSystem::GetAudioClipsByGroupName(std::string groupName, bool weighted)
 {
 	std::vector<AudioClip*>	clips;
 	
@@ -163,8 +164,23 @@ std::vector<AudioClip*> AudioSystem::GetAudioClipsByGroupName(std::string groupN
 	{
 		AudioClip* current = m_audioClips.at(i);
 
-		if(current->m_group == groupName)
-			clips.push_back(current);
+		if(weighted)
+		{
+			uint theWeight = current->m_weight;
+
+			// This is in whole number percents so by pushing that many back we can create weight
+			for(uint j = 0; j < theWeight; j++)
+			{
+				clips.push_back(current);
+			}
+
+		}
+		else
+		{
+			if(current->m_group == groupName)
+				clips.push_back(current);
+		}
+		
 	}
 
 	// If we didn't find anything just return the default
@@ -173,12 +189,10 @@ std::vector<AudioClip*> AudioSystem::GetAudioClipsByGroupName(std::string groupN
 		AudioClip* d = GetAudioClipByName("default");
 		clips.push_back(d);
 	}
-	else
-	{
-		return clips;
-	}
+	
 
-		
+	return clips;
+
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -20,6 +20,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include <map>
 #include "Clock.hpp"
+#include "../../Audio/AudioSystem.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
@@ -205,15 +206,6 @@ DevConsole::DevConsole(Renderer* rendererToUse)
 
 		m_commandHistoryIndex = -1;
 
-		// Deku stuff
-		m_lengthOfTimeToShowDeku = 3.f;
-		m_currentTimeOfDeku = 0.f;
-		m_showDeku = false;
-
-		// Best girl
-		m_lengthOfTimeToShowBestGirl = 3.f;
-		m_currentTimeOfBestGirl = 0.f;		
-		m_showBestGirl = false;
 	}
 }
 
@@ -238,7 +230,7 @@ void DevConsole::StartUp()
 	m_currentSpriteIndex = 0;
 	m_timer = 1.f;
 
-	m_errorSound = AudioSystem::GetInstance()->CreateOrGetSound("Data/Audio/error.wav");
+	//m_errorSound = AudioSystem::GetInstance()->CreateOrGetSound("Data/Audio/error.wav");
 
 	m_fpsTracker = 0;
 
@@ -997,7 +989,7 @@ void DevConsole::AddErrorMessage(std::string errorText)
 	ConsoleDialogue errorMessage = ConsoleDialogue(errorText,Rgba::RED);
 	AddConsoleDialogue(errorMessage);
 	
-	AudioSystem::GetInstance()->PlaySound(DevConsole::GetInstance()->m_errorSound);
+	PlayOneShot("default");
 }
 
 void DevConsole::ClearConsoleOutput()
@@ -1045,36 +1037,4 @@ void DevConsole::UpdateRoll(float ds)
 	}
 }
 
-void DevConsole::RenderDeku()
-{
-	if(m_showDeku)
-	{
-		if(m_currentTimeOfDeku >= m_lengthOfTimeToShowDeku)
-		{
-			m_showDeku = false;
-			m_currentTimer = 0.f;
-		}
-		else
-		{
-			m_dekuTexture = m_theRenderer->CreateOrGetTexture("Data/Images/Deku.png");
-			m_theRenderer->DrawTexturedAABB2(m_dekuTexture, AABB2(900.f,50.f, 1500.f,950.f));
-		}
-	}
-}
 
-void DevConsole::RenderBestGirl()
-{
-	if(m_showBestGirl)
-	{
-		if(m_currentTimeOfBestGirl >= m_lengthOfTimeToShowBestGirl)
-		{
-			m_showBestGirl = false;
-			m_currentTimeOfBestGirl = 0.f;
-		}
-		else
-		{
-			m_bestGirlTexture = m_theRenderer->CreateOrGetTexture("Data/Images/bestgirl.png");
-			m_theRenderer->DrawTexturedAABB2(m_bestGirlTexture, AABB2(1200.f,50.f, 1500.f,950.f));
-		}
-	}
-}

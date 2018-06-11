@@ -1,0 +1,18 @@
+<AudioClips>
+
+    <Audio name = "default" path="error.wav" />
+    
+
+</AudioClips>
+
+
+<!-- 
+    FORMAT
+
+Notes:
+    - Path is relative so I already know itll be in Data/Audio so you just add after that 
+    - Group is optional
+
+    <Audio name = "default" group = "groupName" path="error.wav" />
+
+-->

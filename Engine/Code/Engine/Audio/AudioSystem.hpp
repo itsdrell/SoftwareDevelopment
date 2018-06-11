@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "../Core/General/EngineCommon.hpp"
 
 //=============================================================
 // Forward Declare
@@ -11,7 +12,7 @@
 class AudioSystem;
 
 //=============================================================
-// Type Defs
+// Type Defs + Defines
 //=============================================================
 typedef size_t SoundID;
 typedef size_t SoundPlaybackID;
@@ -29,10 +30,11 @@ constexpr size_t MISSING_SOUND_ID = (size_t)(-1); // for bad SoundIDs and SoundP
 //=============================================================
 struct AudioClip
 {
-	AudioClip(std::string name, std::string path, std::string group, SoundID id)
+	AudioClip(std::string name, std::string path, std::string group, uint weight, SoundID id)
 	:	m_name(name),
 		m_path(path),
 		m_group(group),
+		m_weight(weight),
 		m_soundID(id),
 		m_playbackID(MISSING_SOUND_ID) {}
 
@@ -40,6 +42,7 @@ struct AudioClip
 	std::string			m_name;
 	std::string			m_path;
 	std::string			m_group;
+	uint				m_weight;
 
 	SoundID				m_soundID; // used to play a sound
 
@@ -68,7 +71,7 @@ public:
 	virtual SoundID				CreateOrGetSound( const std::string& soundFilePath );
 	virtual void				CreateAndStoreAudioClip(tinyxml2::XMLElement& node);
 	AudioClip*					GetAudioClipByName(std::string name);
-	std::vector<AudioClip*>		GetAudioClipsByGroupName(std::string groupName);
+	std::vector<AudioClip*>		GetAudioClipsByGroupName(std::string groupName, bool weighted = true);
 
 	virtual SoundPlaybackID		PlaySound( SoundID soundID, bool isLooped=false, float volume=1.f, float balance=0.0f, float speed=1.0f, bool isPaused=false );
 	virtual void				StopSound( SoundPlaybackID soundPlaybackID );

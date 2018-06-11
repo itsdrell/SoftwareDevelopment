@@ -5,8 +5,8 @@
     <Audio name = "bg" path = "Game/Awesomesauce.wav" />
 
     <!-- Shoot Group -->
-    <Audio name = "pewpew1" group = "shoot" path = "Game/pewpew.wav" />
-    <Audio name = "pewpew2" group = "shoot" path = "Game/pewpew2.wav" />
+    <Audio name = "pewpew1" group = "shoot" weight = "50" path = "Game/pewpew.wav" />
+    <Audio name = "pewpew2" group = "shoot" weight = "50" path = "Game/pewpew2.wav" />
     
 
 </AudioClips>
@@ -18,7 +18,9 @@
 Notes:
     - Path is relative so I already know itll be in Data/Audio so you just add after that 
     - Group is optional
+    - Weight is a whole number out of 100 and the group should add up to 100. 
+    - We create that many references to the sound when we get the list of sounds with that tag. 
 
-    <Audio name = "default" group = "groupName" path="error.wav" />
+    <Audio name = "default" group = "groupName" weight = "wholeNumberOutOf100" path="error.wav" />
 
 -->
