@@ -1,15 +1,16 @@
 #pragma once
-#include "Engine\Math\Matrices\Matrix44.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 
 //=============================================================
 // Forward Declare
 //=============================================================
-class Mesh;
-class Material;
-class Scene2D;
-class Camera;
-class Sprite;
+
+
+//=============================================================
+// Type Defs + Defines
+//=============================================================
+
 
 //=============================================================
 // ENUMS
@@ -19,34 +20,22 @@ class Sprite;
 //=============================================================
 // Structs
 //=============================================================
-struct DrawCall2D
-{
-	DrawCall2D() {}
 
-	Matrix44	m_model;
-	Material*	m_material;
-	
-	Mesh*		m_mesh;
-	Sprite*		m_sprite;
-
-	int			m_sort;
-};
+//====================================================================================
+// How to use: Put something like this at the start of function 
+//	ScopedProfile LoadLength = ScopedProfile();
 
 //=============================================================
 // Classes
 //=============================================================
-class SpriteRendering
+class ScopedProfile
 {
 public:
-	SpriteRendering() {}
+	ScopedProfile();
+	~ScopedProfile();
 
-	void Render( Scene2D* scene ) const;
-
-	void RenderSceneForCamera(Camera* cam, Scene2D* scene) const;
-
-	// Make a sorting thing
-	void Sort(std::vector<DrawCall2D>* dc, Camera& theCam) const;
-
+public:
+	uint64_t		m_startTime;
 };
 
 //=============================================================

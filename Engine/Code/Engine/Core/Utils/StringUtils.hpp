@@ -34,6 +34,7 @@ std::string GetLargestStringInStrings(Strings listToCheck);
 //////////////////////////////////////////////////////////////////////////
 // Change string to value, catches errors and returns a default value
 int ParseString( std::string text, int defaultValue );
+bool ParseString( std::string text, bool defaultValue);
 float ParseString( std::string text, float defaultValue );
 Rgba ParseString( std::string text, Rgba defaultValue );
 Vector2 ParseString( std::string text, Vector2 defaultValue);

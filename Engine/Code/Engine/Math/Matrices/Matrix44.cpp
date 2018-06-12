@@ -123,19 +123,19 @@ Vector2 Matrix44::TransformPosition2D(const Vector2& position2D) const
 
 Vector3 Matrix44::TransformPosition3D(const Vector3 & position) const
 {
-	float newX = (Ix * position.x) + (Jx * position.y) + Tx;
-	float newY = (Iy * position.x) + (Jy * position.y) + Ty;
-	float newZ = (Iz * position.z) + (Jz * position.z) + Tz;
-	
+	float newX = (Ix * position.x) + (Jx * position.y) + (Kx * position.z) + Tx;
+	float newY = (Iy * position.x) + (Jy * position.y) + (Ky * position.z) + Ty;
+	float newZ = (Iz * position.x) + (Jz * position.y) + (Kz * position.z) + Tz;
+
 	return Vector3(newX, newY, newZ);
 }
 
 Vector4 Matrix44::TransformHomogeneous(const Vector4 & position) const
 {
-	float newX = (Ix * position.x) + (Jx * position.y) + Tx;
-	float newY = (Iy * position.x) + (Jy * position.y) + Ty;
-	float newZ = (Iz * position.z) + (Jz * position.z) + Tz;
-	float newW = (Iw * position.w) + (Jw * position.w) + Tw;
+	float newX = (Ix * position.x) + (Jx * position.y) + (Kx * position.z) + (Tx * position.w);
+	float newY = (Iy * position.x) + (Jy * position.y) + (Ky * position.z) + (Ty * position.w);
+	float newZ = (Iz * position.x) + (Jz * position.y) + (Kz * position.z) + (Tz * position.w);
+	float newW = (Iw * position.x) + (Jw * position.y) + (Kw * position.z) + (Tw * position.w);
 		
 	return Vector4(newX, newY, newZ, newW);
 }
@@ -633,12 +633,12 @@ Matrix44 Matrix44::MakeMatrix(const Vector4& iBasis, const Vector4& jBasis, cons
 // Forseth Lifted from GLU
 void Matrix44::Invert()
 {
-	double data[16];
+	float data[16];
 	GetValuesAsArray(data);
 	
-	double inv[16];
-	double det;
-	double m[16];
+	float inv[16];
+	float det;
+	float m[16];
 	uint i;
 
 	for (i = 0; i < 16; ++i) {
@@ -758,11 +758,15 @@ void Matrix44::Invert()
 		m[8] * m[2] * m[5];
 
 	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
-	det = 1.0 / det;
+	
+	// if this is 0 it wont work meaning the matrix cant be solved
+	det = 1.0f / det;
 
 	for (i = 0; i < 16; i++) {
 		data[i] = (float)(inv[i] * det);
 	}
+
+	SetValues(data);
 }
 
 void Matrix44::InvertOrthonormal()

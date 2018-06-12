@@ -31,7 +31,10 @@ void Blackboard::SetValue(const std::string & keyName, const std::string& newVal
 
 bool Blackboard::GetValue(const std::string & keyName, bool defaultValue) const
 {
-	std::string value = m_keyValuePairs.find(keyName)->second;
+	std::string value = "";
+	
+	if(m_keyValuePairs.find(keyName) != m_keyValuePairs.end())
+		 value = m_keyValuePairs.find(keyName)->second;
 	
 	if(value == "true")
 	{

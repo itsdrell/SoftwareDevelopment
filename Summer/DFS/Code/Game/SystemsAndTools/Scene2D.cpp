@@ -8,7 +8,7 @@ void Scene2D::RemoveRenderable(Renderable2D* toRemove)
 
 		if(current == toRemove)
 		{
-			delete toRemove;
+			//delete toRemove;
 			m_renderables.erase(m_renderables.begin() + i, m_renderables.begin() + (i + 1));
 		}
 	}

@@ -6,6 +6,7 @@
 #include "Engine\ThirdParty\tinyxml\tinyxml2.h"
 #include "..\General\Tiles\TileDefinition.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
+#include "Engine\Core\Tools\ScopedProfile.hpp"
 
 Loading::Loading()
 {
@@ -14,6 +15,9 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
+	ScopedProfile loadTime = ScopedProfile();
+	g_theAudioSystem->StartUp();
+	
 	// Create the global sprite sheet for all the textures to use
 	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_8x8.png", false);
 	g_tileSpriteSheet = SpriteSheet(TileTexture,8,8);

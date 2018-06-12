@@ -118,7 +118,7 @@ void Playing::CheckKeyBoardInputs()
 	if(IsDevConsoleOpen())
 		return;
 
-	PlayLoopingSound("bg");
+	//PlayLoopingSound("bg");
 
 	if(WasKeyJustPressed(KEYBOARD_SPACE))
 	{

@@ -7,6 +7,7 @@ enum MouseModes
 	MOUSE_MODE_RELATIVE,
 	NUM_OF_MOUSE_MODES
 };
+MouseModes GetMouseModeFromString(std::string theString);
 
 enum MouseButtons
 {
@@ -37,6 +38,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	// Mouse - these could be a seperate class but it felt better to put it with keyboard
+	void					SetUpMouse();
 	void					CheckForAltTab();
 	Vector2					GetMouseDelta();
 	void					ShowCursor(bool show);

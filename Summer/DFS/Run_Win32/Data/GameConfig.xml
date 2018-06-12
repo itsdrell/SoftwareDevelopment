@@ -4,6 +4,9 @@
 	windowAspect="1.4"
 	isFullscreen="false"
   
+  mouseMode="absolute"
+  showCursor="true"
+  
   IntRangeTest ="1~2"
   FloatRangeTest ="3.1~4.1"
   Vector2Test ="5.1,6.1"
@@ -15,3 +18,12 @@
   
 	
 />
+
+
+<!--
+  - Mouse Mode : Can be either "absolute" or "relative"
+  - 
+
+
+
+-->

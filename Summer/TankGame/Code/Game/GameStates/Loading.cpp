@@ -3,6 +3,7 @@
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "..\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
+#include "Engine\Core\Tools\ScopedProfile.hpp"
 
 Loading::Loading()
 {
@@ -11,6 +12,8 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
+	ScopedProfile LoadLength = ScopedProfile();
+	
 	g_theAudioSystem->StartUp();
 
 	g_theGame->m_playingState->StartUp();

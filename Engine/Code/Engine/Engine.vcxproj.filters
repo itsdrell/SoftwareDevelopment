@@ -238,6 +238,9 @@
     <ClCompile Include="Math\Geometry\Plane.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\ScopedProfile.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -334,6 +337,7 @@
     <ClInclude Include="ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
     <ClInclude Include="ThirdParty\stbi\stb_image_write.h" />
     <ClInclude Include="Math\Geometry\Plane.hpp" />
+    <ClInclude Include="Core\Tools\ScopedProfile.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

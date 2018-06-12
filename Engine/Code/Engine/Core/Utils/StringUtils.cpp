@@ -217,6 +217,14 @@ Rgba ParseString(std::string text, Rgba defaultValue)
 	return result;
 }
 
+bool ParseString(std::string text, bool defaultValue)
+{
+	if(text == "true") { return true; }
+	if(text == "false") { return false; }
+
+	return defaultValue;
+}
+
 uint GetLargestLengthInStrings(Strings listToCheck)
 {
 	uint result = 0;

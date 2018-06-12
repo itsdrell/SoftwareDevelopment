@@ -480,8 +480,13 @@ void DevConsole::RenderFPS()
 void DevConsole::Open()
 {
 	// do stuff on open if you want
-	::ShowCursor(true);
-	MouseLockToScreen(false);
+
+	if(InputSystem::GetInstance()->m_mouseMode == MOUSE_MODE_RELATIVE)
+	{
+		::ShowCursor(true);
+		MouseLockToScreen(false);
+	}
+	
 
 
 	m_isOpen = true;
@@ -490,8 +495,12 @@ void DevConsole::Open()
 void DevConsole::Close()
 {
 	// do stuff on close
-	::ShowCursor(false);
-	MouseLockToScreen(true);
+	if(InputSystem::GetInstance()->m_mouseMode == MOUSE_MODE_RELATIVE)
+	{
+		::ShowCursor(false);
+		MouseLockToScreen(true);
+	}
+	
 
 	m_isOpen = false;
 }

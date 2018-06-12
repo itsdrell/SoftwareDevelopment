@@ -49,6 +49,7 @@ public:
 
 	Vector3 GetPosition() { return GetModelMatrix().GetPosition(); }
 
+	void SetLayer(int theLayer) { m_layer = theLayer; }
 	int GetLayer() { return m_layer; }
 
 private:

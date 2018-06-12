@@ -14,6 +14,8 @@
 #include "../General/Tiles/TileDefinition.hpp"
 #include "../General/Tiles/Tile.hpp"
 #include "../General/Map.hpp"
+#include "Engine/Core/Tools/Command.hpp"
+#include "Engine/Input/Mouse.hpp"
 
 
 Playing::Playing()
@@ -48,14 +50,21 @@ void Playing::StartUp()
 	newTile.ChangeTileType(*def);
 
 	m_testMap = new Map("test", IntVector2(8,8));
+
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
+	Vector3 pos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
+	DebugRenderLog(0.f, pos.ToString());
 
-	DebugRenderGrid2D(0.f, Vector3(0.f, 0.f, 0.f), 8, 8, 16.f);
+	if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
+	{
+		m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(pos.xy());
+	}
 
+	return;
 }
 
 void Playing::Render() const
@@ -69,10 +78,10 @@ void Playing::Render() const
 	//Matrix44 cameraPos = Matrix44::MakeTranslation3D(Vector3(0.f, 0.f, -10.f));
 	//m_camera->m_cameraMatrix = cameraPos;//modelMatrix;
 	//m_camera->m_viewMatrix = InvertFast(cameraPos); // model); // inverse this 
-	m_camera->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
+	m_camera->SetProjectionOrtho(250, 250, -10.0f, 100.0f);
 	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
 	m_camera->m_viewMatrix = view;
-	m_camera->m_cameraMatrix = InvertFast(view); // maybe wrong
+	//m_camera->m_cameraMatrix = InvertFast(view); // maybe wrong
 
 	// Set the camera
 	//g_theRenderer->SetCamera(m_camera);

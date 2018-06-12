@@ -3,6 +3,19 @@
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
+#include <algorithm>
+
+bool CompareSortOrder(DrawCall2D a, DrawCall2D b)
+{
+	int aOrder = a.m_sort;
+	int bOrder = b.m_sort;
+
+	if(aOrder > bOrder)
+		return true;
+
+
+	return false;
+}
 
 void SpriteRendering::Render(Scene2D* scene) const
 {
@@ -58,14 +71,20 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		}
 		
 
-		//drawCalls.push_back(dc);
+		drawCalls.push_back(dc);
 
 	}
 
-	//////////////////////////////////////////////////////////////////////////
+	//---------------------------------------------------------
 	// Sort the draw calls by sort order
 	// had to do it this way cause const..?
-	//SortDrawsBySortOrder(&drawCalls, *cam);
+	Sort(&drawCalls, *cam);
+
+	
+	//---------------------------------------------------------
+	// Notes: Be careful of depth test stuff cause 2D should be
+	//			true and always since we sort them and don't use the depth test
+	//---------------------------------------------------------
 
 	//////////////////////////////////////////////////////////////////////////
 	// Do the Draw
@@ -85,4 +104,13 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 	DebugRenderSet3DCamera(cam);
 	DebugRenderUpdateAndRender();
 
+}
+
+void SpriteRendering::Sort(std::vector<DrawCall2D>* dc, Camera& theCam) const
+{
+	for(uint i = 0; i < dc->size(); i++)
+	{
+		std::sort(dc->begin(), dc->end(), CompareSortOrder);
+
+	}
 }

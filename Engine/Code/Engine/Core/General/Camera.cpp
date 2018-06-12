@@ -2,6 +2,8 @@
 #include "EngineCommon.hpp"
 #include "Engine\Renderer\Images/Textures/TextureCube.hpp"
 #include "Engine\Renderer\Systems/MeshBuilder.hpp"
+#include "../Platform/Window.hpp"
+#include "../../Renderer/Systems/DebugRenderSystem.hpp"
 
 
 Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix44()*/, Matrix44 proj /*= Matrix44()*/)
@@ -92,29 +94,37 @@ Vector2 Camera::WorldToScreenCoordinate(Vector3 world_pos)
 
 }
 
-Vector3 Camera::ScreenToWorldCoordinate(Vector2 pixel, float depthFromCamera)
-{
-	UNIMPLEMENTED();
-	// pseudo code
-	//Vector2 ndc = RangeMap(pixel, Vector2(0.f,0.f), Vector2(resolution.x(), resolution.y()), Vector2(-1.f, 1), Vector2(-1, 1));
-	//
-	//Vector3 ndc = Vector3(ndc_xy, depthFromCamera);
-	//
-	//Vector4 homoegeneousWorld = Vector4(ndc, 1.0f) * m_projMatrix.Invert(); // this is supposed to be view projection
-	//
-	//
-	//Vector3 worldPos = homoegeneousWorld.xyz() / homoegeneousWorld.w;
-	//
-	//return worldPos;
-	depthFromCamera = 0.f;
-	return Vector3();
+Vector3 Camera::ScreenToWorldCoordinate(Vector2 pixel, float depthFromCamera) 
+{	
+	// Screen to clip
+	// we do -1 cause we are flipping the basis
+	Vector2 ndc2D = Vector2::RangeMap(pixel, Vector2(0.f,0.f), Vector2(Window::GetInstance()->GetWidth(), Window::GetInstance()->GetHeight()), 
+		Vector2(-1.f, 1.f), Vector2(1.f, -1.f));
+
+	// vec3 clip
+	Vector3 ndc = Vector3(ndc2D, depthFromCamera);
+	
+	// Clip to view 
+	Matrix44 iproj = Invert(m_projMatrix);
+	Vector4 viewPos = iproj.TransformHomogeneous(Vector4(ndc, 1.0f));
+	
+	// View to world
+	Matrix44 iWorld = Invert(m_viewMatrix);
+	Vector4 homoegeneousWorld = iWorld.TransformHomogeneous(viewPos);
+
+	// Divide out the W
+	Vector3 worldPos = homoegeneousWorld.xyz() / homoegeneousWorld.w;
+	
+	
+	return worldPos;
+
 }
 
 Ray3 Camera::ScreenToPickRay(Vector2 pixel)
 {
 
-	Vector3 start = ScreenToWorldCoordinate(pixel,0);
-	Vector3 end = ScreenToWorldCoordinate(pixel,1);
+	Vector3 start = ScreenToWorldCoordinate(pixel,-1.0f);
+	Vector3 end = ScreenToWorldCoordinate(pixel,1.0f);
 
 	Vector3 direction = end - start;
 

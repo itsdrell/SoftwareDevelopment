@@ -4,6 +4,8 @@
 #include "Mouse.hpp"
 #include "../Core/Tools/ErrorWarningAssert.hpp"
 #include "../Core/Platform/Window.hpp"
+#include "../Core/General/EngineCommon.hpp"
+#include "Engine/Core/General/Blackboard.hpp"
 
 InputSystem*		g_theInputSystem = nullptr;
 
@@ -86,13 +88,7 @@ void RunMessagePump() // NOTE: standalone function in InputSystem.cpp (not an In
 
 InputSystem::InputSystem()
 {
-	m_mouseMode = MOUSE_MODE_RELATIVE; // I like deltas
-	ShowCursor(false);
-
-	// This is so the mouse position starts at the center of the screen otherwise itll pull from where it was outside of the app
-	// before it was made and give you weird data
-	m_mousePositionLastFrame = GetCenterOfClientWindow();
-	SetMouseClientPosition( m_mousePositionLastFrame ); 
+	SetUpMouse();
 
 	g_theInputSystem = this;
 }
@@ -181,6 +177,22 @@ bool InputSystem::WasKeyJustPressed(unsigned char keyCode) const
 bool InputSystem::WasKeyJustReleased(unsigned char keyCode) const
 {
 	return m_keyStates[keyCode].m_wasJustReleased;
+}
+
+void InputSystem::SetUpMouse()
+{
+	//---------------------------------------------------------
+	// Loading from GameConfig.xml to determine this
+	std::string mouseMode = g_gameConfigBlackboard.GetValue("mouseMode", "relative");
+	bool showMouse = g_gameConfigBlackboard.GetValue("showCursor", false);
+
+	m_mouseMode = GetMouseModeFromString(mouseMode); 
+	ShowCursor(showMouse);
+
+	// This is so the mouse position starts at the center of the screen otherwise itll pull from where it was outside of the app
+	// before it was made and give you weird data
+	m_mousePositionLastFrame = GetCenterOfClientWindow();
+	SetMouseClientPosition( m_mousePositionLastFrame ); 
 }
 
 void InputSystem::CheckForAltTab()
@@ -299,6 +311,14 @@ void InputSystem::UpdateMouse()
 		m_mouseButtonStates[ mouseButton ].m_wasJustPressed = false;
 		m_mouseButtonStates[ mouseButton ].m_wasJustReleased = false;
 	}
+}
+
+MouseModes GetMouseModeFromString(std::string theString)
+{
+	if(theString == "absolute") { return MOUSE_MODE_ABSOLUTE; }
+	if(theString == "relative") { return MOUSE_MODE_RELATIVE; }
+
+	return MOUSE_MODE_ABSOLUTE;
 }
 
 //////////////////////////////////////////////////////////////////////////
