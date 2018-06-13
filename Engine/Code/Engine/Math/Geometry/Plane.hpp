@@ -17,6 +17,8 @@
 //=============================================================
 struct Plane
 {
+	Plane() {}
+	
 	Plane(const Vector3& theNormal, const Vector3& pos);
 
 	Plane(const Vector3& a, const Vector3& b, const Vector3& c);

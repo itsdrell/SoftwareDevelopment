@@ -89,6 +89,13 @@ public:
 
 };
 
-
+//====================================================================================
+// Standard C
+//====================================================================================
 Matrix44 InvertFast(const Matrix44& matrixToInverse);
 Matrix44 Invert(const Matrix44& matrixToInverse);
+
+//--------------------------------------------------------------------------
+Vector2 TransformPoint(Vector2& pos, Matrix44& mat);
+Vector3 TransformPoint(Vector3& pos, Matrix44& mat);
+Vector4 TransformPoint(Vector4& pos, Matrix44& mat);

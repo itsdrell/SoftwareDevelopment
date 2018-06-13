@@ -2,9 +2,6 @@
 #include "Engine\Core\General/EngineCommon.hpp"
 
 
-
-TODO("Make some more helper functions pls");
-
 AABB3::AABB3(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
 {
 	mins = Vector3(xmin, ymin, zmin);
@@ -15,6 +12,23 @@ AABB3::AABB3(const Vector3 & mins, const Vector3 & maxs)
 {
 	this->mins = mins;
 	this->maxs = maxs;
+}
+
+bool AABB3::IsValid() const
+{
+	return (maxs.x >= mins.x);
+}
+
+void AABB3::Invalidate()
+{
+	mins = Vector3(INFINITY);
+	maxs = Vector3(-INFINITY);
+}
+
+bool AABB3::IsContained(const Vector3 & pos)
+{
+	//return (pos >= mins) && (pos <= maxs);
+	return false;
 }
 
 Vector3 AABB3::GetCenter() const
@@ -33,4 +47,14 @@ Vector3 AABB3::GetDimensions() const
 	float zz = maxs.z - mins.z;
 
 	return Vector3(xx,yy,zz);
+}
+
+AABB3 AABB3::Centered(const Vector3& centerPos, const Vector3& bounds)
+{
+	AABB3 newAABB3;
+	
+	newAABB3.mins = centerPos - (bounds * .5f);
+	newAABB3.maxs = centerPos + (bounds * .5f);
+
+	return newAABB3;
 }

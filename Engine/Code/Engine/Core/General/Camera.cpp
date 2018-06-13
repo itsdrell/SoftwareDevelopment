@@ -131,3 +131,10 @@ Ray3 Camera::ScreenToPickRay(Vector2 pixel)
 	return Ray3(start, direction);
 
 }
+
+Frustrum Camera::GetFrustrum()
+{
+	Matrix44 mat = m_projMatrix;
+	mat.Append(m_viewMatrix); // may need to be swapped
+	return Frustrum::FromMatrix( mat ); 
+}

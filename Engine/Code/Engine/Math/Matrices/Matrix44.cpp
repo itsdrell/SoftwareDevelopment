@@ -839,3 +839,18 @@ Matrix44 Invert(const Matrix44& matrixToInverse)
 	
 	return result;
 }
+
+Vector2 TransformPoint(Vector2 & pos, Matrix44 & mat)
+{
+	return mat.TransformPosition2D(pos);
+}
+
+Vector3 TransformPoint(Vector3& pos, Matrix44& mat)
+{
+	return mat.TransformPosition3D(pos);
+}
+
+Vector4 TransformPoint(Vector4 & pos, Matrix44 & mat)
+{
+	return mat.TransformHomogeneous(pos);
+}

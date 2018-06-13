@@ -3,6 +3,7 @@
 #include "Engine/Math/Matrices/Matrix44.hpp"
 #include "Engine/Renderer/Pipeline/FrameBuffer.hpp"
 #include "Transform.hpp"
+#include "../../Math/Geometry/Frustrum.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 class Texture;
@@ -58,6 +59,8 @@ public:
 	Vector2 WorldToScreenCoordinate( Vector3 world_pos ); 
 	Vector3 ScreenToWorldCoordinate( Vector2 pixel, float depthFromCamera );
 	Ray3 ScreenToPickRay( Vector2 pixel ); 
+
+	Frustrum GetFrustrum();
 
 
 public:
