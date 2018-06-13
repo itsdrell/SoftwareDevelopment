@@ -44,7 +44,7 @@ public:
 
 	// Shouldn't need these since transform watchings the object and adjusts itself
 	//void SetModelMatrix( Matrix44 model ) { m_transform.SetWorldm_modelMatrix = model; } 
-	//void SetPosition(const Vector2& position);
+	void SetPosition(const Vector2& position) { m_transform.SetLocalPosition(position); }
 	Matrix44 GetModelMatrix() const { return m_transform.GetWorldMatrix(); } 
 
 	Vector3 GetPosition() { return GetModelMatrix().GetPosition(); }

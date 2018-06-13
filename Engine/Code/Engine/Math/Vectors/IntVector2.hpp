@@ -11,6 +11,7 @@ public:
 	IntVector2() {}											// default constructor: do nothing (for speed)
 	IntVector2( const IntVector2& copyFrom );						// copy constructor (from another vec2)
 	explicit IntVector2( int initialX, int initialY );		// explicit constructor (from x, y)
+	IntVector2( int xy );
 	void SetFromText( const char* text ); // XML
 
 	// Operators

@@ -47,6 +47,12 @@ IntVector2::IntVector2( int initialX, int initialY )
 {
 }
 
+IntVector2::IntVector2(int xy)
+{
+	x = xy;
+	y = xy;
+}
+
 void IntVector2::SetFromText(const char * text)
 {
 	Strings result = SplitString(text, ",");

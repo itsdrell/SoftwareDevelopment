@@ -75,22 +75,28 @@ void Map::CreateMapRenderable(bool makeDebug)
 	TileDefinition* grass = GetTileDefinition("default");
 	Sprite theSprite;
 
+	float tileSize = TILE_SIZE;
+
 	if(makeDebug == false)
-		theSprite = Sprite(*g_tileSpriteSheet.m_spriteSheetTexture, Vector2::ONE, 16.f, Vector2(.5f,.5f), grass->m_uvCoords);
+		theSprite = Sprite(*g_tileSpriteSheet.m_spriteSheetTexture, Vector2::ONE, tileSize, Vector2(.5f,.5f), grass->m_uvCoords);
 	else
-		theSprite = Sprite(*g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/highlightCell.png"), Vector2::ONE, 16.f, Vector2(.5f,.5f));
+		theSprite = Sprite(*g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/highlightCell.png"), Vector2::ONE, tileSize, Vector2(.5f,.5f));
 
 
 	Vector2 currentPos = Vector2::ZERO;
-	float stepSize = 16.f;
+	float stepSize = tileSize;
 
 	MeshBuilder mb;
-
+	int theTileSize = TILE_SIZE_INT;
 	for(int y = 0; y < m_dimensions.y; y++)
 	{
 		for(int x = 0; x < m_dimensions.x; x++)
 		{
+			Tile newTile = Tile(currentPos.GetVector2AsInt(), *grass, theTileSize);
+			m_tiles.push_back(newTile);
+			
 			mb.AddFromSprite(currentPos, theSprite);
+
 
 			currentPos.x += stepSize;
 		}
@@ -129,5 +135,22 @@ void Map::CreateMapRenderable(bool makeDebug)
 	
 
 
+}
+
+Tile* Map::GetTile(Vector2& worldPos)
+{
+	int Tilesize = TILE_SIZE_INT;
+	
+	for(uint i = 0; i < m_tiles.size(); i++)
+	{
+		Tile* current = &m_tiles.at(i);
+
+		if( current->IsPointInsideTile(worldPos.GetVector2AsInt()) )
+		{
+			return current;
+		}
+	}
+
+	return nullptr; 
 }
 

@@ -54,8 +54,12 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 
 		// Set the variables for draw call
 		dc.m_material = currentRenderable->GetMaterial();
-		dc.m_model = currentRenderable->GetModelMatrix();
 		dc.m_sort = currentRenderable->GetLayer();
+
+		//--------------------------------------------------------------------------
+		// We calculate the uvs and stuff later so we need to use identity so it's
+		// not duplicated
+		dc.m_model = Matrix44(); // not this : currentRenderable->GetModelMatrix();
 
 		//---------------------------------------------------------
 		// Checking if the renderable has a mesh, otherwise make one
@@ -66,8 +70,12 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		else
 		{
 			// We can sort by sprites later if we want
+			
+			//--------------------------------------------------------------------------
+			// We use model because we are rebuilding the mesh
 			mb.AddFromSprite( currentRenderable->GetPosition().xy(), *currentRenderable->GetSprite());
 			dc.m_mesh = mb.CreateMesh<Vertex3D_PCU>();
+
 		}
 		
 
@@ -94,6 +102,7 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 
 		r->BindMaterial(current.m_material);
 		r->SetUniform("MODEL", current.m_model);
+		//r->SetUniform("MODEL", Matrix44());
 
 		// optimize here as well
 		//r->DrawSprite( current.m_model.GetPosition(), *current.m_sprite);

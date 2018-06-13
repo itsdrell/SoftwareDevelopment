@@ -61,8 +61,21 @@ void Playing::Update()
 
 	if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
 	{
-		m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(pos.xy());
+		Tile* currentTile = m_testMap->GetTile(pos.xy());
+		if(nullptr != currentTile)
+		{
+			GameObject2D player = *m_testMap->m_gameObjects.at(0);
+
+			m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
+		}
 	}
+
+
+
+	DebugRenderLog(0.f, "PlayerPos: " + m_testMap->m_gameObjects.at(0)->m_transform.GetLocalPosition().ToString());
+
+	
+	
 
 	return;
 }
@@ -78,7 +91,7 @@ void Playing::Render() const
 	//Matrix44 cameraPos = Matrix44::MakeTranslation3D(Vector3(0.f, 0.f, -10.f));
 	//m_camera->m_cameraMatrix = cameraPos;//modelMatrix;
 	//m_camera->m_viewMatrix = InvertFast(cameraPos); // model); // inverse this 
-	m_camera->SetProjectionOrtho(250, 250, -10.0f, 100.0f);
+	m_camera->SetProjectionOrtho(160, 90, -10.0f, 100.0f);
 	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
 	m_camera->m_viewMatrix = view;
 	//m_camera->m_cameraMatrix = InvertFast(view); // maybe wrong
