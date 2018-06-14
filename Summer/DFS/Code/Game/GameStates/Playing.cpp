@@ -17,6 +17,7 @@
 #include "Engine/Core/Tools/Command.hpp"
 #include "Engine/Input/Mouse.hpp"
 #include "../General/GameObjects/Cursor.hpp"
+#include "Engine/Core/General/HeatMap.hpp"
 
 
 Playing::Playing()
@@ -51,7 +52,7 @@ void Playing::StartUp()
 
 	m_currentPlayState = SELECTING;
 
-	m_testMap = new Map("test", IntVector2(8,8));
+	m_currentMap = new Map("test", IntVector2(8,8));
 	m_cursor = new Cursor();
 }
 
@@ -86,7 +87,11 @@ void Playing::Render() const
 
 	m_renderingPath->Render(m_scene);
 
-	
+	// Debug heat map
+	//g_theRenderer->SetShader(Shader::CreateOrGetShader("default"));
+	g_theRenderer->BindMaterial(Material::CreateOrGetMaterial("sprite"));
+	g_theRenderer->SetUniform("MODEL", Matrix44());
+	m_currentMap->m_heatmap->Render(4);
 }
 
 void Playing::CheckKeyBoardInputs()
@@ -95,8 +100,10 @@ void Playing::CheckKeyBoardInputs()
 		return;
 
 	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
+	DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
 
-	Tile* currentTile = m_testMap->GetTile(mousePos.xy());
+
+	Tile* currentTile = m_currentMap->GetTile(mousePos.xy());
 	if(nullptr != currentTile)
 	{
 		// Always update cursor so it never looks like its lagging behind
@@ -110,9 +117,14 @@ void Playing::CheckKeyBoardInputs()
 		}
 		if(m_currentPlayState == MOVEMENT)
 		{
-			GameObject2D player = *m_testMap->m_gameObjects.at(0);
+			if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
+			{
+				GameObject2D player = *m_currentMap->m_gameObjects.at(0);
 
-			m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
+				m_currentMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
+			}
+			
+			
 		}
 
 
@@ -122,16 +134,19 @@ void Playing::CheckKeyBoardInputs()
 			if(m_currentPlayState == SELECTING)
 			{
 				m_cursor->m_renderable->m_hidden = true;
-				Unit* player = (Unit*) m_testMap->m_gameObjects.at(0);
-				m_testMap->CreateMovementTiles(*player);
+				Unit* player = (Unit*) m_currentMap->m_gameObjects.at(0);
+				m_currentMap->CreateMovementTiles(*player);
 				m_currentPlayState = MOVEMENT;
 			}
 			else if(m_currentPlayState == MOVEMENT)
 			{
+				if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
+				{
+					m_cursor->m_renderable->m_hidden = false;
+					m_currentMap->ClearHoverTiles();
+					m_currentPlayState = SELECTING;
+				}
 				
-				m_cursor->m_renderable->m_hidden = false;
-				m_testMap->ClearHoverTiles();
-				m_currentPlayState = SELECTING;
 			}
 		
 				

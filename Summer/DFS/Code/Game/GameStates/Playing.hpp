@@ -65,7 +65,7 @@ public:
 
 	GameObject2D*			m_test;
 
-	Map*					m_testMap;
+	Map*					m_currentMap;
 
 	PlayState				m_currentPlayState;
 

@@ -4,14 +4,22 @@
 
 class Renderer;
 
+//====================================================================================
+// Defines / typedefs / consts expressions
+//====================================================================================
+constexpr float	BIG_NUMBER = 999.f;
+
+//====================================================================================
+//	Classes
+//====================================================================================
 class HeatMap
 {
 public:
 
-	HeatMap(const IntVector2& dimensionOfMap, float valueToGive = 999.f);
+	HeatMap(const IntVector2& dimensionOfMap, float valueToGive = BIG_NUMBER);
 
 	// This is for debugging
-	void Render(Renderer& theRendererToUse) const;
+	void Render(int cellSize) const;
 
 	// Helper
 	void SetHeat(const IntVector2& tileCoords, float amount = 0.f);
@@ -20,6 +28,11 @@ public:
 	bool isValidCell(const IntVector2& cellToCheck);
 	bool DoWeChangeValue(IntVector2 currentCell, IntVector2 otherCell);
 	void UpdateMap(IntVector2 initialSeed);
+
+	void ResetHeatMap();
+
+
+	std::vector<IntVector2>	GetAllTileCoordsWithHeatLessOrEqual(float heatValue);
 
 public:
 

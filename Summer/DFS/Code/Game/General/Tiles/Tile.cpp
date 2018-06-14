@@ -4,6 +4,7 @@
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
 #include "Game\GameStates\Playing.hpp"
+#include "..\Map.hpp"
 //====================================================================================
 Tile::Tile()
 {
@@ -41,15 +42,20 @@ AABB2 Tile::GetTileBounds()
 }
 
 //====================================================================================
-HoverTile::HoverTile(HoverTileTypes theType /*= MOVEMENT_TILE_TYPE*/)
+HoverTile::HoverTile(IntVector2& position, HoverTileTypes theType /*= MOVEMENT_TILE_TYPE*/)
 	: GameObject2D("Cursor")
 {
+	m_tileCoords = position;
+	float TileSize = TILE_SIZE;
+	
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
 	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/movementHover.png");
 	newMaterial->SetTexture(0, testSprite);
 
-	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, 16.f);
-	newSprite->m_pixelsPerUnit = 16.f;
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TileSize);
+	newSprite->m_pixelsPerUnit = TileSize;
+
+	m_transform.SetLocalPosition(position.GetAsVector2() * TileSize);
 
 
 	m_renderable->SetMaterial(newMaterial);

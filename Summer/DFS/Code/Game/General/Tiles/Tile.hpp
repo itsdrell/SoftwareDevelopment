@@ -51,11 +51,12 @@ public:
 class HoverTile : public GameObject2D
 {
 public:
-	HoverTile(HoverTileTypes theType = MOVEMENT_TILE_TYPE);
+	HoverTile(IntVector2& position, HoverTileTypes theType = MOVEMENT_TILE_TYPE);
 	~HoverTile();
 
 public:
 	HoverTileTypes		m_type;
+	IntVector2			m_tileCoords;
 };
 
 //=============================================================

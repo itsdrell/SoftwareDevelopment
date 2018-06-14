@@ -16,9 +16,9 @@ HeatMap::HeatMap(const IntVector2& dimensionOfMap, float valueToGive)
 
 }
 
-void HeatMap::Render(Renderer& theRendererToUse) const
+void HeatMap::Render(int cellSize) const
 {
-	Vector2 padding = Vector2(-.5f,-.5f);	
+	//Vector2 padding = Vector2(cellSize,cellSize);	
 	IntVector2 currentCell = IntVector2(0,0);
 	
 	for(int cellIndex = 0; cellIndex < (int)m_heatValues.size(); cellIndex++)
@@ -27,7 +27,7 @@ void HeatMap::Render(Renderer& theRendererToUse) const
 		std::string stringValue = std::to_string(value);
 
 		// Do the Draw
-		theRendererToUse.DrawText2D(currentCell.GetAsVector2() - padding,stringValue,.2f);
+		Renderer::GetInstance()->DrawText2D(currentCell.GetAsVector2() * cellSize, stringValue, 1.0f);
 
 		// Move the position
 		if(currentCell.x >= m_dimensions.x -1.f)
@@ -37,7 +37,7 @@ void HeatMap::Render(Renderer& theRendererToUse) const
 		}
 		else
 		{
-			currentCell += IntVector2::EAST;
+			currentCell += (IntVector2::EAST);
 		}
 	}
 }
@@ -147,4 +147,32 @@ void HeatMap::UpdateMap(IntVector2 initialSeed)
 		// Get ready for the next time
 		openSeeds.pop_front(); // remove
 	}
+}
+
+void HeatMap::ResetHeatMap()
+{
+	for(uint i = 0; i < m_heatValues.size(); i++)
+	{
+		m_heatValues.at(i) = BIG_NUMBER;
+	}
+}
+
+std::vector<IntVector2> HeatMap::GetAllTileCoordsWithHeatLessOrEqual(float heatValue)
+{
+	std::vector<IntVector2> tileCoords;
+	
+	for(uint i = 0; i < m_heatValues.size(); i++)
+	{
+		float value = m_heatValues.at(i);
+
+		if(value <= heatValue)
+		{
+			int y = i / m_dimensions.y;
+			int x = i % m_dimensions.y;
+			
+			tileCoords.push_back(IntVector2(x,y));
+		}
+	}
+
+	return tileCoords;
 }

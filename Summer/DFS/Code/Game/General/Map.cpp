@@ -14,6 +14,7 @@
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
 #include "Game\General\Tiles\Tile.hpp"
+#include "Engine\Core\General\HeatMap.hpp"
 
 //====================================================================================
 void DebugGrid(Command& theCommand)
@@ -31,11 +32,11 @@ void DebugGrid(Command& theCommand)
 	if(check)
 	{
 		// Make sure there are only one of them
-		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_testMap->m_debugRenderable);
-		g_theGame->m_playingState->AddRenderable(g_theGame->m_playingState->m_testMap->m_debugRenderable);
+		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
+		g_theGame->m_playingState->AddRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
 	}
 	else
-		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_testMap->m_debugRenderable);
+		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
 
 }
 
@@ -57,7 +58,7 @@ Map::Map(std::string name, const IntVector2 & dimensions)
 	newBuilding->m_transform.TranslateLocal(Vector2(16.f,16.f));
 	m_gameObjects.push_back(newBuilding);
 
-
+	m_heatmap = new HeatMap(dimensions);
 
 	CreateMapRenderable();
 	CreateMapRenderable(true);
@@ -157,9 +158,40 @@ Tile* Map::GetTile(Vector2& worldPos)
 
 void Map::CreateMovementTiles(const Unit& theUnitToUse)
 {
-	HoverTile* newTile = new HoverTile();
+	m_heatmap->ResetHeatMap();
+	
+	// Gotta translate from world coords to tileCoords
+	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
+	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
 
-	m_hoverTiles.push_back(newTile);
+	m_heatmap->AddHeat(tileCoords);
+
+	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatLessOrEqual(3);
+	
+	for(uint i = 0; i < tilePos.size(); i++)
+	{
+		HoverTile* newTile = new HoverTile(tilePos.at(i));
+
+		m_hoverTiles.push_back(newTile);
+	}
+	
+	
+}
+
+bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
+{
+	int tileSize = TILE_SIZE_INT;
+
+	// We just need to see if the tile pos we have is in our cached off list
+	for(uint i = 0; i < m_hoverTiles.size(); i++)
+	{
+		IntVector2 current = m_hoverTiles.at(i)->m_tileCoords * tileSize;
+
+		if(posToCheck == current)
+			return true;
+	}
+
+	return false;
 }
 
 void Map::ClearHoverTiles()
