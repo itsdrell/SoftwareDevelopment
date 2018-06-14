@@ -3,6 +3,7 @@
 #include "Game/SystemsAndTools/Scene2D.hpp"
 #include "Engine\Renderer\Systems/ForwardRenderingPath.hpp"
 #include "../SystemsAndTools/GameObject2D.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
 
 //=============================================================
 // Forward Declare
@@ -14,11 +15,18 @@ class Renderable;
 class Light;
 class SpriteRendering;
 class Map;
+class Cursor;
 
 //=============================================================
 // ENUMS
 //=============================================================
-
+enum PlayState
+{
+	SELECTING,
+	MOVEMENT,
+	ACTION, // capture, buy units, attack menus
+	NUM_OF_MODES
+};
 //=============================================================
 // Structs
 //=============================================================
@@ -58,6 +66,10 @@ public:
 	GameObject2D*			m_test;
 
 	Map*					m_testMap;
+
+	PlayState				m_currentPlayState;
+
+	Cursor*					m_cursor;
 };
 
 

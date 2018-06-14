@@ -67,6 +67,9 @@
     <ClCompile Include="General\GameObjects\Building.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\GameObjects\Cursor.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -98,5 +101,6 @@
     <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\GameObjects\Building.hpp" />
+    <ClInclude Include="General\GameObjects\Cursor.hpp" />
   </ItemGroup>
 </Project>

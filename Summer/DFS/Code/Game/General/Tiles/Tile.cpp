@@ -1,5 +1,10 @@
 #include "Tile.hpp"
-
+#include "Engine\Renderer\RenderableComponents\Material.hpp"
+#include "Game\Main\Game.hpp"
+#include "Engine\Renderer\Images\Sprites\Sprite.hpp"
+#include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
+#include "Game\GameStates\Playing.hpp"
+//====================================================================================
 Tile::Tile()
 {
 	m_position = IntVector2::ZERO;
@@ -26,3 +31,35 @@ bool Tile::IsPointInsideTile(IntVector2& pos)
 	return false;
 }
 
+AABB2 Tile::GetTileBounds()
+{
+	int offset = (m_tileSize / 2);
+	IntVector2 mins = IntVector2(-offset);
+	IntVector2 maxs = IntVector2(offset);
+
+	return AABB2(mins.GetAsVector2(), maxs.GetAsVector2());
+}
+
+//====================================================================================
+HoverTile::HoverTile(HoverTileTypes theType /*= MOVEMENT_TILE_TYPE*/)
+	: GameObject2D("Cursor")
+{
+	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
+	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/movementHover.png");
+	newMaterial->SetTexture(0, testSprite);
+
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, 16.f);
+	newSprite->m_pixelsPerUnit = 16.f;
+
+
+	m_renderable->SetMaterial(newMaterial);
+	m_renderable->SetSprite(newSprite);
+	m_renderable->SetLayer(1);
+
+	g_theGame->m_playingState->AddRenderable(m_renderable);
+}
+
+HoverTile::~HoverTile()
+{
+	g_theGame->m_playingState->RemoveRenderable(m_renderable);
+}

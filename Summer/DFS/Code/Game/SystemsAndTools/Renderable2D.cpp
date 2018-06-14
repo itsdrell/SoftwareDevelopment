@@ -7,6 +7,7 @@ Renderable2D::Renderable2D()
 	m_transform = Transform2D();
 	m_sprite = nullptr;
 	m_material = nullptr;
+	m_hidden = false;
 }
 
 void Renderable2D::SetMesh(Mesh* mesh)

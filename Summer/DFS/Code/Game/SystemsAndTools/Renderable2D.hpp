@@ -65,6 +65,7 @@ private:
 public:
 	int				m_layer;
 	bool			m_usesMesh = false;
+	bool			m_hidden;
 
 	// later could add lights but for now, no
 };

@@ -49,6 +49,8 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		 
 		Renderable2D* currentRenderable = scene->m_renderables.at(renderableIndex);
 
+		if(currentRenderable->m_hidden)
+			continue;
 
 		DrawCall2D dc;
 

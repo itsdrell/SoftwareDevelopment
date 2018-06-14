@@ -16,6 +16,7 @@
 #include "../General/Map.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include "Engine/Input/Mouse.hpp"
+#include "../General/GameObjects/Cursor.hpp"
 
 
 Playing::Playing()
@@ -37,47 +38,29 @@ void Playing::StartUp()
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 
-
 	m_scene->AddCamera(m_camera);
 
 	g_theRenderer->SetCamera();
-	//////////////////////////////////////////////////////////////////////////
-	
-	//g_theRenderer->SetAmbientLight(.1f, Rgba::WHITE);
+
+	//--------------------------------------------------------------------------
+	// Game specific setup
 
 	Tile newTile = Tile();
 	TileDefinition* def = GetTileDefinition("default");
 	newTile.ChangeTileType(*def);
 
-	m_testMap = new Map("test", IntVector2(8,8));
+	m_currentPlayState = SELECTING;
 
+	m_testMap = new Map("test", IntVector2(8,8));
+	m_cursor = new Cursor();
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
-	Vector3 pos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
-	DebugRenderLog(0.f, pos.ToString());
-
-	if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
-	{
-		Tile* currentTile = m_testMap->GetTile(pos.xy());
-		if(nullptr != currentTile)
-		{
-			GameObject2D player = *m_testMap->m_gameObjects.at(0);
-
-			m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
-		}
-	}
-
-
-
-	DebugRenderLog(0.f, "PlayerPos: " + m_testMap->m_gameObjects.at(0)->m_transform.GetLocalPosition().ToString());
 
 	
-	
 
-	return;
 }
 
 void Playing::Render() const
@@ -91,7 +74,7 @@ void Playing::Render() const
 	//Matrix44 cameraPos = Matrix44::MakeTranslation3D(Vector3(0.f, 0.f, -10.f));
 	//m_camera->m_cameraMatrix = cameraPos;//modelMatrix;
 	//m_camera->m_viewMatrix = InvertFast(cameraPos); // model); // inverse this 
-	m_camera->SetProjectionOrtho(160, 90, -10.0f, 100.0f);
+	m_camera->SetProjectionOrtho(375, 225, -10.0f, 100.0f);
 	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
 	m_camera->m_viewMatrix = view;
 	//m_camera->m_cameraMatrix = InvertFast(view); // maybe wrong
@@ -102,8 +85,8 @@ void Playing::Render() const
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
+
 	
-	//g_theRenderer->DrawAABB2(AABB2(-10.f, -10.f, 10.f, 10.f), Rgba::WHITE);
 }
 
 void Playing::CheckKeyBoardInputs()
@@ -111,7 +94,51 @@ void Playing::CheckKeyBoardInputs()
 	if(IsDevConsoleOpen())
 		return;
 
+	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
 
+	Tile* currentTile = m_testMap->GetTile(mousePos.xy());
+	if(nullptr != currentTile)
+	{
+		// Always update cursor so it never looks like its lagging behind
+		m_cursor->SetLocalPosition(currentTile->GetCenterOfTile());
+
+
+		if(m_currentPlayState == SELECTING)
+		{
+			m_cursor->SetLocalPosition(currentTile->GetCenterOfTile());
+			
+		}
+		if(m_currentPlayState == MOVEMENT)
+		{
+			GameObject2D player = *m_testMap->m_gameObjects.at(0);
+
+			m_testMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
+		}
+
+
+		if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
+		{
+
+			if(m_currentPlayState == SELECTING)
+			{
+				m_cursor->m_renderable->m_hidden = true;
+				Unit* player = (Unit*) m_testMap->m_gameObjects.at(0);
+				m_testMap->CreateMovementTiles(*player);
+				m_currentPlayState = MOVEMENT;
+			}
+			else if(m_currentPlayState == MOVEMENT)
+			{
+				
+				m_cursor->m_renderable->m_hidden = false;
+				m_testMap->ClearHoverTiles();
+				m_currentPlayState = SELECTING;
+			}
+		
+				
+			
+		}
+	
+	}
 }
 
 

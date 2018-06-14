@@ -8,6 +8,7 @@
 //=============================================================
 class GameObject2D;
 class Unit;
+class HoverTile;
 
 //====================================================================================
 // Typedefs
@@ -36,16 +37,20 @@ public:
 	void CreateMapRenderable(bool makeDebug = false);
 
 	Tile* GetTile(Vector2& worldPos);
-	void SetPlayerOnTile();
+	
+	void CreateMovementTiles(const Unit& theUnitToUse);
+
+	void ClearHoverTiles();
 	
 	
 public:
 	std::string				m_name;
 	IntVector2				m_dimensions;
-	Renderable2D*			m_mapRenderable; // batched renderable
-	Renderable2D*			m_debugRenderable;
+	Renderable2D*			m_mapRenderable = nullptr; // batched renderable
+	Renderable2D*			m_debugRenderable = nullptr;
 
 	std::vector<Tile>					m_tiles;
+	std::vector<HoverTile*>				m_hoverTiles;
 	std::vector<GameObject2D*>			m_gameObjects;
 
 	Unit*	m_selectedUnit;

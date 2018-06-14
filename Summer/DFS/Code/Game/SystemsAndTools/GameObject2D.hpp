@@ -32,6 +32,8 @@ public:
 
 	void SetRenderable(Renderable2D& theRenderable);
 
+	virtual void SetLocalPosition(Vector2& pos) { m_transform.SetLocalPosition(pos); }
+
 	virtual void Update();
 
 public:

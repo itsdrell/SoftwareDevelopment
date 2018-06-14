@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
+#include "Game/SystemsAndTools/GameObject2D.hpp"
 
 //=============================================================
 // Forward Declare
@@ -15,7 +17,12 @@ class TileDefinition;
 //=============================================================
 // Structs
 //=============================================================
-
+enum HoverTileTypes
+{
+	MOVEMENT_TILE_TYPE,
+	ATTACK_RANGE_TILE_TYPE,
+	NUM_OF_HOVER_TILE_TYPES
+};
 
 //=============================================================
 // Classes
@@ -29,6 +36,7 @@ public:
 	bool IsPointInsideTile( IntVector2& pos);
 
 	Vector2 GetCenterOfTile() { return m_position.GetAsVector2(); }
+	AABB2 GetTileBounds();
 
 	void ChangeTileType(TileDefinition& newDef) { m_definition = &newDef; }
 
@@ -37,6 +45,17 @@ public:
 	TileDefinition*		m_definition;
 	int					m_tileSize;
 	
+};
+
+//--------------------------------------------------------------------------
+class HoverTile : public GameObject2D
+{
+public:
+	HoverTile(HoverTileTypes theType = MOVEMENT_TILE_TYPE);
+	~HoverTile();
+
+public:
+	HoverTileTypes		m_type;
 };
 
 //=============================================================

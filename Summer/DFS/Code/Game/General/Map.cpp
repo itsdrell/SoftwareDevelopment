@@ -13,6 +13,7 @@
 #include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
+#include "Game\General\Tiles\Tile.hpp"
 
 //====================================================================================
 void DebugGrid(Command& theCommand)
@@ -152,5 +153,22 @@ Tile* Map::GetTile(Vector2& worldPos)
 	}
 
 	return nullptr; 
+}
+
+void Map::CreateMovementTiles(const Unit& theUnitToUse)
+{
+	HoverTile* newTile = new HoverTile();
+
+	m_hoverTiles.push_back(newTile);
+}
+
+void Map::ClearHoverTiles()
+{
+	for(uint i = 0; i < m_hoverTiles.size(); i++)
+	{
+		g_theGame->m_playingState->RemoveRenderable(m_hoverTiles.at(i)->m_renderable);
+	}
+
+	m_hoverTiles.clear();
 }
 
