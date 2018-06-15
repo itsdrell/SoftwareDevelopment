@@ -25,10 +25,28 @@ void AABB3::Invalidate()
 	maxs = Vector3(-INFINITY);
 }
 
-bool AABB3::IsContained(const Vector3 & pos)
+bool AABB3::IsPointInside( Vector3 & pos)
+{	
+	return !(pos <= mins) && (pos <= maxs);
+}
+
+void AABB3::GrowToContain( Vector3& pos)
 {
-	//return (pos >= mins) && (pos <= maxs);
-	return false;
+	if(IsPointInside(pos) == false)
+	{
+		// Total length needed to add padding to get the point inside
+		// Expand, but not move
+
+		if(pos.x > maxs.x) { maxs.x += (pos.x - maxs.x); }
+		if(pos.x < mins.x) { mins.x -= (mins.x - pos.x); }
+		   	 						 
+		if(pos.y > maxs.y) { maxs.y += (pos.y - maxs.y); }
+		if(pos.y < mins.y) { mins.y -= (mins.y - pos.y); }
+		   	 						 
+		if(pos.z > maxs.z) { maxs.z += (pos.z - maxs.z); }
+		if(pos.z < mins.z) { mins.z -= (mins.z - pos.z); }
+
+	}
 }
 
 Vector3 AABB3::GetCenter() const
@@ -47,6 +65,40 @@ Vector3 AABB3::GetDimensions() const
 	float zz = maxs.z - mins.z;
 
 	return Vector3(xx,yy,zz);
+}
+
+std::vector<Vector3> AABB3::GetCornerPoints() const
+{
+	//--------------------------------------------------------------------------
+	//	Points
+	//		   6--------------7
+	//		  /|             /|
+	//		 / |            / |
+	//		2--+-----------3  |
+	//		|  |           |  |
+	//		|  |     c     |  |
+	//		|  |           |  |
+	//		|  4-----------+--5
+	//		| /            | /
+	//		|/             |/
+	//		0--------------1
+	//
+	// 0 being the mins, 7 the maxs
+	//--------------------------------------------------------------------------
+
+	std::vector<Vector3>	points;
+
+	points.push_back( mins ); 
+	points.push_back( Vector3( maxs.x, mins.y, mins.z ));
+	points.push_back( Vector3( mins.x, maxs.y, mins.z ));
+	points.push_back( Vector3( maxs.x, maxs.y, mins.z ));
+	points.push_back( Vector3( mins.x, mins.y, maxs.z ));
+	points.push_back( Vector3( maxs.x, mins.y, maxs.z ));
+	points.push_back( Vector3( mins.x, maxs.y, maxs.z ));
+	points.push_back( maxs );
+
+	return points;
+
 }
 
 AABB3 AABB3::Centered(const Vector3& centerPos, const Vector3& bounds)

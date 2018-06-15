@@ -117,6 +117,16 @@ const Vector3 Vector3::operator-(const Vector3& vecToSubtract) const
 	return Vector3(xx,yy,zz);
 }
 
+bool Vector3::operator<( Vector3 &b )
+{
+	return (x < b.x) && (y < b.y) && (z < b.z); 
+}
+
+bool Vector3::operator<=( Vector3 &b )
+{
+	return (x <= b.x) && (y <= b.y) && (z <= b.z); 
+}
+
 Vector2 Vector3::xy(Vector3 vectorToUse)
 {
 	return Vector2(vectorToUse.x,vectorToUse.y);
@@ -309,4 +319,13 @@ float DotProduct(const Vector3& a, const Vector3& b)
 	// (vector1.X * vector2.X) + (vector1.Y * vector2.Y) + (vector1.Z * vector2.Z)
 	return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 
+}
+
+Vector3 Abs(Vector3& a)
+{
+	float x = abs(a.x);
+	float y = abs(a.y);
+	float z = abs(a.z);
+
+	return Vector3(x,y,z);
 }

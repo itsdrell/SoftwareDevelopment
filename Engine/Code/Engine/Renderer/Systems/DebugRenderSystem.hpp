@@ -224,6 +224,8 @@ void DebugRenderWireAABB3( float lifetime,
 	Rgba const &start_color = Rgba::WHITE, 
 	Rgba const &end_color = Rgba::WHITE); 
 
+void RenderDebugAABB3(const DebugRenderOptions& info);
+
 void DebugRenderQuad( float lifetime, 
 	Vector3 const &pos, 
 	Vector3 const &right, float const x_min, float const x_max, 

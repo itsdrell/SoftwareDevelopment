@@ -72,6 +72,9 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 	m_test->SetMaterial(theMaterial);
 	m_test->SetMesh(plane);
 
+	AABB3 areaBounds = plane->m_bounds;
+	DebugRenderWireAABB3(100.f, areaBounds);
+
 	g_theGame->m_playingState->AddRenderable(m_test);
 
 }

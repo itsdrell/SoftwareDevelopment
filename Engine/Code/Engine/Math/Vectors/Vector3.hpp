@@ -48,6 +48,9 @@ public:
 	void operator-=( const Vector2& vecToSubtract );				// vec3 -= vec2
 	void operator=( const Vector2& copyFrom );						// vec3 = vec3
 
+	bool operator<( Vector3 &b );
+	bool operator<=(  Vector3 &b );
+
 
 	// Helper
 	static Vector2 xy(Vector3 vectorToUse);
@@ -75,3 +78,4 @@ Vector3 Normalize(Vector3& vectorToNormalize);
 Vector3 Cross(const Vector3& a, const Vector3& b);
 Vector3 SwapXAndZ(Vector3& theVector);
 float DotProduct(const Vector3& a, const Vector3& b);
+Vector3 Abs(Vector3& a);

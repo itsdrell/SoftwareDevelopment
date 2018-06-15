@@ -4,6 +4,11 @@
 #include <stdio.h> //fopen
 #include "../Images/Sprites/Sprite.hpp"
 
+MeshBuilder::MeshBuilder()
+{
+	m_bounds = AABB3(Vector3::ZERO, Vector3::ZERO);
+}
+
 void MeshBuilder::Begin(PrimitiveType theType, bool useIndices)
 {
 	m_draw.primitiveType = theType;
@@ -73,6 +78,9 @@ uint MeshBuilder::PushVertex(Vector3 position)
 {
 	m_stamp.m_position = position;
 	m_vertices.push_back(m_stamp);
+
+	// store off the bounds
+	m_bounds.GrowToContain(position);
 
 	return (uint) m_vertices.size() -1;
 }
@@ -783,4 +791,48 @@ void MeshBuilder::AddFromSprite(const Vector2& pos, const Sprite& theSprite)
 	End();
 }
 
+void MeshBuilder::Add3DBounds(const AABB3& theBounds)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									  // this is assuming all the sides are the same color
+	SetColor(Rgba::WHITE);
+
+	//////////////////////////////////////////////////////////////////////////
+
+	std::vector<Vector3> points = theBounds.GetCornerPoints();
+
+
+//--------------------------------------------------------------------------
+	//	Points
+	//		   6--------------7
+	//		  /|             /|
+	//		 / |            / |
+	//		2--+-----------3  |
+	//		|  |           |  |
+	//		|  |     c     |  |
+	//		|  |           |  |
+	//		|  4-----------+--5
+	//		| /            | /
+	//		|/             |/
+	//		0--------------1
+	//
+	// 0 being the mins, 7 the maxs
+	//--------------------------------------------------------------------------
+	AddPlaneFromFourPoints( points.at(0), points.at(1), points.at(3), points.at(4)); // front
+	AddPlaneFromFourPoints( points.at(0), points.at(1), points.at(5), points.at(4)); // bottom
+	AddPlaneFromFourPoints( points.at(4), points.at(0), points.at(2), points.at(6)); // left
+	AddPlaneFromFourPoints( points.at(1), points.at(5), points.at(7), points.at(3)); // right
+	AddPlaneFromFourPoints( points.at(5), points.at(4), points.at(6), points.at(7)); // back
+	AddPlaneFromFourPoints( points.at(2), points.at(3), points.at(7), points.at(6)); // top
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
+
+	//return mb.CreateMeshPCU();
+}
 

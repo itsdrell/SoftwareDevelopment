@@ -1,5 +1,6 @@
 #pragma once
 #include "..\Vectors\Vector3.hpp"
+#include "..\Matrices\Matrix44.hpp"
 
 
 //====================================================================================
@@ -32,6 +33,8 @@ public:
 
 	bool IsContained(const Vector3& pos);
 
+	Matrix44 GetMatrix();
+	Matrix44 GetInverseMatrix();
 
 	bool GetCorners( Vector3 *out);
 

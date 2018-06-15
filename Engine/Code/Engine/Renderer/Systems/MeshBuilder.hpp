@@ -13,7 +13,8 @@ class MeshBuilder
 {
 public:
 
-	MeshBuilder() {}
+	MeshBuilder();
+
 	void Begin(PrimitiveType theType, bool useIndices);
 	void End(); 
 
@@ -59,6 +60,8 @@ public:
 
 	void AddFromSprite(const Vector2& pos, const Sprite& theSprite);
 
+	// this is gonna be a box without the triangles cutting it up
+	void Add3DBounds(const AABB3& theBounds);
 
 public:
 	VertexMaster 						m_stamp; // this is a value. We overwrite it
@@ -68,6 +71,7 @@ public:
 	// Values used to create the mesh at the end
 	DrawInstruction						m_draw;
 
+	AABB3								m_bounds;
 
 };
 
@@ -77,11 +81,14 @@ Mesh* MeshBuilder::CreateMesh()
 {
 	Mesh *mesh = new Mesh(); 
 
+	mesh->m_bounds = m_bounds;
+	
 	mesh->FromBuilderForType<VERTTYPE>(*this);
 
 	// Flush
 	m_vertices.clear();
 	m_indices.clear();
+	m_bounds.Invalidate();
 
 	return mesh; 
 }

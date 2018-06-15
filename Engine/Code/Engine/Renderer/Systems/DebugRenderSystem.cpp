@@ -139,7 +139,7 @@ void DebugRenderTask::Render() const
 		r->DrawMesh(m_options.mesh);
 		break;
 	case RENDER_AABB3:
-		//r->EnableWireframe(true);
+		r->EnableWireframe(true);
 		r->DrawMesh(m_options.mesh);
 		break;
 	case RENDER_UV_SPHERE:
@@ -648,19 +648,21 @@ void DebugRenderWireAABB3(float lifetime, AABB3 const & bounds, DebugRenderMode 
 	newTask->m_options.end_color = end_color;
 	newTask->m_options.lifetime = lifetime;
 	newTask->m_timeToLive = lifetime;
-	newTask->m_options.mode = mode;
+	newTask->m_options.mode = DEBUG_RENDER_USE_DEPTH;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Specific to this call
 	newTask->m_function = RENDER_AABB3;
 	MeshBuilder mb;
-	mb.AddCube(bounds.GetCenter(), bounds.GetDimensions());
+	//mb.AddCube(bounds.GetCenter(), bounds.GetDimensions());
+	mb.Add3DBounds(bounds);
 	newTask->m_options.mesh = mb.CreateMesh<Vertex3D_PCU>();
 
 
 	//////////////////////////////////////////////////////////////////////////
 	g_DebugRenderTask.push_back(newTask);
 }
+
 
 void DebugRenderQuad(float lifetime, Vector3 const &pos, Vector3 const &right, float const x_min, float const x_max, Vector3 const &up, float const y_min, float const y_max, 
 	DebugRenderMode mode, Texture *texture, Rgba const &start_color, Rgba const &end_color)
