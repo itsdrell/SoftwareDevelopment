@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Math/Matrices/Matrix44.hpp"
+#include "../../Core/General/Transform.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 class Mesh;
@@ -20,16 +21,16 @@ public:
 	void SetMaterial( Material *mat ) { m_material = mat; } 
 	Material* GetMaterial() { return m_material; } 
 
-	void SetModelMatrix( Matrix44 model ) { m_modelMatrix = model; } 
+	void SetModelMatrix( Matrix44 model ) { m_transform.SetWorldMatrix(model); } 
 	void SetPosition(const Vector3& position);
-	Matrix44 GetModelMatrix() const { return m_modelMatrix; } 
+	Matrix44 GetModelMatrix() const { return m_transform.GetWorldMatrix(); } 
 
-	Vector3 GetPosition() { return m_modelMatrix.GetPosition(); }
+	Vector3 GetPosition() { return m_transform.GetWorldPosition(); }
 	bool UsesLight();
 
 
 public:
-	Matrix44		m_modelMatrix; // the thing that owns this will have the transform
+	Transform		m_transform;
 	Mesh*			m_mesh; 
 	Material*		m_material; 
 

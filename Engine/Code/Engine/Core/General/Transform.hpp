@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine\Math\Matrices/Matrix44.hpp"
+#include "../../Math/Quaternion.hpp"
 
 
 // I do a split of struct (the SRT information)
@@ -11,18 +12,18 @@ struct transform_t
 {
 	transform_t()
 		: position(0.0f)
-		, euler(0.0f)
+		, rotation(Quaternion::IDENTITY)
 		, scale(1.0f) {}
 
-	Vector3 position; 
-	Vector3 euler; 
-	Vector3 scale; 
+	Vector3			position; 
+	Quaternion		rotation; 
+	Vector3			scale; 
 
 	Matrix44 GetMatrix() const; 
 	void SetMatrix( Matrix44 const &mat ); 
 
 	void SetPosition( Vector3 pos ); 
-	//void Translate( Vector3 offset ); 
+	void Translate( Vector3 offset ); 
 	Vector3 GetPosition() const; 
 
 	void SetRotationEuler( Vector3 theEuler ); 
@@ -44,7 +45,7 @@ public:
 
 	Transform();
 
-	//////////////////////////////////////////////////////////////////////////
+	//--------------------------------------------------------------------------
 	// LOCAL
 	// these just call through to the the member
 	// transform_t 
@@ -65,30 +66,35 @@ public:
 	Vector3 GetLocalRight() { return GetLocalMatrix().GetRight(); }
 	Vector3 GetLocalUp() { return GetLocalMatrix().GetUp(); }
 
+	void LookAtLocal( Vector3& localPos, Vector3 localUp = Vector3::UP);
+
 
 	
-	//////////////////////////////////////////////////////////////////////////
+	//--------------------------------------------------------------------------
 	// WORLD 
 
 	Matrix44 GetWorldMatrix() const;
 
 	Vector3 GetWorldPosition() const;
 
+	void SetWorldMatrix(Matrix44& theMatrix);
 
-	//////////////////////////////////////////////////////////////////////////
-	//  parent + children (D'awwww)
+	void LookAtWorld( Vector3& worldPos, Vector3 worldUp = Vector3::UP);
+
+
+	//---------------------------------------------------------------------------
+	void SimpleMoveTowardPoint(Vector3& position, float speed, float ds);
+
+	//--------------------------------------------------------------------------
 	void SetParentTransform(Transform& parent);
-	//void AddChild(Transform& newchild);
 
 	void SetIsDirty() { m_isDirty = true; }
-	//void DirtyTheChildren();
 
 private:
 	transform_t					m_local_transform; 
 
 	Transform*					m_parentTransform;
 
-	//std::vector<Transform*>		m_childrenTransform;
 
 	bool						m_isDirty;
 	

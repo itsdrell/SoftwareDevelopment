@@ -23,14 +23,14 @@ public:
 	Vector2 TransformDisplacement2D( const Vector2& displacement2D ) const; // Written assuming z=0, w=0
 	
 	// Accessors
-	Vector3 GetForward();
-	Vector3 GetRight();
-	Vector3 GetUp();
-	Vector3 GetPosition();
+	Vector3 GetForward() const;
+	Vector3 GetRight() const;
+	Vector3 GetUp() const;
+	Vector3 GetPosition() const;
 
-	Vector3 GetXRow();
-	Vector3 GetYRow();
-	Vector3 GetZRow();
+	Vector3 GetXRow() const;
+	Vector3 GetYRow() const;
+	Vector3 GetZRow() const;
 
 	Matrix33 GetAsMatrix33() const;
 	

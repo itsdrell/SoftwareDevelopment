@@ -113,6 +113,29 @@ Matrix44::Matrix44(const Vector4& iBasis, const Vector4& jBasis, const Vector4& 
 	Tw = translation.w;
 }
 
+Matrix44::Matrix44(const Matrix33& a)
+{
+	Ix = a.Ix;
+	Iy = a.Iy;
+	Iz = a.Iz;
+	Iw = 0.f;
+
+	Jx= a.Jx;
+	Jy= a.Jy;
+	Jz= a.Jz;
+	Jw= 0.f;
+
+	Kx = a.Kx;
+	Ky = a.Ky;
+	Kz = a.Kz;
+	Kw = 0.f;
+
+	Tx = 0.f;
+	Ty = 0.f;
+	Tz = 0.f;
+	Tw = 0.f;
+}
+
 Vector2 Matrix44::TransformPosition2D(const Vector2& position2D) const
 {
 	float newX = (Ix * position2D.x) + (Jx * position2D.y) + Tx;
@@ -148,45 +171,44 @@ Vector2 Matrix44::TransformDisplacement2D(const Vector2& displacement2D) const /
 	return Vector2(newX,newY);
 }
 
-Vector3 Matrix44::GetForward()
+Vector3 Matrix44::GetForward() const
 {
 	return Vector3(Kx,Ky,Kz);
 }
 
-Vector3 Matrix44::GetRight()
+Vector3 Matrix44::GetRight() const
 {
 	return Vector3(Ix,Iy,Iz);
 }
 
-Vector3 Matrix44::GetUp()
+Vector3 Matrix44::GetUp() const
 {
 	return Vector3(Jx,Jy,Jz);
 }
 
-Vector3 Matrix44::GetPosition()
+Vector3 Matrix44::GetPosition() const
 {
 	return Vector3(Tx,Ty,Tz);
 }
 
-Vector3 Matrix44::GetXRow()
+Vector3 Matrix44::GetXRow() const
 {
 	return Vector3(Ix, Jx, Kx);
 }
 
-Vector3 Matrix44::GetYRow()
+Vector3 Matrix44::GetYRow() const
 {
 	return Vector3(Iy, Jy, Ky);
 }
 
-Vector3 Matrix44::GetZRow()
+Vector3 Matrix44::GetZRow() const
 {
 	return Vector3(Iz, Jz, Kz);
 }
 
 Matrix33 Matrix44::GetAsMatrix33() const
 {
-	TODO("Create GetAsMatrix33 pls");
-	return Matrix33();
+	return Matrix33(GetRight(), GetUp(), GetForward());
 }
 
 void Matrix44::GetValuesAsArray(double *outArray)
@@ -494,7 +516,7 @@ Matrix44 Matrix44::MakeOrtho2D(const Vector2& mins, const Vector2& maxs)
 	result.Jy = (2)/(maxs.y - mins.y);
 	//result.Kz = (2)/(maxs.z - mins.z);
 
-	// Set the T collumn
+	// Set the T column
 	result.Tx = -(maxs.x + mins.x) / (maxs.x - mins.x);
 	result.Ty = -(maxs.y + mins.y) / (maxs.y - mins.y);
 	//result.Tz = -(maxs.z + mins.z) / (maxs.z - mins.z);
@@ -509,12 +531,12 @@ Matrix44 Matrix44::MakeOrtho3D(const Vector3& mins, const Vector3& maxs)
 {
 	Matrix44 result = Matrix44(); // Get Identity 
 
-								  // Setting the diagonal
+							// Setting the diagonal
 	result.Ix = (2)/(maxs.x - mins.x);
 	result.Jy = (2)/(maxs.y - mins.y);
 	result.Kz = (2)/(maxs.z - mins.z);
 
-	// Set the T collumn
+	// Set the T column
 	result.Tx = -(maxs.x + mins.x) / (maxs.x - mins.x);
 	result.Ty = -(maxs.y + mins.y) / (maxs.y - mins.y);
 	result.Tz = -(maxs.z + mins.z) / (maxs.z - mins.z);

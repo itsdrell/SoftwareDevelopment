@@ -29,6 +29,8 @@
 #include "../GameStates/Loading.hpp"
 #include "../GameStates/ReadyUp.hpp"
 #include "Engine/Math/Geometry/AABB3.hpp"
+#include "Engine/Math/Matrices/Matrix33.hpp"
+#include "Engine/Math/Quaternion.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////

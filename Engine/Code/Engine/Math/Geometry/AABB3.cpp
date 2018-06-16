@@ -89,12 +89,12 @@ std::vector<Vector3> AABB3::GetCornerPoints() const
 	std::vector<Vector3>	points;
 
 	points.push_back( mins ); 
-	points.push_back( Vector3( maxs.x, mins.y, mins.z ));
-	points.push_back( Vector3( mins.x, maxs.y, mins.z ));
-	points.push_back( Vector3( maxs.x, maxs.y, mins.z ));
-	points.push_back( Vector3( mins.x, mins.y, maxs.z ));
-	points.push_back( Vector3( maxs.x, mins.y, maxs.z ));
-	points.push_back( Vector3( mins.x, maxs.y, maxs.z ));
+	points.push_back(	GetFrontBottomRightPoint()	);
+	points.push_back(	GetFrontTopLeftPoint()		);
+	points.push_back(	GetFrontTopRightPoint()		);
+	points.push_back(	GetBackBottomLeftPoint()	);
+	points.push_back(	GetBackBottomRightPoint()	);
+	points.push_back(	GetBackTopLeftPoint()		);
 	points.push_back( maxs );
 
 	return points;

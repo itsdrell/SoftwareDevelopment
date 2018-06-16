@@ -65,7 +65,7 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 	}
 
 	Mesh* plane = mb.CreateMesh<VertexLit>();
-	//plane->DrawAsWireFrame();
+	plane->DrawAsWireFrame();
 	m_test = new Renderable();
 
 	Material* theMaterial = Material::CreateOrGetMaterial("terrain");

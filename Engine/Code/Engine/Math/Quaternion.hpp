@@ -45,7 +45,7 @@ enum eRotationOrder
 	ROTATE_YZX,
 	ROTATE_ZYX,
 	ROTATE_XZY,
-	ROTATE_DEFAULT
+	ROTATE_DEFAULT = ROTATE_ZYX
 };
 
 /************************************************************************/
@@ -114,13 +114,13 @@ struct Quaternion
 	//------------------------------------------------------------------------
 	static Quaternion const IDENTITY;
 
-	static Quaternion FromMatrix( Matrix33 const &mat ); 
+	static Quaternion FromMatrix( Matrix33 &mat ); 
 	static Quaternion FromMatrix( Matrix44 const &mat ); 
 
 	static Quaternion Around( Vector3 const &axis, float const angle_radians );
-	static Quaternion FromEuler( Vector3 const &euler );
-	static inline Quaternion FromEuler( float x, float y, float z ) { return FromEuler( Vector3( x, y, z ) ); }
-	static Quaternion FromEuler( Vector3 const &euler, eRotationOrder const order );
+	//static Quaternion FromEuler( Vector3 const &euler );
+	//static inline Quaternion FromEuler( float x, float y, float z ) { return FromEuler( Vector3( x, y, z ) ); }
+	static Quaternion FromEuler( Vector3 const &euler, eRotationOrder const order = ROTATE_ZYX );
 
 	static Quaternion LookAt( Vector3 const forward );
 };

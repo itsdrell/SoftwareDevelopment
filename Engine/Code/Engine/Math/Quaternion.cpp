@@ -6,6 +6,8 @@
 #include "Quaternion.hpp"
 #include <corecrt_math.h>
 #include "Matrices/Matrix33.hpp"
+#include "Engine/Math/Matrices/Matrix44.hpp"
+#include "../Core/Tools/ErrorWarningAssert.hpp"
 
 
 /************************************************************************/
@@ -174,7 +176,7 @@ Matrix33 Quaternion::get_mat3() const
 	Matrix33 ret;
 
 	ret.SetBasis( row0, row1, row2 );
-
+	ret.SetBasis(Vector3(row0.x, row1.x, row2.x), Vector3(row0.y, row1.y, row2.y), Vector3(row0.z, row1.z, row2.z));
 	return ret;
 }
 
@@ -187,12 +189,64 @@ Matrix44 Quaternion::get_mat4() const
 //------------------------------------------------------------------------
 Vector3 Quaternion::get_euler() const 
 {
-	Matrix33 mat = get_mat3();
-	return EulerFromMatrix(mat);
+	// From http://www.darwin3d.com/gamedev/quat2eul.cpp
+
+	Vector3 euler;
+	/// Local Variables ///////////////////////////////////////////////////////////
+	float matrix[3][3];
+	float cx,sx,x;
+	float cy,sy,y,yr;
+	float cz,sz,z;
+	///////////////////////////////////////////////////////////////////////////////
+	// CONVERT QUATERNION TO MATRIX - I DON'T REALLY NEED ALL OF IT
+	matrix[0][0] = 1.0f - (2.0f * i.y * i.y) - (2.0f * i.z * i.z);
+	//	matrix[0][1] = (2.0f * quat->x * quat->y) - (2.0f * quat->w * quat->z);
+	//	matrix[0][2] = (2.0f * quat->x * quat->z) + (2.0f * quat->w * quat->y);
+	matrix[1][0] = (2.0f * i.x * i.y) + (2.0f * r * i.z);
+	//	matrix[1][1] = 1.0f - (2.0f * quat->x * quat->x) - (2.0f * quat->z * quat->z);
+	//	matrix[1][2] = (2.0f * quat->y * quat->z) - (2.0f * quat->w * quat->x);
+	matrix[2][0] = (2.0f * i.x * i.z) - (2.0f * r * i.y);
+	matrix[2][1] = (2.0f * i.y * i.z) + (2.0f * r * i.x);
+	matrix[2][2] = 1.0f - (2.0f * i.x * i.x) - (2.0f * i.y * i.y);
+
+	sy = -matrix[2][0];
+	cy = sqrt(1 - (sy * sy));
+	yr = (float)atan2(sy,cy);
+	euler.y = (yr * 180.0f) / (float)PI;
+
+	// AVOID DIVIDE BY ZERO ERROR ONLY WHERE Y= +-90 or +-270 
+	// NOT CHECKING cy BECAUSE OF PRECISION ERRORS
+	if (sy != 1.0f && sy != -1.0f)	
+	{
+		cx = matrix[2][2] / cy;
+		sx = matrix[2][1] / cy;
+		euler.x = ((float)atan2(sx,cx) * 180.0f) / (float)PI;	// RAD TO DEG
+
+		cz = matrix[0][0] / cy;
+		sz = matrix[1][0] / cy;
+		euler.z = ((float)atan2(sz,cz) * 180.0f) / (float)PI;	// RAD TO DEG
+	}
+	else
+	{
+		// SINCE Cos(Y) IS 0, I AM SCREWED.  ADOPT THE STANDARD Z = 0
+		// I THINK THERE IS A WAY TO FIX THIS BUT I AM NOT SURE.  EULERS SUCK
+		// NEED SOME MORE OF THE MATRIX TERMS NOW
+		matrix[1][1] = 1.0f - (2.0f * i.x * i.x) - (2.0f * i.z * i.z);
+		matrix[1][2] = (2.0f * i.y * i.z) - (2.0f * r * i.x);
+		cx = matrix[1][1];
+		sx = -matrix[1][2];
+		euler.x = ((float)atan2(sx,cx) * 180.0f) / (float)PI;	// RAD TO DEG
+
+		cz = 1.0f;
+		sz = 0.0f;
+		euler.z = ((float)atan2(sz,cz) * 180.0f) / (float)PI;	// RAD TO DEG
+	}
+	
+	return euler;
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::FromMatrix( Matrix33 const &mat ) 
+Quaternion Quaternion::FromMatrix( Matrix33 &mat ) 
 {
 	float m00 = mat.GetValueAt( 0, 0 );
 	float m11 = mat.GetValueAt( 1, 1 );
@@ -244,15 +298,17 @@ Quaternion Quaternion::FromMatrix( Matrix33 const &mat )
 //------------------------------------------------------------------------
 Quaternion Quaternion::FromMatrix( Matrix44 const &mat )
 {
-	return Quaternion::FromMatrix( mat.GetAsMatrix33() );
+	Matrix33 rot = mat.GetAsMatrix33();
+	Quaternion newQaut = Quaternion::FromMatrix(rot);
+	return newQaut;
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::Around( Vector3 const &axis, float const angle_radians ) 
+Quaternion Quaternion::Around( Vector3 const &axis, float const angle ) 
 {
-	float const half_angle = .5f * angle_radians;
-	float const c = cosf(half_angle);
-	float const s = sinf(half_angle);
+	float const half_angle = .5f * angle;
+	float const c = CosDegrees(half_angle);
+	float const s = SinDegrees(half_angle);
 
 	return Quaternion( c, axis * s );
 }
@@ -260,12 +316,16 @@ Quaternion Quaternion::Around( Vector3 const &axis, float const angle_radians )
 //------------------------------------------------------------------------
 Quaternion Quaternion::FromEuler( Vector3 const &euler, eRotationOrder const rot_order ) 
 {
-	if (rot_order == ROTATE_DEFAULT) {
-		return Quaternion::FromEuler(euler);
-	} else {
-		Quaternion rotx = Quaternion::Around( Vector3::RIGHT, euler.x * .5f );
-		Quaternion roty = Quaternion::Around( Vector3::UP, euler.y * .5f );
-		Quaternion rotz = Quaternion::Around( Vector3::FORWARD, euler.z * .5f );
+	//if (rot_order == ROTATE_DEFAULT) {
+	//	return Quaternion::FromEuler(euler);
+	//} else {
+		//Quaternion rotx = Quaternion::Around( Vector3::RIGHT, euler.x * .5f );
+		//Quaternion roty = Quaternion::Around( Vector3::UP, euler.y * .5f );
+		//Quaternion rotz = Quaternion::Around( Vector3::FORWARD, euler.z * .5f );
+		Quaternion rotx = Quaternion::Around( Vector3::RIGHT, euler.x);
+		Quaternion roty = Quaternion::Around( Vector3::UP, euler.y  );
+		Quaternion rotz = Quaternion::Around( Vector3::FORWARD, euler.z  );
+
 
 		switch (rot_order) {
 		case ROTATE_XYZ:
@@ -280,35 +340,35 @@ Quaternion Quaternion::FromEuler( Vector3 const &euler, eRotationOrder const rot
 		default:
 			return rotz * roty * rotx;
 		}
-	}
+	
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::FromEuler( Vector3 const &euler ) 
-{
-	// If this changes - this method is no longer valid
-	//ASSERT( ROTATE_DEFAULT == ROTATE_ZXY );
-
-	Vector3 const he = euler * .5f;
-	float cx = cosf( he.x );
-	float sx = sinf( he.x );
-	float cy = cosf( he.y );
-	float sy = sinf( he.y );
-	float cz = cosf( he.z );
-	float sz = sinf( he.z );
-
-	float r =   cx*cy*cz + sx*sy*sz;
-	float ix =  sx*cy*cz + cx*sy*sz;
-	float iy =  cx*sy*cz - sx*cy*sz;
-	float iz =  cx*cy*sz - sx*sy*cz;
-
-
-	Quaternion q = Quaternion( r, ix, iy, iz );
-	q.normalize();
-
-	// ASSERT( q.is_unit() );
-	return q;
-}
+// Quaternion Quaternion::FromEuler( Vector3 const &euler ) 
+// {
+// 	// If this changes - this method is no longer valid
+// 	GUARANTEE_OR_DIE( ROTATE_DEFAULT == ROTATE_ZYX , "quaternian error");
+// 
+// 	Vector3 const he = euler * .5f;
+// 	float cx = cosf( he.x );
+// 	float sx = sinf( he.x );
+// 	float cy = cosf( he.y );
+// 	float sy = sinf( he.y );
+// 	float cz = cosf( he.z );
+// 	float sz = sinf( he.z );
+// 
+// 	float r =   cx*cy*cz + sx*sy*sz;
+// 	float ix =  sx*cy*cz + cx*sy*sz;
+// 	float iy =  cx*sy*cz - sx*cy*sz;
+// 	float iz =  cx*cy*sz - sx*sy*cz;
+// 
+// 
+// 	Quaternion q = Quaternion( r, Vector3(ix, iy, iz ));
+// 	q.normalize();
+// 
+// 	GUARANTEE_OR_DIE( q.is_unit(), "Error" );
+// 	return q;
+// }
 
 //------------------------------------------------------------------------
 Quaternion Quaternion::LookAt( Vector3 const forward )

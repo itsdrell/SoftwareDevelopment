@@ -7,7 +7,7 @@ Renderable::~Renderable()
 
 void Renderable::SetPosition(const Vector3& position)
 {
-	m_modelMatrix = Matrix44::MakeTranslation3D(position);
+	m_transform.SetLocalPosition(position);
 }
 
 bool Renderable::UsesLight()

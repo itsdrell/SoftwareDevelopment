@@ -1,4 +1,5 @@
 #include "Transform.hpp"
+#include "..\..\Math\Quaternion.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 const transform_t transform_t::IDENTITY = transform_t();
@@ -39,11 +40,10 @@ Matrix44 transform_t::GetMatrix() const
 {
 	Matrix44 result;
 
-
-
 	Matrix44 translation = Matrix44::MakeTranslation3D(position);
 	
 	// Get the matrix for all the things
+	Vector3 euler = rotation.get_euler();
 	Matrix44 rotationAroundX = Matrix44::MakeRotationDegreesAroundX(euler.x);
 	Matrix44 rotationAroundY = Matrix44::MakeRotationDegreesAroundY(euler.y);
 	Matrix44 rotationAroundZ = Matrix44::MakeRotationDegreesAroundZ(euler.z);
@@ -63,7 +63,13 @@ Matrix44 transform_t::GetMatrix() const
 void transform_t::SetMatrix(Matrix44 const & mat)
 {
 	Matrix44 result = mat;
-	result.Invert();
+
+	position = mat.GetPosition();
+
+	scale = Vector3(mat.GetRight().GetLength(), mat.GetUp().GetLength(), mat.GetForward().GetLength());
+
+	rotation = Quaternion::FromMatrix(mat);
+
 }
 
 void transform_t::SetPosition(Vector3 pos)
@@ -72,6 +78,11 @@ void transform_t::SetPosition(Vector3 pos)
 }
 
 
+void transform_t::Translate(Vector3 offset)
+{
+	position += offset;
+}
+
 Vector3 transform_t::GetPosition() const
 {
 	return position;
@@ -79,17 +90,20 @@ Vector3 transform_t::GetPosition() const
 
 void transform_t::SetRotationEuler(Vector3 theEuler)
 {
-	this->euler = theEuler;
+	rotation = Quaternion::FromEuler(theEuler);
 }
 
 void transform_t::RotateByEuler(Vector3 theEuler)
 {
-	euler.x;
+	Vector3 currentRotation = rotation.get_euler();
+	Vector3 newRotation = currentRotation + theEuler;
+
+	rotation = Quaternion::FromEuler(newRotation);
 }
 
 Vector3 transform_t::GetEulerAngles() const
 {
-	return euler;
+	return rotation.get_euler();
 }
 
 void transform_t::SetScale(Vector3 s)
@@ -126,6 +140,11 @@ void Transform::SetLocalPosition(Vector3 pos)
 }
 
 
+void Transform::TranslateLocal(Vector3 offset)
+{
+	m_local_transform.Translate(offset);
+}
+
 Vector3 Transform::GetLocalPosition() const
 {
 	return m_local_transform.GetPosition();
@@ -156,6 +175,12 @@ Vector3 Transform::GetLocalScale() const
 	return m_local_transform.GetScale();
 }
 
+void Transform::LookAtLocal(Vector3 & localPos, Vector3 localUp)
+{
+	Matrix44 lookAt = Matrix44::LookAt(GetLocalPosition(), localPos, localUp);
+	SetLocalMatrix(lookAt);
+}
+
 void Transform::SetParentTransform(Transform& parent)
 {
 	m_parentTransform = &parent; 
@@ -184,6 +209,41 @@ Matrix44 Transform::GetWorldMatrix() const
 Vector3 Transform::GetWorldPosition() const
 {
 	return GetWorldMatrix().GetPosition();
+}
+
+void Transform::SetWorldMatrix(Matrix44& theMatrix)
+{
+	// New World = Local * parent(world)
+	// Local = New World * parent(world) inverse
+	
+	Matrix44 parent;
+	
+	if(m_parentTransform != nullptr)
+	{
+		parent = m_parentTransform->GetWorldMatrix();
+	}
+
+	parent.Invert();
+
+	theMatrix.Append(parent);
+	
+	m_local_transform.SetMatrix(theMatrix);
+}
+
+void Transform::LookAtWorld(Vector3 & worldPos, Vector3 worldUp)
+{
+	Matrix44 lookAt = Matrix44::LookAt(GetWorldPosition(), worldPos, worldUp);
+	SetWorldMatrix(lookAt);
+}
+
+void Transform::SimpleMoveTowardPoint(Vector3& position, float speed, float ds)
+{
+	Vector3 currentPos = GetWorldPosition();
+	Vector3 distance = position - currentPos;
+
+	Vector3 amountToMove = distance.Normalize() * (speed * ds);
+
+	TranslateLocal(amountToMove);
 }
 
 // void Transform::AddChild(Transform& newchild)

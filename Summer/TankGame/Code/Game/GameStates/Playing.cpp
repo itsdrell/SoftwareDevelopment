@@ -13,6 +13,8 @@
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 #include "Engine/Math/Ranges/FloatRange.hpp"
 #include "Game/GameSpecific/GameMap.hpp"
+#include "../GameSpecific/Enemy.hpp"
+#include "Engine/Math/Quaternion.hpp"
 
 Playing::Playing()
 {
@@ -32,6 +34,7 @@ void Playing::StartUp()
 
 
 	m_player = AddPlayer();
+	m_testEnemy = AddEnemy(Vector3(2.f, 0.f, 0.f));
 
 	m_map = new GameMap();
 	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
@@ -43,7 +46,6 @@ void Playing::StartUp()
 	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
-
 
 	m_scene->AddCamera(m_camera);
 
@@ -81,9 +83,38 @@ Player* Playing::AddPlayer()
 	return newPlayer;
 }
 
+Enemy* Playing::AddEnemy(const Vector3& pos)
+{
+	Enemy* newEnemy = new Enemy(pos);
+
+	MeshBuilder mb;
+	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::RED);
+	newEnemy->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
+
+	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
+	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	Rgba tint = Rgba::RED;
+	enemyMaterial->SetTint(tint);
+
+	newEnemy->m_renderable->SetMaterial( enemyMaterial );
+	newEnemy->m_renderable->m_usesLight = true;
+
+	m_scene->AddRenderable(newEnemy->m_renderable);
+
+	return newEnemy;
+}
+
 void Playing::Update()
 {
 	m_player->Update();
+	
+	if(WasKeyJustPressed(G_THE_LETTER_R))
+		m_player->m_transform.RotateLocalByEuler(Vector3(90.f, 0.f, 0.f));
+	
+	m_testEnemy->m_transform.SimpleMoveTowardPoint(m_player->m_transform.GetWorldPosition(), 1.f, g_theGameClock->deltaTime);
+	DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
+	DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
+
 	CheckKeyBoardInputs();
 
 	//DebugRenderGrid(0.f, Vector3::ZERO, 20.f, 20.f);
@@ -178,7 +209,7 @@ void Playing::CameraInput()
 Vector3 Playing::GetMovement()
 {
 	Vector3 result = Vector3::ZERO;
-	float speed = 2.f;
+	float speed = 6.f;
 
 	float dt = g_theGameClock->deltaTime;
 

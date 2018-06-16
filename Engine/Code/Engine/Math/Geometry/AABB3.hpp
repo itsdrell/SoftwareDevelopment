@@ -48,14 +48,14 @@ public:
 	//--------------------------------------------------------------------------
 	std::vector<Vector3> GetCornerPoints() const;
 	
-	Vector3 GetFrontBottomLeftPoint()	const { return GetCornerPoints().at(0); }
-	Vector3 GetFrontBottomRightPoint()	const { return GetCornerPoints().at(1); }
-	Vector3 GetFrontTopLeftPoint()		const { return GetCornerPoints().at(2); }
-	Vector3 GetFrontTopRightPoint()		const { return GetCornerPoints().at(3); }
-	Vector3 GetBackBottomLeftPoint()	const { return GetCornerPoints().at(4); }
-	Vector3 GetBackBottomRightPoint()	const { return GetCornerPoints().at(5); }
-	Vector3 GetBackTopLeftPoint()		const { return GetCornerPoints().at(6); }
-	Vector3 GetBackTopRightPoint()		const { return GetCornerPoints().at(7); }
+	Vector3 GetFrontBottomLeftPoint()	const { return mins; }
+	Vector3 GetFrontBottomRightPoint()	const { return Vector3( maxs.x, mins.y, mins.z ); }
+	Vector3 GetFrontTopLeftPoint()		const { return Vector3( mins.x, maxs.y, mins.z ); }
+	Vector3 GetFrontTopRightPoint()		const { return Vector3( maxs.x, maxs.y, mins.z ); }
+	Vector3 GetBackBottomLeftPoint()	const { return Vector3( mins.x, mins.y, maxs.z ); }
+	Vector3 GetBackBottomRightPoint()	const { return Vector3( maxs.x, mins.y, maxs.z ); }
+	Vector3 GetBackTopLeftPoint()		const { return Vector3( mins.x, maxs.y, maxs.z ); }
+	Vector3 GetBackTopRightPoint()		const { return maxs; }
 
 
 	// Makers

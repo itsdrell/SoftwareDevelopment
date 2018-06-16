@@ -286,6 +286,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameSpecific\Enemy.cpp" />
     <ClCompile Include="GameSpecific\GameMap.cpp" />
     <ClCompile Include="GameSpecific\Player.cpp" />
     <ClCompile Include="GameStates\Attract.cpp" />
@@ -304,6 +305,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameSpecific\GameMap.hpp" />
+    <ClInclude Include="GameSpecific\Enemy.hpp" />
     <ClInclude Include="GameSpecific\Player.hpp" />
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />

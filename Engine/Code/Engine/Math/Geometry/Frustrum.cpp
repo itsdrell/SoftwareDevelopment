@@ -37,11 +37,12 @@ Frustrum Frustrum::FromMatrix(Matrix44& mat)
 	Frustrum frustrum;
 	frustrum.planes[LEFT] = Plane(worldCorners[0], worldCorners[4], worldCorners[2]);
 
+	// These are counterclockwise based off view from the center
 	// These are probably wrong 
-	frustrum.planes[RIGHT] = Plane(worldCorners[1], worldCorners[5], worldCorners[3]);
+	frustrum.planes[RIGHT] = Plane(worldCorners[5], worldCorners[1], worldCorners[7]);
 	frustrum.planes[BOTTOM] = Plane(worldCorners[0], worldCorners[1], worldCorners[5]);
 	frustrum.planes[TOP] = Plane(worldCorners[2], worldCorners[3], worldCorners[7]);
-	frustrum.planes[BACK] = Plane(worldCorners[5], worldCorners[4], worldCorners[7]);
+	frustrum.planes[BACK] = Plane(worldCorners[4], worldCorners[5], worldCorners[7]);
 	frustrum.planes[FRONT] = Plane(worldCorners[0], worldCorners[1], worldCorners[2]);
 
 	return frustrum;

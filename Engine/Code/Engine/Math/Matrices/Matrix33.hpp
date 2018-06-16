@@ -7,18 +7,23 @@ class Matrix33
 public:
 
 	Matrix33();
+	Matrix33(Vector3& orientation);
+	Matrix33(Vector3& i, Vector3& j, Vector3& k);
 
+	float GetValueAt(uint a, uint b);
+	std::vector<float> GetValues();
 
-	float GetValueAt(uint a, uint b) const;
-	void SetBasis(const Vector3& a, const Vector3& b, const Vector3& c);
+	void SetBasis(const Vector3& i, const Vector3& j, const Vector3& k);
 
 
 	static Matrix33 LookAt(const Vector3& theVector);
 
+public:
+	float	Ix, Iy, Iz,   Jx, Jy, Jz,   Kx, Ky, Kz;
 };
 
 
-Vector3 EulerFromMatrix(const Matrix33& theMatrix);
+Vector3 EulerFromMatrix(Matrix33& theMatrix);
 
 
 // Collumn Major (squirrels way)

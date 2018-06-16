@@ -13,6 +13,7 @@ class Renderable;
 class Light;
 class Player;
 class GameMap;
+class Enemy;
 
 //=============================================================
 // ENUMS
@@ -34,6 +35,7 @@ public:
 	
 	void		StartUp();
 	Player*		AddPlayer();
+	Enemy*		AddEnemy(const Vector3& pos);
 
 	void		Update();
 
@@ -55,6 +57,8 @@ public:
 	Camera*					m_camera;
 
 	Player*					m_player;
+
+	Enemy*					m_testEnemy;
 
 	Light*					m_sun;
 
