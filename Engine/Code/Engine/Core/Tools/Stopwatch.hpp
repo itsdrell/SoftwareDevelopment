@@ -29,13 +29,13 @@ public:
 
 	// if we really just want to use it as a timer
 	// this returns how long since the last reset
-	float GetElapsedTime();
+	float GetElapsedTime() const;
 
 	// elapsed time divided by the interval
 	float GetNormalizedElapsedTime(); 
 
 	// returns true if the interval has elapsed;
-	bool HasElapsed(); 
+	bool HasElapsed() const;
 
 	// resets the interval
 	// (get_elapsed_time() should return 0.0f);

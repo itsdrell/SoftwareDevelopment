@@ -17,6 +17,8 @@ class Attract;
 class Playing;
 class Loading;
 class ReadyUp;
+class Victory;
+class Defeat;
 
 //=============================================================
 // ENUMS
@@ -28,6 +30,8 @@ enum GameStates
 	ATTRACT,
 	PLAY,
 	READY_UP_NERDS,
+	VICTORY,
+	DEFEAT,
 	NUM_OF_GAME_STATES
 };
 
@@ -60,11 +64,15 @@ public:
 	DevConsole*		m_console;
 	Texture*		m_tileTexture;
 
+	
+	// #TODO these could be an array of game states using the enum :(
 	GameStates		m_currentState;
 	Attract*		m_attractState;
 	Playing*		m_playingState;
 	Loading*		m_loadingState;
 	ReadyUp*		m_readyUpState;
+	Victory*		m_victoryState;
+	Defeat*			m_defeatState;
 
 
 };

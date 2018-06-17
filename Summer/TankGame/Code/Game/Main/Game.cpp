@@ -31,7 +31,8 @@
 #include "Engine/Math/Geometry/AABB3.hpp"
 #include "Engine/Math/Matrices/Matrix33.hpp"
 #include "Engine/Math/Quaternion.hpp"
-
+#include "../GameStates/Victory.hpp"
+#include "Game/GameStates/Defeat.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -61,7 +62,8 @@ Game::Game()
 	m_playingState = new Playing();
 	m_loadingState = new Loading();
 	m_readyUpState = new ReadyUp();
-	
+	m_victoryState = new Victory();
+	m_defeatState = new Defeat();
 }
 
 void Game::StartUp()
@@ -91,6 +93,12 @@ void Game::Update()
 		break;
 	case READY_UP_NERDS:
 		m_readyUpState->Update();
+		break;
+	case VICTORY:
+		m_victoryState->Update();
+		break;
+	case DEFEAT:
+		m_defeatState->Update();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;
@@ -161,6 +169,12 @@ void Game::Render() const
 		break;
 	case READY_UP_NERDS:
 		m_readyUpState->Render();
+		break;
+	case VICTORY:
+		m_victoryState->Render();
+		break;
+	case DEFEAT:
+		m_defeatState->Render();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;

@@ -49,6 +49,12 @@
     <ClCompile Include="GameSpecific\Enemy.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameStates\Victory.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStates\Defeat.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -74,5 +80,7 @@
     <ClInclude Include="GameSpecific\Player.hpp" />
     <ClInclude Include="GameSpecific\GameMap.hpp" />
     <ClInclude Include="GameSpecific\Enemy.hpp" />
+    <ClInclude Include="GameStates\Victory.hpp" />
+    <ClInclude Include="GameStates\Defeat.hpp" />
   </ItemGroup>
 </Project>

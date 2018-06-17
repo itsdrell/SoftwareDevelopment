@@ -32,7 +32,7 @@ bool StopWatch::SetTimer(float seconds)
 	return true;
 }
 
-float StopWatch::GetElapsedTime()
+float StopWatch::GetElapsedTime() const
 {
 	return (m_startTime + m_length) - m_reference->total.seconds;
 }
@@ -44,7 +44,7 @@ float StopWatch::GetNormalizedElapsedTime()
 	return percentDone;
 }
 
-bool StopWatch::HasElapsed()
+bool StopWatch::HasElapsed() const
 {
 	
 	float endTime = m_startTime + m_length;
