@@ -34,7 +34,7 @@ void Playing::StartUp()
 
 
 	m_player = AddPlayer();
-	m_testEnemy = AddEnemy(Vector3(2.f, 0.f, 0.f));
+	m_testEnemy = AddEnemy(Vector3(20.f, 0.f, 0.f));
 
 	m_map = new GameMap();
 	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
@@ -88,12 +88,14 @@ Enemy* Playing::AddEnemy(const Vector3& pos)
 	Enemy* newEnemy = new Enemy(pos);
 
 	MeshBuilder mb;
-	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::RED);
+	//mb.AddMeshFromObjFile("Data/Model/Mech/leo.obj");
+	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::BLACK);
+	mb.AddUVSphere(Vector3::ONE, 1.f, 16, 16, Rgba::WHITE);
 	newEnemy->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
 	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	Rgba tint = Rgba::RED;
+	Rgba tint = Rgba::WHITE;
 	enemyMaterial->SetTint(tint);
 
 	newEnemy->m_renderable->SetMaterial( enemyMaterial );
@@ -107,17 +109,29 @@ Enemy* Playing::AddEnemy(const Vector3& pos)
 void Playing::Update()
 {
 	m_player->Update();
+	m_testEnemy->Update();
 	
+
 	if(WasKeyJustPressed(G_THE_LETTER_R))
-		m_player->m_transform.RotateLocalByEuler(Vector3(90.f, 0.f, 0.f));
-	
-	m_testEnemy->m_transform.SimpleMoveTowardPoint(m_player->m_transform.GetWorldPosition(), 1.f, g_theGameClock->deltaTime);
-	DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
-	DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
+		m_testEnemy->m_transform.RotateLocalByEuler(Vector3(90.f, 0.f, 0.f));
+	if(WasKeyJustPressed(G_THE_LETTER_T))
+		m_player->m_transform.RotateLocalByEuler(Vector3(0.f, 90.f, 0.f));
 
 	CheckKeyBoardInputs();
+	
 
-	//DebugRenderGrid(0.f, Vector3::ZERO, 20.f, 20.f);
+	//--------------------------------------------------------------------------
+	//m_testEnemy->m_transform.RotateLocalByEuler(Vector3(0.f, 90.f, 0.f));
+	DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
+	DebugRenderBasis(0.f, m_testEnemy->m_transform.GetWorldMatrix());
+	
+	DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
+	DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix());
+
+	//--------------------------------------------------------------------------
+
+
+
 }
 
 void Playing::Render() const

@@ -125,7 +125,7 @@ void DebugRenderTask::Render() const
 		r->HighlightPoint(m_options.position, m_options.scale, currentColor);
 		break;
 	case RENDER_BASIS:
-		r->DrawBasis(m_options.position, 1.f);
+		r->DrawBasis(m_options.basis, m_options.scale);
 		break;
 	case RENDER_2D_TEXT:
 		r->EnableWireframe(false);
@@ -583,7 +583,7 @@ void DebugRenderLineSegment(float lifetime, Vector3 const &p0, Vector3 const &p1
 	g_DebugRenderTask.push_back(newTask);
 }
 
-void DebugRenderBasis(float lifetime, Matrix44 & basis, DebugRenderMode const mode, Rgba const & start_color, Rgba const & end_color)
+void DebugRenderBasis(float lifetime, Matrix44 & basis, float scale, DebugRenderMode const mode, Rgba const & start_color, Rgba const & end_color)
 {
 	DebugRenderTask* newTask = new DebugRenderTask();
 
@@ -599,15 +599,8 @@ void DebugRenderBasis(float lifetime, Matrix44 & basis, DebugRenderMode const mo
 	// Specific to this call
 	newTask->m_function = RENDER_BASIS;
 
-	Vector3 right = basis.GetRight();
-	Vector3 up = basis.GetUp();
-	Vector3 forward = basis.GetForward();
-
-	Vector3 position = basis.GetPosition();
-
-	Vector3 wpos = GetWorldPositionFromACamerasDirections(position,up,right,forward);
-
-	newTask->m_options.position = wpos;
+	newTask->m_options.basis = basis;
+	newTask->m_options.scale = scale;
 
 	//////////////////////////////////////////////////////////////////////////
 	g_DebugRenderTask.push_back(newTask);

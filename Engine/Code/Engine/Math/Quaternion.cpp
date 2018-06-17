@@ -135,6 +135,11 @@ Vector4 Quaternion::GetAsVector4() const
 //------------------------------------------------------------------------
 Quaternion Quaternion::get_conjugate() const
 {
+	//if(*this == Quaternion(r, (Vector3::ZERO)))
+	//{
+	//	return Quaternion(-r, -i);
+	//}
+	
 	return Quaternion( r, -i );
 }
 
@@ -194,9 +199,9 @@ Vector3 Quaternion::get_euler() const
 	Vector3 euler;
 	/// Local Variables ///////////////////////////////////////////////////////////
 	float matrix[3][3];
-	float cx,sx,x;
-	float cy,sy,y,yr;
-	float cz,sz,z;
+	float cx,sx;
+	float cy,sy,yr;
+	float cz,sz;
 	///////////////////////////////////////////////////////////////////////////////
 	// CONVERT QUATERNION TO MATRIX - I DON'T REALLY NEED ALL OF IT
 	matrix[0][0] = 1.0f - (2.0f * i.y * i.y) - (2.0f * i.z * i.z);
@@ -378,6 +383,13 @@ Quaternion Quaternion::LookAt( Vector3 const forward )
 }
 
 
+std::string Quaternion::ToString() const
+{
+	std::string result = Stringf("r : %f (%f , %f , %f )" , r, i.x, i.y, i.z);
+
+	return result;
+}
+
 //------------------------------------------------------------------------
 Quaternion QuaternionGetDifference( Quaternion const &a, Quaternion const &b ) 
 {
@@ -503,8 +515,10 @@ Quaternion Lerp( Quaternion const &a, Quaternion const &b, float const &t )
 }
 
 //------------------------------------------------------------------------
-Quaternion QuaternionRotateTorward( Quaternion const &start, Quaternion const &end, float max_angle_radians ) 
+Quaternion QuaternionRotateTorward( Quaternion const &start, Quaternion const &end, float maxAngelFloat ) 
 {
+	float max_angle_radians = ConvertDegreesToRadians(maxAngelFloat);
+		
 	float angle = acosf( QuaternionDot( start, end ) );
 	if (angle < 0.0f) {
 		angle = -angle;

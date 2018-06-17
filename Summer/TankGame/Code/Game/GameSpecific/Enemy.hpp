@@ -32,6 +32,7 @@ public:
 	void Update();
 
 public:
+	float		m_speed;
 
 };
 

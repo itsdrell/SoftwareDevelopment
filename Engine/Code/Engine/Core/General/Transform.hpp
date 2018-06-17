@@ -85,6 +85,8 @@ public:
 	//---------------------------------------------------------------------------
 	void SimpleMoveTowardPoint(Vector3& position, float speed, float ds);
 
+	void RotateTowards(const Transform& target, float maxDegreesToTurn);
+
 	//--------------------------------------------------------------------------
 	void SetParentTransform(Transform& parent);
 

@@ -78,8 +78,8 @@ struct Quaternion
 // 		Vector4 data;
 // 	};
 
-	Vector3 i;
 	float r;
+	Vector3 i;
 
 	Quaternion() 
 		: i(0.0f)
@@ -123,6 +123,8 @@ struct Quaternion
 	static Quaternion FromEuler( Vector3 const &euler, eRotationOrder const order = ROTATE_ZYX );
 
 	static Quaternion LookAt( Vector3 const forward );
+
+	std::string ToString() const;
 };
 
 // another name for this is a Quaternion
@@ -159,7 +161,7 @@ Quaternion QuaternionExp( Quaternion const &q );
 Quaternion QuaternionScale( Quaternion const &q, float s ); 
 Quaternion QuaternionPow( Quaternion const &q, float e );
 Quaternion Slerp( Quaternion const &a, Quaternion const &b, float const t ); 
-Quaternion QuaternionRotateTorward( Quaternion const &start, Quaternion const &end, float max_angle_radians );
+Quaternion QuaternionRotateTorward( Quaternion const &start, Quaternion const &end, float maxAngelFloat );
 
 
 Quaternion Lerp( Quaternion const &a, Quaternion const &b, float const &t );

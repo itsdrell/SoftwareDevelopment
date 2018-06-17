@@ -844,13 +844,15 @@ void Renderer::DrawAABB2(const AABB2& bounds,const  Rgba& color, bool filled)
 }
 
 
-void Renderer::DrawBasis(const Vector3& position, float lengthOfLine)
+void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 {
 	m_currentTexture = m_defaultTexture;
 	
-	Vector3 x = position + Vector3(lengthOfLine,0.f,0.f);
-	Vector3 y = position + Vector3(0.f,lengthOfLine,0.f);
-	Vector3 z = position + Vector3(0.f,0.f,lengthOfLine);
+	Vector3 position = basis.GetPosition();
+
+	Vector3 x = position + (basis.GetRight() * lengthOfLine);
+	Vector3 y = position + (basis.GetUp() * lengthOfLine);
+	Vector3 z = position + (basis.GetForward() * lengthOfLine);
 
 	DrawLine3D(position, x, Rgba::RED);
 	DrawLine3D(position, y, Rgba::YELLOW);

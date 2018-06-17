@@ -1,5 +1,6 @@
 #include "Transform.hpp"
 #include "..\..\Math\Quaternion.hpp"
+#include "..\..\Renderer\Systems\DebugRenderSystem.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 const transform_t transform_t::IDENTITY = transform_t();
@@ -225,9 +226,9 @@ void Transform::SetWorldMatrix(Matrix44& theMatrix)
 
 	parent.Invert();
 
-	theMatrix.Append(parent);
+	//theMatrix.Append(parent);
 	
-	m_local_transform.SetMatrix(theMatrix);
+	m_local_transform.SetMatrix(theMatrix * parent);
 }
 
 void Transform::LookAtWorld(Vector3 & worldPos, Vector3 worldUp)
@@ -244,6 +245,30 @@ void Transform::SimpleMoveTowardPoint(Vector3& position, float speed, float ds)
 	Vector3 amountToMove = distance.Normalize() * (speed * ds);
 
 	TranslateLocal(amountToMove);
+}
+
+void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
+{
+	Quaternion start = m_local_transform.rotation;
+	//Quaternion end = target.m_local_transform.rotation;
+	//end.invert();
+
+	Vector3 dir = target.m_local_transform.rotation.get_forward();
+	Quaternion end = m_local_transform.rotation.LookAt(-dir);
+	
+	//Quaternion end = target.m_local_transform.rotation;
+
+	Vector3 startRot = m_local_transform.GetEulerAngles();
+	Vector3 endRot = target.m_local_transform.GetEulerAngles();
+	//Quaternion end = Quaternion::FromEuler(-endRot);
+
+	Quaternion newRotation = QuaternionRotateTorward(start, end, maxDegreesToTurn);
+	//newRotation.invert();
+	
+	SetLocalRotationEuler(newRotation.get_euler());
+
+	//DebugRenderLog(0.f, newRotation.ToString());
+	//m_local_transform.SetRotationEuler();
 }
 
 // void Transform::AddChild(Transform& newchild)
