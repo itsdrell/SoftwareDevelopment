@@ -278,7 +278,7 @@ STATIC Sampler* Material::CreateSamplerFromString(std::string type)
 
 
 	// error check
-	if(type == "ERROR") { ERROR_RECOVERABLE("Could not find a Sampler type: " + type); }
+	if(type == "ERROR") { typeToCreate->Create(); }
 
 	return typeToCreate;
 }

@@ -11,6 +11,7 @@ class Renderer;
 class Vector2;
 class Texture;
 class Camera;
+class Mesh;
 
 //////////////////////////////////////////////////////////////////////////
 // Creating a struct that holds what needs to be printed for the console
@@ -48,6 +49,7 @@ public:
 	void RenderScrollBar();
 	void RenderAutoCorrect();
 	void RenderFPS();
+	void GenerateTextMesh();
 
 	// Utility
 	void Open(); 
@@ -99,7 +101,9 @@ private:
 	Renderer*	m_theRenderer;
 	Camera*		m_uiCamera;
 
-	bool m_isOpen;
+	bool		m_isOpen;
+
+	Mesh*		m_textMesh;
 
 	// Store Dimensions so we dont have to keep calling window class
 	float m_windowWidth;

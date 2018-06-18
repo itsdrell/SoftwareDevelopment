@@ -1,0 +1,8 @@
+<Material name = "sprite">
+    
+    <Shader name = "sprite" />
+    
+    <Textures>
+        <Texture bind = "0" path = "Fonts/moved.png"/>
+    </Textures>
+</Material>

@@ -21,6 +21,8 @@
 #include <map>
 #include "Clock.hpp"
 #include "../../Audio/AudioSystem.hpp"
+#include "../../Renderer/Systems/MeshBuilder.hpp"
+#include "../../Renderer/RenderableComponents/Material.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
@@ -219,7 +221,7 @@ void DevConsole::StartUp()
 	m_uiCamera = new Camera();
 	m_uiCamera->SetColorTarget( m_theRenderer->m_defaultColorTarget );
 	m_uiCamera->SetDepthStencilTarget(m_theRenderer->m_defaultDepthTarget);
-	
+
 	// reset the default camera
 	m_theRenderer->SetCamera();
 
@@ -313,38 +315,21 @@ void DevConsole::Render()
 
 	// The Input Line thing
 	//float barPosition = (m_barXPosition) + m_movement * m_currentEntry.length();
+
 	m_barXPosition = DetermineInputBarLocation();
 	if(m_showBar)
 		m_theRenderer->DrawText2D(Vector2(m_barXPosition - 4.5f,(-m_windowHeight * .5f) + 5.f), "|", 25.f, Rgba::WHITE, .5f);
-// 		m_theRenderer->DrawLine2D(Vector2(m_barXPosition,(-m_windowHeight * .5f) + 10.f),
-// 			Vector2(m_barXPosition,(-m_windowHeight * .5f) + m_windowHeight * .05f - 14.f), Rgba::WHITE);
+	// 		m_theRenderer->DrawLine2D(Vector2(m_barXPosition,(-m_windowHeight * .5f) + 10.f),
+	// 			Vector2(m_barXPosition,(-m_windowHeight * .5f) + m_windowHeight * .05f - 14.f), Rgba::WHITE);
 
-	// Draw current line
-	// Rainbow version
-	Rgba theColor = InterpolateRainbow(m_defaultColor, (m_currentTimer / m_switchAtThisTime));
-	m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, theColor);
-	// random color version
-	//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, GetRandomColor());
-
-	//////////////////////////////////////////////////////////////////////////
-	// Draw the output stuff
-	float currentYPadding = 0.f;
-	for(int i = (int)s_history.size() - m_scrollBarIndex; i > 0; i--)
+	if(m_textMesh != nullptr)
 	{
-		float currentY = m_startPosition.y + currentYPadding;
-
-		ConsoleDialogue currentDialogue = s_history.at(i);
-
-		m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + m_startPosition.x, (-m_windowHeight * .5f) + currentY),currentDialogue.m_text,m_textSize,currentDialogue.m_color);
-
-		currentYPadding += m_yheightToGrow;
-
-		//////////////////////////////////////////////////////////////////////////
-		// only draw whats on the screen (saves some fps)
-		if(currentYPadding >= m_windowHeight)
-			break;
+		m_theRenderer->BindMaterial(Material::CreateOrGetMaterial("uiText"));
+		m_theRenderer->DrawMesh(m_textMesh);
 	}
 
+	
+	m_theRenderer->BindMaterial(Material::CreateOrGetMaterial("default"));
 	RenderScrollBar();
 	RenderAutoCorrect();
 	
@@ -477,6 +462,46 @@ void DevConsole::RenderFPS()
 
 }
 
+void DevConsole::GenerateTextMesh()
+{
+	MeshBuilder mb;
+
+	// Draw current line
+	// Rainbow version
+	Rgba theColor = InterpolateRainbow(m_defaultColor, (m_currentTimer / m_switchAtThisTime));
+	mb.Add2DText(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, 1.f, theColor);
+	//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, theColor);
+	// random color version
+	//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, GetRandomColor());
+
+	//////////////////////////////////////////////////////////////////////////
+	// Draw the output stuff
+	float currentYPadding = 0.f;
+	uint scrollIndex = ClampInt(m_scrollBarIndex, 1, s_history.size()); // for scroll bar
+	for(uint i = s_history.size() - scrollIndex; i > 0; i--)
+	{
+		float currentY = m_startPosition.y + currentYPadding;
+
+		if(m_scrollBarIndex != 0)
+		{
+			ConsoleDialogue currentDialogue = s_history.at(i);
+
+			mb.Add2DText(Vector2((-m_windowWidth * .5f) + m_startPosition.x, (-m_windowHeight * .5f) + currentY),currentDialogue.m_text,m_textSize, 1.f, currentDialogue.m_color);
+			//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + m_startPosition.x, (-m_windowHeight * .5f) + currentY),currentDialogue.m_text,m_textSize,currentDialogue.m_color);
+
+			currentYPadding += m_yheightToGrow;
+
+			//////////////////////////////////////////////////////////////////////////
+			// only draw whats on the screen (saves some fps)
+			if(currentYPadding >= m_windowHeight)
+				break;
+		}
+		
+	}
+
+	m_textMesh = mb.CreateMesh<Vertex3D_PCU>();
+}
+
 void DevConsole::Open()
 {
 	// do stuff on open if you want
@@ -568,6 +593,7 @@ void DevConsole::UpdateFPS(float ds)
 
 void DevConsole::GetInput(unsigned char keyCode)
 {
+
 	// returns true is held down, we don't want other input atm so we ignore everything
 	if(CheckForCopyCutOrPaste())
 		return;
@@ -618,7 +644,7 @@ void DevConsole::GetInput(unsigned char keyCode)
 		break;
 	}
 
-	
+	GenerateTextMesh();
 	
 }
 
@@ -711,8 +737,6 @@ void DevConsole::ConsumeInput()
 		AddConsoleDialogue(ConsoleDialogue(m_currentEntry, m_defaultColor));
 	}
 
-	
-
 
 	AddACommandToHistory();
 
@@ -751,7 +775,7 @@ void DevConsole::HandleScrolling()
 
 	if(m_scrollBarIndex > s_history.size() - 50)
 	{
-		m_scrollBarIndex = (int) s_history.size() - 50;
+		m_scrollBarIndex = (int) s_history.size() - 50; // one less
 		return;
 	}	
 
@@ -761,14 +785,17 @@ void DevConsole::HandleScrolling()
 	if(direction > 0)
 	{
 		m_scrollBarIndex += scrollSpeed;
+		GenerateTextMesh();
 	}
 
 	if(direction < 0)
 	{
 		m_scrollBarIndex -= scrollSpeed;
+		GenerateTextMesh();
 	}
 
 	m_scrollBarIndex = ClampInt(m_scrollBarIndex, 1, (int)s_history.size());
+
 }
 
 void DevConsole::HandleAutoComplete()
