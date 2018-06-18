@@ -58,6 +58,9 @@ public:
 
 	void		CheckKeyBoardInputs();
 
+	void		GoToDefeatState();
+	void		GoToVictoryState();
+
 
 public:
 

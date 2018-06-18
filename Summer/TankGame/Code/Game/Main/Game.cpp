@@ -205,4 +205,14 @@ void Game::CheckKeyBoardInputs()
 	
 }
 
+void Game::GoToDefeatState()
+{
+	m_currentState = DEFEAT;
+	m_defeatState->Enter();
+}
+
+void Game::GoToVictoryState()
+{
+	m_currentState = VICTORY;
+}
 

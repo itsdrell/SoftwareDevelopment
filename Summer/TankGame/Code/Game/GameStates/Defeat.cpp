@@ -3,11 +3,12 @@
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "..\Main\Game.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
+#include "Game\GameStates\Playing.hpp"
 
 Defeat::Defeat()
 {
 	m_respawnTimer = new Timer(g_theGameClock);
-	m_respawnTimer->SetTimer(10.f);
+	m_respawnTimer->SetTimer(3.f);
 }
 
 void Defeat::Update()
@@ -23,6 +24,7 @@ void Defeat::KeyboardInput()
 		if(WasKeyJustPressed(KEYBOARD_SPACE))
 		{
 			g_theGame->m_currentState = PLAY;
+			g_theGame->m_playingState->RespawnPlayer();
 		}
 	}
 	
@@ -52,4 +54,9 @@ void Defeat::Render() const
 		g_theRenderer->DrawText2D(Vector2(-25.f, 4.f), "Respawn in : " + std::to_string(m_respawnTimer->GetElapsedTime()), 2.f, Rgba::WHITE);
 
 	}
+}
+
+void Defeat::Enter()
+{
+	m_respawnTimer->Reset();
 }

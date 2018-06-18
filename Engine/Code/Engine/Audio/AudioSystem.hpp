@@ -81,6 +81,8 @@ public:
 
 	virtual void				ValidateResult( FMOD_RESULT result );
 
+	Strings						GetAllAudioClipNames();
+
 protected:
 	FMOD::System*						m_fmodSystem;
 	std::map< std::string, SoundID >	m_registeredSoundIDs;

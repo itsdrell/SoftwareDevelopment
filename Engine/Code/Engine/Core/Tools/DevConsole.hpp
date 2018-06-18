@@ -92,8 +92,7 @@ public:
 
 	// Fun stuff
 	void UpdateRoll(float ds);
-	void RenderDeku();
-	void RenderBestGirl();
+
 
 private: 
 	

@@ -27,6 +27,10 @@ public:
 	Player();
 
 	void Update();
+	
+	void Reset();
+
+	void TakeDamage();
 
 public:
 
@@ -34,6 +38,11 @@ public:
 
 
 	Timer*			m_breadCrumbTimer;
+
+	Timer*			m_damageCooldown;
+	
+	int				m_maxHealth;
+	int				m_currentHealth;
 
 };
 

@@ -14,6 +14,7 @@ class Light;
 class Player;
 class GameMap;
 class Enemy;
+class EnemySpawner;
 
 //=============================================================
 // ENUMS
@@ -34,6 +35,9 @@ public:
 	Playing();
 	
 	void		StartUp();
+	void		Enter();
+	void		Exit(bool removeEnemies = false);
+
 	Player*		AddPlayer();
 	Enemy*		AddEnemy(const Vector3& pos);
 
@@ -45,12 +49,22 @@ public:
 	void		CameraInput();
 	Vector3		GetMovement();
 
+	void		CheckWinLossStates();
+
+	void		RespawnPlayer();
+
 	void		AddRenderable(Renderable* newRenderable) { m_scene->AddRenderable(newRenderable); }
 	void		RemoveRenderable(Renderable* toRemove) { m_scene->RemoveRenderable(toRemove); }
 	void		RemoveLight(Light* toRemove) { m_scene->RemoveLight(toRemove); }
 
 public:
+	//--------------------------------------------------------------------------
+	// Containers
+	std::vector<Enemy*>				m_enemies;
+	std::vector<EnemySpawner*>		m_enemySpawner;
 
+
+	//--------------------------------------------------------------------------
 	Scene*					m_scene;
 	ForwardRenderingPath*	m_renderingPath;
 

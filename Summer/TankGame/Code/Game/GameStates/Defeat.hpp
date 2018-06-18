@@ -33,6 +33,8 @@ public:
 	void KeyboardInput();
 	void Render() const;
 
+	void Enter();
+
 public:
 	Timer*		m_respawnTimer;
 };

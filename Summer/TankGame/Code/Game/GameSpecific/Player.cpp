@@ -14,6 +14,12 @@ Player::Player()
 	m_breadCrumbTimer = new Timer(g_theGameClock);
 	m_breadCrumbTimer->SetTimer(.5f);
 
+	m_damageCooldown = new Timer(g_theGameClock);
+	m_damageCooldown->SetTimer(1.f);
+
+	m_maxHealth = 1;
+	m_currentHealth = m_maxHealth;
+
 }
 
 void Player::Update()
@@ -26,4 +32,18 @@ void Player::Update()
 
 	}
 
+}
+
+void Player::Reset()
+{
+	m_currentHealth = m_maxHealth;
+}
+
+void Player::TakeDamage()
+{
+	if(m_damageCooldown->HasElapsed())
+	{
+		m_currentHealth--;
+		m_damageCooldown->Reset();
+	}
 }

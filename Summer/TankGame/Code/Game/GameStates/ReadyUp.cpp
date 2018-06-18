@@ -2,6 +2,7 @@
 #include "..\Main\GameCommon.hpp"
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "..\Main\Game.hpp"
+#include "Game\GameStates\Playing.hpp"
 
 ReadyUp::ReadyUp()
 {
@@ -12,6 +13,7 @@ void ReadyUp::Update()
 	if(WasKeyJustPressed(KEYBOARD_ENTER))
 	{
 		g_theGame->m_currentState = PLAY;
+		g_theGame->m_playingState->Enter();
 	}
 }
 

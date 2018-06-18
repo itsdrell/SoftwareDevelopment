@@ -18,6 +18,8 @@ AudioSystem* g_theAudioSystem = nullptr;
 #include "Game/Main/EngineBuildPreferences.hpp"
 #include "../Core/Utils/XmlUtilities.hpp"
 #include "../Math/MathUtils.hpp"
+#include "../Core/Tools/Command.hpp"
+#include "../Core/Tools/DevConsole.hpp"
 #if !defined( ENGINE_DISABLE_AUDIO )
 
 
@@ -29,6 +31,38 @@ AudioSystem* g_theAudioSystem = nullptr;
 #else
 #pragma comment( lib, "Engine/ThirdParty/fmod/fmod_vc.lib" )
 #endif
+
+
+//====================================================================================
+void DevConsolePlayOneShot(Command& thecommand)
+{
+	if(thecommand.m_commandArguements.size() <= 1)
+	{
+		DevConsole::AddErrorMessage("Please enter a clip name or hit help to see all clips");
+		return;
+	}
+
+	std::string input = thecommand.m_commandArguements.at(1);
+
+	if(input == "help")
+	{
+		DevConsole::AddConsoleDialogue(ConsoleDialogue("All Audio clips names", Rgba::WHITE));
+		
+		// print out all the sound names
+		Strings clipNames = AudioSystem::GetInstance()->GetAllAudioClipNames();
+
+		for(uint i = 0; i < clipNames.size(); i++)
+		{
+			DevConsole::AddConsoleDialogue(ConsoleDialogue(clipNames.at(i), GetRainbowColor(i, clipNames.size())));
+		}
+	}
+	else
+	{
+		// Since we have a default sound, play one shot uses that if its an invalid name so no need to check
+		PlayOneShot(input);
+	}
+
+}
 
 
 //-----------------------------------------------------------------------------------------------
@@ -44,6 +78,7 @@ AudioSystem::AudioSystem()
 	result = m_fmodSystem->init( 512, FMOD_INIT_NORMAL, nullptr );
 	ValidateResult( result );
 
+	CommandRegister("oneShot","Type: help","Play a one shot of a sound", DevConsolePlayOneShot);
 
 	g_theAudioSystem = this;
 }
@@ -306,6 +341,18 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
 	}
 }
 
+
+Strings AudioSystem::GetAllAudioClipNames()
+{
+	Strings names;
+
+	for(uint i = 0; i < m_audioClips.size(); i++)
+	{
+		names.push_back(m_audioClips.at(i)->m_name);
+	}
+
+	return names;
+}
 
 #endif // !defined( ENGINE_DISABLE_AUDIO )
 
