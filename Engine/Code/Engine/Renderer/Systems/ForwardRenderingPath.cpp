@@ -129,8 +129,12 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 
 
 	// Render all the Debug Render stuff, this is assuming main camera is index 0
-	DebugRenderSet3DCamera(cam);
-	DebugRenderUpdateAndRender();
+	if(scene->m_usesDebugRendering)
+	{
+		DebugRenderSet3DCamera(cam);
+		DebugRenderUpdateAndRender();
+	}
+
 	
 }
 

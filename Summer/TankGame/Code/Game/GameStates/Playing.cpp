@@ -17,7 +17,9 @@
 #include "Engine/Math/Quaternion.hpp"
 #include "../Main/Game.hpp"
 #include "Engine/Core/Tools/Command.hpp"
+#include "../GameSpecific/HUD.hpp"
 
+//====================================================================================
 void GameWon(Command& thecommand)
 {
 	bool condition = true;
@@ -42,6 +44,7 @@ void GameWon(Command& thecommand)
 	
 }
 
+//====================================================================================
 Playing::Playing()
 {
 	CommandRegister("gameWon","gameWon <bool>","Win or lost game", GameWon);
@@ -57,10 +60,13 @@ void Playing::StartUp()
 	//---------------------------------------------------------
 	// For Test Scene
 	m_scene = new Scene("Test");
+	m_uiScene = new Scene("UI", false);
 	m_renderingPath = new ForwardRenderingPath();
 
 	m_map = new GameMap();
 	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
+
+	m_hud = new HUD();
 
 	//---------------------------------------------------------
 	// Cameras
@@ -70,7 +76,7 @@ void Playing::StartUp()
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 
 	m_scene->AddCamera(m_camera);
-
+	m_uiScene->AddCamera(g_theRenderer->m_defaultUICamera);
 
 	g_theRenderer->SetCamera();
 	//---------------------------------------------------------
@@ -80,7 +86,6 @@ void Playing::StartUp()
 	m_sun = new DirectionalLight(0, Vector3(0.f, 100.f, 0.f), Vector3::DOWN, .6f);
 	m_scene->AddLight(m_sun);
 
-	DebugRender2DText(20.f, Vector2(20.f, 20.f), "GO", 10.f);
 }
 
 void Playing::Enter()
@@ -175,7 +180,7 @@ void Playing::Update()
 	//--------------------------------------------------------------------------
 
 
-
+	m_hud->Update();
 }
 
 void Playing::Render() const
@@ -200,6 +205,7 @@ void Playing::Render() const
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
+	m_renderingPath->Render(m_uiScene);
 }
 
 void Playing::CheckKeyBoardInputs()
@@ -211,7 +217,7 @@ void Playing::CheckKeyBoardInputs()
 
 	if(WasKeyJustPressed(KEYBOARD_SPACE))
 	{
-		PlayOneShotFromGroup("shoot");
+		m_player->Shoot();
 	}
 
 	if(WasKeyJustPressed(G_THE_LETTER_R))
@@ -221,7 +227,6 @@ void Playing::CheckKeyBoardInputs()
 	if(WasKeyJustPressed(KEYBOARD_BACKSPACE))
 		m_player->TakeDamage();
 
-	DebugRenderLog(0.f, "HP: " + std::to_string(m_player->m_currentHealth));
 
 	CameraInput();
 

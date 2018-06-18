@@ -2,6 +2,7 @@
 #include "Engine\Core\General\Transform.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
+#include "Engine\Audio\AudioSystem.hpp"
 
 Player::Player()
 	: GameObject("Player")
@@ -17,7 +18,10 @@ Player::Player()
 	m_damageCooldown = new Timer(g_theGameClock);
 	m_damageCooldown->SetTimer(1.f);
 
-	m_maxHealth = 1;
+	m_shootCooldown = new Timer(g_theGameClock);
+	m_shootCooldown->SetTimer(2.f);
+
+	m_maxHealth = 3;
 	m_currentHealth = m_maxHealth;
 
 }
@@ -45,5 +49,15 @@ void Player::TakeDamage()
 	{
 		m_currentHealth--;
 		m_damageCooldown->Reset();
+	}
+}
+
+void Player::Shoot()
+{
+	if(m_shootCooldown->HasElapsed())
+	{
+		// do the shoot
+		PlayOneShotFromGroup("shoot");
+		m_shootCooldown->Reset();
 	}
 }

@@ -39,7 +39,10 @@ float StopWatch::GetElapsedTime() const
 
 float StopWatch::GetNormalizedElapsedTime()
 {
-	float percentDone = GetElapsedTime() / (float) m_length;
+	if(HasElapsed())
+		return 1.f;
+	
+	float percentDone = 1.f - (GetElapsedTime() / (float) m_length);
 	
 	return percentDone;
 }

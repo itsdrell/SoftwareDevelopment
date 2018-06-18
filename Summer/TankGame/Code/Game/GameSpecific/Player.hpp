@@ -31,6 +31,9 @@ public:
 	void Reset();
 
 	void TakeDamage();
+	float GetNormalizedHealth() const { return ((float) m_currentHealth / (float) m_maxHealth); }
+
+	void Shoot();
 
 public:
 
@@ -38,8 +41,8 @@ public:
 
 
 	Timer*			m_breadCrumbTimer;
-
 	Timer*			m_damageCooldown;
+	Timer*			m_shootCooldown;
 	
 	int				m_maxHealth;
 	int				m_currentHealth;

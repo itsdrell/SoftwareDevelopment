@@ -3,6 +3,8 @@
 #include "Engine\Math\MathUtils.hpp"
 #include <stdio.h> //fopen
 #include "../Images/Sprites/Sprite.hpp"
+#include "../../TankGame/Code/Game/Main/GameCommon.hpp"
+#include "../Images/Fonts/BitmapFont.hpp"
 
 MeshBuilder::MeshBuilder()
 {
@@ -538,7 +540,6 @@ void MeshBuilder::AddQuad(const Vector3& position, AABB2& bounds)
 	
 	End();
 
-	//return mb.CreateMeshPCU();
 }
 
 void MeshBuilder::AddMeshFromObjFile(std::string path)
@@ -834,5 +835,93 @@ void MeshBuilder::Add3DBounds(const AABB3& theBounds)
 	End();
 
 	//return mb.CreateMeshPCU();
+}
+
+void MeshBuilder::Add2DPlane(AABB2& bounds, Rgba color /*= Rgba::WHITE*/)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									  // this is assuming all the sides are the same color
+	SetColor(color);
+
+	//////////////////////////////////////////////////////////////////////////
+
+	SetUV(0,0);
+	uint idx = PushVertex(Vector3(bounds.mins.x, bounds.mins.y, .01f));
+
+	SetUV(1,0);
+	PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, .01f));
+
+	SetUV(0,1);
+	PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, .01f));
+
+	SetUV(1,1);
+	PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, .01f));
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 2, idx + 1, idx + 3);
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
+}
+
+void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, Rgba color)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									  // this is assuming all the sides are the same color
+	SetColor(color);
+
+	//////////////////////////////////////////////////////////////////////////
+
+	SetUV(uvs.mins);
+	uint idx = PushVertex(Vector3(bounds.mins.x, bounds.mins.y, .01f));
+
+	SetUV(Vector2(uvs.maxs.x, uvs.mins.y));
+	PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, .01f));
+
+	SetUV(Vector2(uvs.mins.x, uvs.maxs.y));
+	PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, .01f));
+
+	SetUV(uvs.maxs);
+	PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, .01f));
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 2, idx + 1, idx + 3);
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
+}
+
+void MeshBuilder::Add2DText(Vector2 & startPos, std::string text,  float cellHeight, float aspectScale, Rgba color, BitmapFont * font)
+{
+	int length = (int) text.size();
+	Vector2 startPoint = startPos;
+
+	// Use a default font
+	if(font == nullptr)
+		font = g_theRenderer->m_defaultFont;
+
+	// Draw
+	for(int i = 0; i < length; i++)
+	{
+		// Get Current Letter
+		char currentLetter = text.at(i);
+
+		// calculate cell width
+		float cellWidth = font->GetGlyphAspect() * cellHeight * aspectScale;
+
+		Add2DPlane(AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight)), AABB2(font->GetUVsForGlyph(currentLetter)), color);
+
+		startPoint.x += cellWidth;
+	}
 }
 

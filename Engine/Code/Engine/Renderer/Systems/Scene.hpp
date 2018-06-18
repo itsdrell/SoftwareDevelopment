@@ -10,8 +10,10 @@ class Camera;
 class Scene 
 {
 public:
-	Scene(std::string name)
-	: m_name( name) {}
+	Scene(std::string name, bool usesDebugRendering = true)
+	: m_name( name),
+	  m_usesDebugRendering(usesDebugRendering)
+	{}
 
 	void AddRenderable( Renderable* r ) { m_renderables.push_back(r); }
 	void AddLight( Light* l ) { m_lights.push_back(l); }
@@ -24,6 +26,9 @@ public:
 
 public:
 	std::string					m_name;
+
+	// This is so if we have a UI scene it wont have to worry about 3D debug rendering stuff
+	bool						m_usesDebugRendering; 
 
 	// Containers
 	std::vector<Renderable*>	m_renderables;

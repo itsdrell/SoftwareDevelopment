@@ -15,6 +15,7 @@ class Player;
 class GameMap;
 class Enemy;
 class EnemySpawner;
+class HUD;
 
 //=============================================================
 // ENUMS
@@ -66,11 +67,14 @@ public:
 
 	//--------------------------------------------------------------------------
 	Scene*					m_scene;
+	Scene*					m_uiScene;
 	ForwardRenderingPath*	m_renderingPath;
 
 	Camera*					m_camera;
 
 	Player*					m_player;
+
+	HUD*					m_hud;
 
 	Enemy*					m_testEnemy;
 

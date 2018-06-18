@@ -55,6 +55,9 @@
     <ClCompile Include="GameStates\Defeat.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameSpecific\HUD.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -82,5 +85,6 @@
     <ClInclude Include="GameSpecific\Enemy.hpp" />
     <ClInclude Include="GameStates\Victory.hpp" />
     <ClInclude Include="GameStates\Defeat.hpp" />
+    <ClInclude Include="GameSpecific\HUD.hpp" />
   </ItemGroup>
 </Project>
