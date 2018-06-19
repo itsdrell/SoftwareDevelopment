@@ -93,7 +93,8 @@ IntVector2 Image::GetTilePosition(int indexToCheck)
 
 Rgba Image::GetColorAt(int x, int y) const
 {
-	return m_colors.at(x*y);
+	int idx = y * m_dimensions.x + x;
+	return m_colors.at(idx);
 }
 
 Rgba Image::GetColorAt(IntVector2 pos) const

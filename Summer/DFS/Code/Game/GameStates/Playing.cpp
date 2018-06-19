@@ -18,10 +18,13 @@
 #include "Engine/Input/Mouse.hpp"
 #include "../General/GameObjects/Cursor.hpp"
 #include "Engine/Core/General/HeatMap.hpp"
+#include "../General/GameObjects/Building.hpp"
+#include "../General/GameObjects/Unit.hpp"
 
 
 Playing::Playing()
 {
+	m_showHeatmap = false;
 }
 
 void Playing::StartUp()
@@ -52,15 +55,31 @@ void Playing::StartUp()
 
 	m_currentPlayState = SELECTING;
 
-	m_currentMap = new Map("test", IntVector2(8,8));
+	Image mapImage = Image("Data/Images/Maps/testMap.png");
+	m_currentMap = new Map("test", mapImage);
 	m_cursor = new Cursor();
+
+	//---------------------------------------------------------
+	// Creating a test scene
+	Unit* newUnit = new Unit(TEAM_BLUE);
+	m_testUnit = newUnit;
+	m_currentMap->AddGameObject(*newUnit);
+
+	GameObject2D* newBuilding = new Building();
+	newBuilding->m_transform.TranslateLocal(Vector2(16.f,16.f));
+	m_currentMap->AddGameObject(*newBuilding);
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
 
-	
+	if(WasKeyJustPressed(KEYBOARD_SPACE))
+		m_testUnit->m_health = 0;
+
+	m_testUnit->Update();
+
+	m_currentMap->RemoveDeadGameObjects();
 
 }
 
@@ -68,30 +87,26 @@ void Playing::Render() const
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Set up Cameras
-	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
-	//m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
 
-
-	//Matrix44 cameraPos = Matrix44::MakeTranslation3D(Vector3(0.f, 0.f, -10.f));
-	//m_camera->m_cameraMatrix = cameraPos;//modelMatrix;
-	//m_camera->m_viewMatrix = InvertFast(cameraPos); // model); // inverse this 
-	m_camera->SetProjectionOrtho(375, 225, -10.0f, 100.0f);
-	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
+	m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
+	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
+	Matrix44 view = Matrix44::MakeView(Vector3(0.f, 0.f, -10.f), Vector3::ZERO );
+	view = Matrix44::MakeTranslation3D(Vector3(-100.f, -100.f, -10.f));
 	m_camera->m_viewMatrix = view;
-	//m_camera->m_cameraMatrix = InvertFast(view); // maybe wrong
-
-	// Set the camera
-	//g_theRenderer->SetCamera(m_camera);
 
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
 
 	// Debug heat map
-	//g_theRenderer->SetShader(Shader::CreateOrGetShader("default"));
-	g_theRenderer->BindMaterial(Material::CreateOrGetMaterial("sprite"));
-	g_theRenderer->SetUniform("MODEL", Matrix44());
-	m_currentMap->m_heatmap->Render(4);
+	if(m_showHeatmap)
+	{
+		//g_theRenderer->SetShader(Shader::CreateOrGetShader("default"));
+		g_theRenderer->BindMaterial(Material::CreateOrGetMaterial("sprite"));
+		g_theRenderer->SetUniform("MODEL", Matrix44());
+		m_currentMap->m_heatmap->Render(4);
+	}
+	
 }
 
 void Playing::CheckKeyBoardInputs()

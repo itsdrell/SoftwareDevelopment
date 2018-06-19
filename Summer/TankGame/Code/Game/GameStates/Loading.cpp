@@ -12,7 +12,7 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
-	ScopedProfile LoadLength = ScopedProfile();
+	ScopedProfile LoadLength = ScopedProfile("Load times");
 	
 	g_theAudioSystem->StartUp();
 

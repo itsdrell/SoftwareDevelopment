@@ -16,6 +16,7 @@ class Light;
 class SpriteRendering;
 class Map;
 class Cursor;
+class Unit;
 
 //=============================================================
 // ENUMS
@@ -70,6 +71,10 @@ public:
 	PlayState				m_currentPlayState;
 
 	Cursor*					m_cursor;
+
+	bool					m_showHeatmap;
+
+	Unit*					m_testUnit;
 };
 
 

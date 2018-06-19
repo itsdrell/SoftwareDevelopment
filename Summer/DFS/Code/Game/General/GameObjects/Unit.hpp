@@ -1,5 +1,7 @@
 #pragma once
 #include "Game\SystemsAndTools\GameObject2D.hpp"
+#include "Game\SystemsAndTools\Tags.hpp"
+#include "Game\Main\GameCommon.hpp"
 
 
 //=============================================================
@@ -23,10 +25,18 @@
 class Unit : public GameObject2D
 {
 public:
-	Unit();
+	Unit(TeamName team);
+
+	void Update();
 
 public:
+	TeamName	m_team;
+	
+	Tags		m_tags;
+	bool		m_beenPlayed; 
 
+
+	uint		m_health;
 };
 
 //=============================================================

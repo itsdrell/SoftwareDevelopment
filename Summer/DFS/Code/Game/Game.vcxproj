@@ -303,6 +303,7 @@
     <ClCompile Include="SystemsAndTools\Renderable2D.cpp" />
     <ClCompile Include="SystemsAndTools\Scene2D.cpp" />
     <ClCompile Include="SystemsAndTools\SpriteRendering.cpp" />
+    <ClCompile Include="SystemsAndTools\Tags.cpp" />
     <ClCompile Include="SystemsAndTools\Transform2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -328,6 +329,7 @@
     <ClInclude Include="SystemsAndTools\Renderable2D.hpp" />
     <ClInclude Include="SystemsAndTools\Scene2D.hpp" />
     <ClInclude Include="SystemsAndTools\SpriteRendering.hpp" />
+    <ClInclude Include="SystemsAndTools\Tags.hpp" />
     <ClInclude Include="SystemsAndTools\Transform2D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

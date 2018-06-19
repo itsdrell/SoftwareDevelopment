@@ -31,10 +31,11 @@
 class ScopedProfile
 {
 public:
-	ScopedProfile();
+	ScopedProfile(std::string name);
 	~ScopedProfile();
 
 public:
+	std::string		m_name;
 	uint64_t		m_startTime;
 };
 

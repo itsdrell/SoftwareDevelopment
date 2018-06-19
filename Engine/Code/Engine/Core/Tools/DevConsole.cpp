@@ -846,6 +846,7 @@ void DevConsole::HandleAutoComplete()
 		m_currentEntry = BreakSentenceIntoWords(current).at(0);
 		m_barIndex = (int) m_currentEntry.length();
 		m_autoIndex = 0;
+		GenerateTextMesh();
 	}
 
 	if(WasKeyJustPressed(KEYBOARD_ENTER))

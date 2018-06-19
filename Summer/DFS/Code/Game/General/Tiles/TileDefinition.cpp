@@ -17,10 +17,33 @@ TileDefinition* GetTileDefinition(std::string name)
 	return nullptr;
 }
 
+TileDefinition* GetTileDefinition(Rgba& color)
+{
+	std::map<std::string,TileDefinition*>::iterator tileIterator;
+	tileIterator = TileDefinition::s_definitions.begin();
+
+	while(tileIterator != TileDefinition::s_definitions.end())
+	{
+		TileDefinition* current = tileIterator->second;
+
+		if(current->m_colorRepresentation == color)
+			return current;
+
+		tileIterator++;
+	}
+
+	return nullptr;
+	
+}
+
 TileDefinition::TileDefinition(const tinyxml2::XMLElement & definitionNode)
 {
 	m_name = ParseXmlAttribute(definitionNode,"name","Error");
 	m_spriteCoords = ParseXmlAttribute(definitionNode, "spriteCoords", IntVector2(0,0));
+	m_colorRepresentation = ParseXmlAttribute(definitionNode, "rgbaValue", Rgba(0,0,0));
+
+	Strings a;
+	m_movementTags = ParseXmlAttribute(definitionNode, "movement", a);
 
 	// Translate sprite coords to UV
 	m_uvCoords = g_tileSpriteSheet.GetTexCoordsForSpriteCoords(m_spriteCoords);

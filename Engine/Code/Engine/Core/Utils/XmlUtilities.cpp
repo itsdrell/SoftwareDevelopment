@@ -6,6 +6,7 @@
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Math/Geometry/AABB2.hpp"
+#include "StringUtils.hpp"
 
 
 int ParseXmlAttribute(const tinyxml2::XMLElement & element, const char* attributeName, int defaultValue)
@@ -328,4 +329,19 @@ AABB2 ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attribu
 	AABB2 value;
 	value.SetFromText(inText);
 	return value;
+}
+
+Strings ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Strings defaultValue)
+{
+	const char* inText = element.Attribute(attributeName);
+
+	if(inText == nullptr)
+		return defaultValue;
+
+	std::string asOneString = std::string(inText);
+	std::string noWhiteSpace = RemoveCharacterFromString(asOneString, " ");
+
+	Strings seperated = SplitString(noWhiteSpace, ",");
+
+	return seperated;
 }

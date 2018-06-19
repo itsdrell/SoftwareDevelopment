@@ -15,7 +15,7 @@ const std::string Stringf( const int maxLength, const char* format, ... );
 //std::vector<std::string> GetTokensFromString(const char * stringToReadFrom, const char * seperator, int howManytokenYouWant);
 
 // Breaks a string by white space
-std::vector<std::string> BreakSentenceIntoWords(std::string text);
+Strings BreakSentenceIntoWords(std::string text);
 
 // Breaks a string into seperate strings based off the seperator
 Strings SplitString(const std::string text, const char* seperator);

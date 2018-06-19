@@ -5,9 +5,13 @@
 #include "Game\GameStates\Playing.hpp"
 #include "Game\Main\Game.hpp"
 
-Unit::Unit()
+Unit::Unit(TeamName team)
 	: GameObject2D("Test")
 {
+	m_health = 10;
+	m_team = team;
+
+	//--------------------------------------------------------------------------
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
 	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/testSprite.png");
 	newMaterial->SetTexture(0, testSprite);
@@ -20,4 +24,12 @@ Unit::Unit()
 	m_renderable->SetSprite(newSprite);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
+
+	m_tags.AddTag("ground");
+}
+
+void Unit::Update()
+{
+	if(m_health <= 0)
+		m_isDead = true;
 }

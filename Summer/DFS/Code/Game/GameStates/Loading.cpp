@@ -15,7 +15,7 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
-	ScopedProfile loadTime = ScopedProfile();
+	ScopedProfile loadTime = ScopedProfile("Load time");
 	g_theAudioSystem->StartUp();
 	
 	// Create the global sprite sheet for all the textures to use
