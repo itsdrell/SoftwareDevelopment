@@ -8,6 +8,7 @@
 #include "Matrices/Matrix33.hpp"
 #include "Engine/Math/Matrices/Matrix44.hpp"
 #include "../Core/Tools/ErrorWarningAssert.hpp"
+#include "../Renderer/Systems/DebugRenderSystem.hpp"
 
 
 /************************************************************************/
@@ -518,8 +519,9 @@ Quaternion Lerp( Quaternion const &a, Quaternion const &b, float const &t )
 Quaternion QuaternionRotateTorward( Quaternion const &start, Quaternion const &end, float maxAngelFloat ) 
 {
 	float max_angle_radians = ConvertDegreesToRadians(maxAngelFloat);
-		
+	
 	float angle = acosf( QuaternionDot( start, end ) );
+	
 	if (angle < 0.0f) {
 		angle = -angle;
 	}

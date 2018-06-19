@@ -189,20 +189,32 @@ inline Quaternion operator*( Quaternion const &a, Quaternion const &b )
 	// Taken from 3D Math Primer - it's the reverse definition since
 	// my engine also uses Row Major matrices by default, and I want to 
 	// keep with that.
-	Quaternion ret;
-	ret.r = a.r * b.r - DotProduct(a.i, b.i);
-	ret.i = b.i * a.r 
-		+ a.i * b.r 
-		+ Cross( b.i, a.i );
+	//Quaternion ret;
+	//ret.r = a.r * b.r - DotProduct(a.i, b.i);
+	//ret.i = b.i * a.r 
+	//	+ a.i * b.r 
+	//	+ Cross( b.i, a.i );
+	//
+	//return ret;
 
-	return ret;
+	Quaternion result;
+
+	result.r =		(a.r * b.r)		-	(a.i.x * b.i.x) -	(a.i.y * b.i.y) -	(a.i.z * b.i.z);
+	result.i.x =	(a.r * b.i.x)	+	(a.i.x * b.r)	+	(a.i.z * b.i.y) -	(a.i.y * b.i.z);
+	result.i.y =	(a.r * b.i.y)	+	(a.i.y * b.r) +		(a.i.x * b.i.z) -	(a.i.z * b.i.x);
+	result.i.z =	(a.r * b.i.z)	+	(a.i.z * b.r) +		(a.i.y * b.i.x) -	(a.i.x * b.i.y);
+
+	
+
+	return result;
 }
 
 //------------------------------------------------------------------------
 inline Vector3 operator*( Vector3 const &v, Quaternion const &q ) 
 {
 	Quaternion p = Quaternion( 0.0f, v );
-	Quaternion result = q.get_inverse() * p * q;
+	//Quaternion result = q.get_inverse() * p * q;
+	Quaternion result = q * p * q.get_inverse();
 
 	return result.i;
 }
