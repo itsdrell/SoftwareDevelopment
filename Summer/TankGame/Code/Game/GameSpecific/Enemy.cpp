@@ -18,7 +18,7 @@ void Enemy::Update()
 {
 	Vector3 playerPos = g_theGame->m_playingState->m_player->m_transform.GetWorldPosition();
 
-	//m_transform.SimpleMoveTowardPoint(playerPos, m_speed, g_theGameClock->deltaTime);
+	m_transform.SimpleMoveTowardPoint(playerPos, m_speed, g_theGameClock->deltaTime);
 	//m_transform.LookAtWorld(m_player->m_transform.GetWorldPosition());
 	m_transform.RotateTowards( g_theGame->m_playingState->m_player->m_transform, 100.f * g_theGameClock->deltaTime);
 

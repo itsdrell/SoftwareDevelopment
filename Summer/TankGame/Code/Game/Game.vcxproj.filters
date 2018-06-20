@@ -58,6 +58,9 @@
     <ClCompile Include="GameSpecific\HUD.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameSpecific\EnemySpawner.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -86,5 +89,6 @@
     <ClInclude Include="GameStates\Victory.hpp" />
     <ClInclude Include="GameStates\Defeat.hpp" />
     <ClInclude Include="GameSpecific\HUD.hpp" />
+    <ClInclude Include="GameSpecific\EnemySpawner.hpp" />
   </ItemGroup>
 </Project>

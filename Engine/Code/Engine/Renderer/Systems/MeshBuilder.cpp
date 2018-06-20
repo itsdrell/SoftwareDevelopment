@@ -837,7 +837,7 @@ void MeshBuilder::Add3DBounds(const AABB3& theBounds)
 	//return mb.CreateMeshPCU();
 }
 
-void MeshBuilder::Add2DPlane(AABB2& bounds, Rgba color /*= Rgba::WHITE*/)
+void MeshBuilder::Add2DPlane(AABB2 bounds, Rgba color /*= Rgba::WHITE*/)
 {
 	//////////////////////////////////////////////////////////////////////////
 
@@ -901,7 +901,7 @@ void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, Rgba color)
 	End();
 }
 
-void MeshBuilder::Add2DText(Vector2 & startPos, std::string text,  float cellHeight, float aspectScale, Rgba color, BitmapFont * font)
+void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeight, float aspectScale, Rgba color, BitmapFont * font)
 {
 	int length = (int) text.size();
 	Vector2 startPoint = startPos;
@@ -919,7 +919,10 @@ void MeshBuilder::Add2DText(Vector2 & startPos, std::string text,  float cellHei
 		// calculate cell width
 		float cellWidth = font->GetGlyphAspect() * cellHeight * aspectScale;
 
-		Add2DPlane(AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight)), AABB2(font->GetUVsForGlyph(currentLetter)), color);
+		AABB2 posBox = AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight));
+		AABB2 uvBox = AABB2(font->GetUVsForGlyph(currentLetter));
+
+		Add2DPlane(posBox, uvBox , color);
 
 		startPoint.x += cellWidth;
 	}

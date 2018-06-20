@@ -113,7 +113,7 @@ public:
 
 
 	// Cool helpers
-	void SetTint( Rgba& tint);
+	void SetTint( const Rgba tint);
 	void SetSpecular( float amount, float power );
 
 	int GetSortOrder() { return m_shader->m_sortOrder; }

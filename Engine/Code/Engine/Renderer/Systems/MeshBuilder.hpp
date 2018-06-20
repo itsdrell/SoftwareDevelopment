@@ -63,10 +63,10 @@ public:
 	// this is gonna be a box without the triangles cutting it up
 	void Add3DBounds(const AABB3& theBounds);
 
-	void Add2DPlane(AABB2& bounds, Rgba color = Rgba::WHITE);
+	void Add2DPlane(AABB2 bounds, Rgba color = Rgba::WHITE);
 	void Add2DPlane(AABB2& bounds, AABB2& uvs, Rgba color = Rgba::WHITE);
 
-	void Add2DText(Vector2& startPos, std::string text, float cellHeight, float aspectScale = 1.f, Rgba color = Rgba::WHITE, BitmapFont* font = nullptr);
+	void Add2DText(Vector2 startPos, std::string text, float cellHeight, float aspectScale = 1.f, Rgba color = Rgba::WHITE, BitmapFont* font = nullptr);
 
 public:
 	VertexMaster 						m_stamp; // this is a value. We overwrite it

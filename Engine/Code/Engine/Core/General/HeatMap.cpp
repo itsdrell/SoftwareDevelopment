@@ -27,7 +27,7 @@ void HeatMap::Render(int cellSize) const
 		std::string stringValue = std::to_string(value);
 
 		// Do the Draw
-		Renderer::GetInstance()->DrawText2D(currentCell.GetAsVector2() * cellSize, stringValue, 1.0f);
+		Renderer::GetInstance()->DrawText2D(currentCell.GetAsVector2() * (float) cellSize, stringValue, 1.0f);
 
 		// Move the position
 		if(currentCell.x >= m_dimensions.x -1.f)

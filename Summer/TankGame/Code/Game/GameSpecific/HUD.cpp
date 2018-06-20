@@ -44,7 +44,8 @@ HUD::HUD()
 	//--------------------------------------------------------------------------
 	// Create default meshes
 	MeshBuilder mb;
-	mb.Add2DPlane(AABB2(m_cooldownBounds.mins - Vector2(1.f,8.f), m_cooldownBounds.maxs + Vector2(1.f, 1.f)), Rgba::BLACK);
+	AABB2 bounds = AABB2(m_cooldownBounds.mins - Vector2(1.f,8.f), m_cooldownBounds.maxs + Vector2(1.f, 1.f));
+	mb.Add2DPlane(bounds, Rgba::BLACK);
 	Mesh* backgroundMesh = mb.CreateMesh<Vertex3D_PCU>();
 	m_reloadBarBackgroundRenderable->SetMesh(backgroundMesh);
 
@@ -85,7 +86,8 @@ void HUD::UpdateReloadBar()
 	float maxX = Interpolate(m_cooldownBounds.mins.x, m_cooldownBounds.maxs.x, thePlayer->m_shootCooldown->GetNormalizedElapsedTime());
 	
 	MeshBuilder mb;
-	mb.Add2DPlane(AABB2(-20.f, -40.f, maxX, -35.f));
+	AABB2 bounds = AABB2(-20.f, -40.f, maxX, -35.f);
+	mb.Add2DPlane(bounds);
 	Mesh* bar = mb.CreateMesh<Vertex3D_PCU>();
 
 	m_reloadBarCurrentRenderable->SetMesh(bar);

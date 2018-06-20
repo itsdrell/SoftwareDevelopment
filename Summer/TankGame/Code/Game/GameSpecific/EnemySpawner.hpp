@@ -1,7 +1,7 @@
 #pragma once
-#include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
+#include "Engine\Core\General\EngineCommon.hpp"
+#include "Engine\Core\General\GameObject.hpp"
+#include "Engine\Core\Tools\Stopwatch.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -11,10 +11,7 @@
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-#define	TOWER_SPAWN_AMOUNT	(20)
-#define TOWER_SPAWN_RATE	(1.f)
 
-#define MAX_AMOUNT_OF_ENEMIES (50)
 
 //====================================================================================
 // ENUMS
@@ -29,7 +26,22 @@
 //====================================================================================
 // Classes
 //====================================================================================
+class EnemySpawner : public GameObject
+{
+public:
+	EnemySpawner()
+	:	GameObject("Spawner") {}
+	
+	EnemySpawner(const Vector2 pos);
 
+	void Update();
+
+public:
+	float		m_spawnRate;
+	uint		m_amountToSpawn;
+
+	Timer*		m_spawnTimer;
+};
 
 //====================================================================================
 // Standalone C Functions
@@ -39,12 +51,8 @@
 //====================================================================================
 // Externs
 //====================================================================================
-extern Renderer* g_theRenderer;
-extern InputSystem* g_theInput;
-extern AudioSystem* g_audio; // not the audio cause we could have multiple...?
+
 
 //====================================================================================
 // Written by Zachary Bracken : [6/19/2018]
 //====================================================================================
-
-

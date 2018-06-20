@@ -53,7 +53,7 @@ void DevConsolePlayOneShot(Command& thecommand)
 
 		for(uint i = 0; i < clipNames.size(); i++)
 		{
-			DevConsole::AddConsoleDialogue(ConsoleDialogue(clipNames.at(i), GetRainbowColor(i, clipNames.size())));
+			DevConsole::AddConsoleDialogue(ConsoleDialogue(clipNames.at(i), GetRainbowColor(i, (int) clipNames.size())));
 		}
 	}
 	else

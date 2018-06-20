@@ -207,7 +207,7 @@ void DebugRenderLineSegment( float lifetime,
 	Rgba const &end_color = Rgba::WHITE); 
 
 void DebugRenderBasis( float lifetime, 
-	Matrix44 &basis,
+	Matrix44 basis,
 	float scale = 1.f,
 	DebugRenderMode const mode = DEBUG_RENDER_IGNORE_DEPTH,
 	Rgba const &start_color = Rgba::WHITE, 

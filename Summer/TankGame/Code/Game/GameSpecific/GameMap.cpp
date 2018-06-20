@@ -127,10 +127,10 @@ float GameMap::GetHeight(Vector2 xz)
 
 	//=============================================================
 	// Debug
-	DebugRenderWireSphere(0.f, theBl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	DebugRenderWireSphere(0.f, theTl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	DebugRenderWireSphere(0.f, theBr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	DebugRenderWireSphere(0.f, theTr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	//DebugRenderWireSphere(0.f, theBl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	//DebugRenderWireSphere(0.f, theTl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	//DebugRenderWireSphere(0.f, theBr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+	//DebugRenderWireSphere(0.f, theTr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
 	//=============================================================
 
 	float h1 = Interpolate(bl, br, cellFract.x);

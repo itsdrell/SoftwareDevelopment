@@ -583,7 +583,7 @@ void DebugRenderLineSegment(float lifetime, Vector3 const &p0, Vector3 const &p1
 	g_DebugRenderTask.push_back(newTask);
 }
 
-void DebugRenderBasis(float lifetime, Matrix44 & basis, float scale, DebugRenderMode const mode, Rgba const & start_color, Rgba const & end_color)
+void DebugRenderBasis(float lifetime, Matrix44 basis, float scale, DebugRenderMode const mode, Rgba const & start_color, Rgba const & end_color)
 {
 	DebugRenderTask* newTask = new DebugRenderTask();
 
@@ -641,7 +641,7 @@ void DebugRenderWireAABB3(float lifetime, AABB3 const & bounds, DebugRenderMode 
 	newTask->m_options.end_color = end_color;
 	newTask->m_options.lifetime = lifetime;
 	newTask->m_timeToLive = lifetime;
-	newTask->m_options.mode = DEBUG_RENDER_USE_DEPTH;
+	newTask->m_options.mode = mode;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Specific to this call

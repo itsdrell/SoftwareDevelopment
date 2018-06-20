@@ -39,8 +39,9 @@ public:
 	void		Enter();
 	void		Exit(bool removeEnemies = false);
 
-	Player*		AddPlayer();
-	Enemy*		AddEnemy(const Vector3& pos);
+	Player*			AddPlayer();
+	Enemy*			AddEnemy(const Vector3& pos);
+	EnemySpawner*	AddEnemySpawner(const Vector2& pos);
 
 	void		Update();
 
@@ -77,6 +78,7 @@ public:
 	HUD*					m_hud;
 
 	Enemy*					m_testEnemy;
+	EnemySpawner*			m_testSpawner;
 
 	Light*					m_sun;
 

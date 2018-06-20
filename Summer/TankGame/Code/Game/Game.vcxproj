@@ -287,6 +287,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameSpecific\Enemy.cpp" />
+    <ClCompile Include="GameSpecific\EnemySpawner.cpp" />
     <ClCompile Include="GameSpecific\GameMap.cpp" />
     <ClCompile Include="GameSpecific\HUD.cpp" />
     <ClCompile Include="GameSpecific\Player.cpp" />
@@ -307,6 +308,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameSpecific\EnemySpawner.hpp" />
     <ClInclude Include="GameSpecific\GameMap.hpp" />
     <ClInclude Include="GameSpecific\Enemy.hpp" />
     <ClInclude Include="GameSpecific\HUD.hpp" />

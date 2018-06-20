@@ -5,7 +5,7 @@
 Plane::Plane(const Vector3 & theNormal, const Vector3 & pos)
 {
 	distance = DotProduct(normal, pos);
-	normal = normal;
+	normal = theNormal;
 }
 
 Plane::Plane(const Vector3 & a, const Vector3 & b, const Vector3 & c)

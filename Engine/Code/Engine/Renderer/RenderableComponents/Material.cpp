@@ -232,7 +232,7 @@ void Material::SetProperty(std::string name, Rgba & value)
 	m_properties.push_back(new MaterialPropertiesRgba(name, value));
 }
 
-void Material::SetTint(Rgba & tint)
+void Material::SetTint(Rgba tint)
 {
 	SetProperty("TINT", tint);
 }

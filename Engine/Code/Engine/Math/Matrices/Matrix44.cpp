@@ -208,7 +208,11 @@ Vector3 Matrix44::GetZRow() const
 
 Matrix33 Matrix44::GetAsMatrix33() const
 {
-	return Matrix33(GetRight(), GetUp(), GetForward());
+	Vector3 r = GetRight();
+	Vector3 u = GetUp();
+	Vector3 f = GetForward();
+	
+	return Matrix33(r, u, f);
 }
 
 void Matrix44::GetValuesAsArray(double *outArray)
@@ -862,17 +866,17 @@ Matrix44 Invert(const Matrix44& matrixToInverse)
 	return result;
 }
 
-Vector2 TransformPoint(Vector2 & pos, Matrix44 & mat)
+Vector2 TransformPoint(Vector2 pos, Matrix44 & mat)
 {
 	return mat.TransformPosition2D(pos);
 }
 
-Vector3 TransformPoint(Vector3& pos, Matrix44& mat)
+Vector3 TransformPoint(Vector3 pos, Matrix44& mat)
 {
 	return mat.TransformPosition3D(pos);
 }
 
-Vector4 TransformPoint(Vector4 & pos, Matrix44 & mat)
+Vector4 TransformPoint(Vector4  pos, Matrix44 & mat)
 {
 	return mat.TransformHomogeneous(pos);
 }

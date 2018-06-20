@@ -18,6 +18,7 @@
 #include "../Main/Game.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include "../GameSpecific/HUD.hpp"
+#include "../GameSpecific/EnemySpawner.hpp"
 
 //====================================================================================
 void GameWon(Command& thecommand)
@@ -92,6 +93,7 @@ void Playing::Enter()
 {
 	m_player = AddPlayer();
 	m_testEnemy = AddEnemy(Vector3(20.f, 0.f, 0.f));
+	m_testSpawner = AddEnemySpawner(Vector2(0.f, 20.f));
 
 }
 
@@ -116,11 +118,13 @@ Player* Playing::AddPlayer()
 	Player* newPlayer = new Player();
 
 	MeshBuilder mb;
-	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
+	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
+	mb.AddCube(Vector3::ZERO, Vector3(.5f, .5f, 1.f));
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
-	Material* playerMaterial = Material::CreateOrGetMaterial("ship");
-	playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
+	playerMaterial->SetTint(Rgba::WHITE);
+	//playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
 	//playerMaterial->SetTexture(1, g_theRenderer->m_defaultTexture);
 	//playerMaterial->SetTexture(2, g_theRenderer->m_defaultTexture);
 
@@ -158,13 +162,44 @@ Enemy* Playing::AddEnemy(const Vector3& pos)
 	return newEnemy;
 }
 
+EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
+{
+	EnemySpawner* newSpawner = new EnemySpawner(pos);
+
+	MeshBuilder mb;
+	//mb.AddMeshFromObjFile("Data/Model/Mech/leo.obj");
+	mb.AddCube(Vector3::ZERO, Vector3(1.f,10.f, 1.f));
+	newSpawner->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
+
+	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
+	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	enemyMaterial->SetTint(Rgba::BLACK);
+
+	newSpawner->m_renderable->SetMaterial( enemyMaterial );
+	newSpawner->m_renderable->m_usesLight = true;
+
+	// Add to the containers
+	m_scene->AddRenderable(newSpawner->m_renderable);
+	m_enemySpawner.push_back(newSpawner);
+
+	return newSpawner;
+}
+
 void Playing::Update()
 {
 	m_player->Update();
-	m_testEnemy->Update();
-	
+	//m_testEnemy->Update();
+	m_testSpawner->Update();
 
+	for(uint i = 0; i < m_enemies.size(); i++)
+	{
+		m_enemies.at(i)->Update();
+	}
 
+	for(uint j = 0; j < m_enemySpawner.size(); j++)
+	{
+		m_enemySpawner.at(j)->Update();
+	}
 
 	CheckKeyBoardInputs();
 	
@@ -235,27 +270,27 @@ void Playing::CheckKeyBoardInputs()
 
 void Playing::CameraInput()
 {
-//	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
+	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
 
-	//float rotationSpeed = 2.0f;
+	float rotationSpeed = 2.0f;
 	//
 	//// Apply Rotation
-	//Vector2 mouse_delta = g_theInput->GetMouseDelta();
-	////mouse_delta = mouse_delta.GetNormalized();
-	//
-	//// m_current_cam_euler; // defined, starts at zero
-	//Vector3 local_euler = Vector3::ZERO; 
-	//local_euler.y = mouse_delta.x * rotationSpeed * dt; 
-	//local_euler.x = mouse_delta.y * rotationSpeed * dt; 
-	//
-	//Vector3 currentRotation = m_player->m_transform.GetLocalEulerAngles();
-	//currentRotation.x += local_euler.x; 
-	//currentRotation.y += local_euler.y; 
+	Vector2 mouse_delta = g_theInput->GetMouseDelta();
+	//mouse_delta = mouse_delta.GetNormalized();
+	
+	// m_current_cam_euler; // defined, starts at zero
+	Vector3 local_euler = Vector3::ZERO; 
+	local_euler.y = mouse_delta.x * rotationSpeed * dt; 
+	local_euler.x = mouse_delta.y * rotationSpeed * dt; 
+	
+	Vector3 currentRotation = m_player->m_transform.GetLocalEulerAngles();
+	currentRotation.x += local_euler.x; 
+	currentRotation.y += local_euler.y; 
 
-	//currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
-	//currentRotation.y = fmod(currentRotation.y, 360.f ); 
+	currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
+	currentRotation.y = fmod(currentRotation.y, 360.f ); 
 
-	//m_player->m_transform.SetLocalRotationEuler( currentRotation);
+	m_player->m_transform.SetLocalRotationEuler( currentRotation);
 
 	Vector3 movement = GetMovement();
 
