@@ -58,12 +58,12 @@ void Playing::StartUp()
 	Image mapImage = Image("Data/Images/Maps/testMap.png");
 	m_currentMap = new Map("test", mapImage);
 	m_cursor = new Cursor();
+	m_cameraLocation = Vector2(0,0);
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	Unit* newUnit = new Unit(TEAM_BLUE);
-	m_testUnit = newUnit;
-	m_currentMap->AddGameObject(*newUnit);
+	m_currentMap->CreateUnit("melee", TEAM_BLUE, IntVector2::ZERO);
+	m_currentMap->CreateUnit("melee", TEAM_RED, IntVector2(1,0));
 
 	GameObject2D* newBuilding = new Building();
 	newBuilding->m_transform.TranslateLocal(Vector2(16.f,16.f));
@@ -75,9 +75,12 @@ void Playing::Update()
 	CheckKeyBoardInputs();
 
 	if(WasKeyJustPressed(KEYBOARD_SPACE))
-		m_testUnit->m_health = 0;
+		m_currentMap->GoToNextTurn();
 
-	m_testUnit->Update();
+	DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
+
+	//m_testUnit->Update();
+	m_currentMap->Update();
 
 	m_currentMap->RemoveDeadGameObjects();
 
@@ -90,9 +93,10 @@ void Playing::Render() const
 
 	m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
-	Matrix44 view = Matrix44::MakeView(Vector3(0.f, 0.f, -10.f), Vector3::ZERO );
-	view = Matrix44::MakeTranslation3D(Vector3(-100.f, -100.f, -10.f));
-	m_camera->m_viewMatrix = view;
+	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
+	//Matrix44 view = Matrix44::MakeView(Vector3(0.f, 0.f, -10.f), Vector3::ZERO );
+	//view = Matrix44::MakeTranslation3D(Vector3(-100.f, -100.f, -10.f));
+	//m_camera->m_viewMatrix = view;
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -117,7 +121,8 @@ void Playing::CheckKeyBoardInputs()
 	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
 	DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
 
-
+	//--------------------------------------------------------------------------
+	// Hover
 	Tile* currentTile = m_currentMap->GetTile(mousePos.xy());
 	if(nullptr != currentTile)
 	{
@@ -134,33 +139,75 @@ void Playing::CheckKeyBoardInputs()
 		{
 			if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
 			{
-				GameObject2D player = *m_currentMap->m_gameObjects.at(0);
-
-				m_currentMap->m_gameObjects.at(0)->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
+				m_currentMap->m_selectedUnit->m_transform.SetLocalPosition(currentTile->GetCenterOfTile());
 			}
 			
 			
 		}
 
-
+		//--------------------------------------------------------------------------
+		// Mouse click
 		if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
 		{
 
 			if(m_currentPlayState == SELECTING)
-			{
-				m_cursor->m_renderable->m_hidden = true;
-				Unit* player = (Unit*) m_currentMap->m_gameObjects.at(0);
-				m_currentMap->CreateMovementTiles(*player);
-				m_currentPlayState = MOVEMENT;
+			{	
+				// make sure there is a unit there
+				if(m_currentMap->SelectUnit(mousePos.xy()) == false)
+				{
+					// Pop up the general menu for now 
+
+					return;
+				}
+
+				// there is a unit there so do something with it
+				if(m_currentMap->m_selectedUnit->m_beenMoved == false)
+				{
+					// We don't check for if its their turn cause you should be able to 
+					// see where the enemy can go during your turn
+
+					m_currentMap->CreateMovementTiles(*m_currentMap->m_selectedUnit);
+					m_cursor->m_renderable->m_hidden = true;
+					m_currentPlayState = MOVEMENT;
+				}
+				else if(m_currentMap->m_selectedUnit->m_beenMoved)
+				{
+					// Do an action
+				}
+				else
+				{
+					// Show general menu
+
+				}
+				
+				
 			}
 			else if(m_currentPlayState == MOVEMENT)
 			{
-				if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
+				// Only do moving if it's their turn
+				if(m_currentMap->m_turnOrder.GetCurrentTeamTurn() == m_currentMap->m_selectedUnit->m_team)
 				{
+					if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
+					{
+						m_cursor->m_renderable->m_hidden = false;
+						m_currentMap->ClearHoverTiles();
+						m_currentPlayState = SELECTING;
+
+						m_currentMap->PlaceUnit(mousePos.xy());
+					}
+				}
+				else
+				{
+					// put them back
+					m_currentMap->PutSelectedUnitBack();
+
 					m_cursor->m_renderable->m_hidden = false;
 					m_currentMap->ClearHoverTiles();
 					m_currentPlayState = SELECTING;
+
 				}
+				
+				
 				
 			}
 		
@@ -169,8 +216,24 @@ void Playing::CheckKeyBoardInputs()
 		}
 	
 	}
+
+	// do this last cause itll move the mouse 
+	MoveCamera();
 }
 
+void Playing::MoveCamera()
+{
+	// #TODO clamp this pls
+	
+	if(WasKeyJustPressed(KEYBOARD_UP_ARROW))
+		m_cameraLocation += Vector2::SOUTH * TILE_SIZE;
+	if(WasKeyJustPressed(KEYBOARD_DOWN_ARROW))
+		m_cameraLocation += Vector2::NORTH * TILE_SIZE;
+	if(WasKeyJustPressed(KEYBOARD_LEFT_ARROW))
+		m_cameraLocation += Vector2::EAST * TILE_SIZE;
+	if(WasKeyJustPressed(KEYBOARD_RIGHT_ARROW))
+		m_cameraLocation += Vector2::WEST * TILE_SIZE;
+}
 
 
 

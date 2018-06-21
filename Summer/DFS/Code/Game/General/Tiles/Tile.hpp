@@ -8,6 +8,8 @@
 // Forward Declare
 //=============================================================
 class TileDefinition;
+class Unit;
+class Building;
 
 //=============================================================
 // ENUMS
@@ -41,13 +43,18 @@ public:
 	void ChangeTileType(TileDefinition& newDef) { m_definition = &newDef; }
 
 public:
+	
 	IntVector2			m_position;
 	TileDefinition*		m_definition;
 	int					m_tileSize;
+
+	// Convenience stuff
+	Unit*				m_unit;
+	Building*			m_building;
 	
 };
 
-//--------------------------------------------------------------------------
+//====================================================================================
 class HoverTile : public GameObject2D
 {
 public:

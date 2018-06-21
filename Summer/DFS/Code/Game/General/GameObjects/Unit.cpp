@@ -4,6 +4,7 @@
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "Game\Main\Game.hpp"
+#include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 
 Unit::Unit(TeamName team)
 	: GameObject2D("Test")
@@ -32,4 +33,12 @@ void Unit::Update()
 {
 	if(m_health <= 0)
 		m_isDead = true;
+
+	// till we get a cool shader so we know
+	if(m_beenMoved)
+	{
+		Vector2 pos = m_transform.GetWorldPosition().xy();
+		
+		DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(255, 0, 0, 200), Rgba(255, 0, 0, 200));
+	}
 }

@@ -49,15 +49,13 @@ public:
 	void		Render() const;
 
 	void		CheckKeyBoardInputs();
+	void		MoveCamera();
 
 
 	void		AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }
 	void		RemoveRenderable(Renderable2D* toRemove) { m_scene->RemoveRenderable(toRemove); }
 
 public:
-
-	//Scene*					m_scene;
-	//ForwardRenderingPath*	m_renderingPath;
 
 	SpriteRendering*		m_renderingPath;
 	Scene2D*				m_scene;
@@ -71,10 +69,11 @@ public:
 	PlayState				m_currentPlayState;
 
 	Cursor*					m_cursor;
+	Vector2					m_cameraLocation;
 
 	bool					m_showHeatmap;
 
-	Unit*					m_testUnit;
+	Unit*					m_selectedUnit;
 };
 
 

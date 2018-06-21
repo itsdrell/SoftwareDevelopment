@@ -7,7 +7,7 @@
 //=============================================================
 // Forward Declare
 //=============================================================
-
+class Tile;
 
 //=============================================================
 // ENUMS
@@ -31,12 +31,13 @@ public:
 
 public:
 	TeamName	m_team;
-	
-	Tags		m_tags;
-	bool		m_beenPlayed; 
-
-
 	uint		m_health;
+
+	bool		m_beenMoved;
+	bool		m_usedAction;
+
+	Tags		m_tags;
+	Tile*		m_tileIAmOn;
 };
 
 //=============================================================

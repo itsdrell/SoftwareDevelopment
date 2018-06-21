@@ -2,6 +2,7 @@
 #include "..\SystemsAndTools\Renderable2D.hpp"
 #include "Tiles\Tile.hpp"
 #include "Engine\Renderer\Images\Image.hpp"
+#include "..\Main\GameCommon.hpp"
 
 
 //=============================================================
@@ -15,8 +16,7 @@ class HeatMap;
 //====================================================================================
 // Typedefs
 //====================================================================================
-constexpr float TILE_SIZE = 16.f;
-constexpr int TILE_SIZE_INT = (int) TILE_SIZE;
+
 
 //=============================================================
 // ENUMS
@@ -26,7 +26,22 @@ constexpr int TILE_SIZE_INT = (int) TILE_SIZE;
 //=============================================================
 // Structs
 //=============================================================
+struct TurnOrder
+{
+	TurnOrder()
+	: m_current (0U) {}
 
+	void GoToNextTurn();
+	void CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck);
+	
+	void AddTeam(TeamName team) { m_order.push_back(team); }
+	TeamName GetCurrentTeamTurn() const { return m_order.at(m_current); }
+	std::string GetCurrentTurnString() const { return TeamNameToString(m_order.at(m_current)); }
+
+	//--------------------------------------------------------------------------
+	std::vector<TeamName>		m_order;
+	uint						m_current;
+};
 
 //=============================================================
 // Classes
@@ -37,6 +52,8 @@ public:
 	Map(std::string name, const IntVector2& dimensions);
 	Map(std::string name, Image& mapImage);
 
+	void Update();
+
 	void CreateMapRenderable(bool makeDebug = false);
 	void CreateMapRenderableFromImage();
 
@@ -44,6 +61,10 @@ public:
 	Tile* GetTile(IntVector2& tilePos);
 	IntVector2 GetTileCoords(Vector2& worldPos) { return GetTile(worldPos)->m_position; }
 	
+	bool SelectUnit(Vector2 pos);
+	void PlaceUnit(Vector2 pos);
+	void PutSelectedUnitBack();
+
 	void CreateMovementTiles(const Unit& theUnitToUse);
 	bool CanPlayerMoveThere(IntVector2& posToCheck);
 	bool CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck);
@@ -51,9 +72,15 @@ public:
 	void ClearHoverTiles();
 	void RemoveDeadGameObjects();
 
+	void GoToNextTurn();
+
+	void CheckForVictory();
+	bool IsATeamWithoutUnits();
+
 	//--------------------------------------------------------------------------
 	void AddGameObject(GameObject2D& newObject) { m_gameObjects.push_back(&newObject) ;}
-	
+	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
+	void CreateUnit(std::string name, TeamName team, IntVector2 pos);
 	
 public:
 	std::string							m_name;
@@ -65,10 +92,10 @@ public:
 	std::vector<Tile>					m_tiles;
 	std::vector<HoverTile*>				m_hoverTiles;
 	std::vector<GameObject2D*>			m_gameObjects;
+	std::vector<Unit*>					m_units;
 
-
+	TurnOrder							m_turnOrder;
 	HeatMap*							m_heatmap;
-
 	Unit*								m_selectedUnit;
 };
 

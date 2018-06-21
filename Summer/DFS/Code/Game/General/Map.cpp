@@ -15,8 +15,12 @@
 #include "Engine\Core\Utils\StringUtils.hpp"
 #include "Game\General\Tiles\Tile.hpp"
 #include "Engine\Core\General\HeatMap.hpp"
+#include "Game\Main\GameCommon.hpp"
+#include "Engine\Core\Tools\DevConsole.hpp"
+#include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 
 //====================================================================================
+// Console commands
 void DebugGrid(Command& theCommand)
 {
 	std::string input;
@@ -44,6 +48,76 @@ void DebugGrid(Command& theCommand)
 	}
 }
 
+void KillAllUnitsOfTeam(Command& theCommand)
+{
+	std::string input;
+	DevConsole* dc; 
+
+	if(theCommand.m_commandArguements.size() == 1)
+		input = "help";
+	else
+		input = theCommand.m_commandArguements.at(1);
+
+	if(input == "help")
+	{
+		dc->AddConsoleDialogue(ConsoleDialogue("Teams to kill >:D ", Rgba::WHITE));
+
+		TurnOrder t = g_theGame->m_playingState->m_currentMap->m_turnOrder;
+		dc->AddSpace(1);
+
+		for(uint i = 0; i < t.m_order.size(); i++)
+		{
+			std::string teamName = TeamNameToString(t.m_order.at(i));
+
+			dc->AddConsoleDialogue(ConsoleDialogue(teamName, GetRainbowColor(i, t.m_order.size())));
+		}
+
+		dc->AddSpace(1);
+	}
+	else
+	{
+		TeamName tm = StringFromTeamName(input);
+
+		for(uint i = 0; i < g_theGame->m_playingState->m_currentMap->m_units.size(); i++)
+		{
+			Unit*& currentUnit = g_theGame->m_playingState->m_currentMap->m_units.at(i);
+
+			if(currentUnit->m_team == tm)
+				currentUnit->m_isDead = true;
+		}
+	}
+	
+}
+
+//====================================================================================
+// TURN ORDER
+void TurnOrder::GoToNextTurn()
+{
+	m_current++;
+	
+	if(m_current >= m_order.size())
+		m_current = 0;
+
+}
+
+//====================================================================================
+// This function is cool cause we don't need to worry about what the team order is
+// because this will be called when we create a unit or building so we auto know
+// what team will be playing
+void TurnOrder::CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck)
+{
+	for(uint i = 0; i < m_order.size(); i++)
+	{
+		TeamName current = m_order.at(i);
+
+		// we already know about the team
+		if(current == teamToCheck)
+			return;
+	}
+
+	// we don't know about the team so lets add em
+	AddTeam(teamToCheck);
+}
 
 //====================================================================================
 
@@ -72,6 +146,18 @@ Map::Map(std::string name, Image& mapImage)
 	CreateMapRenderable(true);
 	
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
+	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
+
+}
+
+void Map::Update()
+{
+	for(uint i = 0; i < m_gameObjects.size(); i++)
+	{
+		m_gameObjects.at(i)->Update();
+	}
+
+	CheckForVictory();
 }
 
 void Map::CreateMapRenderable(bool makeDebug)
@@ -215,6 +301,38 @@ Tile* Map::GetTile(IntVector2& tilePos)
 	return &m_tiles.at(tilePos.y * m_dimensions.x + tilePos.x);
 }
 
+bool Map::SelectUnit(Vector2 pos)
+{
+	Tile* selectedTile = GetTile(pos);
+
+	if(selectedTile->m_unit == nullptr)
+		return false;
+
+	m_selectedUnit = selectedTile->m_unit;
+	m_selectedUnit->m_tileIAmOn = selectedTile; // keep this so we know where to go back to
+	selectedTile->m_unit = nullptr;
+
+	return true;
+}
+
+void Map::PlaceUnit(Vector2 pos)
+{
+	Tile* selectedTile = GetTile(pos);
+
+	selectedTile->m_unit = m_selectedUnit;
+	m_selectedUnit->m_tileIAmOn = selectedTile;
+	m_selectedUnit->m_beenMoved = true;
+}
+
+void Map::PutSelectedUnitBack()
+{
+	Tile* tileToGoBackTo = m_selectedUnit->m_tileIAmOn;
+
+	tileToGoBackTo->m_unit = m_selectedUnit;
+	m_selectedUnit->m_transform.SetLocalPosition(tileToGoBackTo->GetCenterOfTile());
+
+}
+
 void Map::CreateMovementTiles(const Unit& theUnitToUse)
 {
 	m_heatmap->ResetHeatMap();
@@ -248,16 +366,19 @@ bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
 {
 	int tileSize = TILE_SIZE_INT;
 
+	bool check = false;
+
 	// We just need to see if the tile pos we have is in our cached off list
 	for(uint i = 0; i < m_hoverTiles.size(); i++)
 	{
 		IntVector2 current = m_hoverTiles.at(i)->m_tileCoords * tileSize;
 
 		if(posToCheck == current)
-			return true;
+			check = true;
 	}
 
-	return false;
+
+	return check;
 }
 
 bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck)
@@ -268,6 +389,13 @@ bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck
 
 	if(currentTile == nullptr)
 		return false;
+
+	// make sure the unit isn't me
+	if(currentTile->m_unit != nullptr)
+	{
+		if(currentTile->m_unit != &theUnitToUse)
+			return false;
+	}
 
 	Tags tileTags = currentTile->m_definition->m_movementTags;
 	
@@ -298,8 +426,96 @@ void Map::RemoveDeadGameObjects()
 
 	for(uint j = 0; j < deadindices.size(); j++)
 	{
-		g_theGame->m_playingState->RemoveRenderable(m_gameObjects.at(j)->m_renderable);
+		uint idx = deadindices.at(j);
+		g_theGame->m_playingState->RemoveRenderable(m_gameObjects.at(idx)->m_renderable);
 		m_gameObjects.erase(m_gameObjects.begin() + deadindices.at(j));
 	}
+
+	deadindices.clear();
+
+	// Units as well
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Unit* current = m_units.at(i);
+
+		if(current->m_isDead)
+			deadindices.push_back(i);
+	}
+
+	for(uint j = 0; j < deadindices.size(); j++)
+	{
+		uint idx = deadindices.at(j);
+		g_theGame->m_playingState->RemoveRenderable(m_units.at(idx)->m_renderable);
+		m_units.erase(m_units.begin() + deadindices.at(j));
+	}
 }
+
+void Map::GoToNextTurn()
+{
+	// This needs to reset all the states of the units
+	m_turnOrder.GoToNextTurn();
+
+	// #TODO This could later be optimized by storing off units that were played and 
+	// only looping through those instead of all units
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Unit*& current = m_units.at(i);
+		
+		current->m_beenMoved = false;
+		current->m_usedAction = false;
+	}
+}
+
+void Map::CheckForVictory()
+{
+	// Later this could have other objectives based off the map (enum)
+	
+	bool victory = IsATeamWithoutUnits();
+
+	if(victory)
+		DebugRenderLog(10.f, "VICTORY");
+}
+
+bool Map::IsATeamWithoutUnits()
+{
+	std::vector<TeamName> teams = m_turnOrder.m_order;
+
+	for(uint teamNameIndex = 0; teamNameIndex < teams.size(); teamNameIndex++)
+	{
+		TeamName currentTeam = teams.at(teamNameIndex);
+		bool foundOneAlive = false;
+
+		for(uint unitIndex = 0; unitIndex < m_units.size(); unitIndex++)
+		{
+			Unit currentUnit = *m_units.at(unitIndex);
+
+			if(currentUnit.m_team == currentTeam)
+				foundOneAlive = true;
+		}
+
+		// they have no units 
+		if(foundOneAlive == false)
+			return true;
+	}
+	
+	return false;
+}
+
+void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos)
+{
+	Unit* newUnit = new Unit(team);
+	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
+	newUnit->SetLocalPosition(position);
+
+	// Put the unit on the tile
+	Tile* tilePlacedOn = GetTile(position);
+	tilePlacedOn->m_unit = newUnit;
+
+	// make sure we know about their team
+	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
+
+	AddGameObject(*newUnit);
+	AddUnit(*newUnit);
+}
+
 
