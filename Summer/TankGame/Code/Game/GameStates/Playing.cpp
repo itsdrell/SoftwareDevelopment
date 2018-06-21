@@ -143,13 +143,13 @@ Enemy* Playing::AddEnemy(const Vector3& pos)
 
 	MeshBuilder mb;
 	//mb.AddMeshFromObjFile("Data/Model/Mech/leo.obj");
-	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::BLACK);
+	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::WHITE);
 	mb.AddUVSphere(Vector3::ONE, 1.f, 16, 16, Rgba::WHITE);
 	newEnemy->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
 	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	Rgba tint = Rgba::WHITE;
+	Rgba tint = Rgba::BLACK;
 	enemyMaterial->SetTint(tint);
 
 	newEnemy->m_renderable->SetMaterial( enemyMaterial );
@@ -158,6 +158,9 @@ Enemy* Playing::AddEnemy(const Vector3& pos)
 	// Add to the containers
 	m_scene->AddRenderable(newEnemy->m_renderable);
 	m_enemies.push_back(newEnemy);
+
+	if(m_testEnemy == nullptr)
+		m_testEnemy = newEnemy;
 
 	return newEnemy;
 }
@@ -188,8 +191,9 @@ EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
 void Playing::Update()
 {
 	m_player->Update();
-	//m_testEnemy->Update();
 	m_testSpawner->Update();
+
+	m_testEnemy->m_renderable->m_material->SetTint(Rgba::BLUE);
 
 	for(uint i = 0; i < m_enemies.size(); i++)
 	{

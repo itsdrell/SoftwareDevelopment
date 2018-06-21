@@ -234,6 +234,18 @@ void Material::SetProperty(std::string name, Rgba & value)
 
 void Material::SetTint(Rgba tint)
 {
+	for(uint i = 0; i < m_properties.size(); i++)
+	{
+		MaterialProperties*& current = m_properties.at(i);
+
+		if(current->m_name == "TINT")
+		{
+			MaterialPropertiesRgba*& currentTint = (MaterialPropertiesRgba*&) current;
+			currentTint->m_data = tint;
+			return;
+		}
+	}
+	
 	SetProperty("TINT", tint);
 }
 
