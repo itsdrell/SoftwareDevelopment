@@ -1015,7 +1015,7 @@ void Renderer::DrawWrappedTextInBox2D(std::string text, AABB2 boxSize, float cel
 	Vector2 currentPosition = Vector2(boxSize.mins.x + aspectScale, boxSize.maxs.y - (cellHeight * 1.2f));
 
 	// Draw the box first
-	DrawAABB2(boxSize,boxColor); // get rid of this lmao
+	//DrawAABB2(boxSize,boxColor); // get rid of this lmao
 
 	std::vector<std::string> vectorOfWords = BreakSentenceIntoWords(text);
 
@@ -1106,7 +1106,7 @@ void Renderer::DrawTextInBox2D(TextDrawMode mode, Vector2 alignment, AABB2 box, 
 
 	if(mode == TEXT_DRAW_SHRINK_TO_FIT)
 	{
-
+		//DrawFittedToBoxText(alignment, box, text, cellHeight, aspectScale, textColor, font);
 	}
 
 }
@@ -1134,6 +1134,63 @@ void Renderer::DrawStringInBox2D(Vector2 alignment, AABB2 box, std::string text,
 	//DrawAABB2(box,Rgba(0,0,255,255));
 
 	DrawText2D(Vector2(drawX,drawY),text,cellHeight,textColor,aspectScale,font);
+}
+
+void Renderer::DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale, Rgba textColor, BitmapFont* font)
+{
+	float currentCellHeight = cellHeight;
+	float stepSizeToShrink = .5f;
+	float verticalSpace = .4f;
+
+	if(font == nullptr)
+	{
+		std::map<std::string, BitmapFont*>::iterator fontIterator = m_loadedFonts.begin();
+		font = fontIterator->second;
+	}
+
+	// So this break ups the texts into lines using \n
+	Strings linesOfText = SplitString(text, "\n");
+
+	// this is assuming the largest string in length is also the largest in ASCII size 
+	// (which isn't always true)
+	std::string bigestText = GetLargestStringInStrings(linesOfText);
+
+	float lengthOfSentence = font->GetStringWidth(bigestText, currentCellHeight, aspectScale);
+
+	Vector2 startPoint = Vector2(box.mins.x, box.maxs.y);
+
+	// Check X
+	float projX = startPoint.x + lengthOfSentence;
+
+	while(projX >= box.maxs.x)
+	{
+		currentCellHeight -= stepSizeToShrink;
+
+		float newLength = font->GetStringWidth(bigestText, currentCellHeight, aspectScale);
+		projX = startPoint.x + newLength;
+	}
+
+	// check y
+	float amountOfWhiteSpaceNeeded = (currentCellHeight * verticalSpace) * linesOfText.size();
+	float projY = startPoint.y - ((currentCellHeight * linesOfText.size()) + amountOfWhiteSpaceNeeded);
+	
+	while(projY <= (box.mins.y + currentCellHeight))
+	{
+		currentCellHeight -= stepSizeToShrink;
+		amountOfWhiteSpaceNeeded = (currentCellHeight * verticalSpace) * linesOfText.size();
+		projY = startPoint.y - ((currentCellHeight * linesOfText.size()) + amountOfWhiteSpaceNeeded);
+	}
+
+	// this is so we draw underneath the box
+	startPoint.y -= currentCellHeight + (currentCellHeight * verticalSpace);
+
+	// cool now we know a good size, lets draw
+	for(uint i = 0; i < linesOfText.size(); i++)
+	{
+		DrawText2D(startPoint, linesOfText.at(i), currentCellHeight, textColor, aspectScale, font);
+
+		startPoint.y -= (currentCellHeight + (currentCellHeight * verticalSpace));
+	}
 }
 
 // Open GL stuff

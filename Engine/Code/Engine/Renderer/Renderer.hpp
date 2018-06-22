@@ -121,15 +121,19 @@ public:
 	void Renderer::DrawText2D( const Vector2& drawMins, const std::string& asciiText,
 		float cellHeight,const Rgba& tint = Rgba::WHITE, float aspectScale = 1.f, // multiplied by the font’s inherent m_baseAspect
 		const BitmapFont* font = nullptr );
+	
 	void DrawWrappedTextInBox2D(std::string text, AABB2 boxSize, float cellHeight = 1.f, float aspectScale = 1.f, 
 		Rgba textColor = Rgba::WHITE, Rgba boxColor = Rgba::CYAN, BitmapFont* font = nullptr);
 	
 	// All in one version
-	void DrawTextInBox2D(TextDrawMode mode, Vector2 alignment,AABB2 box, std::string text, float cellHeight = 1.f, float aspectScale = 1.f, 
+	void DrawTextInBox2D(TextDrawMode mode, Vector2 alignment, AABB2 box, std::string text, float cellHeight = 1.f, float aspectScale = 1.f, 
 		Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
 
 	void DrawStringInBox2D(Vector2 alignment,AABB2 box, std::string text, float cellHeight = 1.f, float aspectScale = 1.f, 
 		Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
+
+	// This is top left fitting
+	void DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale = 1.f, Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
 
 	// Open GL stuff
 	void PushMatrix();
