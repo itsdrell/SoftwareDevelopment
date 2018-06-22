@@ -464,6 +464,10 @@ void DevConsole::RenderFPS()
 
 void DevConsole::GenerateTextMesh()
 {
+	// so we don't generate it during the game when we don't need it yet
+	if(!m_isOpen)
+		return;
+	
 	MeshBuilder mb;
 
 	// Draw current line
@@ -514,9 +518,10 @@ void DevConsole::Open()
 		MouseLockToScreen(false);
 	}
 	
-
-
 	m_isOpen = true;
+
+	// make sure we have the up-to-date mesh
+	GenerateTextMesh();
 }
 
 void DevConsole::Close()
@@ -993,6 +998,7 @@ void DevConsole::AddACommandToHistory()
 	
 	// If we hit enter we are dont doing history, so reset the index to not being used
 	m_commandHistoryIndex = -1;
+
 }
 
 void DevConsole::BrowseCommandHistory(int direction)
@@ -1021,6 +1027,7 @@ DevConsole* DevConsole::GetInstance()
 void DevConsole::AddConsoleDialogue(ConsoleDialogue newDialogue)
 {
 	s_history.push_back(newDialogue);
+	DevConsole::GetInstance()->GenerateTextMesh();
 }
 
 void DevConsole::AddErrorMessage(std::string errorText)

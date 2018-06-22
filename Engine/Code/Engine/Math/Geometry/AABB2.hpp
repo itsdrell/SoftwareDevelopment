@@ -37,6 +37,8 @@ public:
 	AABB2 operator-( const Vector2& antiTranslation ) const;
 	bool operator==( const AABB2& compare ) const;
 
+	std::string ToString() const;
+
 
 public:
 	Vector2 mins;

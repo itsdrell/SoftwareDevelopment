@@ -294,6 +294,8 @@
     <ClCompile Include="General\Map.cpp" />
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />
+    <ClCompile Include="General\UI\Container.cpp" />
+    <ClCompile Include="General\UI\UIWidget.cpp" />
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
     <ClCompile Include="Main\Main_Win32.cpp" />
@@ -320,6 +322,8 @@
     <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
+    <ClInclude Include="General\UI\Container.hpp" />
+    <ClInclude Include="General\UI\UIWidget.hpp" />
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />
     <ClInclude Include="Main\Game.hpp" />
     <ClInclude Include="Main\GameCommon.hpp" />

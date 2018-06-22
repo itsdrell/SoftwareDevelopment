@@ -34,6 +34,12 @@ Vector2::Vector2( float initialX, float initialY )
 {
 }
 
+Vector2::Vector2(float valueForBoth)
+{
+	x = valueForBoth;
+	y = valueForBoth;
+}
+
 void Vector2::SetFromText(const char * text)
 {
 	Strings result = SplitString(text,",");

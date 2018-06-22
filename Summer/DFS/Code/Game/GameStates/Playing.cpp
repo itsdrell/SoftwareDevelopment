@@ -20,6 +20,8 @@
 #include "Engine/Core/General/HeatMap.hpp"
 #include "../General/GameObjects/Building.hpp"
 #include "../General/GameObjects/Unit.hpp"
+#include "../General/UI/Container.hpp"
+#include "../General/UI/UIWidget.hpp"
 
 
 Playing::Playing()
@@ -57,8 +59,11 @@ void Playing::StartUp()
 
 	Image mapImage = Image("Data/Images/Maps/testMap.png");
 	m_currentMap = new Map("test", mapImage);
+	
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(0,0);
+	m_actionMenu = new Container(5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
+
 
 	//---------------------------------------------------------
 	// Creating a test scene
@@ -80,6 +85,7 @@ void Playing::Update()
 	DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
 
 	//m_testUnit->Update();
+	m_actionMenu->Update();
 	m_currentMap->Update();
 
 	m_currentMap->RemoveDeadGameObjects();
@@ -101,6 +107,9 @@ void Playing::Render() const
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
+	
+	// #TODO make this a renderable once we figure out a clean way to maintain it
+	m_actionMenu->Render();
 
 	// Debug heat map
 	if(m_showHeatmap)
@@ -147,16 +156,23 @@ void Playing::CheckKeyBoardInputs()
 
 		//--------------------------------------------------------------------------
 		// Mouse click
+
+
+		if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
+		{
+			m_actionMenu->OnClick();
+		}
+
+
 		if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
 		{
-
 			if(m_currentPlayState == SELECTING)
 			{	
 				// make sure there is a unit there
 				if(m_currentMap->SelectUnit(mousePos.xy()) == false)
 				{
 					// Pop up the general menu for now 
-
+					m_actionMenu->AddPauseMenu();
 					return;
 				}
 
@@ -177,7 +193,8 @@ void Playing::CheckKeyBoardInputs()
 				else
 				{
 					// Show general menu
-
+					m_actionMenu->AddPauseMenu();
+					return;
 				}
 				
 				
@@ -206,16 +223,14 @@ void Playing::CheckKeyBoardInputs()
 					m_currentPlayState = SELECTING;
 
 				}
-				
-				
-				
+
 			}
-		
-				
-			
+
 		}
 	
 	}
+
+
 
 	// do this last cause itll move the mouse 
 	MoveCamera();

@@ -1015,7 +1015,7 @@ void Renderer::DrawWrappedTextInBox2D(std::string text, AABB2 boxSize, float cel
 	Vector2 currentPosition = Vector2(boxSize.mins.x + aspectScale, boxSize.maxs.y - (cellHeight * 1.2f));
 
 	// Draw the box first
-	//DrawAABB2(boxSize,boxColor); // get rid of this lmao
+	DrawAABB2(boxSize,boxColor); // get rid of this lmao
 
 	std::vector<std::string> vectorOfWords = BreakSentenceIntoWords(text);
 
@@ -1138,6 +1138,22 @@ void Renderer::DrawStringInBox2D(Vector2 alignment, AABB2 box, std::string text,
 
 void Renderer::DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale, Rgba textColor, BitmapFont* font)
 {
+	//---------------------------------------------------------
+	// T O D O
+	//
+	// What to fix: Make this optimized so it isn't slow. 
+	//				Could return a cellHeight so it can be cached off
+	//				Could remove while loops
+	//
+	// Why it needs to be fixed: 
+	//		So it can be called every frame
+	//
+	// Why you are doing it that way now: Time mostly. Couldn't figure it out
+	// but also this could be used in mesh building so it's not a baaaaad strat
+	// 
+	//---------------------------------------------------------
+	
+	
 	float currentCellHeight = cellHeight;
 	float stepSizeToShrink = .5f;
 	float verticalSpace = .4f;

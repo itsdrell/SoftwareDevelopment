@@ -13,6 +13,7 @@ public:
 	Vector2() {}											// default constructor: do nothing (for speed)
 	Vector2( const Vector2& copyFrom );						// copy constructor (from another vec2)
 	explicit Vector2( float initialX, float initialY );		// explicit constructor (from x, y)
+	explicit Vector2( float valueForBoth);
 	void SetFromText( const char* text ); // XML
 
 	// Mutators

@@ -17,6 +17,7 @@ class SpriteRendering;
 class Map;
 class Cursor;
 class Unit;
+class Container;
 
 //=============================================================
 // ENUMS
@@ -65,6 +66,7 @@ public:
 	GameObject2D*			m_test;
 
 	Map*					m_currentMap;
+	Container*					m_actionMenu;
 
 	PlayState				m_currentPlayState;
 

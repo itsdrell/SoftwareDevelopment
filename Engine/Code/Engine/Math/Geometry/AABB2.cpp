@@ -198,6 +198,14 @@ AABB2 AABB2::operator-(const Vector2& antiTranslation) const
 }
 
 
+std::string AABB2::ToString() const
+{
+	std::string result = Stringf("MinX: %f MinY: %f MaxX: %f MaxY: %f",
+		mins.x, mins.y, maxs.x, maxs.y);
+
+	return result;
+}
+
 bool AABB2::operator==(const AABB2& compare) const
 {
 	if(mins == compare.mins)

@@ -132,7 +132,7 @@ public:
 	void DrawStringInBox2D(Vector2 alignment,AABB2 box, std::string text, float cellHeight = 1.f, float aspectScale = 1.f, 
 		Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
 
-	// This is top left fitting
+	// This is top left fitting - DO NOT CALL EVERY FRAME
 	void DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale = 1.f, Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
 
 	// Open GL stuff
