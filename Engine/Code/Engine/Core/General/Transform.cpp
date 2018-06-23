@@ -2,61 +2,24 @@
 #include "..\..\Math\Quaternion.hpp"
 #include "..\..\Renderer\Systems\DebugRenderSystem.hpp"
 
-//////////////////////////////////////////////////////////////////////////
+//====================================================================================
 const transform_t transform_t::IDENTITY = transform_t();
 
-//////////////////////////////////////////////////////////////////////////
 
-// Transform::Transform(const Vector3 thePosition, const Vector3 theRotation, const Vector3 theScale)
-// {
-// 	position = thePosition;
-// 	rotation = theRotation;
-// 	scale = theScale;
-// }
-// 
-// Matrix44 Transform::GetMatrix()
-// {
-// 	Matrix44 result;
-// 	
-// 	// Get the matrix for all the things
-// 	Matrix44 rotationAroundX = Matrix44::MakeRotationDegreesAroundX(rotation.x);
-// 	Matrix44 rotationAroundY = Matrix44::MakeRotationDegreesAroundY(rotation.y);
-// 	Matrix44 rotationAroundZ = Matrix44::MakeRotationDegreesAroundZ(rotation.z);
-// 
-// 	Matrix44 translation = Matrix44::MakeTranslation3D(position);
-// 	
-// 	result.Append(translation);
-// 
-// 	// All the appends
-// 	result.Append(rotationAroundY);
-// 	result.Append(rotationAroundX);
-// 	result.Append(rotationAroundZ);
-// 
-// 	
-// 	return result;
-// }
 
-//////////////////////////////////////////////////////////////////////////
+//====================================================================================
 Matrix44 transform_t::GetMatrix() const
 {
 	Matrix44 result;
 
 	Matrix44 translation = Matrix44::MakeTranslation3D(position);
+	Rotator theRotation = rotation.GetAsMatrix();
+
 	
-	// Get the matrix for all the things
-	Vector3 euler = rotation.get_euler();
-	Matrix44 rotationAroundX = Matrix44::MakeRotationDegreesAroundX(euler.x);
-	Matrix44 rotationAroundY = Matrix44::MakeRotationDegreesAroundY(euler.y);
-	Matrix44 rotationAroundZ = Matrix44::MakeRotationDegreesAroundZ(euler.z);
-
-
 	result.Append(translation);
+	result.Append(theRotation);
 
-	// All the appends
-	result.Append(rotationAroundY);
-	result.Append(rotationAroundX);
-	result.Append(rotationAroundZ);
-
+	// #TODO do the scale
 
 	return result;
 }
@@ -69,7 +32,7 @@ void transform_t::SetMatrix(Matrix44 const & mat)
 
 	scale = Vector3(mat.GetRight().GetLength(), mat.GetUp().GetLength(), mat.GetForward().GetLength());
 
-	rotation = Quaternion::FromMatrix(mat);
+	rotation = rotation.FromMatrix(mat);
 
 }
 
@@ -91,20 +54,20 @@ Vector3 transform_t::GetPosition() const
 
 void transform_t::SetRotationEuler(Vector3 theEuler)
 {
-	rotation = Quaternion::FromEuler(theEuler);
+	rotation = rotation.FromEuler(theEuler);
 }
 
 void transform_t::RotateByEuler(Vector3 theEuler)
 {
-	Vector3 currentRotation = rotation.get_euler();
+	Vector3 currentRotation = rotation.GetEuler();
 	Vector3 newRotation = currentRotation + theEuler;
 
-	rotation = Quaternion::FromEuler(newRotation);
+	rotation = rotation.FromEuler(newRotation);
 }
 
 Vector3 transform_t::GetEulerAngles() const
 {
-	return rotation.get_euler();
+	return rotation.GetEuler();
 }
 
 void transform_t::SetScale(Vector3 s)
@@ -249,7 +212,7 @@ void Transform::SimpleMoveTowardPoint(Vector3& position, float speed, float ds)
 
 void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
 {
-	Quaternion start = m_local_transform.rotation;
+	Rotator start = m_local_transform.rotation;
 	//Quaternion end = target.m_local_transform.rotation;
 	//end.invert();
 
@@ -258,7 +221,7 @@ void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
 
 	//Vector3 dir = target.m_local_transform.rotation.get_forward();
 	//Vector3 dir = Vector3::FORWARD;
-	Quaternion end = m_local_transform.rotation.LookAt(disp);
+	//Quaternion end = m_local_transform.rotation.LookAt(disp);
 	//Quaternion end = Quaternion::FromEuler(disp);
 	
 	//Quaternion end = target.m_local_transform.rotation;
@@ -267,10 +230,10 @@ void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
 	Vector3 endRot = target.m_local_transform.GetEulerAngles();
 	//Quaternion end = Quaternion::FromEuler(-endRot);
 
-	Quaternion newRotation = QuaternionRotateTorward(start, end, maxDegreesToTurn);
+	//Quaternion newRotation = QuaternionRotateTorward(start, end, maxDegreesToTurn);
 	//newRotation.invert();
 	
-	SetLocalRotationEuler(newRotation.get_euler());
+	//SetLocalRotationEuler(newRotation.get_euler());
 
 	//DebugRenderLog(0.f, newRotation.ToString(), Rgba::WHITE);
 	//m_local_transform.SetRotationEuler();

@@ -193,7 +193,7 @@ Matrix44 Quaternion::get_mat4() const
 }
 
 //------------------------------------------------------------------------
-Vector3 Quaternion::get_euler() const 
+Vector3 Quaternion::GetEuler() const 
 {
 	// From http://www.darwin3d.com/gamedev/quat2eul.cpp
 
@@ -252,7 +252,7 @@ Vector3 Quaternion::get_euler() const
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::FromMatrix( Matrix33 &mat ) 
+Quaternion Quaternion::MakeFromMatrix( Matrix33 &mat ) 
 {
 	float m00 = mat.GetValueAt( 0, 0 );
 	float m11 = mat.GetValueAt( 1, 1 );
@@ -302,10 +302,10 @@ Quaternion Quaternion::FromMatrix( Matrix33 &mat )
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::FromMatrix( Matrix44 const &mat )
+Quaternion Quaternion::MakeFromMatrix( Matrix44 const &mat )
 {
 	Matrix33 rot = mat.GetAsMatrix33();
-	Quaternion newQaut = Quaternion::FromMatrix(rot);
+	Quaternion newQaut = Quaternion::MakeFromMatrix(rot);
 	return newQaut;
 }
 
@@ -320,7 +320,7 @@ Quaternion Quaternion::Around( Vector3 const &axis, float const angle )
 }
 
 //------------------------------------------------------------------------
-Quaternion Quaternion::FromEuler( Vector3 const &euler, eRotationOrder const rot_order ) 
+Quaternion Quaternion::MakeFromEuler( Vector3 const &euler, eRotationOrder const rot_order ) 
 {
 	//if (rot_order == ROTATE_DEFAULT) {
 	//	return Quaternion::FromEuler(euler);
@@ -380,7 +380,7 @@ Quaternion Quaternion::FromEuler( Vector3 const &euler, eRotationOrder const rot
 Quaternion Quaternion::LookAt( Vector3 const forward )
 {
 	Matrix33 lookat = Matrix33::LookAt( forward );
-	return FromMatrix( lookat );
+	return MakeFromMatrix( lookat );
 }
 
 

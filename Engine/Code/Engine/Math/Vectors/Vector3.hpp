@@ -74,7 +74,7 @@ public:
 
 
 // outside methods
-Vector3 Normalize(Vector3& vectorToNormalize);
+Vector3 Normalize(const Vector3& vectorToNormalize);
 Vector3 Cross(const Vector3& a, const Vector3& b);
 Vector3 SwapXAndZ(Vector3& theVector);
 float DotProduct(const Vector3& a, const Vector3& b);

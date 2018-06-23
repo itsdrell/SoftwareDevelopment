@@ -3,6 +3,7 @@
 #include "Engine\Renderer\Images\Image.hpp"
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "Engine\Math\Ranges\FloatRange.hpp"
+#include "Engine\Math\Matrices\Matrix44.hpp"
 
 //=============================================================
 // Forward Declare
@@ -69,6 +70,8 @@ public:
 
 	float CreateHeight( Vector2 xz );
 	float GetHeight( Vector2 xz );
+	Vector3 GetWorldPosition( Vector2 xz);
+	Matrix44 GetAdjustedModelMatrix(const Vector2& pos, const Vector3& forward, const Vector3& right);
 
 	AABB2 GetChunkExtents( IntVector2 chunk_idx );
 

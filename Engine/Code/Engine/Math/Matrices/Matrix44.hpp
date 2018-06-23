@@ -72,8 +72,12 @@ public:
 	static Matrix44 PerspectiveProjection( float fov_degrees, float aspect, float nz, float fz );
 	static Matrix44 MakeMatrix(const Vector4& iBasis, const Vector4& jBasis, const Vector4& kBasis, const Vector4& translation);
 
-
-
+	//--------------------------------------------------------------------------
+	// Rotator functions
+	Matrix44 GetAsMatrix() const { return *this; }
+	Matrix44 FromMatrix(const Matrix44& matrix) const { return matrix; } // for rotator
+	Matrix44 FromEuler(const Vector3& euler) const;
+	Vector3 GetEuler() const;
 
 public:
 	

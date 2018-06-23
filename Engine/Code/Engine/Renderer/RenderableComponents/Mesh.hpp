@@ -64,7 +64,6 @@ public:
 
 	VertexLayout*			m_layout; // describes the vertices in the mesh
 
-	TODO("Make a mesh grow to contain so that we have a bounds");
 	AABB3					m_bounds;
 
 

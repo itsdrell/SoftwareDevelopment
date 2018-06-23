@@ -99,9 +99,10 @@ struct Quaternion
 	Quaternion get_conjugate() const;
 	Quaternion get_inverse() const;
 
-	Vector3 get_euler() const;
+	Vector3 GetEuler() const;
 	Matrix33 get_mat3() const;
 	Matrix44 get_mat4() const;
+
 
 	inline void invert() { *this = get_inverse(); } 
 
@@ -109,18 +110,25 @@ struct Quaternion
 	inline Vector3 get_up() const { return Vector3::UP * (*this); }
 	inline Vector3 get_forward() const { return Vector3::FORWARD * (*this); }
 
+	
+	//--------------------------------------------------------------------------
+	// For Rotator
+	Quaternion FromMatrix(const Matrix44& matrix) { return Quaternion::MakeFromMatrix(matrix); }
+	Quaternion FromEuler(const Vector3& euler) { return Quaternion::MakeFromEuler(euler, ROTATE_ZYX); }
+	Matrix44 GetAsMatrix() { return get_mat4(); }
+
 	//------------------------------------------------------------------------
 	// STATIC
 	//------------------------------------------------------------------------
 	static Quaternion const IDENTITY;
 
-	static Quaternion FromMatrix( Matrix33 &mat ); 
-	static Quaternion FromMatrix( Matrix44 const &mat ); 
+	static Quaternion MakeFromMatrix( Matrix33 &mat ); 
+	static Quaternion MakeFromMatrix( Matrix44 const &mat ); 
 
 	static Quaternion Around( Vector3 const &axis, float const angle_radians );
 	//static Quaternion FromEuler( Vector3 const &euler );
 	//static inline Quaternion FromEuler( float x, float y, float z ) { return FromEuler( Vector3( x, y, z ) ); }
-	static Quaternion FromEuler( Vector3 const &euler, eRotationOrder const order = ROTATE_ZYX );
+	static Quaternion MakeFromEuler( Vector3 const &euler, eRotationOrder const order = ROTATE_ZYX );
 
 	static Quaternion LookAt( Vector3 const forward );
 

@@ -1,5 +1,6 @@
 #include "Engine/Math/Matrices/Matrix33.hpp"
 #include "Matrix44.hpp"
+#include "../MathUtils.hpp"
 
 
 Matrix33::Matrix33()
@@ -113,7 +114,7 @@ Vector3 EulerFromMatrix(Matrix33& theMatrix)
 	{
 		result.x = atan2f(theMatrix.GetValueAt(2,1) , theMatrix.GetValueAt(2,2));
 		result.y = atan2f(-theMatrix.GetValueAt(2,0), sy);
-		result.z = atan2f(theMatrix.GetValueAt(1,2), theMatrix.GetValueAt(1,1));
+		result.z = atan2f(theMatrix.GetValueAt(1,0), theMatrix.GetValueAt(0,0));
 	}
 	else
 	{
@@ -122,7 +123,10 @@ Vector3 EulerFromMatrix(Matrix33& theMatrix)
 		result.z = 0;
 	}
 
-	
+	// this is in radians so convert to degrees
+	result.x = ConvertRadiansToDegrees(result.x);
+	result.y = ConvertRadiansToDegrees(result.y);
+	result.z = ConvertRadiansToDegrees(result.z);
 
 	return result;
 }

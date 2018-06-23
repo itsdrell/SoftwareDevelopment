@@ -654,6 +654,27 @@ Matrix44 Matrix44::MakeMatrix(const Vector4& iBasis, const Vector4& jBasis, cons
 	return test;
 }
 
+Matrix44 Matrix44::FromEuler(const Vector3 & euler) const
+{
+	
+	Matrix44 result;
+
+	Matrix44 rotationAroundX = Matrix44::MakeRotationDegreesAroundX(euler.x);
+	Matrix44 rotationAroundY = Matrix44::MakeRotationDegreesAroundY(euler.y);
+	Matrix44 rotationAroundZ = Matrix44::MakeRotationDegreesAroundZ(euler.z);
+	
+	result.Append(rotationAroundY);
+	result.Append(rotationAroundX);
+	result.Append(rotationAroundZ);
+
+	return result;
+}
+
+Vector3 Matrix44::GetEuler() const
+{
+	return EulerFromMatrix(GetAsMatrix33());
+}
+
 
 //------------------------------------------------------------------------
 // Forseth Lifted from GLU

@@ -137,8 +137,35 @@ float GameMap::GetHeight(Vector2 xz)
 	float h2 = Interpolate(tl, tr, cellFract.x);
 	float h = Interpolate(h1 , h2, cellFract.y);
 
-	return h;
+	return h + 1.f;
 
+}
+
+Vector3 GameMap::GetWorldPosition(Vector2 xz)
+{
+	Vector3 result = Vector3(xz.x, GetHeight(xz), xz.y);
+
+	return result;
+}
+
+Matrix44 GameMap::GetAdjustedModelMatrix(const Vector2& pos, const Vector3& forward, const Vector3& right)
+{
+	Vector3 currentPos = GetWorldPosition(pos);
+
+	Vector3 f = Normalize(forward);
+	Vector3 r = Normalize(right);
+
+	Vector3 pointBasedOffForward = currentPos + GetWorldPosition(Vector2(f.x, f.z) + pos);
+	Vector3 pointBasedOffRight = currentPos + GetWorldPosition(Vector2(r.x, r.z) + pos);
+
+	Vector3 newForward = Normalize(pointBasedOffForward - currentPos);
+	Vector3 newRight = Normalize(pointBasedOffRight - currentPos);
+
+	Vector3 normal = Cross(newForward, newRight);
+
+	Matrix44 result = Matrix44(newRight, normal, newForward, currentPos);
+
+	return result;
 }
 
 AABB2 GameMap::GetChunkExtents(IntVector2 chunk_idx)

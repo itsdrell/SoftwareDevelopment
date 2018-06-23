@@ -276,7 +276,7 @@ IntVector3 Vector3::GetAsIntVector3() const
 
 //////////////////////////////////////////////////////////////////////////
 // Outside functions 
-Vector3 Normalize(Vector3& vectorToNormalize)
+Vector3 Normalize(const Vector3& vectorToNormalize)
 {
 	//First we need to find the distance
 	float dis = vectorToNormalize.GetLength();

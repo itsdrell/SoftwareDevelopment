@@ -1,22 +1,39 @@
 #pragma once
 #include "Engine\Math\Matrices/Matrix44.hpp"
 #include "../../Math/Quaternion.hpp"
+#include "EngineCommon.hpp"
 
 
-// I do a split of struct (the SRT information)
-// and the main Transform class since later on the 
-// class will also support a Heirachy.  It is 
-// also the class I'll do any matrix caching I may want to do on.
+//====================================================================================
+// Forward Declare
+//====================================================================================
 
+
+//====================================================================================
+// Type Defs + Defines
+//====================================================================================
+
+// so we can easily switch between the two (wouldn't let me name it Rotator)
+typedef		Matrix44		Rotator;
+//typedef	Quaternion		Rotator;
+
+//====================================================================================
+// ENUMS
+//====================================================================================
+
+
+//====================================================================================
+// Structs
+//====================================================================================
 struct transform_t 
 {
 	transform_t()
 		: position(0.0f)
-		, rotation(Quaternion::IDENTITY)
+		, rotation(Rotator()) // use the default constructor
 		, scale(1.0f) {}
 
-	Vector3			position; 
-	Quaternion		rotation; 
+	Vector3				position; 
+	Rotator			rotation;
 	Vector3			scale; 
 
 	Matrix44 GetMatrix() const; 
@@ -37,8 +54,9 @@ struct transform_t
 	static transform_t const IDENTITY; 
 };
 
-
-//
+//====================================================================================
+// Classes
+//====================================================================================
 class Transform 
 {
 public:
@@ -102,32 +120,16 @@ private:
 	
 };
 
+//====================================================================================
+// Standalone C Functions
+//====================================================================================
 
 
+//====================================================================================
+// Externs
+//====================================================================================
 
 
-
-
-
-
-
-
-
-
-
-
-/*
-class Transform
-{
-public:
-
-	Transform(const Vector3 thePosition = Vector3::ZERO, const Vector3 theRotation = Vector3::ZERO, const Vector3 theScale = Vector3::ONE);
-	
-	Matrix44 GetMatrix();
-	
-public:
-	Vector3 position;
-	Vector3 rotation; // euler for now, will switch to Quaternians 
-	Vector3 scale;
-
-};*/
+//====================================================================================
+// Written by Zachary Bracken : [6/22/2018]
+//====================================================================================

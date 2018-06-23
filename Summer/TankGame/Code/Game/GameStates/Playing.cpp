@@ -119,7 +119,7 @@ Player* Playing::AddPlayer()
 
 	MeshBuilder mb;
 	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
-	mb.AddCube(Vector3::ZERO, Vector3(.5f, .5f, 1.f));
+	mb.AddCube(Vector3::ZERO, Vector3(1.f, .2f, 1.f));
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
@@ -210,10 +210,10 @@ void Playing::Update()
 
 	//--------------------------------------------------------------------------
 	//m_testEnemy->m_transform.RotateLocalByEuler(Vector3(0.f, 90.f, 0.f));
-	DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
+	//DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
 	DebugRenderBasis(0.f, m_testEnemy->m_transform.GetWorldMatrix());
 	
-	DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
+	//DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
 	DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix());
 
 	//--------------------------------------------------------------------------
@@ -294,7 +294,7 @@ void Playing::CameraInput()
 	currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
 	currentRotation.y = fmod(currentRotation.y, 360.f ); 
 
-	m_player->m_transform.SetLocalRotationEuler( currentRotation);
+	//m_player->m_transform.SetLocalRotationEuler( currentRotation);
 
 	Vector3 movement = GetMovement();
 
@@ -314,8 +314,16 @@ void Playing::CameraInput()
 	float height = m_map->GetHeight(translation.xz()) + 1.f;
 	Vector3 newLocation = Vector3(translation.x, height , translation.z);
 
-	m_player->m_transform.SetLocalPosition(newLocation); 
+	Vector2 newPos = translation.xz();
+	Vector3 forward = m_player->m_transform.GetWorldMatrix().GetForward();
+	Vector3 right = m_player->m_transform.GetWorldMatrix().GetRight();
 
+	DebugRenderLineSegment(0.f, newLocation, newLocation + forward * 5.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::YELLOW);
+	DebugRenderLineSegment(0.f, newLocation, newLocation + right * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::BLACK);
+
+	Matrix44 newPlayerModel = m_map->GetAdjustedModelMatrix(newPos, forward, right);
+	m_player->m_transform.SetLocalPosition(newLocation); 
+	//m_player->m_transform.SetWorldMatrix(newPlayerModel);
 
 }
 
