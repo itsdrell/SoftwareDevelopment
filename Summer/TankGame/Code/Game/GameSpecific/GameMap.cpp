@@ -73,7 +73,7 @@ void GameMap::LoadMap(const AABB2& bounds, const FloatRange& height, const IntVe
 	m_test->SetMesh(plane);
 
 	AABB3 areaBounds = plane->m_bounds;
-	DebugRenderWireAABB3(100.f, areaBounds);
+	//DebugRenderWireAABB3(100.f, areaBounds);
 
 	g_theGame->m_playingState->AddRenderable(m_test);
 
@@ -114,30 +114,40 @@ float GameMap::GetHeight(Vector2 xz)
 	Vector2 cellFract = Vector2(GetFractionOf(cell_uv.x), GetFractionOf(cell_uv.y));
 	IntVector2 bl_Index = IntVector2((int) floor(cell_uv.x), (int) floor(cell_uv.y));
 
-	Vector3 theBl = m_points.at( bl_Index.y * m_chunkCount.x + bl_Index.x);
-	Vector3 theTl = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + bl_Index.x);
-	Vector3 theBr = m_points.at(bl_Index.y * m_chunkCount.x + (bl_Index.x + 1));
-	Vector3 theTr = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + (bl_Index.x + 1));
+	// lazy
+	try 
+	{
+		Vector3 theBl = m_points.at( bl_Index.y * m_chunkCount.x + bl_Index.x);
+		Vector3 theTl = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + bl_Index.x);
+		Vector3 theBr = m_points.at(bl_Index.y * m_chunkCount.x + (bl_Index.x + 1));
+		Vector3 theTr = m_points.at( (bl_Index.y + 1) * m_chunkCount.x + (bl_Index.x + 1));      // vector::at throws an out-of-range
+
+																								 // heights
+		float bl = theBl.y;
+		float tl = theTl.y;
+		float br = theBr.y;
+		float tr = theTr.y;
+
+		//=============================================================
+		// Debug
+		//DebugRenderWireSphere(0.f, theBl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+		//DebugRenderWireSphere(0.f, theTl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+		//DebugRenderWireSphere(0.f, theBr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+		//DebugRenderWireSphere(0.f, theTr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
+		//=============================================================
+
+		float h1 = Interpolate(bl, br, cellFract.x);
+		float h2 = Interpolate(tl, tr, cellFract.x);
+		float h = Interpolate(h1 , h2, cellFract.y);
+
+		return h + 1.f;
+	}
+	catch (const std::out_of_range& oor) {
+		return 1.f;
+	}
 	
-	// heights
-	float bl = theBl.y;
-	float tl = theTl.y;
-	float br = theBr.y;
-	float tr = theTr.y;
-
-	//=============================================================
-	// Debug
-	//DebugRenderWireSphere(0.f, theBl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	//DebugRenderWireSphere(0.f, theTl, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	//DebugRenderWireSphere(0.f, theBr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	//DebugRenderWireSphere(0.f, theTr, 1.f, DEBUG_RENDER_IGNORE_DEPTH, GetRandomColor());
-	//=============================================================
-
-	float h1 = Interpolate(bl, br, cellFract.x);
-	float h2 = Interpolate(tl, tr, cellFract.x);
-	float h = Interpolate(h1 , h2, cellFract.y);
-
-	return h + 1.f;
+	
+	
 
 }
 

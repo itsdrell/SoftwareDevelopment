@@ -8,7 +8,7 @@
 //=============================================================
 class Scene;
 class ForwardRenderingPath;
-class Camera;
+class OrbitCamera;
 class Renderable;
 class Light;
 class Player;
@@ -49,6 +49,7 @@ public:
 
 	void		CheckKeyBoardInputs();
 	void		CameraInput();
+	void		PlayerInput();
 	Vector3		GetMovement();
 
 	void		CheckWinLossStates();
@@ -71,7 +72,8 @@ public:
 	Scene*					m_uiScene;
 	ForwardRenderingPath*	m_renderingPath;
 
-	Camera*					m_camera;
+	OrbitCamera*			m_camera;
+	Vector2					m_cameraRotation;
 
 	Player*					m_player;
 

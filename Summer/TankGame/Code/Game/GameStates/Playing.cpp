@@ -19,6 +19,8 @@
 #include "Engine/Core/Tools/Command.hpp"
 #include "../GameSpecific/HUD.hpp"
 #include "../GameSpecific/EnemySpawner.hpp"
+#include "../GameSpecific/OrbitCamera.hpp"
+#include "Engine/Core/Platform/Window.hpp"
 
 //====================================================================================
 void GameWon(Command& thecommand)
@@ -71,7 +73,7 @@ void Playing::StartUp()
 
 	//---------------------------------------------------------
 	// Cameras
-	m_camera = new Camera();
+	m_camera = new OrbitCamera();
 	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
@@ -94,6 +96,9 @@ void Playing::Enter()
 	m_player = AddPlayer();
 	m_testEnemy = AddEnemy(Vector3(20.f, 0.f, 0.f));
 	m_testSpawner = AddEnemySpawner(Vector2(0.f, 20.f));
+	m_cameraRotation = Vector2::ZERO;
+
+	//PlayLoopingSound("bg");
 
 }
 
@@ -228,18 +233,23 @@ void Playing::Render() const
 	// Set up Cameras
 	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
 	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
-
-	Matrix44 modelMatrix = Matrix44::LookAt(
-		m_player->m_cameraLocation.GetWorldPosition(), 
-		m_player->m_transform.GetWorldPosition() , 
-		m_player->m_transform.GetLocalUp()); 
-
-	m_camera->m_cameraMatrix = modelMatrix;
-	m_camera->m_viewMatrix = InvertFast(modelMatrix); // inverse this 
+	//
+	//Matrix44 modelMatrix = Matrix44::LookAt(
+	//	m_player->m_cameraLocation.GetWorldPosition(), 
+	//	m_player->m_transform.GetWorldPosition() , 
+	//	m_player->m_transform.GetLocalUp()); 
+	//
+	//m_camera->m_cameraMatrix = modelMatrix;
+	//m_camera->m_viewMatrix = InvertFast(modelMatrix); // inverse this 
 
 
 	// Set the camera
-	g_theRenderer->SetCamera(m_camera);
+	//_theRenderer->SetCamera(m_camera);
+	//Renderer *r = Renderer::GetInstance(); 
+	//Window& cw = *Window::GetInstance(); // getting Current Window
+	//
+	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 10.0f ); 
+
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -252,7 +262,9 @@ void Playing::CheckKeyBoardInputs()
 	if(IsDevConsoleOpen())
 		return;
 
-	//PlayLoopingSound("bg");
+	// movement
+	PlayerInput();
+
 
 	if(WasKeyJustPressed(KEYBOARD_SPACE))
 	{
@@ -266,7 +278,6 @@ void Playing::CheckKeyBoardInputs()
 	if(WasKeyJustPressed(KEYBOARD_BACKSPACE))
 		m_player->TakeDamage();
 
-
 	CameraInput();
 
 	CheckWinLossStates();
@@ -276,26 +287,50 @@ void Playing::CameraInput()
 {
 	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
 
-	float rotationSpeed = 2.0f;
-	//
+	float rotationSpeed = 100.0f;
+
 	//// Apply Rotation
 	Vector2 mouse_delta = g_theInput->GetMouseDelta();
-	//mouse_delta = mouse_delta.GetNormalized();
+	mouse_delta = mouse_delta.GetNormalized();
 	
-	// m_current_cam_euler; // defined, starts at zero
-	Vector3 local_euler = Vector3::ZERO; 
-	local_euler.y = mouse_delta.x * rotationSpeed * dt; 
-	local_euler.x = mouse_delta.y * rotationSpeed * dt; 
-	
-	Vector3 currentRotation = m_player->m_transform.GetLocalEulerAngles();
-	currentRotation.x += local_euler.x; 
-	currentRotation.y += local_euler.y; 
+	float xRotation = 0;
+	float yRotation = 0;
 
-	currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
-	currentRotation.y = fmod(currentRotation.y, 360.f ); 
+	if(mouse_delta.x > 0)
+	{
+		xRotation = -rotationSpeed * dt; 
+	}
+	if(mouse_delta.x < 0)
+	{
+		xRotation = rotationSpeed * dt;
+	}
 
-	//m_player->m_transform.SetLocalRotationEuler( currentRotation);
+	if(mouse_delta.y > 0)
+	{
+		yRotation = -rotationSpeed * dt; 
+	}
+	if(mouse_delta.y < 0)
+	{
+		yRotation = rotationSpeed * dt;
+	}
 
+
+	m_cameraRotation.x += xRotation;
+	m_cameraRotation.y += yRotation;
+
+	//m_cameraRotation.x = ClampFloat( m_cameraRotation.x, -90.f, 90.f );
+	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -20.f, 60.f);
+
+	DebugRenderLog(0.f, m_cameraRotation.ToString());
+
+
+	m_camera->SetTarget(m_player->m_transform.GetWorldPosition() + (Vector3::UP * 2.f));
+	m_camera->SetSphericalCoordinate(10.f, m_cameraRotation.x, m_cameraRotation.y); 
+
+}
+
+void Playing::PlayerInput()
+{
 	Vector3 movement = GetMovement();
 
 
@@ -324,7 +359,6 @@ void Playing::CameraInput()
 	Matrix44 newPlayerModel = m_map->GetAdjustedModelMatrix(newPos, forward, right);
 	m_player->m_transform.SetLocalPosition(newLocation); 
 	//m_player->m_transform.SetWorldMatrix(newPlayerModel);
-
 }
 
 Vector3 Playing::GetMovement()

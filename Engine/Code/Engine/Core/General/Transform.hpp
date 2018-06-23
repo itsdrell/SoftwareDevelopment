@@ -13,7 +13,7 @@
 // Type Defs + Defines
 //====================================================================================
 
-// so we can easily switch between the two (wouldn't let me name it Rotator)
+// so we can easily switch between the two
 typedef		Matrix44		Rotator;
 //typedef	Quaternion		Rotator;
 
@@ -33,8 +33,8 @@ struct transform_t
 		, scale(1.0f) {}
 
 	Vector3				position; 
-	Rotator			rotation;
-	Vector3			scale; 
+	Rotator				rotation;
+	Vector3				scale; 
 
 	Matrix44 GetMatrix() const; 
 	void SetMatrix( Matrix44 const &mat ); 
