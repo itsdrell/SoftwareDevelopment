@@ -59,10 +59,7 @@ void transform_t::SetRotationEuler(Vector3 theEuler)
 
 void transform_t::RotateByEuler(Vector3 theEuler)
 {
-	Vector3 currentRotation = rotation.GetEuler();
-	Vector3 newRotation = currentRotation + theEuler;
-
-	rotation = rotation.FromEuler(newRotation);
+	rotation.RotateByEuler(theEuler);
 }
 
 Vector3 transform_t::GetEulerAngles() const

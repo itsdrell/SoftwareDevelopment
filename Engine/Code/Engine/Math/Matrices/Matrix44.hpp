@@ -77,6 +77,7 @@ public:
 	Matrix44 GetAsMatrix() const { return *this; }
 	Matrix44 FromMatrix(const Matrix44& matrix) const { return matrix; } // for rotator
 	Matrix44 FromEuler(const Vector3& euler) const;
+	void RotateByEuler(const Vector3& euler); 
 	Vector3 GetEuler() const;
 
 public:

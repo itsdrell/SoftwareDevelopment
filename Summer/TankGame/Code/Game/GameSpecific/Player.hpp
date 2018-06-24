@@ -25,6 +25,7 @@ class Player : public GameObject
 public:
 
 	Player();
+	void MakeTurret();
 
 	void Update();
 	
@@ -37,7 +38,8 @@ public:
 
 public:
 
-	Transform		m_cameraLocation;
+	Transform		m_turretLocation;
+	Renderable*		m_turretRenderable;
 
 
 	Timer*			m_breadCrumbTimer;

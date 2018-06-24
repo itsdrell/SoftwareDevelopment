@@ -670,6 +670,18 @@ Matrix44 Matrix44::FromEuler(const Vector3 & euler) const
 	return result;
 }
 
+void Matrix44::RotateByEuler(const Vector3& euler)
+{
+
+	Matrix44 rotationAroundX = Matrix44::MakeRotationDegreesAroundX(euler.x);
+	Matrix44 rotationAroundY = Matrix44::MakeRotationDegreesAroundY(euler.y);
+	Matrix44 rotationAroundZ = Matrix44::MakeRotationDegreesAroundZ(euler.z);
+
+	Append(rotationAroundY);
+	Append(rotationAroundX);
+	Append(rotationAroundZ);
+}
+
 Vector3 Matrix44::GetEuler() const
 {
 	return EulerFromMatrix(GetAsMatrix33());

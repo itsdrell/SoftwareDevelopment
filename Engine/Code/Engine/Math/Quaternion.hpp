@@ -116,6 +116,7 @@ struct Quaternion
 	Quaternion FromMatrix(const Matrix44& matrix) { return Quaternion::MakeFromMatrix(matrix); }
 	Quaternion FromEuler(const Vector3& euler) { return Quaternion::MakeFromEuler(euler, ROTATE_ZYX); }
 	Matrix44 GetAsMatrix() { return get_mat4(); }
+	void RotateByEuler(const Vector3& euler);
 
 	//------------------------------------------------------------------------
 	// STATIC

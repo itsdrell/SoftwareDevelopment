@@ -77,6 +77,7 @@ void Playing::StartUp()
 	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
+	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
 
 	m_scene->AddCamera(m_camera);
 	m_uiScene->AddCamera(g_theRenderer->m_defaultUICamera);
@@ -125,6 +126,7 @@ Player* Playing::AddPlayer()
 	MeshBuilder mb;
 	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
 	mb.AddCube(Vector3::ZERO, Vector3(1.f, .2f, 1.f));
+	mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
@@ -219,7 +221,7 @@ void Playing::Update()
 	DebugRenderBasis(0.f, m_testEnemy->m_transform.GetWorldMatrix());
 	
 	//DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
-	DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix());
+	DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix(), 5.f);
 
 	//--------------------------------------------------------------------------
 
@@ -229,30 +231,6 @@ void Playing::Update()
 
 void Playing::Render() const
 {
-	//////////////////////////////////////////////////////////////////////////
-	// Set up Cameras
-	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 20.0f);
-	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
-	//
-	//Matrix44 modelMatrix = Matrix44::LookAt(
-	//	m_player->m_cameraLocation.GetWorldPosition(), 
-	//	m_player->m_transform.GetWorldPosition() , 
-	//	m_player->m_transform.GetLocalUp()); 
-	//
-	//m_camera->m_cameraMatrix = modelMatrix;
-	//m_camera->m_viewMatrix = InvertFast(modelMatrix); // inverse this 
-
-
-	// Set the camera
-	//_theRenderer->SetCamera(m_camera);
-	//Renderer *r = Renderer::GetInstance(); 
-	//Window& cw = *Window::GetInstance(); // getting Current Window
-	//
-	//m_camera->SetProjectionOrtho(10, 10, -10.0f, 10.0f ); 
-
-
-	//////////////////////////////////////////////////////////////////////////
-
 	m_renderingPath->Render(m_scene);
 	m_renderingPath->Render(m_uiScene);
 }
@@ -319,10 +297,7 @@ void Playing::CameraInput()
 	m_cameraRotation.y += yRotation;
 
 	//m_cameraRotation.x = ClampFloat( m_cameraRotation.x, -90.f, 90.f );
-	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -20.f, 60.f);
-
-	DebugRenderLog(0.f, m_cameraRotation.ToString());
-
+	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -10.f, 40.f);
 
 	m_camera->SetTarget(m_player->m_transform.GetWorldPosition() + (Vector3::UP * 2.f));
 	m_camera->SetSphericalCoordinate(10.f, m_cameraRotation.x, m_cameraRotation.y); 
@@ -353,8 +328,8 @@ void Playing::PlayerInput()
 	Vector3 forward = m_player->m_transform.GetWorldMatrix().GetForward();
 	Vector3 right = m_player->m_transform.GetWorldMatrix().GetRight();
 
-	DebugRenderLineSegment(0.f, newLocation, newLocation + forward * 5.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::YELLOW);
-	DebugRenderLineSegment(0.f, newLocation, newLocation + right * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::BLACK);
+	//DebugRenderLineSegment(0.f, newLocation, newLocation + forward * 5.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::YELLOW);
+	//DebugRenderLineSegment(0.f, newLocation, newLocation + right * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::BLACK);
 
 	Matrix44 newPlayerModel = m_map->GetAdjustedModelMatrix(newPos, forward, right);
 	m_player->m_transform.SetLocalPosition(newLocation); 
@@ -368,11 +343,8 @@ Vector3 Playing::GetMovement()
 
 	float dt = g_theGameClock->deltaTime;
 
-	//Camera& currentCamera = *m_camera;
 	Matrix44 playerMatrix = m_player->m_transform.GetLocalMatrix();
 	Vector3 shipPos = m_player->m_transform.GetLocalPosition();
-
-	//DebuggerPrintf("Cam Location: %f , %f \n", camPos.x, camPos.y);
 
 	// Forward - Backwards
 	if(IsKeyPressed(G_THE_LETTER_W))
@@ -402,19 +374,22 @@ Vector3 Playing::GetMovement()
 	}
 	
 
-	// reset rotation
-	//if(IsKeyPressed(G_THE_LETTER_E))
-	//{
-	//	if(m_currentShootTimer <= 0)
-	//	{
-	//		Shoot();
-	//		m_currentShootTimer = m_shootcooldown;
-	//	}
-	//	else
-	//	{
-	//		m_currentShootTimer -= g_theGameClock->deltaTime;
-	//	}
-	//}
+	//--------------------------------------------------------------------------
+	// Rotation
+
+	float currentYRotation = m_player->m_transform.GetLocalEulerAngles().y;
+	float amount = (200.f * dt);
+	DebugRenderLog(0.f, std::to_string(currentYRotation));
+	
+	if(IsKeyPressed(G_THE_LETTER_E))
+	{
+		m_player->m_transform.RotateLocalByEuler(Vector3(0.f, -amount, 0.f));
+	}
+
+	if(IsKeyPressed(G_THE_LETTER_Q))
+	{
+		m_player->m_transform.RotateLocalByEuler(Vector3(0.f,amount, 0.f));
+	}
 
 	return result;
 }
