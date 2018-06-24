@@ -162,14 +162,18 @@ Matrix44 GameMap::GetAdjustedModelMatrix(const Vector2& pos, const Vector3& forw
 {
 	Vector3 currentPos = GetWorldPosition(pos);
 
-	Vector3 f = Normalize(forward);
-	Vector3 r = Normalize(right);
+	// this is how far to step in that directions
+	Vector3 forwardStep = Normalize(forward) * .2f;
+	Vector3 rightStep = Normalize(right) * .2f;
 
-	Vector3 pointBasedOffForward = currentPos + GetWorldPosition(Vector2(f.x, f.z) + pos);
-	Vector3 pointBasedOffRight = currentPos + GetWorldPosition(Vector2(r.x, r.z) + pos);
+	// We add the step to the vec2 pos to get the world pos to check
+	Vector3 pointBasedOffForward = GetWorldPosition(Vector2(forwardStep.x, forwardStep.z) + pos);
+	Vector3 pointBasedOffRight = GetWorldPosition(Vector2(rightStep.x, rightStep.z) + pos);
 
+	// Create a direction based off the steps in direction - my pos
 	Vector3 newForward = Normalize(pointBasedOffForward - currentPos);
 	Vector3 newRight = Normalize(pointBasedOffRight - currentPos);
+
 
 	Vector3 normal = Cross(newForward, newRight);
 

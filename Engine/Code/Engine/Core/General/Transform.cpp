@@ -13,8 +13,10 @@ Matrix44 transform_t::GetMatrix() const
 	Matrix44 result;
 
 	Matrix44 translation = Matrix44::MakeTranslation3D(position);
-	Rotator theRotation = rotation.GetAsMatrix();
-
+	Matrix44 theRotation = rotation.GetAsMatrix();
+	
+	// make sure it didn't gain a translation
+	theRotation.SetTranslation(Vector3(0.f, 0.f, 0.f));
 	
 	result.Append(translation);
 	result.Append(theRotation);
@@ -26,7 +28,7 @@ Matrix44 transform_t::GetMatrix() const
 
 void transform_t::SetMatrix(Matrix44 const & mat)
 {
-	Matrix44 result = mat;
+	//Matrix44 result = mat;
 
 	position = mat.GetPosition();
 
@@ -160,7 +162,7 @@ Matrix44 Transform::GetWorldMatrix() const
 		Matrix44 myMatrix = GetLocalMatrix();
 		Matrix44 parentMatrix = m_parentTransform->GetWorldMatrix();
 
-		parentMatrix.Append(myMatrix);
+		myMatrix.Append(myMatrix);
 
 		return parentMatrix;
 	}
@@ -172,10 +174,10 @@ Vector3 Transform::GetWorldPosition() const
 	return GetWorldMatrix().GetPosition();
 }
 
-void Transform::SetWorldMatrix(Matrix44& theMatrix)
+void Transform::SetWorldMatrix(Matrix44& newWorld)
 {
-	// New World = Local * parent(world)
-	// Local = New World * parent(world) inverse
+	// Original : New World = parent(world) * Local
+	// What we want: Local = (parent(world) inverse) * New World 
 	
 	Matrix44 parent;
 	
@@ -185,10 +187,9 @@ void Transform::SetWorldMatrix(Matrix44& theMatrix)
 	}
 
 	parent.Invert();
-
-	//theMatrix.Append(parent);
+	parent.Append(newWorld);
 	
-	m_local_transform.SetMatrix(theMatrix * parent);
+	m_local_transform.SetMatrix(parent);
 }
 
 void Transform::LookAtWorld(Vector3 & worldPos, Vector3 worldUp)

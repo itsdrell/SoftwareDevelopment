@@ -221,7 +221,7 @@ void Playing::Update()
 	DebugRenderBasis(0.f, m_testEnemy->m_transform.GetWorldMatrix());
 	
 	//DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
-	DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix(), 5.f);
+	//DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix(), 5.f);
 
 	//--------------------------------------------------------------------------
 
@@ -299,7 +299,7 @@ void Playing::CameraInput()
 	//m_cameraRotation.x = ClampFloat( m_cameraRotation.x, -90.f, 90.f );
 	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -10.f, 40.f);
 
-	m_camera->SetTarget(m_player->m_transform.GetWorldPosition() + (Vector3::UP * 2.f));
+	m_camera->SetTarget(m_player->m_transform.GetLocalPosition() + (Vector3::UP * 2.f));
 	m_camera->SetSphericalCoordinate(10.f, m_cameraRotation.x, m_cameraRotation.y); 
 
 }
@@ -324,16 +324,19 @@ void Playing::PlayerInput()
 	float height = m_map->GetHeight(translation.xz()) + 1.f;
 	Vector3 newLocation = Vector3(translation.x, height , translation.z);
 
-	Vector2 newPos = translation.xz();
+	Vector2 newPos = newLocation.xz();
 	Vector3 forward = m_player->m_transform.GetWorldMatrix().GetForward();
 	Vector3 right = m_player->m_transform.GetWorldMatrix().GetRight();
 
-	//DebugRenderLineSegment(0.f, newLocation, newLocation + forward * 5.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::YELLOW);
-	//DebugRenderLineSegment(0.f, newLocation, newLocation + right * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::BLACK);
+	//DebugRenderLineSegment(0.f, newLocation, newLocation + forward * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::BLUE);
+	//DebugRenderLineSegment(0.f, newLocation, newLocation + right * 1.f, DEBUG_RENDER_IGNORE_DEPTH, Rgba::RED);
+	//m_player->m_transform.SetLocalPosition(newLocation); 
 
 	Matrix44 newPlayerModel = m_map->GetAdjustedModelMatrix(newPos, forward, right);
-	m_player->m_transform.SetLocalPosition(newLocation); 
-	//m_player->m_transform.SetWorldMatrix(newPlayerModel);
+	DebugRenderBasis(0.f, newPlayerModel, 5.f);
+	
+	m_player->m_transform.SetWorldMatrix(newPlayerModel);
+
 }
 
 Vector3 Playing::GetMovement()
