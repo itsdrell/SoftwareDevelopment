@@ -22,6 +22,7 @@
 #include "../GameSpecific/OrbitCamera.hpp"
 #include "Engine/Core/Platform/Window.hpp"
 #include "../GameSpecific/Projectile.hpp"
+#include "Engine/Renderer/Images/Fonts/BitmapFont.hpp"
 
 //====================================================================================
 void GameWon(Command& thecommand)
@@ -127,7 +128,7 @@ Player* Playing::AddPlayer()
 	MeshBuilder mb;
 	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
 	mb.AddCube(Vector3::ZERO, Vector3(1.f, 1.f, 2.f));
-	//mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
+	mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
@@ -148,20 +149,6 @@ Player* Playing::AddPlayer()
 Enemy* Playing::AddEnemy(const Vector3& pos)
 {
 	Enemy* newEnemy = new Enemy(pos);
-
-	MeshBuilder mb;
-	//mb.AddMeshFromObjFile("Data/Model/Mech/leo.obj");
-	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::WHITE);
-	mb.AddUVSphere(Vector3::ONE, 1.f, 16, 16, Rgba::WHITE);
-	newEnemy->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
-
-	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
-	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	Rgba tint = Rgba::BLACK;
-	enemyMaterial->SetTint(tint);
-
-	newEnemy->m_renderable->SetMaterial( enemyMaterial );
-	newEnemy->m_renderable->m_usesLight = true;
 
 	// Add to the containers
 	m_scene->AddRenderable(newEnemy->m_renderable);
@@ -201,9 +188,6 @@ void Playing::Update()
 	CheckKeyBoardInputs();
 	
 	m_player->Update();
-	m_testSpawner->Update();
-
-	m_testEnemy->m_renderable->m_material->SetTint(Rgba::BLUE);
 
 	for(uint i = 0; i < m_enemies.size(); i++)
 	{

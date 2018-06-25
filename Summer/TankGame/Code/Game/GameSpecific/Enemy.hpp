@@ -32,8 +32,10 @@ public:
 	void Update();
 
 public:
-	float		m_speed;
+	float			m_speed;
 
+	Transform		m_eyeTransform;
+	Renderable*		m_eyes;
 };
 
 //====================================================================================

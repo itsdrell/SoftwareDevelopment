@@ -191,7 +191,7 @@ void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, Vec
 	End();
 }
 
-void MeshBuilder::AddCube(const Vector3& center, const Vector3& dimensions)
+void MeshBuilder::AddCube(const Vector3& center, const Vector3& dimensions, Rgba color)
 {
 
 	//////////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ void MeshBuilder::AddCube(const Vector3& center, const Vector3& dimensions)
 	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
 
 	// this is assuming all the sides are the same color
-	SetColor(Rgba::WHITE);
+	SetColor(color);
 
 
 	//////////////////////////////////////////////////////////////////////////

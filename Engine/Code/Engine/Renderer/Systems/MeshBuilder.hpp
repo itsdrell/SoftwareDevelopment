@@ -44,7 +44,7 @@ public:
 
 	void AddPlane(const Vector3& center, const Vector3& dimensions, Vector3 right , Vector3 up , Rgba color = Rgba::WHITE);
 
-	void AddCube(const Vector3& center, const Vector3& dimensions);
+	void AddCube(const Vector3& center, const Vector3& dimensions, Rgba color = Rgba::WHITE);
 
 	void AddSkyBox();
 	
