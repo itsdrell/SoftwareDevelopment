@@ -9,6 +9,7 @@
 #include "Engine\Math\Ray.hpp"
 #include "Engine\Core\General\Camera.hpp"
 #include "..\Main\Game.hpp"
+#include "Projectile.hpp"
 
 Player::Player()
 	: GameObject("Player")
@@ -150,5 +151,12 @@ void Player::Shoot()
 		// do the shoot
 		PlayOneShotFromGroup("shoot");
 		m_shootCooldown->Reset();
+
+
+		Vector3 pos = m_turretLocation.GetWorldPosition();
+		Vector3 dir = m_turretLocation.GetWorldMatrix().GetForward();
+
+		Projectile* newProjectile = new Projectile(pos, dir, 2.f);
+		g_theGame->m_playingState->AddProjectile(*newProjectile);
 	}
 }

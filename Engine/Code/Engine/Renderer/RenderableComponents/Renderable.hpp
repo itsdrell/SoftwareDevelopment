@@ -21,6 +21,7 @@ public:
 	void SetMaterial( Material *mat ) { m_material = mat; } 
 	Material* GetMaterial() { return m_material; } 
 
+	void SetParentTransform(Transform&	parent) { m_transform.SetParentTransform(parent); }
 	void SetModelMatrix( Matrix44 model ) { m_transform.SetWorldMatrix(model); } 
 	void SetPosition(const Vector3& position);
 	Matrix44 GetModelMatrix() const { return m_transform.GetWorldMatrix(); } 

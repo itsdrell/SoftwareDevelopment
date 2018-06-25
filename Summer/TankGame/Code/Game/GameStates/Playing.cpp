@@ -21,6 +21,7 @@
 #include "../GameSpecific/EnemySpawner.hpp"
 #include "../GameSpecific/OrbitCamera.hpp"
 #include "Engine/Core/Platform/Window.hpp"
+#include "../GameSpecific/Projectile.hpp"
 
 //====================================================================================
 void GameWon(Command& thecommand)
@@ -214,7 +215,12 @@ void Playing::Update()
 		m_enemySpawner.at(j)->Update();
 	}
 
-	
+	for(uint p = 0; p < m_projectiles.size(); p++)
+	{
+		Projectile*& currentProjectile = m_projectiles.at(p);
+
+		currentProjectile->Update();
+	}
 
 	//--------------------------------------------------------------------------
 	//m_testEnemy->m_transform.RotateLocalByEuler(Vector3(0.f, 90.f, 0.f));

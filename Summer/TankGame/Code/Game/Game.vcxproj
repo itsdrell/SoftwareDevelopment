@@ -292,6 +292,7 @@
     <ClCompile Include="GameSpecific\HUD.cpp" />
     <ClCompile Include="GameSpecific\OrbitCamera.cpp" />
     <ClCompile Include="GameSpecific\Player.cpp" />
+    <ClCompile Include="GameSpecific\Projectile.cpp" />
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Defeat.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="GameSpecific\HUD.hpp" />
     <ClInclude Include="GameSpecific\OrbitCamera.hpp" />
     <ClInclude Include="GameSpecific\Player.hpp" />
+    <ClInclude Include="GameSpecific\Projectile.hpp" />
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Defeat.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />

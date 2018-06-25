@@ -64,6 +64,9 @@
     <ClCompile Include="GameSpecific\OrbitCamera.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameSpecific\Projectile.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -94,5 +97,6 @@
     <ClInclude Include="GameSpecific\HUD.hpp" />
     <ClInclude Include="GameSpecific\EnemySpawner.hpp" />
     <ClInclude Include="GameSpecific\OrbitCamera.hpp" />
+    <ClInclude Include="GameSpecific\Projectile.hpp" />
   </ItemGroup>
 </Project>

@@ -16,6 +16,7 @@ class GameMap;
 class Enemy;
 class EnemySpawner;
 class HUD;
+class Projectile;
 
 //=============================================================
 // ENUMS
@@ -42,6 +43,7 @@ public:
 	Player*			AddPlayer();
 	Enemy*			AddEnemy(const Vector3& pos);
 	EnemySpawner*	AddEnemySpawner(const Vector2& pos);
+	void			AddProjectile(Projectile& newProjectile) { m_projectiles.push_back(&newProjectile);} // trying something different
 
 	void		Update();
 
@@ -65,6 +67,7 @@ public:
 	// Containers
 	std::vector<Enemy*>				m_enemies;
 	std::vector<EnemySpawner*>		m_enemySpawner;
+	std::vector<Projectile*>		m_projectiles;
 
 
 	//--------------------------------------------------------------------------
