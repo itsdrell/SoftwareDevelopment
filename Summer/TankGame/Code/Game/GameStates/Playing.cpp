@@ -125,8 +125,8 @@ Player* Playing::AddPlayer()
 
 	MeshBuilder mb;
 	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
-	mb.AddCube(Vector3::ZERO, Vector3(1.f, .2f, 1.f));
-	mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
+	mb.AddCube(Vector3::ZERO, Vector3(1.f, 1.f, 2.f));
+	//mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
@@ -197,6 +197,8 @@ EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
 
 void Playing::Update()
 {
+	CheckKeyBoardInputs();
+	
 	m_player->Update();
 	m_testSpawner->Update();
 
@@ -212,7 +214,6 @@ void Playing::Update()
 		m_enemySpawner.at(j)->Update();
 	}
 
-	CheckKeyBoardInputs();
 	
 
 	//--------------------------------------------------------------------------
@@ -297,9 +298,9 @@ void Playing::CameraInput()
 	m_cameraRotation.y += yRotation;
 
 	//m_cameraRotation.x = ClampFloat( m_cameraRotation.x, -90.f, 90.f );
-	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -10.f, 40.f);
+	m_cameraRotation.y = ClampFloat(m_cameraRotation.y, -20.f, 40.f);
 
-	m_camera->SetTarget(m_player->m_transform.GetLocalPosition() + (Vector3::UP * 2.f));
+	m_camera->SetTarget(m_player->m_transform.GetLocalPosition() + (Vector3::UP * 4.f));
 	m_camera->SetSphericalCoordinate(10.f, m_cameraRotation.x, m_cameraRotation.y); 
 
 }

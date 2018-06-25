@@ -1,9 +1,9 @@
 #include "EnemySpawner.hpp"
-#include "..\..\DFS\Code\Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "Game\GameSpecific\GameMap.hpp"
 #include "..\Main\GameCommon.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
+#include "..\Main\Game.hpp"
 
 
 EnemySpawner::EnemySpawner(const Vector2 pos)

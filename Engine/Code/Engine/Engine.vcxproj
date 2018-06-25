@@ -293,6 +293,7 @@
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Ranges\FloatRange.cpp" />
     <ClCompile Include="Math\Ranges\IntRange.cpp" />
+    <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Trajectory.cpp" />
     <ClCompile Include="Math\Vectors\IntVector2.cpp" />
     <ClCompile Include="Math\Vectors\IntVector3.cpp" />
@@ -371,6 +372,7 @@
     <ClInclude Include="Math\Quaternion.hpp" />
     <ClInclude Include="Math\Ranges\FloatRange.hpp" />
     <ClInclude Include="Math\Ranges\IntRange.hpp" />
+    <ClInclude Include="Math\Ray.hpp" />
     <ClInclude Include="Math\Trajectory.hpp" />
     <ClInclude Include="Math\Vectors\IntVector2.hpp" />
     <ClInclude Include="Math\Vectors\IntVector3.hpp" />

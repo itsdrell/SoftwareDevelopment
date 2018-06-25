@@ -93,6 +93,7 @@ float GetFractionOf(float value);
 float Interpolate( float start, float end, float fractionTowardEnd );
 
 const Vector2 Interpolate( const Vector2& start, const Vector2& end, float fractionTowardEnd );
+Vector3 Interpolate( const Vector3& start, const Vector3& end, float fractionTowardEnd );
 const FloatRange Interpolate( const FloatRange& start, const FloatRange& end, float fractionTowardEnd );
 const AABB2 Interpolate( const AABB2& start, const AABB2& end, float fractionTowardEnd );
 const Disc2 Interpolate( const Disc2& start, const Disc2& end, float fractionTowardEnd );

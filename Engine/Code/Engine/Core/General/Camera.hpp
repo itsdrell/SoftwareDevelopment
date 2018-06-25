@@ -4,22 +4,10 @@
 #include "Engine/Renderer/Pipeline/FrameBuffer.hpp"
 #include "Transform.hpp"
 #include "../../Math/Geometry/Frustrum.hpp"
+#include "Engine/Math/Ray.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 class Texture;
-
-//////////////////////////////////////////////////////////////////////////
-
-struct Ray3
-{
-	Ray3(Vector3 start, Vector3 direction)
-		: m_start (start)
-		, m_direction (direction)
-	{}
-	
-	Vector3 m_start; 
-	Vector3 m_direction; 
-};
 
 
 //////////////////////////////////////////////////////////////////////////

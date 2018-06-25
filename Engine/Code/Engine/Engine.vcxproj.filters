@@ -247,6 +247,9 @@
     <ClCompile Include="Math\Geometry\Frustrum.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Ray.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -346,6 +349,7 @@
     <ClInclude Include="Core\Tools\ScopedProfile.hpp" />
     <ClInclude Include="Math\Geometry\OBB3.hpp" />
     <ClInclude Include="Math\Geometry\Frustrum.hpp" />
+    <ClInclude Include="Math\Ray.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

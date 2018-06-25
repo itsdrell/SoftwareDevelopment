@@ -1,7 +1,7 @@
 #include "Victory.hpp"
 #include "..\Main\GameCommon.hpp"
 #include "Engine\Math\Geometry\AABB2.hpp"
-#include "..\..\DFS\Code\Game\Main\Game.hpp"
+#include "..\Main\Game.hpp"
 
 void Victory::Update()
 {

@@ -190,6 +190,15 @@ const Rgba Interpolate(const Rgba & start, const Rgba & end, float fractionTowar
 	return Rgba(r,g,b,a);
 }
 
+Vector3 Interpolate(const Vector3& start, const Vector3& end, float fractionTowardEnd)
+{
+	float x = Interpolate(start.x , end.x, fractionTowardEnd);
+	float y = Interpolate(start.y, end.y, fractionTowardEnd);
+	float z = Interpolate(start.z, end.z, fractionTowardEnd);
+
+	return Vector3(x,y,z);
+}
+
 float Crossfade(float(*EaseFunctionA)(float), float(*EaseFunctionB)(float), float t)
 {
 	float a = EaseFunctionA(t);

@@ -187,6 +187,64 @@ AABB2 GameMap::GetChunkExtents(IntVector2 chunk_idx)
 	return AABB2();
 }
 
+bool GameMap::Raycast(Contact3* contact, Ray3 theRay)
+{
+	//Vector3 abovePoint = ...;
+	//Vector3 belowPoint = ...; 
+	//Vector3 point = Average( abovePoint, belowPoint ); 
+	//
+	//uint step_count = 0; 
+	//while ((Abs(DistanceFromTerrain(point)) > SOME_SMALL_VALUE) && (step_count < MAX_RAY_STEPS)) 
+	//{
+	//	if (IsBelow(point)) 
+	//	{ 
+	//		belowPoint = point; 
+	//	} 
+	//	else 
+	//	{ 
+	//		abovePoint = point; 
+	//	}
+	//
+	//	point = Average( abovePoint, belowPoint ); 
+	//
+	//	// honestly would debug without this safety net - if you hit an infinite loop you've probably done it wrong; 
+	//	// but it is usually a good idea to have a guaranteed exit case in loops like this in production code.
+	//	step_count++;  
+	//}
+	//
+	//contact->position = point;
+
+	Vector3 stepSize = theRay.direction * .1f;
+	Vector3 startPos = theRay.position + theRay.direction + stepSize;
+
+	Vector3 currentPos = startPos;
+	for(uint i = 0; i < (uint) MAX_RAY_STEPS; i++)
+	{
+		Vector3 mapPos = GetWorldPosition(currentPos.xz());
+
+		if(IsBelow(currentPos))
+		{
+			contact->position = currentPos - stepSize;
+			return true;
+		}
+
+		currentPos += stepSize;
+			
+	}
+
+	return false;
+}
+
+bool GameMap::IsBelow(Vector3 point)
+{
+	Vector3 terrainPos = GetWorldPosition(point.xz());
+
+	if(point.y < terrainPos.y)
+		return true;
+
+	return false;
+}
+
 //=============================================================
 // void GameMapChunk::Setup(GameMap* theMap, uint idx)
 // {

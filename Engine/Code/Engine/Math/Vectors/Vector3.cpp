@@ -329,3 +329,42 @@ Vector3 Abs(Vector3& a)
 
 	return Vector3(x,y,z);
 }
+
+Vector3 Average(const Vector3& a, const Vector3& b)
+{
+	//  #TODO could later be an initializer list so it could take as many points
+	
+	Vector3 sum = a + b;
+	Vector3 av = sum * .5f;
+
+	return av;
+}
+
+Vector3 Slerp(const Vector3 & a, const Vector3 & b, float t)
+{
+	float al = a.GetLength();
+	float bl = b.GetLength();
+
+	float len = Interpolate( al, bl, t );
+	Vector3 u = SlerpUnit( a / al, b / bl, t ); 
+	return u * len;
+}
+
+Vector3 SlerpUnit(const Vector3 & a, const Vector3 & b, float t)
+{
+	float cosangle = ClampFloat(DotProduct(a, b), -1.0f, 1.0f);
+	float angle = acosf(cosangle);
+	
+	if (angle < EPSILON) 
+	{
+		return Interpolate( a, b, t );
+	} 
+	else 
+	{
+		float pos_num = sinf( t * angle );
+		float neg_num = sinf( (1.0f - t) * angle );
+		float den = sinf(angle);
+
+		return (a * (neg_num / den)) + (b * (pos_num / den));
+	}
+}

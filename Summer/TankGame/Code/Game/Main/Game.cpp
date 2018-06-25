@@ -33,6 +33,8 @@
 #include "Engine/Math/Quaternion.hpp"
 #include "../GameStates/Victory.hpp"
 #include "Game/GameStates/Defeat.hpp"
+#include "../GameStates/Playing.hpp"
+#include "Game/GameSpecific/GameMap.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -214,5 +216,10 @@ void Game::GoToDefeatState()
 void Game::GoToVictoryState()
 {
 	m_currentState = VICTORY;
+}
+
+bool Game::Raycast(Contact3* contact, Ray3 theRay)
+{
+	return m_playingState->m_map->Raycast(contact, theRay);
 }
 

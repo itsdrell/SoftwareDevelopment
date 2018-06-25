@@ -7,6 +7,7 @@
 #include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
+#include "Engine/Math/Ray.hpp"
 
 //=============================================================
 // Forward Declare
@@ -60,6 +61,8 @@ public:
 
 	void		GoToDefeatState();
 	void		GoToVictoryState();
+
+	bool		Raycast(Contact3* contact, Ray3 theRay);
 
 
 public:

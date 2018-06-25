@@ -162,7 +162,7 @@ Matrix44 Transform::GetWorldMatrix() const
 		Matrix44 myMatrix = GetLocalMatrix();
 		Matrix44 parentMatrix = m_parentTransform->GetWorldMatrix();
 
-		myMatrix.Append(myMatrix);
+		parentMatrix.Append(myMatrix);
 
 		return parentMatrix;
 	}
@@ -211,30 +211,26 @@ void Transform::SimpleMoveTowardPoint(Vector3& position, float speed, float ds)
 void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
 {
 	Rotator start = m_local_transform.rotation;
-	//Quaternion end = target.m_local_transform.rotation;
-	//end.invert();
+
 
 	Vector3 disp = target.GetWorldPosition() - GetWorldPosition();
 	disp.Normalize();
 
-	//Vector3 dir = target.m_local_transform.rotation.get_forward();
-	//Vector3 dir = Vector3::FORWARD;
-	//Quaternion end = m_local_transform.rotation.LookAt(disp);
-	//Quaternion end = Quaternion::FromEuler(disp);
 	
-	//Quaternion end = target.m_local_transform.rotation;
+
 
 	Vector3 startRot = m_local_transform.GetEulerAngles();
 	Vector3 endRot = target.m_local_transform.GetEulerAngles();
-	//Quaternion end = Quaternion::FromEuler(-endRot);
-
-	//Quaternion newRotation = QuaternionRotateTorward(start, end, maxDegreesToTurn);
-	//newRotation.invert();
 	
-	//SetLocalRotationEuler(newRotation.get_euler());
+}
 
-	//DebugRenderLog(0.f, newRotation.ToString(), Rgba::WHITE);
-	//m_local_transform.SetRotationEuler();
+void Transform::RotateTowards(const Matrix44& target, float maxDegreesToTurn)
+{
+	Matrix44 myMatrix = GetWorldMatrix();
+
+	Matrix44 newMatrix = Interpolate(myMatrix, target, maxDegreesToTurn);
+
+	SetWorldMatrix(newMatrix);
 }
 
 // void Transform::AddChild(Transform& newchild)

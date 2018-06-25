@@ -25,7 +25,7 @@ extern SpriteSheet g_dialogueSpriteSheet;
 
 #define MAX_LIGHTS (8)
 #define STATIC
-
+#define EPSILON (FLT_EPSILON)
 
 //////////////////////////////////////////////////////////////////////////
 // MACROS

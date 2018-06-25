@@ -1,9 +1,9 @@
 #include "Enemy.hpp"
-#include "..\..\DFS\Code\Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
 #include "Game\GameSpecific\Player.hpp"
 #include "Game/GameSpecific/GameMap.hpp"
+#include "..\Main\Game.hpp"
 
 
 Enemy::Enemy(const Vector3& pos)

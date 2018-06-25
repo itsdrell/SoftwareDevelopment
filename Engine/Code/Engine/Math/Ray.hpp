@@ -1,7 +1,5 @@
 #pragma once
-#include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
+#include "Vectors\Vector3.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -11,13 +9,7 @@
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-#define	TOWER_SPAWN_AMOUNT			(20)
-#define TOWER_SPAWN_RATE			(1.f)
 
-#define MAX_AMOUNT_OF_ENEMIES		(50)
-
-#define SOME_SMALL_VALUE			(.01f)
-#define MAX_RAY_STEPS				(500)
 
 //====================================================================================
 // ENUMS
@@ -27,7 +19,32 @@
 //====================================================================================
 // Structs
 //====================================================================================
+struct Contact3
+{
+	Contact3() {}
+	
+	Contact3(Vector3 pos, Vector3 norm)
+		: position(pos)
+		, normal(norm) {}
+	
+	Vector3 position;
+	Vector3 normal;
+};
 
+//--------------------------------------------------------------------------
+struct Ray3
+{
+	Ray3() {}
+	
+	Ray3(Vector3 pos, Vector3 dir)
+		: position(pos)
+		, direction(dir) {}
+	
+	Vector3 position;
+	Vector3 direction;
+
+	Vector3 Evaluate(float t);
+};
 
 //====================================================================================
 // Classes
@@ -42,12 +59,8 @@
 //====================================================================================
 // Externs
 //====================================================================================
-extern Renderer* g_theRenderer;
-extern InputSystem* g_theInput;
-extern AudioSystem* g_audio; // not the audio cause we could have multiple...?
+
 
 //====================================================================================
-// Written by Zachary Bracken : [6/19/2018]
+// Written by Zachary Bracken : [6/24/2018]
 //====================================================================================
-
-

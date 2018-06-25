@@ -913,3 +913,22 @@ Vector4 TransformPoint(Vector4  pos, Matrix44 & mat)
 {
 	return mat.TransformHomogeneous(pos);
 }
+
+Matrix44 Interpolate(const Matrix44& a, const Matrix44& b, float t)
+{
+	Vector3 a_right = a.GetRight();
+	Vector3 b_right = b.GetRight(); 
+	Vector3 a_up = a.GetUp();
+	Vector3 b_up = b.GetUp(); 
+	Vector3 a_forward = a.GetForward(); 
+	Vector3 b_forward = b.GetForward();
+	Vector3 a_translation = a.GetPosition();
+	Vector3 b_translation = b.GetPosition(); 
+
+	Vector3 right = Slerp( a_right, b_right, t ); 
+	Vector3 up = Slerp( a_up, b_up, t ); 
+	Vector3 forward = Slerp( a_forward, b_forward, t ); 
+	Vector3 translation = Interpolate( a_translation, b_translation, t ); 
+
+	return Matrix44( right, up, forward, translation ); 
+}

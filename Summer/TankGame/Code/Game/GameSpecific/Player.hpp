@@ -29,6 +29,10 @@ public:
 
 	void Update();
 	
+	void TurretUpdate();
+	void UpdateTarget();
+	void RotateTowardsTarget();
+
 	void Reset();
 
 	void TakeDamage();
@@ -41,10 +45,11 @@ public:
 	Transform		m_turretLocation;
 	Renderable*		m_turretRenderable;
 
-
 	Timer*			m_breadCrumbTimer;
 	Timer*			m_damageCooldown;
 	Timer*			m_shootCooldown;
+
+	Vector3			m_target;
 	
 	int				m_maxHealth;
 	int				m_currentHealth;

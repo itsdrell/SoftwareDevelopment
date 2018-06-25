@@ -79,3 +79,7 @@ Vector3 Cross(const Vector3& a, const Vector3& b);
 Vector3 SwapXAndZ(Vector3& theVector);
 float DotProduct(const Vector3& a, const Vector3& b);
 Vector3 Abs(Vector3& a);
+Vector3 Average( const Vector3& a, const Vector3& b);
+
+Vector3 Slerp(const Vector3& a, const Vector3& b, float t);
+Vector3 SlerpUnit(const Vector3& a, const Vector3& b, float t);

@@ -4,13 +4,13 @@
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "Engine\Math\Ranges\FloatRange.hpp"
 #include "Engine\Math\Matrices\Matrix44.hpp"
+#include "Engine\Math\Ray.hpp"
 
 //=============================================================
 // Forward Declare
 //=============================================================
 class Renderable;
 class GameMap;
-
 //=============================================================
 // ENUMS
 //=============================================================
@@ -75,6 +75,8 @@ public:
 
 	AABB2 GetChunkExtents( IntVector2 chunk_idx );
 
+	bool Raycast(Contact3* contact, Ray3 theRay);
+	bool IsBelow(Vector3 point);
 
 public:
 	AABB2		m_mapBounds; 

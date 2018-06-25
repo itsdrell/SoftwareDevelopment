@@ -104,6 +104,7 @@ public:
 	void SimpleMoveTowardPoint(Vector3& position, float speed, float ds);
 
 	void RotateTowards(const Transform& target, float maxDegreesToTurn);
+	void RotateTowards(const Matrix44& target, float maxDegreesToTurn);
 
 	//--------------------------------------------------------------------------
 	void SetParentTransform(Transform& parent);

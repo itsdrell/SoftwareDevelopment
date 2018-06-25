@@ -1,7 +1,6 @@
 #include "HUD.hpp"
 #include "Engine\Renderer\RenderableComponents\Renderable.hpp"
 #include "Game\GameStates\Playing.hpp"
-#include "..\..\DFS\Code\Game\Main\Game.hpp"
 #include "Engine\Renderer\RenderableComponents\Material.hpp"
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
@@ -10,6 +9,7 @@
 #include "Engine\Renderer\Renderer.hpp"
 #include "Engine\Renderer\Images\Fonts\BitmapFont.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
+#include "..\Main\Game.hpp"
 
 HUD::HUD()
 {
