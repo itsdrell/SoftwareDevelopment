@@ -14,13 +14,13 @@ Enemy::Enemy(const Vector3& pos)
 	m_transform.SetLocalPosition(pos);
 	m_transform.SetLocalRotationEuler(Vector3(0.f, 90.f, 0.f));
 	m_speed = 2.f;
-
+	m_radius = 1.f;
 
 	//--------------------------------------------------------------------------
 	// Body
 	MeshBuilder mb;
 	//mb.AddMeshFromObjFile("Data/Model/Mech/leo.obj");
-	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16, Rgba::RED);
+	mb.AddUVSphere(Vector3::ZERO, m_radius, 16, 16, Rgba::RED);
 	m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
 	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");

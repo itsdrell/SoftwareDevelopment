@@ -67,6 +67,13 @@ Vector3 AABB3::GetDimensions() const
 	return Vector3(xx,yy,zz);
 }
 
+void AABB3::Translate(const Matrix44& byMatrix)
+{
+	Matrix44 theMatrix = byMatrix;
+	mins = TransformPoint(mins, theMatrix);
+	maxs = TransformPoint(maxs, theMatrix);
+}
+
 std::vector<Vector3> AABB3::GetCornerPoints() const
 {
 	//--------------------------------------------------------------------------

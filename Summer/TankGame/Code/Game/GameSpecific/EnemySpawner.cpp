@@ -9,6 +9,8 @@
 EnemySpawner::EnemySpawner(const Vector2 pos)
 	: GameObject("Spawner")
 {
+	m_health = 3;
+	
 	float h = g_theGame->m_playingState->m_map->GetHeight(pos);
 
 	m_transform.SetLocalPosition(Vector3(pos.x, h, pos.y));

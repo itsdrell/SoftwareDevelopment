@@ -171,7 +171,7 @@ EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
 
 	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
 	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	enemyMaterial->SetTint(Rgba::BLACK);
+	enemyMaterial->SetTint(GetRandomColorInRainbow());
 
 	newSpawner->m_renderable->SetMaterial( enemyMaterial );
 	newSpawner->m_renderable->m_usesLight = true;
@@ -206,18 +206,184 @@ void Playing::Update()
 		currentProjectile->Update();
 	}
 
-	//--------------------------------------------------------------------------
-	//m_testEnemy->m_transform.RotateLocalByEuler(Vector3(0.f, 90.f, 0.f));
-	//DebugRenderLog(0.f, "Enemy:" + m_testEnemy->m_transform.GetLocalPosition().ToString());
-	DebugRenderBasis(0.f, m_testEnemy->m_transform.GetWorldMatrix());
-	
-	//DebugRenderLog(0.f, "Player: " + m_player->m_transform.GetWorldPosition().ToString());
-	//DebugRenderBasis(0.f, m_player->m_transform.GetWorldMatrix(), 5.f);
-
-	//--------------------------------------------------------------------------
-
+	CheckCollisions();
+	RemoveTheDead();
 
 	m_hud->Update();
+}
+
+void Playing::CheckCollisions()
+{
+	EnemyVsBullet();
+	TowerVsBullet();
+	EnemyVsPlayer();
+	BulletVsTerrain();
+}
+
+void Playing::EnemyVsBullet()
+{
+	for(uint enemyIndex = 0; enemyIndex < m_enemies.size(); enemyIndex++)
+	{
+		Enemy*& currentEnemy = m_enemies.at(enemyIndex);
+
+		if(currentEnemy->m_isDead == false)
+		{
+			for(uint bulletIndex = 0; bulletIndex < m_projectiles.size(); bulletIndex++)
+			{
+				Projectile*& currentProjectile = m_projectiles.at(bulletIndex);
+
+				if(currentProjectile->m_isDead == false)
+				{
+					float radiusRange = currentEnemy->m_radius + currentProjectile->m_radius;
+					float dis = (currentEnemy->m_transform.GetWorldPosition() - currentProjectile->m_transform.GetWorldPosition()).GetLength();
+
+					if(dis < radiusRange)
+					{
+						currentEnemy->m_isDead = true;
+						currentProjectile->m_isDead = true;
+					}
+				}
+
+			}
+		}
+	}
+}
+
+void Playing::TowerVsBullet()
+{
+	for(uint towerIndex = 0; towerIndex < m_enemySpawner.size(); towerIndex++)
+	{
+		EnemySpawner*& currentTower = m_enemySpawner.at(towerIndex);
+
+		if(currentTower->m_isDead == false)
+		{
+			for(uint bulletIndex = 0; bulletIndex < m_projectiles.size(); bulletIndex++)
+			{
+				Projectile*& currentProjectile = m_projectiles.at(bulletIndex);
+
+				if(currentProjectile->m_isDead == false)
+				{
+					// bounds is in local space so we have to move it to world
+					AABB3 towerBounds = currentTower->m_renderable->m_mesh->m_bounds;
+					towerBounds.Translate(currentTower->m_transform.GetWorldMatrix());
+					
+					Vector3 bulletPos = currentProjectile->m_transform.GetWorldPosition();
+
+					if(towerBounds.IsPointInside(bulletPos))
+					{
+						currentTower->m_health--;
+
+						if(currentTower->m_health <= 0)
+						{
+							currentTower->m_isDead = true;
+							currentProjectile->m_isDead = true;
+						}
+						else
+						{
+							currentProjectile->m_isDead = true;
+						}
+					}
+				}
+
+			}
+		}
+	}
+}
+
+void Playing::EnemyVsPlayer()
+{
+	for(uint enemyIndex = 0; enemyIndex < m_enemies.size(); enemyIndex++)
+	{
+		Enemy*& currentEnemy = m_enemies.at(enemyIndex);
+
+		if(currentEnemy->m_isDead == false)
+		{
+			float radiusRange = currentEnemy->m_radius + 1.f;
+			float dis = (currentEnemy->m_transform.GetWorldPosition() - m_player->m_transform.GetWorldPosition()).GetLength();
+
+			if(dis < radiusRange)
+			{
+				currentEnemy->m_isDead = true;
+				m_player->TakeDamage();
+			}
+		}
+	}
+}
+
+void Playing::BulletVsTerrain()
+{
+	for(uint bulletIndex = 0; bulletIndex < m_projectiles.size(); bulletIndex++)
+	{
+		Projectile*& currentProjectile = m_projectiles.at(bulletIndex);
+
+		if(currentProjectile->m_isDead == false)
+		{
+			if(m_map->IsBelow(currentProjectile->m_transform.GetWorldPosition()))
+			{
+				currentProjectile->m_isDead = true;
+			}
+		}
+
+	}
+}
+
+void Playing::RemoveTheDead()
+{
+	// this is gross cause time
+	
+	if(WasKeyJustPressed(G_THE_LETTER_X))
+	{
+		m_testSpawner->m_isDead = true;
+	}
+	
+	//--------------------------------------------------------------------------
+	uint size = m_enemies.size();
+	for(uint i = 0; i < size; i++)
+	{
+		Enemy*& currentEnemy = m_enemies.at(i);
+
+		if(currentEnemy->m_isDead)
+		{
+			RemoveRenderable(currentEnemy->m_renderable);
+			RemoveRenderable(currentEnemy->m_eyes);
+
+			size--;
+
+			m_enemies.erase(m_enemies.begin() + i);
+		}
+	}
+
+	//--------------------------------------------------------------------------
+	size =  m_enemySpawner.size();
+	for(uint j = 0; j < m_enemySpawner.size(); j++)
+	{
+		EnemySpawner*& currentSpawner = m_enemySpawner.at(j);
+
+		if(currentSpawner->m_isDead)
+		{
+			RemoveRenderable(currentSpawner->m_renderable);
+
+			size--;
+			m_enemySpawner.erase(m_enemySpawner.begin() + j);
+
+		}
+	}
+
+	//--------------------------------------------------------------------------
+	size = m_projectiles.size();
+	for(uint p = 0; p < m_projectiles.size(); p++)
+	{
+		Projectile*& currentProjectile = m_projectiles.at(p);
+
+		if(currentProjectile->m_isDead)
+		{
+			RemoveRenderable(currentProjectile->m_renderable);
+
+			size--;
+			m_projectiles.erase(m_projectiles.begin() + p);
+
+		}
+	}
 }
 
 void Playing::Render() const

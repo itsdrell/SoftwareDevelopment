@@ -33,6 +33,7 @@ public:
 
 public:
 	float			m_speed;
+	float			m_radius;
 
 	Transform		m_eyeTransform;
 	Renderable*		m_eyes;

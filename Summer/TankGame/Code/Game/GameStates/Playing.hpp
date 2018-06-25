@@ -46,6 +46,14 @@ public:
 	void			AddProjectile(Projectile& newProjectile) { m_projectiles.push_back(&newProjectile);} // trying something different
 
 	void		Update();
+	
+	void		CheckCollisions();
+	void		EnemyVsBullet();
+	void		TowerVsBullet();
+	void		EnemyVsPlayer();
+	void		BulletVsTerrain();
+
+	void		RemoveTheDead();
 
 	void		Render() const;
 

@@ -40,6 +40,8 @@ public:
 	float		m_spawnRate;
 	uint		m_amountToSpawn;
 
+	uint		m_health;
+
 	Timer*		m_spawnTimer;
 };
 

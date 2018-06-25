@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Math/Vectors/Vector3.hpp"
 #include <vector>
+#include "../Matrices/Matrix44.hpp"
 
 
 
@@ -28,7 +29,7 @@ public:
 	Vector3 GetCenter() const;
 	Vector3 GetDimensions() const;
 
-
+	void Translate(const Matrix44& byMatrix);
 
 	//--------------------------------------------------------------------------
 	//	Points

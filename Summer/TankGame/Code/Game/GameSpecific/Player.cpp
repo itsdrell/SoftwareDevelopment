@@ -26,7 +26,7 @@ Player::Player()
 	m_shootCooldown = new Timer(g_theGameClock);
 	m_shootCooldown->SetTimer(2.f);
 
-	m_maxHealth = 3;
+	m_maxHealth = 20;
 	m_currentHealth = m_maxHealth;
 
 }
