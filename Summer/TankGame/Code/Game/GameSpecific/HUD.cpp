@@ -25,6 +25,7 @@ HUD::HUD()
 
 	m_healthBar = new Renderable();
 
+	m_target = new Renderable();
 	//--------------------------------------------------------------------------
 	// Assign materials
 	
@@ -38,8 +39,13 @@ HUD::HUD()
 	Material* text = Material::CreateOrGetMaterial("sprite");
 	text->SetTexture(0, g_theRenderer->m_defaultFont->GetTexture());
 
+	// 3D geo
+	Material* geo = Material::CreateOrGetMaterial("geo");
+	geo->SetTint(Rgba::BLUE);
+
 	m_enemiesAliveRenderable->SetMaterial(text);
 	m_spawnersLeftRenderable->SetMaterial(text);
+	m_target->SetMaterial(geo);
 
 	//--------------------------------------------------------------------------
 	// Create default meshes
@@ -57,6 +63,9 @@ HUD::HUD()
 	m_spawnersLeftRenderable->SetMesh(reloadBar);
 	m_healthBar->SetMesh(reloadBar);
 
+	mb.AddCube(Vector3::ZERO, Vector3(.2f));
+	m_target->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
+
 	//--------------------------------------------------------------------------
 	// Add to scene
 	g_theGame->m_playingState->m_uiScene->AddRenderable(m_reloadBarBackgroundRenderable);
@@ -66,7 +75,7 @@ HUD::HUD()
 	g_theGame->m_playingState->m_uiScene->AddRenderable(m_enemiesAliveRenderable);
 	g_theGame->m_playingState->m_uiScene->AddRenderable(m_spawnersLeftRenderable);
 
-
+	g_theGame->m_playingState->m_scene->AddRenderable(m_target);
 }
 
 void HUD::Update()
@@ -74,6 +83,7 @@ void HUD::Update()
 	UpdateReloadBar();
 	UpdateTextUI();
 	UpdateHP();
+	UpdateTarget();
 }
 
 void HUD::UpdateReloadBar()
@@ -131,4 +141,11 @@ void HUD::UpdateHP()
 	Mesh* bar = mb.CreateMesh<Vertex3D_PCU>();
 
 	m_healthBar->SetMesh(bar);
+}
+
+void HUD::UpdateTarget()
+{
+	Vector3 pos = g_theGame->m_playingState->m_player->m_target;
+	
+	m_target->m_transform.SetLocalPosition(pos);
 }

@@ -34,6 +34,7 @@ public:
 	void UpdateReloadBar();
 	void UpdateTextUI();
 	void UpdateHP();
+	void UpdateTarget();
 
 public:
 	AABB2			m_cooldownBounds;
@@ -44,6 +45,8 @@ public:
 	Renderable*		m_spawnersLeftRenderable;
 
 	Renderable*		m_healthBar;
+
+	Renderable*		m_target;
 };
 
 //====================================================================================

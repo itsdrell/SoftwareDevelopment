@@ -94,6 +94,17 @@ void Playing::StartUp()
 
 }
 
+void Playing::CleanUp()
+{
+	m_scene->m_renderables.clear();
+	m_enemies.clear();
+	m_enemySpawner.clear();
+	m_projectiles.clear();
+
+	AddRenderable(m_map->m_test);
+	AddRenderable(m_hud->m_target);
+}
+
 void Playing::Enter()
 {
 	m_player = AddPlayer();
@@ -490,7 +501,7 @@ void Playing::PlayerInput()
 	//m_player->m_transform.SetLocalPosition(newLocation); 
 
 	Matrix44 newPlayerModel = m_map->GetAdjustedModelMatrix(newPos, forward, right);
-	DebugRenderBasis(0.f, newPlayerModel, 5.f);
+	//DebugRenderBasis(0.f, newPlayerModel, 5.f);
 	
 	m_player->m_transform.SetWorldMatrix(newPlayerModel);
 
@@ -565,7 +576,10 @@ void Playing::CheckWinLossStates()
 	// Game won
 	if(m_enemies.size() == 0)
 		if(m_enemySpawner.size() == 0)
+		{
+			CleanUp();
 			g_theGame->GoToVictoryState();
+		}
 }
 
 void Playing::RespawnPlayer()

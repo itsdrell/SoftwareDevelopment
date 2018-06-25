@@ -103,12 +103,12 @@ void Player::UpdateTarget()
 	if(g_theGame->Raycast( &contact, ray ))
 	{
 		m_target = contact.position + Vector3(0.f, 1.f, 0.f);
-		DebugRenderPoint(0.f, m_target, .5f, Rgba::RED, Rgba::RED);
+		//DebugRenderPoint(0.f, m_target, .5f, Rgba::RED, Rgba::RED);
 	}
 	else
 	{
-		m_target = Vector3(1000.f);
-		DebugRenderPoint(0.f, m_target, .5f, Rgba::RED, Rgba::RED);
+		m_target = Vector3(0.f);
+		//DebugRenderPoint(0.f, m_target, .5f, Rgba::RED, Rgba::RED);
 	}
 }
 

@@ -37,6 +37,7 @@ public:
 	Playing();
 	
 	void		StartUp();
+	void		CleanUp();
 	void		Enter();
 	void		Exit(bool removeEnemies = false);
 
