@@ -59,7 +59,8 @@ void Playing::StartUp()
 
 	Image mapImage = Image("Data/Images/Maps/testMap.png");
 	m_currentMap = new Map("test", mapImage);
-	
+	g_theCurrentMap = m_currentMap;
+
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(0,0);
 	m_actionMenu = new Container(5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
@@ -128,7 +129,7 @@ void Playing::CheckKeyBoardInputs()
 		return;
 
 	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
-	DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
+	//DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
 
 	//--------------------------------------------------------------------------
 	// Hover
@@ -206,11 +207,16 @@ void Playing::CheckKeyBoardInputs()
 				{
 					if(m_currentMap->CanPlayerMoveThere( m_currentMap->GetTile(mousePos.xy())->m_position))
 					{
-						m_cursor->m_renderable->m_hidden = false;
+						//m_cursor->m_renderable->m_hidden = false;
 						m_currentMap->ClearHoverTiles();
-						m_currentPlayState = SELECTING;
+						
+						m_currentMap->CreateActionTiles(*m_currentMap->m_selectedUnit);
+
+						UIWidget* newWidget = new UIWidget("Wait", "wait");
+						m_actionMenu->AddWidget(*newWidget);
 
 						m_currentMap->PlaceUnit(mousePos.xy());
+						m_currentPlayState = ACTION;
 					}
 				}
 				else
@@ -223,6 +229,19 @@ void Playing::CheckKeyBoardInputs()
 					m_currentPlayState = SELECTING;
 
 				}
+
+			}
+			else if(m_currentPlayState == ACTION)
+			{
+				DebugRenderLog(3.f, "ACTION");
+				
+				// make sure they clicked a valid action
+				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
+				{
+					m_currentMap->ClearHoverTiles();
+					m_currentPlayState = SELECTING;
+				}
+				
 
 			}
 

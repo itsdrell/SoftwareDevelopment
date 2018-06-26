@@ -27,6 +27,7 @@
 #include "Game/GameStates/Playing.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
 #include "../GameStates/Loading.hpp"
+#include "Game/General/ConsoleCommands.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +49,7 @@ Game::Game()
 	m_console = new DevConsole(g_theRenderer);
 	g_theGameClock = new Clock(g_theMasterClock);
 
-	CommandRegister("quit","Type: quit","Exits Application", QuitGame);
+	RegisterCommands();
 
 	//=============================================================
 	// Create all the states
@@ -61,15 +62,20 @@ Game::Game()
 
 void Game::StartUp()
 {
-	
 
 	m_loadingScreenTimer = new Timer(g_theGameClock);
 	m_loadingScreenTimer->SetTimer(3.f);
 
 	m_console->StartUp();
-	
 }
 
+
+void Game::RegisterCommands()
+{
+	CommandRegister("quit","Type: quit","Exits Application", QuitGame);
+	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
+	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
+}
 
 void Game::Update()
 {

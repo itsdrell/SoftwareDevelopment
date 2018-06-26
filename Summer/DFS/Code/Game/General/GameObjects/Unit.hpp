@@ -2,6 +2,7 @@
 #include "Game\SystemsAndTools\GameObject2D.hpp"
 #include "Game\SystemsAndTools\Tags.hpp"
 #include "Game\Main\GameCommon.hpp"
+#include "Engine\Math\Ranges\IntRange.hpp"
 
 
 //=============================================================
@@ -35,6 +36,8 @@ public:
 
 	bool		m_beenMoved;
 	bool		m_usedAction;
+
+	IntRange	m_attackRange;
 
 	Tags		m_tags;
 	Tile*		m_tileIAmOn;

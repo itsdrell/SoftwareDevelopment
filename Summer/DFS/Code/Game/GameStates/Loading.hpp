@@ -27,6 +27,7 @@ public:
 	void LoadAssets();
 	void LoadDefinitions();
 	void LoadTileDefinitions();
+	void LoadWidgetDefinitions();
 
 	void Update();
 

@@ -288,6 +288,7 @@
   <ItemGroup>
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
+    <ClCompile Include="General\ConsoleCommands.cpp" />
     <ClCompile Include="General\GameObjects\Building.cpp" />
     <ClCompile Include="General\GameObjects\Cursor.cpp" />
     <ClCompile Include="General\GameObjects\Unit.cpp" />
@@ -316,6 +317,7 @@
   <ItemGroup>
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="General\ConsoleCommands.hpp" />
     <ClInclude Include="General\GameObjects\Building.hpp" />
     <ClInclude Include="General\GameObjects\Cursor.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />

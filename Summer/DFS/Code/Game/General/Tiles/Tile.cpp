@@ -46,17 +46,41 @@ HoverTile::HoverTile(IntVector2& position, HoverTileTypes theType /*= MOVEMENT_T
 	: GameObject2D("Cursor")
 {
 	m_tileCoords = position;
+	m_type = theType;
+
 	float TileSize = TILE_SIZE;
 	
+	switch (theType)
+	{
+	case MOVEMENT_TILE_TYPE:
+		CreateMovementTile();
+		break;
+	case ATTACK_RANGE_TILE_TYPE:
+		CreateAttackTile();
+		break;
+	case NUM_OF_HOVER_TILE_TYPES:
+		break;
+	default:
+		break;
+	}
+	
+}
+
+HoverTile::~HoverTile()
+{
+	g_theGame->m_playingState->RemoveRenderable(m_renderable);
+}
+
+void HoverTile::CreateMovementTile()
+{
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
 	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/movementHover.png");
 	newMaterial->SetTexture(0, testSprite);
 
-	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TileSize);
-	newSprite->m_pixelsPerUnit = TileSize;
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TILE_SIZE);
+	newSprite->m_pixelsPerUnit = TILE_SIZE;
 
-	m_transform.SetLocalPosition(position.GetAsVector2() * TileSize);
-
+	m_transform.SetLocalPosition(m_tileCoords.GetAsVector2() * TILE_SIZE);
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
@@ -65,7 +89,20 @@ HoverTile::HoverTile(IntVector2& position, HoverTileTypes theType /*= MOVEMENT_T
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }
 
-HoverTile::~HoverTile()
+void HoverTile::CreateAttackTile()
 {
-	g_theGame->m_playingState->RemoveRenderable(m_renderable);
+	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
+	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/target.png");
+	newMaterial->SetTexture(0, testSprite);
+
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TILE_SIZE);
+	newSprite->m_pixelsPerUnit = TILE_SIZE;
+
+	m_transform.SetLocalPosition(m_tileCoords.GetAsVector2() * TILE_SIZE);
+
+	m_renderable->SetMaterial(newMaterial);
+	m_renderable->SetSprite(newSprite);
+	m_renderable->SetLayer(1);
+
+	g_theGame->m_playingState->AddRenderable(m_renderable);
 }

@@ -20,6 +20,11 @@
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 
 //====================================================================================
+// Externs
+Map* g_theCurrentMap = nullptr;
+
+
+//====================================================================================
 // Console commands
 void DebugGrid(Command& theCommand)
 {
@@ -296,7 +301,7 @@ Tile* Map::GetTile(Vector2& worldPos)
 	return nullptr; 
 }
 
-Tile* Map::GetTile(IntVector2& tilePos)
+Tile* Map::GetTile(const IntVector2& tilePos)
 {
 	return &m_tiles.at(tilePos.y * m_dimensions.x + tilePos.x);
 }
@@ -333,6 +338,49 @@ void Map::PutSelectedUnitBack()
 
 }
 
+bool Map::CheckForAction(const IntVector2& mousePos)
+{
+	int tileSize = TILE_SIZE_INT;
+
+	bool check = false;
+
+	// We just need to see if the tile pos we have is in our cached off list
+	for(uint i = 0; i < m_hoverTiles.size(); i++)
+	{
+		HoverTile* currentTile = m_hoverTiles.at(i);
+		
+		IntVector2 current = currentTile->m_tileCoords * tileSize;
+
+		if(mousePos == current)
+		{
+			check = true;
+			
+			// do something based off the action
+			switch (currentTile->m_type)
+			{
+			case ATTACK_RANGE_TILE_TYPE:
+				AttackUnitAt(m_hoverTiles.at(i)->m_tileCoords);
+				break;
+			default:
+				break;
+			}
+			
+		}
+	}
+
+
+	return check;
+}
+
+void Map::AttackUnitAt(const IntVector2& tileCoords)
+{
+	Tile* theTile = GetTile(tileCoords);
+
+	// right now, one shot
+	Unit* target = theTile->m_unit;
+	target->m_isDead = true;
+}
+
 void Map::CreateMovementTiles(const Unit& theUnitToUse)
 {
 	m_heatmap->ResetHeatMap();
@@ -362,6 +410,34 @@ void Map::CreateMovementTiles(const Unit& theUnitToUse)
 	
 }
 
+void Map::CreateActionTiles(const Unit& theUnitToUse)
+{
+	CreateAttackTiles(theUnitToUse);
+}
+
+void Map::CreateAttackTiles(const Unit& theUnitToUse)
+{
+	m_heatmap->ResetHeatMap();
+
+	// Gotta translate from world coords to tileCoords
+	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
+	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
+
+	m_heatmap->AddHeat(tileCoords);
+
+	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatInRangeOf(theUnitToUse.m_attackRange);
+
+	for(uint i = 0; i < tilePos.size(); i++)
+	{
+		if(CanPlayerAttackUnitOnTile(theUnitToUse, tilePos.at(i)))
+		{
+			HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
+
+			m_hoverTiles.push_back(newTile);
+		}
+	}
+}
+
 bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
 {
 	int tileSize = TILE_SIZE_INT;
@@ -379,6 +455,23 @@ bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
 
 
 	return check;
+}
+
+bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck)
+{
+	Tile* currentTile = GetTile(posToCheck);
+
+	if(currentTile->m_unit != nullptr)
+	{
+		Unit* theUnit = currentTile->m_unit;
+
+		if(theUnit->m_team != theUnitToUse.m_team)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck)

@@ -45,7 +45,7 @@ void Container::Render() const
 
 	for(UIWidget* currentWidget : m_widgets)
 	{
-		std::string name = currentWidget->m_text;
+		std::string name = currentWidget->GetText();
 		AABB2 box = currentWidget->m_bounds;
 
 		if(currentWidget->m_isHoveredOver)
@@ -96,7 +96,8 @@ void Container::AddPauseMenu()
 	if(!CanWeAddWidgets())
 		return;
 
-	UIWidget* end = new UIWidget(Vector2(10.f, 30.f), AABB2(-5.f, 5.f),"End Turn");
+	//UIWidget* end = new UIWidget(Vector2(10.f, 30.f), AABB2(-5.f, 5.f),"End Turn");
+	UIWidget* end = new UIWidget("End Turn", "endTurn", false);
 	
 	AddWidget(*end);
 }

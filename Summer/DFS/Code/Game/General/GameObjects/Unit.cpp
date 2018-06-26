@@ -11,6 +11,7 @@ Unit::Unit(TeamName team)
 {
 	m_health = 10;
 	m_team = team;
+	m_attackRange = IntRange(1,1);
 
 	//--------------------------------------------------------------------------
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
@@ -39,6 +40,10 @@ void Unit::Update()
 	{
 		Vector2 pos = m_transform.GetWorldPosition().xy();
 		
-		DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(255, 0, 0, 200), Rgba(255, 0, 0, 200));
+		if(m_usedAction == false)
+			DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(255,255,0,200), Rgba(255,255,0,200));
+		else
+			DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(100, 100, 100, 200), Rgba(100, 100, 100, 200));
+
 	}
 }

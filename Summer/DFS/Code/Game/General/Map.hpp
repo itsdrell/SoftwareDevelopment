@@ -58,15 +58,21 @@ public:
 	void CreateMapRenderableFromImage();
 
 	Tile* GetTile(Vector2& worldPos);
-	Tile* GetTile(IntVector2& tilePos);
+	Tile* GetTile(const IntVector2& tilePos);
 	IntVector2 GetTileCoords(Vector2& worldPos) { return GetTile(worldPos)->m_position; }
 	
 	bool SelectUnit(Vector2 pos);
 	void PlaceUnit(Vector2 pos);
 	void PutSelectedUnitBack();
+	bool CheckForAction(const IntVector2& mousePos);
+	void AttackUnitAt(const IntVector2& tileCoords);
 
 	void CreateMovementTiles(const Unit& theUnitToUse);
+	void CreateActionTiles(const Unit& theUnitToUse);
+	void CreateAttackTiles(const Unit& theUnitToUse);
+
 	bool CanPlayerMoveThere(IntVector2& posToCheck);
+	bool CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck);
 	bool CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck);
 
 	void ClearHoverTiles();
@@ -108,3 +114,4 @@ public:
 //=============================================================
 // Externs
 //=============================================================
+extern Map*	g_theCurrentMap;

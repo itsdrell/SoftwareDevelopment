@@ -61,6 +61,9 @@ public:
 	HoverTile(IntVector2& position, HoverTileTypes theType = MOVEMENT_TILE_TYPE);
 	~HoverTile();
 
+	void CreateMovementTile();
+	void CreateAttackTile();
+
 public:
 	HoverTileTypes		m_type;
 	IntVector2			m_tileCoords;

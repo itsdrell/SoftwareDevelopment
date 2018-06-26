@@ -7,6 +7,7 @@
 #include "..\General\Tiles\TileDefinition.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Core\Tools\ScopedProfile.hpp"
+#include "..\General\UI\UIWidget.hpp"
 
 Loading::Loading()
 {
@@ -34,6 +35,7 @@ void Loading::LoadAssets()
 void Loading::LoadDefinitions()
 {
 	LoadTileDefinitions();
+	//LoadWidgetDefinitions();
 }
 
 void Loading::LoadTileDefinitions()
@@ -48,6 +50,26 @@ void Loading::LoadTileDefinitions()
 	while( indexElement )
 	{
 		TileDefinition* newDef = new TileDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+void Loading::LoadWidgetDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/UIWidgets.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: UIWidgets");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		UIWidgetDefinition* newDef = new UIWidgetDefinition(*indexElement);
 		indexElement = indexElement->NextSiblingElement();
 
 		// For warning

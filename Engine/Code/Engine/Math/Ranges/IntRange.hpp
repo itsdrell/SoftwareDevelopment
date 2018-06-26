@@ -12,6 +12,8 @@ public:
 
 	int GetRandomInRange() const;
 
+	bool IsInRange(int numberToCheck) const;
+
 	bool DoRangesOverlap( const IntRange& a, const IntRange& b );
 
 public:

@@ -42,6 +42,7 @@ public:
 	Game();
 
 	void		StartUp();
+	void		RegisterCommands();
 
 	void		Update();
 

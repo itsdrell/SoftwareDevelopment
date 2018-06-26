@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include <vector>
+#include "../../Math/Ranges/IntRange.hpp"
 
 class Renderer;
 
@@ -33,6 +34,7 @@ public:
 
 
 	std::vector<IntVector2>	GetAllTileCoordsWithHeatLessOrEqual(float heatValue);
+	std::vector<IntVector2> GetAllTileCoordsWithHeatInRangeOf(const IntRange& range);
 
 public:
 

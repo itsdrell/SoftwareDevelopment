@@ -43,6 +43,11 @@ int IntRange::GetRandomInRange() const
 	return GetRandomIntRange(min,max);
 }
 
+bool IntRange::IsInRange(int numberToCheck) const
+{
+	return (min <= numberToCheck) && (max >= numberToCheck);
+}
+
 bool IntRange::DoRangesOverlap(const IntRange & a, const IntRange & b)
 {
 	if(a.min >= b.min || a.min <= b.max) {return true;}

@@ -79,6 +79,9 @@
     <ClCompile Include="General\UI\Container.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\ConsoleCommands.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -114,5 +117,6 @@
     <ClInclude Include="SystemsAndTools\Tags.hpp" />
     <ClInclude Include="General\UI\UIWidget.hpp" />
     <ClInclude Include="General\UI\Container.hpp" />
+    <ClInclude Include="General\ConsoleCommands.hpp" />
   </ItemGroup>
 </Project>

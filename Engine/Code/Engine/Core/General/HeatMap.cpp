@@ -176,3 +176,23 @@ std::vector<IntVector2> HeatMap::GetAllTileCoordsWithHeatLessOrEqual(float heatV
 
 	return tileCoords;
 }
+
+std::vector<IntVector2> HeatMap::GetAllTileCoordsWithHeatInRangeOf(const IntRange& range)
+{
+	std::vector<IntVector2> tileCoords;
+
+	for(uint i = 0; i < m_heatValues.size(); i++)
+	{
+		float value = m_heatValues.at(i);
+
+		if(range.IsInRange((int) value))
+		{
+			int y = i / m_dimensions.y;
+			int x = i % m_dimensions.y;
+
+			tileCoords.push_back(IntVector2(x,y));
+		}
+	}
+
+	return tileCoords;
+}
