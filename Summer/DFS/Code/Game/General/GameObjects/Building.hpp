@@ -1,5 +1,6 @@
 #pragma once
 #include "Game\SystemsAndTools\GameObject2D.hpp"
+#include "Game\Main\GameCommon.hpp"
 
 
 //=============================================================
@@ -23,9 +24,13 @@
 class Building : public GameObject2D
 {
 public:
-	Building();
+	Building(TeamName theTeam = TEAM_NONE);
+
+	void Update();
 
 public:
+	TeamName	m_team;
+
 };
 
 //=============================================================

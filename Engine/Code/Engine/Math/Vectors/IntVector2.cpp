@@ -4,7 +4,7 @@
 #include <math.h>
 #include "Engine/Core/Utils/StringUtils.hpp"
 
-Vector2 IntVector2::GetAsVector2()
+Vector2 IntVector2::GetAsVector2() const
 {
 	float xx = (float)x;
 	float yy = (float)y;

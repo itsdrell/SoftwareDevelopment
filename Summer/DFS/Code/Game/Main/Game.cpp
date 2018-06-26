@@ -75,6 +75,7 @@ void Game::RegisterCommands()
 	CommandRegister("quit","Type: quit","Exits Application", QuitGame);
 	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
 	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
+	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
 }
 
 void Game::Update()

@@ -111,6 +111,9 @@ void TurnOrder::GoToNextTurn()
 // what team will be playing
 void TurnOrder::CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck)
 {
+	if(teamToCheck == TEAM_NONE)
+		return;
+	
 	for(uint i = 0; i < m_order.size(); i++)
 	{
 		TeamName current = m_order.at(i);
@@ -378,6 +381,7 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 
 	// right now, one shot
 	Unit* target = theTile->m_unit;
+	m_selectedUnit->m_usedAction = true;
 	target->m_isDead = true;
 }
 
@@ -436,6 +440,28 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse)
 			m_hoverTiles.push_back(newTile);
 		}
 	}
+}
+
+bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)
+{
+	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
+	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
+
+	Tile* theTile = GetTile(tileCoords);
+	
+	
+	Building* theBuilding = theTile->m_building;
+	
+	if(theBuilding != nullptr)
+	{
+		if(theBuilding->m_team != theUnitToUse.m_team)
+		{
+			m_buildingToCapture = theBuilding;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
@@ -611,4 +637,18 @@ void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos)
 	AddUnit(*newUnit);
 }
 
+void Map::CreateBuilding(const TeamName& team, const IntVector2& pos)
+{
+	Building* newBuilding = new Building();
+	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
+	newBuilding->SetLocalPosition(position);
+
+	Tile* tilePlacedOn = GetTile(position);
+	tilePlacedOn->m_building = newBuilding;
+
+	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
+
+	AddGameObject(*newBuilding);
+	AddBuilding(*newBuilding);
+}
 

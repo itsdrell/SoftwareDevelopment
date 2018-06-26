@@ -31,6 +31,8 @@
 //====================================================================================
 void EndTurn(Command& theCommand);
 void HaveAUnitWait(Command& theCommand);
+void CaptureBuilding(Command& theCommand);
+
 
 //====================================================================================
 // Externs

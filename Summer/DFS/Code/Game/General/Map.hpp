@@ -71,6 +71,7 @@ public:
 	void CreateActionTiles(const Unit& theUnitToUse);
 	void CreateAttackTiles(const Unit& theUnitToUse);
 
+	bool CanUnitCaptureBuilding(const Unit& theUnitToUse);
 	bool CanPlayerMoveThere(IntVector2& posToCheck);
 	bool CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck);
 	bool CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck);
@@ -86,7 +87,10 @@ public:
 	//--------------------------------------------------------------------------
 	void AddGameObject(GameObject2D& newObject) { m_gameObjects.push_back(&newObject) ;}
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
+	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
+	
 	void CreateUnit(std::string name, TeamName team, IntVector2 pos);
+	void CreateBuilding(const TeamName& team, const IntVector2& pos);
 	
 public:
 	std::string							m_name;
@@ -99,10 +103,13 @@ public:
 	std::vector<HoverTile*>				m_hoverTiles;
 	std::vector<GameObject2D*>			m_gameObjects;
 	std::vector<Unit*>					m_units;
+	std::vector<Building*>				m_buildings;
 
 	TurnOrder							m_turnOrder;
 	HeatMap*							m_heatmap;
+	
 	Unit*								m_selectedUnit;
+	Building*							m_buildingToCapture; // for console command 
 };
 
 

@@ -26,7 +26,7 @@ public:
 	bool operator==( const IntVector2& compare ) const;				
 	bool operator!=( const IntVector2& compare ) const;				
 
-	Vector2 GetAsVector2();
+	Vector2 GetAsVector2() const;
 
 	std::string ToString();
 

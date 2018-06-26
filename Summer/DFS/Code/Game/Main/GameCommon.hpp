@@ -25,6 +25,7 @@ constexpr float HALF_TILE_SIZE = TILE_SIZE * .5f;
 //====================================================================================
 enum TeamName
 {
+	TEAM_NONE = -1,
 	TEAM_BLUE,
 	TEAM_GREEN,
 	TEAM_RED,

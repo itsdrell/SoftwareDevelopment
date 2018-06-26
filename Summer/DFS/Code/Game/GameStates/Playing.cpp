@@ -71,17 +71,13 @@ void Playing::StartUp()
 	m_currentMap->CreateUnit("melee", TEAM_BLUE, IntVector2::ZERO);
 	m_currentMap->CreateUnit("melee", TEAM_RED, IntVector2(1,0));
 
-	GameObject2D* newBuilding = new Building();
-	newBuilding->m_transform.TranslateLocal(Vector2(16.f,16.f));
-	m_currentMap->AddGameObject(*newBuilding);
+	m_currentMap->CreateBuilding(TEAM_NONE, IntVector2(1,1));
+	
 }
 
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
-
-	if(WasKeyJustPressed(KEYBOARD_SPACE))
-		m_currentMap->GoToNextTurn();
 
 	DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
 
@@ -211,6 +207,13 @@ void Playing::CheckKeyBoardInputs()
 						m_currentMap->ClearHoverTiles();
 						
 						m_currentMap->CreateActionTiles(*m_currentMap->m_selectedUnit);
+						
+						// if they can add ui widget
+						if(m_currentMap->CanUnitCaptureBuilding(*m_currentMap->m_selectedUnit))
+						{
+							UIWidget* capWidget = new UIWidget("Capture Building", "capture");
+							m_actionMenu->AddWidget(*capWidget);
+						}
 
 						UIWidget* newWidget = new UIWidget("Wait", "wait");
 						m_actionMenu->AddWidget(*newWidget);
@@ -233,12 +236,13 @@ void Playing::CheckKeyBoardInputs()
 			}
 			else if(m_currentPlayState == ACTION)
 			{
-				DebugRenderLog(3.f, "ACTION");
+				
 				
 				// make sure they clicked a valid action
 				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
 				{
 					m_currentMap->ClearHoverTiles();
+					m_actionMenu->ClearWidgets();
 					m_currentPlayState = SELECTING;
 				}
 				
