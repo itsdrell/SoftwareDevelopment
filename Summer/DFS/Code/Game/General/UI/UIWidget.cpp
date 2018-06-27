@@ -29,6 +29,7 @@ UIWidget::UIWidget(const Vector2& centerPos, const AABB2& size, std::string text
 
 UIWidget::UIWidget(const std::string& text, const std::string& consoleCommandOnClick, bool active /*= false*/)
 {
+	m_name = text;
 	m_active = active;
 	m_centerPos = Vector2::ONE;
 	m_bounds = AABB2();
@@ -52,12 +53,14 @@ void UIWidget::Update()
 void UIWidget::CheckForMouseOverlap()
 {
 	Vector3 mousePos = Renderer::GetInstance()->m_defaultUICamera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
+	DebugRenderLog(0.f, mousePos.ToString());
+	DebugRenderLog(0.f, m_bounds.ToString());
 
 	if(m_bounds.IsPointInside(mousePos.xy()))
 	{
 		m_isHoveredOver = true;
 		
-		//DebugRenderLog(0.f, "Hovering over: " + m_definition->m_text);
+		DebugRenderLog(0.f, "Hovering over: button");
 	}
 	else
 	{

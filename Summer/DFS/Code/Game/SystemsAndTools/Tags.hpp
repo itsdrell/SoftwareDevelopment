@@ -33,7 +33,7 @@ public:
 		: m_tags( theTags) {}
 
 	void AddTag(std::string newTag) { m_tags.push_back(newTag); }
-	uint GetSize() const { return m_tags.size(); }
+	uint GetSize() const { return (uint) m_tags.size(); }
 	std::string GetTagAtIndex(uint i) const { return m_tags.at(i); }
 
 	bool operator==(const Tags& toCompare) const;

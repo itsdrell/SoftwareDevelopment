@@ -11,9 +11,9 @@
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-constexpr float TILE_SIZE = 16.f;
-constexpr int TILE_SIZE_INT = (int) TILE_SIZE;
-constexpr float HALF_TILE_SIZE = TILE_SIZE * .5f;
+constexpr float		TILE_SIZE = 16.f;
+constexpr int		TILE_SIZE_INT = (int) TILE_SIZE;
+constexpr float		HALF_TILE_SIZE = TILE_SIZE * .5f;
 
 // In advanced wars they do 29 and 19 cause they start at 1 in the ui instead of 0
 // so its actually one less from a good number
@@ -34,6 +34,16 @@ enum TeamName
 };
 std::string TeamNameToString(TeamName team);
 TeamName StringFromTeamName(std::string name);
+
+
+enum SORTING_LAYER
+{
+	DEFAULT,
+	HOVER_TILES,
+	BUILDINGS,
+	UNITS, 
+	UI
+};
 
 //====================================================================================
 // Structs

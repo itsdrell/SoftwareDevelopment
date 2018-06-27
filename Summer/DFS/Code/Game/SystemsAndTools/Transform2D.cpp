@@ -117,9 +117,9 @@ Vector2 Transform_T::GetPosition() const
 	return position;
 }
 
-void Transform_T::SetRotation(float rotation)
+void Transform_T::SetRotation(float theRotation)
 {
-	this->rotation = rotation;
+	this->rotation = theRotation;
 }
 
 float Transform_T::GetRotation()

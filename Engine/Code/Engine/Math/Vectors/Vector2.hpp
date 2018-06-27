@@ -23,7 +23,7 @@ public:
 	Vector2 GetNormalized() const; // return a new vector, which is a normalized copy of me
 	float GetOrientationDegrees() const; // return 0 for east (5,0), 90 for north (0,8), etc.
 	static Vector2 MakeDirectionAtDegrees( float degrees, float length = 1.0f ); // create vector at angle
-	IntVector2 GetVector2AsInt();
+	IntVector2 GetVector2AsInt() const;
 
 	std::string ToString();
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Math/Vectors/Vector2.hpp"
+#include "../Matrices/Matrix44.hpp"
 
 class AABB2
 {
@@ -20,6 +21,7 @@ public:
 	void AddPaddingToSides( float xPaddingRadius, float yPaddingRadius );
 	void Translate( const Vector2& translation ); // move the box; similar to +=
 	void Translate( float translationX, float translationY );
+	void Translate(const Matrix44& byMatrix);
 	void SetFromText(const char* text);
 
 	// Accessors/Queries

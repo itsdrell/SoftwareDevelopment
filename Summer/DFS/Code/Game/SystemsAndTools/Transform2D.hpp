@@ -31,7 +31,7 @@ struct Transform_T
 	void Translate( const Vector2& offset);
 	Vector2 GetPosition() const;
 
-	void SetRotation( float rotation );
+	void SetRotation( float theRotation );
 	float GetRotation();
 
 	void SetScale( const Vector2& s);
@@ -39,9 +39,9 @@ struct Transform_T
 
 	
 	//=============================================================
-	Vector2 position;
-	float rotation;
-	Vector2 scale;
+	Vector2		position;
+	float		rotation;
+	Vector2		scale;
 
 
 	static Transform_T const IDENTITY;

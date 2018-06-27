@@ -210,6 +210,8 @@ void Transform::SimpleMoveTowardPoint(Vector3& position, float speed, float ds)
 
 void Transform::RotateTowards(const Transform& target, float maxDegreesToTurn)
 {
+	UNUSED(maxDegreesToTurn);
+	
 	Rotator start = m_local_transform.rotation;
 
 

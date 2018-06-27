@@ -684,7 +684,8 @@ void Matrix44::RotateByEuler(const Vector3& euler)
 
 Vector3 Matrix44::GetEuler() const
 {
-	return EulerFromMatrix(GetAsMatrix33());
+	Matrix33 theMatrix = GetAsMatrix33();
+	return EulerFromMatrix(theMatrix);
 }
 
 

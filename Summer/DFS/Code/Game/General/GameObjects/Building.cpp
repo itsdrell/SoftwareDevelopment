@@ -22,6 +22,7 @@ Building::Building(TeamName theTeam)
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
+	m_renderable->SetLayer(BUILDINGS);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }

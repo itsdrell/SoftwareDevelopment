@@ -4,6 +4,7 @@
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
+#include "Game\Main\GameCommon.hpp"
 
 Cursor::Cursor()
 	: GameObject2D("Cursor")
@@ -18,7 +19,7 @@ Cursor::Cursor()
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
-	m_renderable->SetLayer(-10);
+	m_renderable->SetLayer(UI);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }

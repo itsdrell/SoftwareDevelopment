@@ -74,7 +74,7 @@ void KillAllUnitsOfTeam(Command& theCommand)
 		{
 			std::string teamName = TeamNameToString(t.m_order.at(i));
 
-			dc->AddConsoleDialogue(ConsoleDialogue(teamName, GetRainbowColor(i, t.m_order.size())));
+			dc->AddConsoleDialogue(ConsoleDialogue(teamName, GetRainbowColor(i, (uint)t.m_order.size())));
 		}
 
 		dc->AddSpace(1);
@@ -287,9 +287,9 @@ void Map::CreateMapRenderableFromImage()
 	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
 }
 
-Tile* Map::GetTile(Vector2& worldPos)
+Tile* Map::GetTile(const Vector2& worldPos)
 {
-	int Tilesize = TILE_SIZE_INT;
+	//int Tilesize = TILE_SIZE_INT;
 	
 	for(uint i = 0; i < m_tiles.size(); i++)
 	{

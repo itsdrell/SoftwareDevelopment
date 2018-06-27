@@ -35,7 +35,7 @@ public:
 	Tile();
 	Tile(const IntVector2& pos, TileDefinition& def, int tileCellSize = 16);
 
-	bool IsPointInsideTile( IntVector2& pos);
+	bool IsPointInsideTile( const IntVector2& pos);
 
 	Vector2 GetCenterOfTile() { return m_position.GetAsVector2(); }
 	AABB2 GetTileBounds();

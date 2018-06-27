@@ -55,7 +55,7 @@ public:
 	UIWidget(UIWidgetDefinition& definition);
 
 	// check for clicks
-	void Update(); 
+	void Update();
 
 	void CheckForMouseOverlap();
 
@@ -65,6 +65,7 @@ public:
 
 
 public:
+	std::string					m_name;
 	UIWidgetDefinition*			m_definition;
 
 	bool						m_active;

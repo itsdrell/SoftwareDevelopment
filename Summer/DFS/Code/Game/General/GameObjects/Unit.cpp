@@ -24,6 +24,7 @@ Unit::Unit(TeamName team)
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
+	m_renderable->SetLayer(UNITS);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 

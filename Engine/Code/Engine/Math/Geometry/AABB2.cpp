@@ -115,6 +115,13 @@ void AABB2::Translate(float translationX, float translationY)
 	
 }
 
+void AABB2::Translate(const Matrix44& byMatrix)
+{
+	Matrix44 theMatrix = byMatrix;
+	mins = TransformPoint(mins, theMatrix);
+	maxs = TransformPoint(maxs, theMatrix);
+}
+
 void AABB2::SetFromText(const char* text)
 {
 	Strings result = SplitString(text,",");

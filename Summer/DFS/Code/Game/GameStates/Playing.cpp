@@ -62,14 +62,14 @@ void Playing::StartUp()
 	g_theCurrentMap = m_currentMap;
 
 	m_cursor = new Cursor();
-	m_cameraLocation = Vector2(0,0);
+	m_cameraLocation = Vector2(-112,-112);
 	m_actionMenu = new Container(5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
 
 
 	//---------------------------------------------------------
 	// Creating a test scene
 	m_currentMap->CreateUnit("melee", TEAM_BLUE, IntVector2::ZERO);
-	m_currentMap->CreateUnit("melee", TEAM_RED, IntVector2(1,0));
+	m_currentMap->CreateUnit("melee", TEAM_RED, IntVector2(6,0));
 
 	m_currentMap->CreateBuilding(TEAM_NONE, IntVector2(1,1));
 	
@@ -79,7 +79,8 @@ void Playing::Update()
 {
 	CheckKeyBoardInputs();
 
-	DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
+	//DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
+	DebugRender2DText(0.f, Vector2(-20.f, -40.f), m_currentMap->m_turnOrder.GetCurrentTurnString(), 10.f);
 
 	//m_testUnit->Update();
 	m_actionMenu->Update();
@@ -123,9 +124,17 @@ void Playing::CheckKeyBoardInputs()
 {
 	if(IsDevConsoleOpen())
 		return;
-
-	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
+	Vector2 cmouse = GetMouseCurrentPosition();
+	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(cmouse, 0.f);
 	//DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
+
+	//--------------------------------------------------------------------------
+	// UI input (deosnt rely on if there is a tile there or not)
+	if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
+	{
+		m_actionMenu->OnClick();
+	}
+
 
 	//--------------------------------------------------------------------------
 	// Hover
@@ -153,13 +162,6 @@ void Playing::CheckKeyBoardInputs()
 
 		//--------------------------------------------------------------------------
 		// Mouse click
-
-
-		if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
-		{
-			m_actionMenu->OnClick();
-		}
-
 
 		if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
 		{

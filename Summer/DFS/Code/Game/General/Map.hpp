@@ -57,9 +57,9 @@ public:
 	void CreateMapRenderable(bool makeDebug = false);
 	void CreateMapRenderableFromImage();
 
-	Tile* GetTile(Vector2& worldPos);
+	Tile* GetTile(const Vector2& worldPos);
 	Tile* GetTile(const IntVector2& tilePos);
-	IntVector2 GetTileCoords(Vector2& worldPos) { return GetTile(worldPos)->m_position; }
+	IntVector2 GetTileCoords(const Vector2& worldPos) { return GetTile(worldPos)->m_position; }
 	
 	bool SelectUnit(Vector2 pos);
 	void PlaceUnit(Vector2 pos);

@@ -239,7 +239,7 @@ Vector2 Vector2::MakeDirectionAtDegrees(float degrees, float length)
 	return answer;
 }
 
-IntVector2 Vector2::GetVector2AsInt()
+IntVector2 Vector2::GetVector2AsInt() const
 {
 	return IntVector2((int)x, (int)y);
 }

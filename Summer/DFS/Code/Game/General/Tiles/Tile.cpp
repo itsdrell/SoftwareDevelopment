@@ -20,7 +20,7 @@ Tile::Tile(const IntVector2 & pos, TileDefinition & def, int tileCellSize )
 	m_tileSize = tileCellSize;
 }
 
-bool Tile::IsPointInsideTile(IntVector2& pos)
+bool Tile::IsPointInsideTile(const IntVector2& pos)
 {
 	int offset = (m_tileSize / 2);
 	IntVector2 mins = pos - IntVector2(offset);
@@ -48,7 +48,7 @@ HoverTile::HoverTile(IntVector2& position, HoverTileTypes theType /*= MOVEMENT_T
 	m_tileCoords = position;
 	m_type = theType;
 
-	float TileSize = TILE_SIZE;
+	//float TileSize = TILE_SIZE;
 	
 	switch (theType)
 	{
@@ -84,7 +84,7 @@ void HoverTile::CreateMovementTile()
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
-	m_renderable->SetLayer(1);
+	m_renderable->SetLayer(HOVER_TILES);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }
@@ -102,7 +102,7 @@ void HoverTile::CreateAttackTile()
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
-	m_renderable->SetLayer(1);
+	m_renderable->SetLayer(HOVER_TILES);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }

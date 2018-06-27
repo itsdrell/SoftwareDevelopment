@@ -63,14 +63,14 @@ void Container::Render() const
 bool Container::CanWeAddWidgets()
 {
 	// make sure we don't add on top of an already made menu
-	if(m_widgets.size() == 0)
-		return true;
+	//if(m_widgets.size() == 0)
+	//	return true;
 
 	// only spawn the max amount of widgets
 	if(m_amountOfWidgets <= m_widgets.size())
 		return false;
 
-	return false;
+	return true;
 }
 
 void Container::OnClick()
@@ -106,7 +106,7 @@ void Container::AddWidget(UIWidget& newWidget)
 {
 	if(CanWeAddWidgets())
 	{
-		uint slot = m_widgets.size();
+		uint slot = (uint) m_widgets.size();
 
 		newWidget.m_bounds = m_widgetSlots.at(slot);
 		m_widgets.push_back(&newWidget);
@@ -117,7 +117,7 @@ void Container::CreateWidgetSlots()
 {
 	Vector2 dim = m_menuSize.GetDimensions();
 
-	float xStep = dim.x * .5f;
+//	float xStep = dim.x * .5f;
 	float yStep = dim.y / (float)m_amountOfWidgets;
 
 	for(uint i = 0; i < m_amountOfWidgets; i++)

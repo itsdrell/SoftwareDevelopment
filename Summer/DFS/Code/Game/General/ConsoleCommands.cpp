@@ -4,12 +4,16 @@
 #include "Game/General/Map.hpp"
 #include "Game/General/GameObjects/Unit.hpp"
 #include "Game/General/GameObjects/Building.hpp"
+#include "../GameStates/Playing.hpp"
+#include "Game/General/UI/Container.hpp"
 
 void EndTurn(Command & theCommand)
 {
 	UNUSED(theCommand);
-
+	
+	g_theCurrentMap->ClearHoverTiles();
 	g_theCurrentMap->GoToNextTurn();
+	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
 }
 
 void HaveAUnitWait(Command& theCommand)
@@ -23,6 +27,7 @@ void HaveAUnitWait(Command& theCommand)
 
 	currentUnit->m_usedAction = true;
 	g_theCurrentMap->ClearHoverTiles();
+	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 }
 
@@ -34,6 +39,7 @@ void CaptureBuilding(Command& theCommand)
 
 	// reset state
 	g_theCurrentMap->m_selectedUnit->m_usedAction = true;
+	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 	g_theCurrentMap->ClearHoverTiles();
 }

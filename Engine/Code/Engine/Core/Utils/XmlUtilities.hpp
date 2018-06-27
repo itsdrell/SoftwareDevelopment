@@ -25,7 +25,7 @@ IntVector2 ParseXmlAttribute( const tinyxml2::XMLElement& element, const char* a
 std::string ParseXmlAttribute( const tinyxml2::XMLElement& element, const char* attributeName, const std::string& defaultValue );
 Ints ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Ints defaultValue);
 AABB2 ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const AABB2 defaultValue);
-Strings ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Strings defaultValue);
+Strings ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Strings& defaultValue);
 
 
 // special case

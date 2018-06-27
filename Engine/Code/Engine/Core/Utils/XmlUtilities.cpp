@@ -331,7 +331,7 @@ AABB2 ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attribu
 	return value;
 }
 
-Strings ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Strings defaultValue)
+Strings ParseXmlAttribute(const tinyxml2::XMLElement& element, const char* attributeName, const Strings& defaultValue)
 {
 	const char* inText = element.Attribute(attributeName);
 

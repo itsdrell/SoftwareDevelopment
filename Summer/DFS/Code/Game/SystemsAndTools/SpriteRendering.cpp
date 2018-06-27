@@ -10,7 +10,7 @@ bool CompareSortOrder(DrawCall2D a, DrawCall2D b)
 	int aOrder = a.m_sort;
 	int bOrder = b.m_sort;
 
-	if(aOrder > bOrder)
+	if(aOrder < bOrder)
 		return true;
 
 
@@ -119,6 +119,8 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 
 void SpriteRendering::Sort(std::vector<DrawCall2D>* dc, Camera& theCam) const
 {
+	UNUSED(theCam);
+	
 	for(uint i = 0; i < dc->size(); i++)
 	{
 		std::sort(dc->begin(), dc->end(), CompareSortOrder);
