@@ -17,6 +17,7 @@ class Enemy;
 class EnemySpawner;
 class HUD;
 class Projectile;
+class GameObject;
 
 //=============================================================
 // ENUMS
@@ -45,6 +46,7 @@ public:
 	Enemy*			AddEnemy(const Vector3& pos);
 	EnemySpawner*	AddEnemySpawner(const Vector2& pos);
 	void			AddProjectile(Projectile& newProjectile) { m_projectiles.push_back(&newProjectile);} // trying something different
+	void			AddWater(float height);
 
 	void		Update();
 	
@@ -88,6 +90,7 @@ public:
 	Vector2					m_cameraRotation;
 
 	Player*					m_player;
+	GameObject*				m_water;
 
 	HUD*					m_hud;
 

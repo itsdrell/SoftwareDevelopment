@@ -71,6 +71,8 @@ void Playing::StartUp()
 	m_map = new GameMap();
 	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
 
+	AddWater(1.f);
+
 	m_hud = new HUD();
 
 	//---------------------------------------------------------
@@ -192,6 +194,20 @@ EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
 	m_enemySpawner.push_back(newSpawner);
 
 	return newSpawner;
+}
+
+void Playing::AddWater(float height)
+{
+	Renderable* water = new Renderable();
+
+	Material* waterMaterial = Material::CreateOrGetMaterial("water");
+	water->SetMaterial(waterMaterial);
+
+	MeshBuilder mb;
+	mb.AddFlatPlane(Vector3(0.f, height, 0.f), AABB2(-1000.f, 1000.f), Rgba(255,255,255,100), AABB2(0, 128));
+	water->SetMesh(mb.CreateMesh<VertexLit>());
+
+	m_scene->AddRenderable(water);
 }
 
 void Playing::Update()

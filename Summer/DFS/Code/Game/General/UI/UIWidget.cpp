@@ -53,14 +53,14 @@ void UIWidget::Update()
 void UIWidget::CheckForMouseOverlap()
 {
 	Vector3 mousePos = Renderer::GetInstance()->m_defaultUICamera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
-	DebugRenderLog(0.f, mousePos.ToString());
-	DebugRenderLog(0.f, m_bounds.ToString());
+	//DebugRenderLog(0.f, mousePos.ToString());
+	//DebugRenderLog(0.f, m_bounds.ToString());
 
 	if(m_bounds.IsPointInside(mousePos.xy()))
 	{
 		m_isHoveredOver = true;
 		
-		DebugRenderLog(0.f, "Hovering over: button");
+		//DebugRenderLog(0.f, "Hovering over: button");
 	}
 	else
 	{

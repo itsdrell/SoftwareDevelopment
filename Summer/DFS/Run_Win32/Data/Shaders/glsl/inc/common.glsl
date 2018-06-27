@@ -1,10 +1,10 @@
 // Frame information ;
-layout(binding=1, std140) uniform cFrameBlock 
+layout(binding=1, std140) uniform uboTimeClock 
 {
-   float GAME_TIME;
    float GAME_DELTA_TIME;
-   float SYSTEM_TIME; 
+   float GAME_TIME; 
    float SYSTEM_DELTA_TIME; 
+   float SYSTEM_TIME; 
 }; 
 
 // Camera Constants

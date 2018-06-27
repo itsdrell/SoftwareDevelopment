@@ -379,6 +379,8 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 {
 	Tile* theTile = GetTile(tileCoords);
 
+	PlayOneShot("default");
+
 	// right now, one shot
 	Unit* target = theTile->m_unit;
 	m_selectedUnit->m_usedAction = true;

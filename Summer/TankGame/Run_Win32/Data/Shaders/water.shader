@@ -1,12 +1,22 @@
-<shader name="Default">
-<program define="Hello;Fam">
-      <both file="Data/Shaders/glsl/Default"/>
+<shader name="water" cull="none">
+    
+    <program define="FOG">
+        <vertex file="Data/Shaders/glsl/mvp_lit.vs"/>
+		<fragment file="Data/Shaders/glsl/water.fs"/>
    </program>
 
-   <depth write="true" test="less"/>
+   <depth write="false" test="less"/>
+
+    <Sorting sortOrder = "10" queue = "ALPHA" />
+
+   <blend>
+		<color op="add" src="src_alpha" dest="inv_src_alpha"/>
+		<alpha op="add" src="one" dest="one"/>
+	</blend>
 
     <!-- Material Defaults -->
-     <Texture path = "Images/defaultTexture.png" sampler = "default" />
+     <Texture path = "Images/arielWater.jpg" sampler = "default" />
+
 </shader>
 
 
@@ -20,8 +30,8 @@ be used if no option is given.
 	<program id="opt_program_id" define="semicolon;seperated;list">
 	<!--  if no id, you can define the program here manually  -->
 	<!--  id and defines are mutually exclusive  -->
-		<vertex file="Shaders/glsl/mvp_lit.vs"/>
-		<fragment file="Shaders/glsl/lit.fs"/>
+		<vertex file="shader/glsl/mvp_lit.vs"/>
+		<fragment file="shader/glsl/lit.fs"/>
 	</program>
 
 	<blend>
@@ -30,9 +40,6 @@ be used if no option is given.
 	</blend>
 	
 	<depth write="true|false" test="less|never|equal|lequal|greater|gequal|not|always"/>
-
-    <Sorting sortOrder = "10" queue = "ALPHA" />
-    
 
 	<!-- These are for materials, they are optional, but good to set defaults for this shader so 
 		it isn't using bad Data

@@ -109,8 +109,10 @@ void MeshBuilder::AddQuad(uint a, uint b, uint c, uint d)
 //////////////////////////////////////////////////////////////////////////
 // MAKERS
 
-void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, Rgba color)
+void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, const AABB2& theUvs, Rgba color)
 {
+	AABB2 uvs = uvs;
+
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -122,20 +124,20 @@ void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, Rgb
 
 	//////////////////////////////////////////////////////////////////////////
 
-	SetUV(0,0);
 	SetNormal(-Vector3::FORWARD);
 	SetTangents(Vector3::RIGHT);
 	SetBitangents(Vector3::UP);
 
+	SetUV(uvs.mins);
 	uint idx = PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y),(center.z - dimensions.z)));
 
-	SetUV(1,0);
+	SetUV(uvs.maxs.x, uvs.mins.y);
 	PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	SetUV(0,1);
+	SetUV(uvs.mins.x,uvs.maxs.y);
 	PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y),(center.z - dimensions.z)));
 
-	SetUV(1,1);
+	SetUV(uvs.maxs);
 	PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y),(center.z - dimensions.z)));
 
 	AddFace(idx + 0, idx + 1, idx + 2);
@@ -508,9 +510,10 @@ void MeshBuilder::AddUVSphere(const Vector3& position, float radius, uint wedges
 	//return mb.CreateMeshPCU();
 }
 
-void MeshBuilder::AddQuad(const Vector3& position, AABB2& bounds)
+void MeshBuilder::AddQuad(const Vector3& position, const AABB2& bounds, const AABB2& theUvs)
 {
-	
+	AABB2 uvs = theUvs;
+
 	//////////////////////////////////////////////////////////////////////////
 
 	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
@@ -520,16 +523,16 @@ void MeshBuilder::AddQuad(const Vector3& position, AABB2& bounds)
 
 	//////////////////////////////////////////////////////////////////////////
 
-	SetUV(0,0);
+	SetUV(uvs.mins);
 	uint idx = PushVertex(Vector3((position.x - bounds.mins.x), (position.y - bounds.mins.y), (position.z)));
 
-	SetUV(1,0);
+	SetUV(uvs.maxs.x, uvs.mins.y);
 	PushVertex(Vector3((position.x + bounds.maxs.x), (position.y - bounds.mins.y), (position.z)));
 
-	SetUV(0,1);
+	SetUV(uvs.mins.x,uvs.maxs.y);
 	PushVertex(Vector3((position.x - bounds.mins.x), (position.y + bounds.maxs.y), (position.z)));
 
-	SetUV(1,1);
+	SetUV(uvs.maxs);
 	PushVertex(Vector3((position.x + bounds.maxs.x), (position.y + bounds.maxs.y), (position.z)));
 
 	AddFace(idx + 0, idx + 1, idx + 2);
@@ -926,5 +929,39 @@ void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeigh
 
 		startPoint.x += cellWidth;
 	}
+}
+
+void MeshBuilder::AddFlatPlane(const Vector3& position, const AABB2& bounds, Rgba theColor, const AABB2& theUvs /*= AABB2(0.f, 1.f)*/)
+{
+	AABB2 uvs = theUvs;
+
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+									 // this is assuming all the sides are the same color
+	SetColor(theColor);
+
+	//////////////////////////////////////////////////////////////////////////
+
+	SetUV(uvs.mins);
+	uint idx = PushVertex(Vector3((position.x + bounds.mins.x), (position.y), (position.z + bounds.mins.y)));
+
+	SetUV(uvs.maxs.x, uvs.mins.y);
+	PushVertex(Vector3((position.x + bounds.maxs.x), (position.y ), (position.z + bounds.mins.y)));
+
+	SetUV(uvs.mins.x,uvs.maxs.y);
+	PushVertex(Vector3((position.x + bounds.mins.x), (position.y), (position.z + bounds.maxs.y)));
+
+	SetUV(uvs.maxs);
+	PushVertex(Vector3((position.x + bounds.maxs.x), (position.y), (position.z + bounds.maxs.y)));
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 2, idx + 1, idx + 3);
+
+
+	//////////////////////////////////////////////////////////////////////////
+	
+	End();
 }
 

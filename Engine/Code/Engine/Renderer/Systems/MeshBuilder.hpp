@@ -40,7 +40,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	// Make functions
-	void AddPlane(const Vector3& center, const Vector3& dimensions, Rgba color = Rgba::WHITE);
+	void AddPlane(const Vector3& center, const Vector3& dimensions, const AABB2& theUvs = AABB2(0.f, 1.f), Rgba color = Rgba::WHITE);
 
 	void AddPlane(const Vector3& center, const Vector3& dimensions, Vector3 right , Vector3 up , Rgba color = Rgba::WHITE);
 
@@ -50,7 +50,7 @@ public:
 	
 	void AddUVSphere(const Vector3& position, float radius, uint wedges, uint slices, Rgba color = Rgba::WHITE);
 
-	void AddQuad(const Vector3& position, AABB2& bounds);
+	void AddQuad(const Vector3& position, const AABB2& bounds, const AABB2& theUvs = AABB2(0.f, 1.f));
 
 	void AddMeshFromObjFile(std::string path);
 
@@ -67,6 +67,8 @@ public:
 	void Add2DPlane(AABB2& bounds, AABB2& uvs, Rgba color = Rgba::WHITE);
 
 	void Add2DText(Vector2 startPos, std::string text, float cellHeight, float aspectScale = 1.f, Rgba color = Rgba::WHITE, BitmapFont* font = nullptr);
+
+	void AddFlatPlane(const Vector3& position, const AABB2& bounds, Rgba theColor = Rgba::WHITE, const AABB2& theUvs = AABB2(0.f, 1.f));
 
 public:
 	VertexMaster 						m_stamp; // this is a value. We overwrite it
