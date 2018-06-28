@@ -40,7 +40,7 @@ public:
 
 	void RenderSceneForCamera( Camera* cam, Scene* scene ) const;
 	void RenderSkyBox( Scene* scene ) const;
-
+	void RenderFog() const;
 
 	void SortDrawsBySortOrder(std::vector<DrawCall>* dc, Camera& currentCam) const;
 	void EnableLightsForDrawCall(DrawCall dc, Scene* scene ) const;

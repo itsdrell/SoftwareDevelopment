@@ -2,6 +2,7 @@
 #pragma warning(disable: 4302)
 #include "Engine/Renderer/Pipeline/Sampler.hpp"
 #include "Engine/Renderer/glfunctions.h"
+#include "../../Core/General/EngineCommon.hpp"
 
 Sampler::Sampler() 
 	: m_sampler_handle(NULL)
@@ -27,6 +28,8 @@ bool Sampler::Create()
 	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_T, GL_REPEAT );  
 	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_R, GL_REPEAT );  
 
+
+	TODO("Make different versions");
 	// filtering; 
 	//glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	//glSamplerParameteri((GLuint) m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );

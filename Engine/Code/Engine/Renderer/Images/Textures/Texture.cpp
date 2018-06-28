@@ -81,6 +81,10 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 
 	uint mipCount = CalculateMipCount( Max(m_dimensions.x, m_dimensions.y));
 
+	// edge case
+	if(mipCount == 0)
+		mipCount = 1;
+
 	GLenum internalFormat = bufferFormat; // the format we want the texture to be on the card; allows us to translate into a different texture format as we upload to OpenGL
 
 	//glTexImage2D(			// Upload this pixel data to our new OpenGL texture
@@ -127,7 +131,7 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 uint Texture::CalculateMipCount(int maxDimension)
 {
 	//X = ln(maxDimension) / ln(2).
-	
+
 	float value = logf((float)maxDimension) / logf(2.0f);
 	
 	return (uint)value;

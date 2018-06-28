@@ -53,7 +53,7 @@ void ForwardRenderingPath::Render(Scene* scene) const
 	// We have to render the sky box first, so find the camera with it and render it
 	// shouldn't be slow since camera 0 should have it but will check all
 	RenderSkyBox(scene);
-	
+
 	for(uint cameraIndex = 0; cameraIndex < scene->m_cameras.size(); cameraIndex++)
 	{
 		RenderSceneForCamera(scene->m_cameras.at(cameraIndex), scene);
@@ -119,13 +119,13 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 		
 		r->BindMaterial(current.m_material);
 		r->SetUniform("MODEL", current.m_model);
+		
+		RenderFog();
 
 		EnableLightsForDrawCall(current, scene);
 
 		r->DrawMesh(current.m_mesh);
 	}
-
-
 
 
 	// Render all the Debug Render stuff, this is assuming main camera is index 0
@@ -150,6 +150,17 @@ void ForwardRenderingPath::RenderSkyBox(Scene* scene) const
 			return;
 		}
 	}
+}
+
+void ForwardRenderingPath::RenderFog() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	r->SetUniform("FOG_COLOR", Rgba::WHITE);
+	r->SetUniform("FOG_NEAR_PLANE", 40.f);
+	r->SetUniform("FOG_FAR_PLANE", 60.f);
+	r->SetUniform("FOG_NEAR_FACTOR", 0.f); 
+	r->SetUniform("FOG_FAR_FACTOR", .75f);
 }
 
 void ForwardRenderingPath::SortDrawsBySortOrder(std::vector<DrawCall>* dc, Camera& currentCam) const

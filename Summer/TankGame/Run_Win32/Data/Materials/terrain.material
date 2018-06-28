@@ -1,6 +1,6 @@
 <Material name = "terrain">
     
-    <Shader name = "lit" />
+    <Shader name = "lit_fog" />
 
     <Textures>
         <Texture bind = "0" path = "Images/terrain/grass_green_d.jpg" sampler = "default"/>

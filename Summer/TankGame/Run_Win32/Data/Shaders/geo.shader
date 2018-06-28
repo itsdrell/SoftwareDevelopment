@@ -1,5 +1,5 @@
 <shader name="ColoredGeometricMesh" fill="solid">
-    <program>
+    <program define="">
       <both file="Data/Shaders/glsl/geo"/>
    </program>
 

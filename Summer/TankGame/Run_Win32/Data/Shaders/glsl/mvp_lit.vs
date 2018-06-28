@@ -17,6 +17,7 @@ in vec3 BITANGENT;
 // Outputs
 out vec2 passUV; 
 out vec4 passColor; 
+out vec3 passViewPos;
 out vec3 passWorldPos;     // new
 out vec3 passWorldNormal;  // new
 out vec3 passWorldTangent; 
@@ -30,6 +31,8 @@ void main( void )
    vec4 world_pos = MODEL * local_pos ; 
    vec4 camera_pos = VIEW * world_pos; 
    vec4 clip_pos = PROJECTION * camera_pos; 
+
+   passViewPos = camera_pos.xyz; 
 
    passWorldPos = world_pos.xyz; 
    passUV = UV; 

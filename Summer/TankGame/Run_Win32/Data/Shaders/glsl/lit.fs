@@ -3,6 +3,8 @@
 #include "inc/common.glsl"
 #include "inc/light.glsl"
 #include "inc/debug.glsl"
+#include "inc/fog.glsl"
+
 
 // Textures
 layout(binding = 0) uniform sampler2D gTexDiffuse;
@@ -12,6 +14,7 @@ layout(binding = 2) uniform sampler2D gTexEmissive;
 // Attributes ============================================
 in vec2 passUV; 
 in vec4 passColor; 
+in vec3 passViewPos;
 in vec3 passWorldPos;   // new
 in vec3 passWorldNormal;// new
 in vec3 passWorldTangent; 
@@ -67,7 +70,7 @@ void main( void )
    final_color.xyz = ADD(final_color.xyz, emissive_color); 
 
    final_color = clamp(final_color, vec4(0), vec4(1) ); // not necessary - but overflow should go to bloom target (bloom effect)
-   outColor = final_color;
+   outColor = ApplyFog( final_color, passViewPos.z );
    
 
    // Debug Modes 
@@ -91,4 +94,6 @@ void main( void )
         outColor = vec4(lf.diffuse, 1) + vec4(lf.specular, 0);
     #endif  
    
+    //outColor = ApplyFog( vec4(1,0,0,1), passViewPos.z );
+
 }
