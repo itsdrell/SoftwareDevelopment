@@ -2,6 +2,7 @@
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include <map>
+#include "../Pipeline/Sampler.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // Forward Declare
@@ -101,7 +102,7 @@ public:
 
 	void SetShader( Shader* shader );
 	void SetSampler( uint bind, Sampler* sampler);
-	void SetTexture(uint idx, Texture* texture);
+	void SetTexture(uint idx, Texture* texture, SamplerTypes theType = NORMAL);
 	void SetPropertyBlock(uint idx, UniformBuffer* block);
 
 	Sampler* GetSample( uint idx );

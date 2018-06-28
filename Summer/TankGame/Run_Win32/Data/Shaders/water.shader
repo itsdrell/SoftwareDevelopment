@@ -15,7 +15,7 @@
 	</blend>
 
     <!-- Material Defaults -->
-     <Texture path = "Images/arielWater.jpg" sampler = "default" />
+     <Texture path = "Images/arielWater.jpg" sampler = "mips" />
 
 </shader>
 

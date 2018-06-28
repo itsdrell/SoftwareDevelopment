@@ -197,7 +197,7 @@ void Material::SetSampler(uint bind, Sampler * sampler)
 	m_samplers[bind] = sampler;
 }
 
-void Material::SetTexture(uint idx, Texture * texture)
+void Material::SetTexture(uint idx, Texture * texture, SamplerTypes theType)
 {
 	// This is so im not defining a sized vector, but requires you to Set in order which makes sense..? 
 	if(idx >= m_textures.size())
@@ -209,11 +209,20 @@ void Material::SetTexture(uint idx, Texture * texture)
 		m_textures.at(idx) = texture;
 	}
 
-	TODO("Create different Samplers");
-	// WE need a sampler for each texture so for now just gonna add a default
-	// when we add a texture
+	// Make the sampler for it
 	Sampler* newSampler = new Sampler();
-	newSampler->Create();
+	switch (theType)
+	{
+	case NORMAL:
+		newSampler->CreateDefault();
+		break;
+	case MIPS:
+		newSampler->CreateWithMips();
+		break;
+	default:
+		break;
+	}
+	
 	m_samplers.push_back(newSampler);
 }
 
@@ -285,12 +294,12 @@ STATIC Sampler* Material::CreateSamplerFromString(std::string type)
 {
 	Sampler* typeToCreate = new Sampler();
 
-	if(type == "default") { typeToCreate->Create(); }
-	// ... add more types
+	if(type == "default") { typeToCreate->CreateDefault(); }
+	if(type == "mips") { typeToCreate->CreateWithMips(); }
 
 
 	// error check
-	if(type == "ERROR") { typeToCreate->Create(); }
+	if(type == "ERROR") { typeToCreate->CreateDefault(); }
 
 	return typeToCreate;
 }

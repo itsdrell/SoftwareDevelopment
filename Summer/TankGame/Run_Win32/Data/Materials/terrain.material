@@ -3,8 +3,8 @@
     <Shader name = "lit_fog" />
 
     <Textures>
-        <Texture bind = "0" path = "Images/terrain/grass_green_d.jpg" sampler = "default"/>
-        <Texture bind = "1" path = "Images/terrain/grass_green_n.jpg" sampler = "default"/>
+        <Texture bind = "0" path = "Images/terrain/grass_green_d.jpg" sampler = "mips"/>
+        <Texture bind = "1" path = "Images/terrain/grass_green_n.jpg" sampler = "mips"/>
         
     </Textures>
 

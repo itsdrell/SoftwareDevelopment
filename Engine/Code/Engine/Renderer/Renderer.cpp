@@ -142,7 +142,7 @@ void Renderer::PostStartup()
 	m_immediateMesh = new Mesh();
 
 	m_defaultSampler = new Sampler();
-	m_defaultSampler->Create();
+	m_defaultSampler->CreateDefault();
 	m_currentSampler = m_defaultSampler;
 
 	// default white texture

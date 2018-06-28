@@ -13,7 +13,7 @@ Sampler::~Sampler()
 	Destroy();
 }
 
-bool Sampler::Create()
+bool Sampler::CreateDefault()
 {
 	// create the sampler handle if needed; 
 	if (m_sampler_handle == NULL) {
@@ -28,12 +28,27 @@ bool Sampler::Create()
 	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_T, GL_REPEAT );  
 	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_R, GL_REPEAT );  
 
+	//filtering; 
+	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glSamplerParameteri((GLuint) m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	TODO("Make different versions");
-	// filtering; 
-	//glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	//glSamplerParameteri((GLuint) m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	return true; 
+}
 
+bool Sampler::CreateWithMips()
+{
+	// create the sampler handle if needed; 
+	if (m_sampler_handle == NULL) {
+		glGenSamplers( 1, (GLuint*)&m_sampler_handle ); 
+		if (m_sampler_handle == NULL) {
+			return false; 
+		}
+	}
+
+	// setup wrapping
+	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_S, GL_REPEAT );  
+	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_T, GL_REPEAT );  
+	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_R, GL_REPEAT );  
 
 	// this two are for mip maps
 	glSamplerParameteri(  (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );         // Default: GL_LINEAR
@@ -44,7 +59,7 @@ bool Sampler::Create()
 	glSamplerParameterf(  (GLuint)m_sampler_handle, GL_TEXTURE_MIN_LOD, (float)-1000.0f ); 
 	glSamplerParameterf(  (GLuint)m_sampler_handle, GL_TEXTURE_MAX_LOD, (float)1000.0f ); 
 
-	return true; 
+	return true;
 }
 
 void Sampler::Destroy()
