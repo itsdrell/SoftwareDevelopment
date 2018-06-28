@@ -27,7 +27,7 @@ void AABB3::Invalidate()
 
 bool AABB3::IsPointInside( Vector3 & pos)
 {	
-	return !(pos <= mins) && (pos <= maxs);
+	return (mins <= pos) && (pos <= maxs);
 }
 
 void AABB3::GrowToContain( Vector3& pos)

@@ -9,6 +9,11 @@
 #include "Game\GameStates\Playing.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 #include "..\Main\GameCommon.hpp"
+#include "Enemy.hpp"
+#include "Engine\Core\General\GameObject.hpp"
+#include "Engine\Math\Geometry\AABB3.hpp"
+#include "Engine\Renderer\RenderableComponents\Renderable.hpp"
+#include "EnemySpawner.hpp"
 
 GameMap::GameMap()
 {
@@ -222,9 +227,23 @@ bool GameMap::Raycast(Contact3* contact, Ray3 theRay)
 	{
 		Vector3 mapPos = GetWorldPosition(currentPos.xz());
 
-		if(IsBelow(currentPos))
+		
+		if(DoesPointHitTower(currentPos))
 		{
 			contact->position = currentPos - stepSize;
+			DebugRenderLog(0.f, "HITTING TOWER", Rgba::WHITE);
+			return true;
+		}
+		else if(DoesPointHitAnEnemy(currentPos))
+		{
+			contact->position = currentPos - stepSize;
+			DebugRenderLog(0.f, "HITTING ENEMY", Rgba::WHITE);
+			return true;
+		}
+		else if(IsBelow(currentPos))
+		{
+			contact->position = currentPos - stepSize;
+			DebugRenderLog(0.f, "HITTING TERRAIN", Rgba::WHITE);
 			return true;
 		}
 
@@ -242,6 +261,54 @@ bool GameMap::IsBelow(Vector3 point)
 	if(point.y < terrainPos.y)
 		return true;
 
+	return false;
+}
+
+bool GameMap::DoesPointHitAnEnemy(const Vector3 & point)
+{
+	Vector3 thePoint = point;
+	
+	std::vector<Enemy*>& enemies = g_theGame->m_playingState->m_enemies;
+
+	for(uint i = 0; i < enemies.size(); i++)
+	{
+		Enemy& current = *enemies.at(i);
+
+		// get the distance from point to enemy
+		float distance = GetDistance(thePoint, current.m_transform.GetWorldPosition());
+		
+		// Get the radius
+		float enemyRadius = current.m_radius;
+		
+		// if the distance is less than the radius its a hit
+		if(distance <= enemyRadius)
+			return true;
+	}
+	
+	
+	return false;
+}
+
+bool GameMap::DoesPointHitTower(const Vector3 & point)
+{
+	
+	Vector3 thePoint = point;
+
+	std::vector<EnemySpawner*>& spawners = g_theGame->m_playingState->m_enemySpawner;
+
+	for(uint i = 0; i < spawners.size(); i++)
+	{
+		EnemySpawner& current = *spawners.at(i);
+
+		AABB3 towerBounds = current.m_renderable->GetMesh()->m_bounds;
+		DebugRenderWireAABB3(0.f,towerBounds, DEBUG_RENDER_IGNORE_DEPTH, Rgba::WHITE);
+		towerBounds.Translate(current.m_transform.GetWorldMatrix());
+		DebugRenderWireAABB3(0.f,towerBounds);
+
+		if(towerBounds.IsPointInside(thePoint))
+			return true;
+	}
+	
 	return false;
 }
 

@@ -293,7 +293,6 @@ void Playing::TowerVsBullet()
 					// bounds is in local space so we have to move it to world
 					AABB3 towerBounds = currentTower->m_renderable->m_mesh->m_bounds;
 					towerBounds.Translate(currentTower->m_transform.GetWorldMatrix());
-					
 					Vector3 bulletPos = currentProjectile->m_transform.GetWorldPosition();
 
 					if(towerBounds.IsPointInside(bulletPos))

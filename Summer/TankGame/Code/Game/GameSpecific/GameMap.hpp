@@ -77,6 +77,8 @@ public:
 
 	bool Raycast(Contact3* contact, Ray3 theRay);
 	bool IsBelow(Vector3 point);
+	bool DoesPointHitAnEnemy(const Vector3& point);
+	bool DoesPointHitTower(const Vector3& point);
 
 public:
 	AABB2		m_mapBounds; 
