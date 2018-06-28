@@ -73,6 +73,12 @@ void Game::StartUp()
 	
 	m_console->StartUp();
 
+
+	int test = Max(1,5);
+	int test2 = Max(5,1);
+	uint test3 = Max(7U, 8U);
+
+	int i = 0;
 }
 
 

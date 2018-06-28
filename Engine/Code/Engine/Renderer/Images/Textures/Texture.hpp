@@ -21,6 +21,7 @@ private:
 	Texture();
 	void PopulateFromData( unsigned char* imageData, const IntVector2& texelSize, int numComponents );
 	
+	uint CalculateMipCount(int maxDimension);
 
 	// These two both use the Image class to create a texture
 	Texture* CreateFromImage(Image imageToCreateFrom);

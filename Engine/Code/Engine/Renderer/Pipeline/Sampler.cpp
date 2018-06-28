@@ -28,8 +28,19 @@ bool Sampler::Create()
 	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_WRAP_R, GL_REPEAT );  
 
 	// filtering; 
-	glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glSamplerParameteri((GLuint) m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	//glSamplerParameteri( (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	//glSamplerParameteri((GLuint) m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+
+
+	// this two are for mip maps
+	glSamplerParameteri(  (GLuint)m_sampler_handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );         // Default: GL_LINEAR
+	glSamplerParameteri(  (GLuint)m_sampler_handle, GL_TEXTURE_MAG_FILTER, GL_LINEAR );         // Default: GL_LINEAR
+
+	// Limit where on the LOD I can actually fetch (if you want to control it through the sampler)
+	// defaults to -1000.0f to 1000.0f
+	glSamplerParameterf(  (GLuint)m_sampler_handle, GL_TEXTURE_MIN_LOD, (float)-1000.0f ); 
+	glSamplerParameterf(  (GLuint)m_sampler_handle, GL_TEXTURE_MAX_LOD, (float)1000.0f ); 
+
 	return true; 
 }
 

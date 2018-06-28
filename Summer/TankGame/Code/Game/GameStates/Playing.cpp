@@ -81,7 +81,7 @@ void Playing::StartUp()
 	m_camera->CreateSkyBox("Data/Images/skybox.jpg");
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
-	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
+	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 1000.f);
 
 	m_scene->AddCamera(m_camera);
 	m_uiScene->AddCamera(g_theRenderer->m_defaultUICamera);

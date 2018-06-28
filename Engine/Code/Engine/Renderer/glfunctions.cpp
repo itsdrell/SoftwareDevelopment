@@ -68,11 +68,11 @@ PFNGLUNIFORM1FVPROC glUniform3fv = nullptr;
 PFNGLUNIFORM1FVPROC glUniform4fv = nullptr;
 PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
 PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
-
 PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
 PFNGLDELETETEXTURESPROC glDeleteTextures = nullptr;
 PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D = nullptr;
-
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
+PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf = nullptr;
 
 // wgl
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;

@@ -179,3 +179,12 @@ bool isLessThan(std::initializer_list<T> values){
 	}
 	return true;
 }
+
+template <typename T>
+T Max(T a, T b)
+{
+	if(b > a)
+		return b;
+	else
+		return a;
+}

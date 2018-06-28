@@ -9,6 +9,7 @@
 #include "Engine/Renderer/Images/Image.hpp"
 #include "Engine/Renderer/glfunctions.h"
 #include "Engine/ThirdParty/stbi/stb_image_write.h"
+#include "Engine/Math/MathUtils.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -70,24 +71,67 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); // one of: GL_NEAREST, GL_LINEAR
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
 
-	GLenum bufferFormat = GL_RGBA; // the format our source pixel data is in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
+	GLenum bufferFormat = GL_RGBA8; // the format our source pixel data is in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
 	if( numComponents == 3 )
-		bufferFormat = GL_RGB;
+		bufferFormat = GL_RGB8;
+
+	GLenum channels = GL_RGBA;
+	if(numComponents == 3)
+		channels = GL_RGB;
+
+	uint mipCount = CalculateMipCount( Max(m_dimensions.x, m_dimensions.y));
 
 	GLenum internalFormat = bufferFormat; // the format we want the texture to be on the card; allows us to translate into a different texture format as we upload to OpenGL
 
-	glTexImage2D(			// Upload this pixel data to our new OpenGL texture
-		GL_TEXTURE_2D,		// Creating this as a 2d texture
-		0,					// Which mipmap level to use as the "root" (0 = the highest-quality, full-res image), if mipmaps are enabled
-		internalFormat,		// Type of texel format we want OpenGL to use for this texture internally on the video card
-		m_dimensions.x,			// Texel-width of image; for maximum compatibility, use 2^N + 2^B, where N is some integer in the range [3,11], and B is the border thickness [0,1]
-		m_dimensions.y,			// Texel-height of image; for maximum compatibility, use 2^M + 2^B, where M is some integer in the range [3,11], and B is the border thickness [0,1]
-		0,					// Border size, in texels (must be 0 or 1, recommend 0)
-		bufferFormat,		// Pixel format describing the composition of the pixel data in buffer
-		GL_UNSIGNED_BYTE,	// Pixel color components are unsigned bytes (one byte per color channel/component)
-		imageData );		// Address of the actual pixel data bytes/buffer in system memory
- }
+	//glTexImage2D(			// Upload this pixel data to our new OpenGL texture
+	//	GL_TEXTURE_2D,		// Creating this as a 2d texture
+	//	0,					// Which mipmap level to use as the "root" (0 = the highest-quality, full-res image), if mipmaps are enabled
+	//	internalFormat,		// Type of texel format we want OpenGL to use for this texture internally on the video card
+	//	m_dimensions.x,			// Texel-width of image; for maximum compatibility, use 2^N + 2^B, where N is some integer in the range [3,11], and B is the border thickness [0,1]
+	//	m_dimensions.y,			// Texel-height of image; for maximum compatibility, use 2^M + 2^B, where M is some integer in the range [3,11], and B is the border thickness [0,1]
+	//	0,					// Border size, in texels (must be 0 or 1, recommend 0)
+	//	bufferFormat,		// Pixel format describing the composition of the pixel data in buffer
+	//	GL_UNSIGNED_BYTE,	// Pixel color components are unsigned bytes (one byte per color channel/component)
+	//	imageData );		// Address of the actual pixel data bytes/buffer in system memory
+	// Copy the texture - first, get use to be using texture unit 0 for this;
+	
 
+	// create the gpu buffer
+	// note: only this is needed for render targets
+	glTexStorage2D( GL_TEXTURE_2D,
+		mipCount,               // number of levels (mip-layers)
+		internalFormat, // how is the memory stored on the GPU
+		m_dimensions.x, 
+		m_dimensions.y ); // dimenions
+
+						 // copies cpu memory to the gpu - needed for texture resources
+	glTexSubImage2D( GL_TEXTURE_2D,
+		0,             // mip layer we're copying to
+		0, 0,          // offset
+		m_dimensions.x, 
+		m_dimensions.y, // dimensions
+		channels,      // which channels exist in the CPU buffer
+		GL_UNSIGNED_BYTE,     // how are those channels stored
+		imageData ); // cpu buffer to copy;
+
+
+	glActiveTexture( GL_TEXTURE0 );
+	glBindTexture( GL_TEXTURE_2D, m_textureID );  
+	glGenerateMipmap( GL_TEXTURE_2D ); 
+
+	GL_CHECK_ERROR();
+
+}
+
+
+uint Texture::CalculateMipCount(int maxDimension)
+{
+	//X = ln(maxDimension) / ln(2).
+	
+	float value = logf((float)maxDimension) / logf(2.0f);
+	
+	return (uint)value;
+}
 
 Texture* Texture::CreateFromImage(Image imageToCreateFrom)
 {
