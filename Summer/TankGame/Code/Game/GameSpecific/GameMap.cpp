@@ -301,9 +301,9 @@ bool GameMap::DoesPointHitTower(const Vector3 & point)
 		EnemySpawner& current = *spawners.at(i);
 
 		AABB3 towerBounds = current.m_renderable->GetMesh()->m_bounds;
-		DebugRenderWireAABB3(0.f,towerBounds, DEBUG_RENDER_IGNORE_DEPTH, Rgba::WHITE);
+		//DebugRenderWireAABB3(0.f,towerBounds, DEBUG_RENDER_IGNORE_DEPTH, Rgba::WHITE);
 		towerBounds.Translate(current.m_transform.GetWorldMatrix());
-		DebugRenderWireAABB3(0.f,towerBounds);
+		//DebugRenderWireAABB3(0.f,towerBounds);
 
 		if(towerBounds.IsPointInside(thePoint))
 			return true;

@@ -6,15 +6,60 @@
 #include "..\Main\Game.hpp"
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Renderer\RenderableComponents\Material.hpp"
+#include "Engine\Core\Tools\Command.hpp"
+#include "Engine\Core\Tools\DevConsole.hpp"
+
+//====================================================================================
+float seekWeight = 1.f;
+float alignmentWeight = 1.f;
+float seperationWeight = 1.f;
+
+//====================================================================================
+void SetSeekWeight(Command& theCommand)
+{
+	if(theCommand.m_commandArguements.size() > 1)
+	{
+		float newSeek = ParseString(theCommand.m_commandArguements.at(1), seekWeight);
+		seekWeight = ClampFloat(newSeek, 0.f, 1.f);
+
+		DevConsole::AddConsoleDialogue(ConsoleDialogue("New Seek Weight is now: " + std::to_string(seekWeight), Rgba::YELLOW));
+	}
+
+}
+
+void SetAlignmentWeight(Command& theCommand)
+{
+	if(theCommand.m_commandArguements.size() > 1)
+	{
+		float newAlignment = ParseString(theCommand.m_commandArguements.at(1), seekWeight);
+		alignmentWeight = ClampFloat(newAlignment, 0.f, 1.f);
+
+		DevConsole::AddConsoleDialogue(ConsoleDialogue("New Alignment Weight is now: " + std::to_string(alignmentWeight), Rgba::YELLOW));
+	}
+}
+
+void SetSeperationWeight(Command& theCommand)
+{
+	if(theCommand.m_commandArguements.size() > 1)
+	{
+		float newSep = ParseString(theCommand.m_commandArguements.at(1), seekWeight);
+		seperationWeight = ClampFloat(newSep, 0.f, 1.f);
+
+		DevConsole::AddConsoleDialogue(ConsoleDialogue("New Seperation Weight is now: " + std::to_string(seperationWeight), Rgba::YELLOW));
+	}
+}
 
 
+//====================================================================================
 Enemy::Enemy(const Vector3& pos)
 	: GameObject("Enemy")
 {
 	m_transform.SetLocalPosition(pos);
 	m_transform.SetLocalRotationEuler(Vector3(0.f, 90.f, 0.f));
-	m_speed = 2.f;
+	m_speed = 3.f;
 	m_radius = 1.f;
+
+	m_velocity = Vector3(0.f, 0.f, 2.f);
 
 	//--------------------------------------------------------------------------
 	// Body
@@ -57,14 +102,110 @@ void Enemy::Update()
 	Vector3 playerPos = g_theGame->m_playingState->m_player->m_transform.GetWorldPosition();
 	Matrix44 lookAt = Matrix44::LookAt(m_transform.GetWorldPosition(), playerPos);
 
-	m_transform.SimpleMoveTowardPoint(playerPos, m_speed, g_theGameClock->deltaTime);
-	//m_transform.LookAtWorld(m_player->m_transform.GetWorldPosition());
-	//m_transform.RotateTowards( g_theGame->m_playingState->m_player->m_transform, 100.f * g_theGameClock->deltaTime);
+	GenerateForces();
+
 	m_transform.RotateTowards(lookAt, .5f);
 
-	// Adjust based off map
-	Vector3 pos = m_transform.GetWorldPosition();
-	Vector3 offset = Vector3(pos.x, g_theGame->m_playingState->m_map->GetHeight(Vector2(pos.x, pos.z)) + 1, pos.z);
-	m_transform.SetLocalPosition(offset);
+}
 
+void Enemy::ApplyForce(const Vector3& theForce)
+{
+	Vector3 trans = m_transform.GetWorldPosition() + (theForce * g_theGameClock->deltaTime);
+
+	float height = g_theGame->m_playingState->m_map->GetHeight(Vector2(trans.x, trans.z)) + 1;
+
+	m_transform.SetLocalPosition(Vector3(trans.x, height, trans.z));
+}
+
+void Enemy::GenerateForces()
+{	
+	Vector3 seekForce = Seek() * seekWeight;
+	Vector3 alignment = Alignment() * alignmentWeight;
+	Vector3 seperation = Seperation() * seperationWeight;
+
+	m_velocity = seekForce + alignment + seperation;
+
+	ApplyForce(m_velocity);
+}
+
+Vector3 Enemy::Seek()
+{
+	Vector3 playerPos = g_theGame->m_playingState->m_player->m_transform.GetWorldPosition();
+	
+	Vector3 myPos = m_transform.GetWorldPosition();
+
+	Vector3 desired = playerPos - myPos;
+	desired = Normalize(desired);
+
+	desired = desired * m_speed;
+
+	Vector3 steering = desired - m_velocity;
+	
+	// limit force here maybe
+	return desired;
+}
+
+Vector3 Enemy::Alignment()
+{
+	std::vector<Enemy*>& enemies = g_theGame->m_playingState->m_enemies;
+
+	int amountOfNeighboors = 0;
+	Vector3 totalVelocity = Vector3::ZERO;
+
+	for(uint i = 0; i < enemies.size(); i++)
+	{
+		Enemy& current = *enemies.at(i);
+
+		float distance = GetDistance(m_transform.GetWorldPosition(), current.m_transform.GetWorldPosition());
+
+		if(distance <= neighborRadius)
+		{
+			totalVelocity += current.m_velocity;
+			amountOfNeighboors++;
+		}
+	}
+
+	Vector3 resultingForce;
+	if(amountOfNeighboors != 0)
+		resultingForce = totalVelocity / amountOfNeighboors;
+	else
+		 resultingForce = Vector3::ZERO;
+
+
+
+	return resultingForce.Normalize() * m_speed;
+}
+
+Vector3 Enemy::Seperation()
+{
+	std::vector<Enemy*>& enemies = g_theGame->m_playingState->m_enemies;
+
+	int amountOfNeighboors = 0;
+	Vector3 totalSeperation = Vector3::ZERO;
+
+	for(uint i = 0; i < enemies.size(); i++)
+	{
+		Enemy& current = *enemies.at(i);
+
+		float distance = GetDistance(m_transform.GetWorldPosition(), current.m_transform.GetWorldPosition());
+
+		if(distance <= personalSpace)
+		{
+			Vector3 disp = m_transform.GetWorldPosition() - current.m_transform.GetWorldPosition();
+			disp = disp.Normalize();
+
+			totalSeperation += disp;
+			amountOfNeighboors++;
+		}
+	}
+
+	Vector3 resultingForce;
+	if(amountOfNeighboors != 0)
+		resultingForce = totalSeperation / amountOfNeighboors;
+	else
+		resultingForce = Vector3::ZERO;
+
+
+
+	return resultingForce.Normalize() * m_speed;
 }

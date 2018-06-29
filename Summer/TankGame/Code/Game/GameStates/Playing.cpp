@@ -53,6 +53,10 @@ void GameWon(Command& thecommand)
 Playing::Playing()
 {
 	CommandRegister("gameWon","gameWon <bool>","Win or lost game", GameWon);
+	CommandRegister("seek","gameWon <bool>","Set Seek weight: Range[0-1.f]", SetSeekWeight);
+	CommandRegister("align","gameWon <bool>","Set align weight: Range[0-1.f]", SetAlignmentWeight);
+	CommandRegister("separate","gameWon <bool>","set separate weight: Range[0-1.f]", SetSeperationWeight);
+
 }
 
 void Playing::StartUp()
@@ -69,7 +73,8 @@ void Playing::StartUp()
 	m_renderingPath = new ForwardRenderingPath();
 
 	m_map = new GameMap();
-	m_map->LoadMap(AABB2(-128.f, 128.f), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
+	m_mapDimensions = Vector2(-128.f, 128.f);
+	m_map->LoadMap(AABB2(m_mapDimensions.x, m_mapDimensions.y), FloatRange(0.f, 6.f), IntVector2(16,16), 20.f);
 
 	AddWater(1.f);
 
@@ -112,6 +117,18 @@ void Playing::Enter()
 	m_player = AddPlayer();
 	m_testEnemy = AddEnemy(Vector3(20.f, 0.f, 0.f));
 	m_testSpawner = AddEnemySpawner(Vector2(0.f, 20.f));
+	
+	FloatRange spawnRange = FloatRange(m_mapDimensions.x, m_mapDimensions.y);
+	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+
+	
 	m_cameraRotation = Vector2::ZERO;
 
 	//PlayLoopingSound("bg");

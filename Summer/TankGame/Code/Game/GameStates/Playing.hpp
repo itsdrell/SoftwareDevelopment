@@ -100,6 +100,7 @@ public:
 	Light*					m_sun;
 
 	GameMap*				m_map;
+	Vector2					m_mapDimensions;
 };
 
 
