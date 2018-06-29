@@ -19,8 +19,8 @@ Projectile::Projectile(const Vector3 & startPos, const Vector3 & direction, floa
 
 	Material* projMaterial = Material::CreateOrGetMaterial("geo");
 	projMaterial->SetTint(Rgba::YELLOW);
-	m_renderable->SetMaterial( projMaterial );
 
+	m_renderable->SetMaterial( projMaterial );
 	m_transform.TranslateLocal(startPos);
 	m_renderable->SetParentTransform(m_transform);
 

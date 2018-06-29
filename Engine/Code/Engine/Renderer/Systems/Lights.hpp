@@ -8,7 +8,8 @@
 class Light
 {
 public:
-	Light() {}
+	Light()
+	: m_castShadows(false) {}
 
 	virtual void Render() const = 0;
 
@@ -35,6 +36,8 @@ public:
 	// these cant be dots cause we dot them in the enableSpotLight
 	float			m_innerAngle;
 	float			m_outerAngle;
+
+	bool			m_castShadows;
 
 };
 

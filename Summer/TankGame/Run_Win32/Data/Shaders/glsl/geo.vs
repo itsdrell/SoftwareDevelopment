@@ -5,9 +5,6 @@
 #include "inc/common.glsl"
 
 
-uniform vec4 TINT; 
-
-
 // in
 in vec3 POSITION;
 in vec4 COLOR;      

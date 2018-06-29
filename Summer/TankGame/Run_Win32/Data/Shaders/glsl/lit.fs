@@ -28,7 +28,7 @@ out vec4 outColor;
 void main( void )
 {
    // Color of this surface
-   vec4 tex_color = texture( gTexDiffuse, passUV ); 
+   vec4 tex_color = texture( gTexDiffuse, passUV ) * passColor; 
    vec3 normal_color = texture( gTexNormal, passUV ).xyz;
    vec3 emissive_color = texture( gTexEmissive, passUV ).xyz; 
 

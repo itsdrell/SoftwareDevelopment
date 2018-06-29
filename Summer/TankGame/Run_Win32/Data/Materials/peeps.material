@@ -1,0 +1,5 @@
+<Material name = "peeps">
+    
+    <Shader name = "lit" />
+
+</Material>

@@ -9,6 +9,9 @@ class Scene;
 class Camera;
 class Material;
 class Mesh;
+class Texture;
+class Sampler;
+class Light;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -34,11 +37,12 @@ bool CompareSortOrder(DrawCall a, DrawCall b);
 class ForwardRenderingPath
 {
 public:
-	ForwardRenderingPath() {}
+	ForwardRenderingPath();
 
 	void Render( Scene* scene ) const;
 
 	void RenderSceneForCamera( Camera* cam, Scene* scene ) const;
+	void RenderSceneWithShadow( Light* theLight, Scene* scene) const;
 	void RenderSkyBox( Scene* scene ) const;
 	void RenderFog() const;
 
@@ -48,4 +52,9 @@ public:
 
 	
 public:
+	Camera*			m_shadowCamera;
+	Texture*		m_shadowDepthTarget;
+	Texture*		m_shadowColorTarget;
+
+	Sampler*		m_shadowSampler;
 };

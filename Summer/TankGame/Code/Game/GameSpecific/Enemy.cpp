@@ -8,6 +8,7 @@
 #include "Engine\Renderer\RenderableComponents\Material.hpp"
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
+#include "..\Main\GameCommon.hpp"
 
 //====================================================================================
 float seekWeight = 1.f;
@@ -68,9 +69,14 @@ Enemy::Enemy(const Vector3& pos)
 	mb.AddUVSphere(Vector3::ZERO, m_radius, 16, 16, Rgba::RED);
 	m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
-	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
+	Material* enemyMaterial = Material::CreateOrGetMaterial("peeps");
+	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	enemyMaterial->SetTexture(1, g_theRenderer->m_defaultNormalTexture);
+	enemyMaterial->SetTexture(2, g_theRenderer->m_defaultEmmisiveTexture);
+
+
 	//enemyMaterial->SetTexture(0, g_theRenderer->m_defaultFont->GetTexture());
-	Rgba tint = Rgba::WHITE;
+	Rgba tint = Rgba::RED;
 	enemyMaterial->SetTint(tint);
 
 	m_renderable->SetMaterial( enemyMaterial );
@@ -90,7 +96,11 @@ Enemy::Enemy(const Vector3& pos)
 	m_eyes->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
 
 	Material* eyeMaterial = Material::CreateOrGetMaterial("geo");
-	tint = Rgba::WHITE;
+	eyeMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	eyeMaterial->SetTexture(1, g_theRenderer->m_defaultNormalTexture);
+	eyeMaterial->SetTexture(2, g_theRenderer->m_defaultEmmisiveTexture);
+
+	tint = Rgba::YELLOW;
 	eyeMaterial->SetTint(tint);
 	m_eyes->SetMaterial(eyeMaterial);
 
@@ -156,7 +166,10 @@ Vector3 Enemy::Alignment()
 	{
 		Enemy& current = *enemies.at(i);
 
-		float distance = GetDistance(m_transform.GetWorldPosition(), current.m_transform.GetWorldPosition());
+		Vector3 me = m_transform.GetWorldPosition();
+		Vector3 target = current.m_transform.GetWorldPosition();
+		
+		float distance = GetDistance(me, target);
 
 		if(distance <= neighborRadius)
 		{
@@ -167,7 +180,7 @@ Vector3 Enemy::Alignment()
 
 	Vector3 resultingForce;
 	if(amountOfNeighboors != 0)
-		resultingForce = totalVelocity / amountOfNeighboors;
+		resultingForce = totalVelocity / (float) amountOfNeighboors;
 	else
 		 resultingForce = Vector3::ZERO;
 
@@ -187,7 +200,10 @@ Vector3 Enemy::Seperation()
 	{
 		Enemy& current = *enemies.at(i);
 
-		float distance = GetDistance(m_transform.GetWorldPosition(), current.m_transform.GetWorldPosition());
+		Vector3 me = m_transform.GetWorldPosition();
+		Vector3 target = current.m_transform.GetWorldPosition();
+		
+		float distance = GetDistance(me, target);
 
 		if(distance <= personalSpace)
 		{
@@ -201,7 +217,7 @@ Vector3 Enemy::Seperation()
 
 	Vector3 resultingForce;
 	if(amountOfNeighboors != 0)
-		resultingForce = totalSeperation / amountOfNeighboors;
+		resultingForce = totalSeperation / (float) amountOfNeighboors;
 	else
 		resultingForce = Vector3::ZERO;
 

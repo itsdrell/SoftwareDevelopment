@@ -36,7 +36,7 @@ void main( void )
 
    passWorldPos = world_pos.xyz; 
    passUV = UV; 
-   passColor = COLOR; 
+   passColor = COLOR * TINT; 
 
    passWorldNormal = normalize((MODEL * vec4( NORMAL, 0.0f )).xyz); 
    passWorldTangent = normalize((MODEL * vec4( TANGENT, 0.0f )).xyz ); 

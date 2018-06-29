@@ -139,11 +139,15 @@ uint Texture::CalculateMipCount(int maxDimension)
 
 Texture* Texture::CreateFromImage(Image imageToCreateFrom)
 {
+	GL_CHECK_ERROR();
+	
 	m_dimensions = imageToCreateFrom.m_dimensions;
 
 	// The image class calls the flip command so we don't have to worry about it!
 	unsigned char* imageBuffer = imageToCreateFrom.GetColorCharPointer();
 	PopulateFromData((unsigned char* ) imageBuffer, m_dimensions, 4 );
+
+	GL_CHECK_ERROR();
 	return this;
 }
 

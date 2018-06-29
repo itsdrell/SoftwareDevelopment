@@ -147,7 +147,9 @@ float GameMap::GetHeight(Vector2 xz)
 
 		return h + 1.f;
 	}
-	catch (const std::out_of_range& oor) {
+	catch (const std::out_of_range& oor) 
+	{
+		UNUSED(oor);
 		return 1.f;
 	}
 	
@@ -275,7 +277,8 @@ bool GameMap::DoesPointHitAnEnemy(const Vector3 & point)
 		Enemy& current = *enemies.at(i);
 
 		// get the distance from point to enemy
-		float distance = GetDistance(thePoint, current.m_transform.GetWorldPosition());
+		Vector3 targetPos = current.m_transform.GetWorldPosition();
+		float distance = GetDistance(thePoint, targetPos);
 		
 		// Get the radius
 		float enemyRadius = current.m_radius;

@@ -47,6 +47,18 @@ bool CompareRenderQueue(DrawCall a, DrawCall b)
 //////////////////////////////////////////////////////////////////////////
 
 
+ForwardRenderingPath::ForwardRenderingPath()
+{
+	Renderer* r = Renderer::GetInstance();
+	
+	m_shadowColorTarget = r->CreateRenderTarget( 2048, 2048 );
+	m_shadowDepthTarget = r->CreateRenderTarget( 2048, 2048, TEXTURE_FORMAT_D24S8 );
+
+	m_shadowCamera = new Camera();
+	m_shadowCamera->SetColorTarget(m_shadowColorTarget);
+	m_shadowCamera->SetDepthStencilTarget(m_shadowDepthTarget);
+}
+
 //////////////////////////////////////////////////////////////////////////
 void ForwardRenderingPath::Render(Scene* scene) const
 {
@@ -54,6 +66,18 @@ void ForwardRenderingPath::Render(Scene* scene) const
 	// shouldn't be slow since camera 0 should have it but will check all
 	RenderSkyBox(scene);
 
+	// Check for lights that cast shadows and do them first
+	for(uint shadowIndex = 0; shadowIndex < scene->m_lights.size(); shadowIndex++)
+	{
+		Light*& currentLight = scene->m_lights.at(shadowIndex);
+
+		if(currentLight->m_castShadows)
+		{
+			RenderSceneWithShadow(currentLight, scene);
+		}
+	}
+
+	// normal scene rendering
 	for(uint cameraIndex = 0; cameraIndex < scene->m_cameras.size(); cameraIndex++)
 	{
 		RenderSceneForCamera(scene->m_cameras.at(cameraIndex), scene);
@@ -136,6 +160,12 @@ void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) con
 	}
 
 	
+}
+
+void ForwardRenderingPath::RenderSceneWithShadow(Light* theLight, Scene* scene) const
+{
+	UNUSED(theLight);
+	UNUSED(scene);
 }
 
 void ForwardRenderingPath::RenderSkyBox(Scene* scene) const

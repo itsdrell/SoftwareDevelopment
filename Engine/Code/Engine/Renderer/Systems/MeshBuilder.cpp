@@ -111,7 +111,7 @@ void MeshBuilder::AddQuad(uint a, uint b, uint c, uint d)
 
 void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, const AABB2& theUvs, Rgba color)
 {
-	AABB2 uvs = uvs;
+	AABB2 uvs = theUvs;
 
 
 	//////////////////////////////////////////////////////////////////////////

@@ -253,6 +253,8 @@ public:
 
 	Texture*				m_currentTexture = nullptr;
 	Texture*				m_defaultTexture = nullptr;
+	Texture*				m_defaultNormalTexture = nullptr;
+	Texture*				m_defaultEmmisiveTexture = nullptr;
 	Texture*				m_testTexture = nullptr;
 	Texture*				m_defaultColorTarget = nullptr;
 	Texture*				m_defaultDepthTarget = nullptr;

@@ -10,6 +10,7 @@
 #include "Engine\Core\General\Camera.hpp"
 #include "..\Main\Game.hpp"
 #include "Projectile.hpp"
+#include "..\Main\GameCommon.hpp"
 
 Player::Player()
 	: GameObject("Player")
@@ -40,16 +41,20 @@ void Player::MakeTurret()
 	m_turretRenderable = new Renderable();
 	m_turretRenderable->m_transform.SetParentTransform(m_turretLocation);
 
-	Material* turretMat = Material::CreateOrGetMaterial("geo");
+	Material* turretMat = Material::CreateOrGetMaterial("peeps");
+	turretMat->SetTexture(0, g_theRenderer->m_defaultTexture);
+	turretMat->SetTexture(1, g_theRenderer->m_defaultNormalTexture);
+	turretMat->SetTexture(2, g_theRenderer->m_defaultEmmisiveTexture);
 	turretMat->SetTint(Rgba::RED);
 
 	MeshBuilder mb;
 	mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
 	mb.AddCube(Vector3(0.f, 0.f, 1.f), Vector3(.5f, .5f, 1.5f));
-	Mesh* turretMesh = mb.CreateMesh<Vertex3D_PCU>();
+	Mesh* turretMesh = mb.CreateMesh<VertexLit>();
 
 	m_turretRenderable->SetMesh(turretMesh);
 	m_turretRenderable->SetMaterial(turretMat);
+	m_turretRenderable->m_usesLight = true;
 
 	g_theGame->m_playingState->AddRenderable(m_turretRenderable);
 

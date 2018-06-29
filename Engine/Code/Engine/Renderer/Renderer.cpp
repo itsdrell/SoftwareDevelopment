@@ -27,6 +27,7 @@
 #include "RenderableComponents/Material.hpp"
 #include "BuiltInShader.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
+#include "Images/Image.hpp"
 
 
 
@@ -146,8 +147,13 @@ void Renderer::PostStartup()
 	m_currentSampler = m_defaultSampler;
 
 	// default white texture
-	m_defaultTexture = CreateOrGetTexture("Data/Images/defaultTexture.png");
+	m_defaultTexture = new Texture(); //CreateOrGetTexture("Data/Images/defaultTexture.png");
+	m_defaultTexture =  m_defaultTexture->CreateFromImage(Image("defaultTexture", IntVector2(8,8), Rgba(255, 255, 255, 255)));
 	m_testTexture = CreateOrGetTexture("Data/Images/Test_StbiAndDirectX.png"); // for testing
+	m_defaultNormalTexture = new Texture();
+	m_defaultNormalTexture = m_defaultNormalTexture->CreateFromImage(Image("defaultNormal", IntVector2(8,8), Rgba(127, 127, 255, 255)));
+	m_defaultEmmisiveTexture = new Texture(); 
+	m_defaultEmmisiveTexture = m_defaultEmmisiveTexture->CreateFromImage(Image("defaultNormal", IntVector2(8,8), Rgba::BLACK));
 
 	// default font 
 	m_defaultFont = CreateOrGetBitmapFont("moved");

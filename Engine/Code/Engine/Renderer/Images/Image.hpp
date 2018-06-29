@@ -10,6 +10,7 @@ public:
 	~Image();
 	Image();
 	Image(std::string filePath, bool flip = true);
+	Image(std::string name, const IntVector2& dimension, const Rgba& color);
 	void PopulateColorVector(unsigned char* imageData, int numComponentsRequested);
 
 	IntVector2 GetTilePosition(int indexToCheck);

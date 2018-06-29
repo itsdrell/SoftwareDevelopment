@@ -121,8 +121,8 @@ void Playing::Enter()
 	FloatRange spawnRange = FloatRange(m_mapDimensions.x, m_mapDimensions.y);
 	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
 	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
-	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
-	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
+	AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
 	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
 	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
 	//AddEnemySpawner(Vector2(spawnRange.GetRandomInRange(), spawnRange.GetRandomInRange()));
@@ -131,7 +131,7 @@ void Playing::Enter()
 	
 	m_cameraRotation = Vector2::ZERO;
 
-	//PlayLoopingSound("bg");
+	PlayLoopingSound("bg");
 
 }
 
@@ -158,19 +158,19 @@ Player* Playing::AddPlayer()
 	MeshBuilder mb;
 	//mb.AddUVSphere(Vector3::ZERO, 1.f, 16, 16);
 	mb.AddCube(Vector3::ZERO, Vector3(1.f, 1.f, 2.f));
-	mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
+	//mb.AddUVSphere(Vector3(0.f, 0.f, 4.f), .4f, 16, 16, Rgba::BLUE);
 	newPlayer->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
-	Material* playerMaterial = Material::CreateOrGetMaterial("geo");
-	playerMaterial->SetTint(Rgba::WHITE);
-	//playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
-	//playerMaterial->SetTexture(1, g_theRenderer->m_defaultTexture);
-	//playerMaterial->SetTexture(2, g_theRenderer->m_defaultTexture);
+	Material* playerMaterial = Material::CreateOrGetMaterial("peeps");
+	playerMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	playerMaterial->SetTexture(1, g_theRenderer->m_defaultNormalTexture);
+	playerMaterial->SetTexture(2, g_theRenderer->m_defaultEmmisiveTexture);
+	playerMaterial->SetTint(Rgba::BLUE);
 
 
 	newPlayer->m_renderable->SetMaterial( playerMaterial );
 	newPlayer->m_renderable->m_usesLight = true;
-
+	newPlayer->m_turretRenderable->m_usesLight = true;
 	m_scene->AddRenderable(newPlayer->m_renderable);
 
 	return newPlayer;
@@ -199,8 +199,11 @@ EnemySpawner* Playing::AddEnemySpawner(const Vector2& pos)
 	mb.AddCube(Vector3::ZERO, Vector3(1.f,10.f, 1.f));
 	newSpawner->m_renderable->SetMesh(mb.CreateMesh<VertexLit>());
 
-	Material* enemyMaterial = Material::CreateOrGetMaterial("geo");
+	Material* enemyMaterial = Material::CreateOrGetMaterial("peeps");
 	enemyMaterial->SetTexture(0, g_theRenderer->m_defaultTexture);
+	enemyMaterial->SetTexture(1, g_theRenderer->m_defaultNormalTexture);
+	enemyMaterial->SetTexture(2, g_theRenderer->m_defaultEmmisiveTexture);
+	
 	enemyMaterial->SetTint(GetRandomColorInRainbow());
 
 	newSpawner->m_renderable->SetMaterial( enemyMaterial );
@@ -380,7 +383,7 @@ void Playing::RemoveTheDead()
 	}
 	
 	//--------------------------------------------------------------------------
-	uint size = m_enemies.size();
+	uint size = (uint)m_enemies.size();
 	for(uint i = 0; i < size; i++)
 	{
 		Enemy*& currentEnemy = m_enemies.at(i);
@@ -397,7 +400,7 @@ void Playing::RemoveTheDead()
 	}
 
 	//--------------------------------------------------------------------------
-	size =  m_enemySpawner.size();
+	size = (uint) m_enemySpawner.size();
 	for(uint j = 0; j < m_enemySpawner.size(); j++)
 	{
 		EnemySpawner*& currentSpawner = m_enemySpawner.at(j);
@@ -413,7 +416,7 @@ void Playing::RemoveTheDead()
 	}
 
 	//--------------------------------------------------------------------------
-	size = m_projectiles.size();
+	size = (uint) m_projectiles.size();
 	for(uint p = 0; p < m_projectiles.size(); p++)
 	{
 		Projectile*& currentProjectile = m_projectiles.at(p);
@@ -580,9 +583,9 @@ Vector3 Playing::GetMovement()
 	//--------------------------------------------------------------------------
 	// Rotation
 
-	float currentYRotation = m_player->m_transform.GetLocalEulerAngles().y;
+	//float currentYRotation = m_player->m_transform.GetLocalEulerAngles().y;
 	float amount = (200.f * dt);
-	DebugRenderLog(0.f, std::to_string(currentYRotation));
+	//DebugRenderLog(0.f, std::to_string(currentYRotation));
 	
 	if(IsKeyPressed(G_THE_LETTER_E))
 	{
