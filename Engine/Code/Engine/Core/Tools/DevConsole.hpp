@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Engine/Renderer/Pipeline/renderbuffer.hpp"
+#include "Stopwatch.hpp"
 
 
 
@@ -153,13 +154,17 @@ private:
 	float			m_timer;
 	uint			m_currentSpriteIndex;
 
+	// Deku
+	Texture*		m_dekuTexture;
+
 	// FPS timer
 	float		m_fpsTimer;
 	uint		m_fpsTracker;
 	uint		m_displayFPS;
 
 public:
-	
+	Timer*			m_dekuTimer;
+
 
 };
 

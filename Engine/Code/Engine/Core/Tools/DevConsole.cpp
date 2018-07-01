@@ -23,6 +23,7 @@
 #include "../../Audio/AudioSystem.hpp"
 #include "../../Renderer/Systems/MeshBuilder.hpp"
 #include "../../Renderer/RenderableComponents/Material.hpp"
+#include "Stopwatch.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
@@ -51,6 +52,9 @@ void ShowAllRegisteredCommands(Command& thecommand)
 		// Add them to the display
 		DevConsole::AddConsoleDialogue(newDialogue);
 	}
+
+	PlayOneShot("iAmHere");
+	DevConsole::GetInstance()->m_dekuTimer->SetTimer(2.f);
 }
 
 void ClearConsole(Command& thecommand)
@@ -232,6 +236,9 @@ void DevConsole::StartUp()
 	m_currentSpriteIndex = 0;
 	m_timer = 1.f;
 
+	m_dekuTexture = m_theRenderer->CreateOrGetTexture("Data/Images/babyDeku.png");
+	m_dekuTimer = new Timer();
+
 	//m_errorSound = AudioSystem::GetInstance()->CreateOrGetSound("Data/Audio/error.wav");
 
 	m_fpsTracker = 0;
@@ -299,6 +306,10 @@ void DevConsole::Render()
 	m_theRenderer->DrawTexturedAABB2(AABB2(200.f, -500.f, 800.f, 400.f), *m_roll->m_spriteSheetTexture, coords.mins, coords.maxs, Rgba(255,255,255,100));
 	m_theRenderer->SetCurrentTexture();
 
+	//
+	
+	
+
 	//////////////////////////////////////////////////////////////////////////
 	// FPS
 	RenderFPS();
@@ -335,7 +346,9 @@ void DevConsole::Render()
 	
 	//RenderDeku();
 	//RenderBestGirl();
-
+	
+	if(m_dekuTimer->HasElapsed() == false)
+		m_theRenderer->DrawTexturedAABB2(m_dekuTexture, AABB2(-150.f, -500.f, 250.f, 0.f));
 
 	// reset the camera
 	m_theRenderer->SetCamera();
