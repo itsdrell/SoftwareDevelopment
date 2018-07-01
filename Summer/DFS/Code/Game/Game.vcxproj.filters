@@ -82,6 +82,9 @@
     <ClCompile Include="General\ConsoleCommands.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\UI\HUD.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -118,5 +121,6 @@
     <ClInclude Include="General\UI\UIWidget.hpp" />
     <ClInclude Include="General\UI\Container.hpp" />
     <ClInclude Include="General\ConsoleCommands.hpp" />
+    <ClInclude Include="General\UI\HUD.hpp" />
   </ItemGroup>
 </Project>

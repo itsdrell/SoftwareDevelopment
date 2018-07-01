@@ -18,6 +18,8 @@ class Map;
 class Cursor;
 class Unit;
 class Container;
+class HUD;
+class Tile;
 
 //=============================================================
 // ENUMS
@@ -66,7 +68,8 @@ public:
 	GameObject2D*			m_test;
 
 	Map*					m_currentMap;
-	Container*					m_actionMenu;
+	Container*				m_actionMenu;
+	HUD*					m_hud;
 
 	PlayState				m_currentPlayState;
 
@@ -86,3 +89,4 @@ public:
 //=============================================================
 // Externs
 //=============================================================
+extern Tile* g_currentTile;

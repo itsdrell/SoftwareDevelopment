@@ -22,8 +22,12 @@
 #include "../General/GameObjects/Unit.hpp"
 #include "../General/UI/Container.hpp"
 #include "../General/UI/UIWidget.hpp"
+#include "../General/UI/HUD.hpp"
 
+//====================================================================================
+Tile* g_currentTile = nullptr;
 
+//====================================================================================
 Playing::Playing()
 {
 	m_showHeatmap = false;
@@ -64,7 +68,7 @@ void Playing::StartUp()
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
 	m_actionMenu = new Container(5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
-
+	m_hud = new HUD();
 
 	//---------------------------------------------------------
 	// Creating a test scene
@@ -108,6 +112,7 @@ void Playing::Render() const
 	
 	// #TODO make this a renderable once we figure out a clean way to maintain it
 	m_actionMenu->Render();
+	m_hud->Render();
 
 	// Debug heat map
 	if(m_showHeatmap)
@@ -143,7 +148,9 @@ void Playing::CheckKeyBoardInputs()
 	{
 		// Always update cursor so it never looks like its lagging behind
 		m_cursor->SetLocalPosition(currentTile->GetCenterOfTile());
-
+		
+		// Store it off so other classes can use it easier
+		g_currentTile = currentTile;
 
 		if(m_currentPlayState == SELECTING)
 		{

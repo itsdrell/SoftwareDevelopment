@@ -653,6 +653,7 @@ void Renderer::DrawTexturedAABB2(const Texture* testTexture, const AABB2 bounds,
 
 	// set it as the current texture
 	m_currentTexture = (Texture*) testTexture;
+	SetCurrentTexture(0,m_currentTexture);
 
 	Vertex3D_PCU vertices [6];
 
@@ -676,6 +677,8 @@ void Renderer::DrawTexturedAABB2(const AABB2& bounds, const Texture& texture, co
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	m_currentTexture = (Texture*) &texture;
+	SetCurrentTexture(0, m_currentTexture);
+
 	// bind the texture
 	//glBindTexture( GL_TEXTURE_2D, texture.m_textureID);
 

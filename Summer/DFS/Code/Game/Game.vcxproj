@@ -107,7 +107,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Temporary\$(ProjectName)_$(PlatformName)_$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temporary\$(ProjectName)_$(PlatformName)_$(Configuration)\</IntDir>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -119,7 +119,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Temporary\$(ProjectName)_$(PlatformName)_$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Temporary\$(ProjectName)_$(PlatformName)_$(Configuration)\</IntDir>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -296,6 +296,7 @@
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />
     <ClCompile Include="General\UI\Container.cpp" />
+    <ClCompile Include="General\UI\HUD.cpp" />
     <ClCompile Include="General\UI\UIWidget.cpp" />
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
@@ -325,6 +326,7 @@
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
     <ClInclude Include="General\UI\Container.hpp" />
+    <ClInclude Include="General\UI\HUD.hpp" />
     <ClInclude Include="General\UI\UIWidget.hpp" />
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />
     <ClInclude Include="Main\Game.hpp" />

@@ -42,6 +42,32 @@ TeamName StringFromTeamName(std::string name)
 	return TEAM_RED;
 }
 
+Rgba GetColorFromTeamName(TeamName team)
+{
+	Rgba color;
+	
+	switch (team)
+	{
+	case TEAM_BLUE:
+		color = Rgba::BLUE;
+		break;
+	case TEAM_GREEN:
+		color = Rgba::GREEN;
+		break;
+	case TEAM_RED:
+		color = Rgba::RED;
+		break;
+	case TEAM_YELLOW:
+		color = Rgba::YELLOW;
+		break;
+	default:
+		color = Rgba::WHITE;
+		break;
+	}
+
+	return color;
+}
+
 Renderer* g_theRenderer = nullptr;
 InputSystem* g_theInput = nullptr;
 AudioSystem* g_audio = nullptr;
