@@ -32,6 +32,7 @@ public:
 	void RenderPlayerDisplay() const;
 	void RenderTileDisplay() const;
 	void RenderUnitDisplay() const;
+	void RenderAttackChance() const;
 
 public:
 

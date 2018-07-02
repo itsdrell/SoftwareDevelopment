@@ -48,3 +48,11 @@ void Unit::Update()
 
 	}
 }
+
+float CalculateWinChance(const Unit& attacking, const Unit& defending)
+{
+	UNUSED(attacking);
+	UNUSED(defending);
+
+	return 100.f;
+}

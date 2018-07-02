@@ -33,6 +33,7 @@ void HUD::Render() const
 	{
 		RenderTileDisplay();
 		RenderUnitDisplay();
+		RenderAttackChance();
 	}
 }
 
@@ -76,6 +77,7 @@ void HUD::RenderTileDisplay() const
 	std::string teamName = "";
 	std::string health = "";
 
+	// if there is a building, we are gonna replace the info
 	if(theBuilding != nullptr)
 	{
 		color = GetColorFromTeamName(theBuilding->m_team);
@@ -115,4 +117,41 @@ void HUD::RenderUnitDisplay() const
 	r->DrawText2D(tileNamePos, currentUnit.m_name, 1.f);
 	r->DrawText2D(teamPos, TeamNameToString(currentUnit.m_team), 1.f);
 	r->DrawText2D(healthPos, "HP: " + std::to_string(currentUnit.m_health), 1.f);
+}
+
+void HUD::RenderAttackChance() const
+{
+	Renderer* r = Renderer::GetInstance();
+	
+	// if we are in attack mode
+	PlayState currentState = g_theGame->m_playingState->m_currentPlayState;
+
+	if(currentState == ACTION)
+	{
+		// make sure we have a unit there
+		if(nullptr != g_currentTile->m_unit /*&& nullptr != g_theGame->m_playingState->m_selectedUnit*/)
+		{
+			// if the selected unit's type != the hover target type
+			Unit& hoveredUnit = *g_currentTile->m_unit;
+			Unit& currentUnit = *g_theGame->m_playingState->m_currentMap->m_selectedUnit;
+
+			if(hoveredUnit.m_team != currentUnit.m_team)
+			{
+				AABB2 backgroundBounds =	AABB2( -36.f, -24.f, -26.f, -10.f);
+				AABB2 textBounds =			AABB2( -36.f, -24.f, -26.f, -14.f);
+
+				std::string chance = std::to_string((int) CalculateWinChance(currentUnit, hoveredUnit));
+				
+				// Draw Image
+				r->DrawAABB2(backgroundBounds, Rgba::WHITE);
+				r->DrawAABB2(textBounds, Rgba::RED);
+
+				r->DrawText2D( Vector2(	backgroundBounds.mins.x + 2.f,		backgroundBounds.maxs.y - 3.f)	, "DAMAGE", 1.f, Rgba::BLACK);
+				r->DrawText2D( Vector2(	textBounds.GetCenter().x - 1.5f,	textBounds.GetCenter().y)		, chance, 1.f);
+			}
+		}
+
+	}
+
+
 }

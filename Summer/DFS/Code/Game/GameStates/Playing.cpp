@@ -245,8 +245,6 @@ void Playing::CheckKeyBoardInputs()
 			}
 			else if(m_currentPlayState == ACTION)
 			{
-				
-				
 				// make sure they clicked a valid action
 				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
 				{

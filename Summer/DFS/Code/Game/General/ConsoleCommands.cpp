@@ -6,6 +6,7 @@
 #include "Game/General/GameObjects/Building.hpp"
 #include "../GameStates/Playing.hpp"
 #include "Game/General/UI/Container.hpp"
+#include "Engine/Core/Tools/DevConsole.hpp"
 
 void EndTurn(Command & theCommand)
 {
@@ -35,6 +36,11 @@ void CaptureBuilding(Command& theCommand)
 {
 	UNUSED(theCommand);
 
+	if(g_theCurrentMap->m_selectedUnit == nullptr)
+	{
+		DevConsole::GetInstance()->AddErrorMessage("No building or unit selected");
+		return;
+	}
 	g_theCurrentMap->m_buildingToCapture->m_team = g_theCurrentMap->m_selectedUnit->m_team;
 
 	// reset state
