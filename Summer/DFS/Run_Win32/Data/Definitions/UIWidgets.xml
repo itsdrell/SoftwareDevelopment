@@ -1,10 +1,21 @@
 <UIWidgets>
 
     <Widget
-    name=""
-    displayText=""
-    scriptFile=""
-    
+    name="wait"
+    displayText="Wait"
+    scriptFile="haveUnitWait"
+    />
+
+    <Widget
+    name="capture"
+    displayText="Capture"
+    scriptFile="captureBuilding"
+    />
+
+    <Widget
+    name = "endTurn"
+    displayText = "End Turn"
+    scriptFile = "endTurn"
     />
 
 </UIWidgets>
@@ -14,9 +25,9 @@
 
 
     <Widget
-    name=""
-    displayText=""
-    scriptFile=""
+    name = ""
+    displayText = ""
+    scriptFile = "Data/Scripts/UIScripts/theScript.script"
     
     />
 

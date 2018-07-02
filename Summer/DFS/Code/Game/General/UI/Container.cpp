@@ -96,9 +96,8 @@ void Container::AddPauseMenu()
 	if(!CanWeAddWidgets())
 		return;
 
-	//UIWidget* end = new UIWidget(Vector2(10.f, 30.f), AABB2(-5.f, 5.f),"End Turn");
-	UIWidget* end = new UIWidget("End Turn", "endTurn", false);
-	
+	UIWidget* end = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("endTurn"));
+
 	AddWidget(*end);
 }
 

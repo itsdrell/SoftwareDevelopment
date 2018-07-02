@@ -220,11 +220,11 @@ void Playing::CheckKeyBoardInputs()
 						// if they can add ui widget
 						if(m_currentMap->CanUnitCaptureBuilding(*m_currentMap->m_selectedUnit))
 						{
-							UIWidget* capWidget = new UIWidget("Capture Building", "capture");
+							UIWidget* capWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("capture"));
 							m_actionMenu->AddWidget(*capWidget);
 						}
 
-						UIWidget* newWidget = new UIWidget("Wait", "wait");
+						UIWidget* newWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("wait"));
 						m_actionMenu->AddWidget(*newWidget);
 
 						m_currentMap->PlaceUnit(mousePos.xy());

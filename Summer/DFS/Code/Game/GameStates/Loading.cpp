@@ -35,7 +35,7 @@ void Loading::LoadAssets()
 void Loading::LoadDefinitions()
 {
 	LoadTileDefinitions();
-	//LoadWidgetDefinitions();
+	LoadWidgetDefinitions();
 }
 
 void Loading::LoadTileDefinitions()

@@ -73,7 +73,20 @@ void UIWidget::OnClick()
 {
 	//DebugRenderLog(3.f, m_definition->m_text + ": Was Pressed!");
 	//g_theGame->m_playingState->m_currentMap->GoToNextTurn();
-	CommandRunScript(m_consoleCommandOnClick.c_str());
+	if(m_definition != nullptr)
+	{
+		Strings& theCommands = m_definition->m_commands;
+
+		for(uint i = 0; i < theCommands.size(); i++)
+		{
+			CommandRunScript(theCommands.at(i).c_str());
+		}
+	}
+	else
+	{
+		CommandRunScript(m_consoleCommandOnClick.c_str());
+	}
+	
 }
 
 //====================================================================================
@@ -87,7 +100,9 @@ UIWidgetDefinition::UIWidgetDefinition(tinyxml2::XMLElement& node)
 	if(filePath == "idk")
 		ERROR_AND_DIE("Could not read the file path for: " + m_name);
 
-	//m_commands = GetAllLinesFromFile(filePath.c_str());
+	std::string fullPath = UI_WIDGET_RELATIVE_PATH + filePath + ".script";
+
+	m_commands = GetAllLinesFromFile(fullPath.c_str());
 
 	s_definitions.insert(std::pair<std::string,UIWidgetDefinition*>(m_name,this));
 
