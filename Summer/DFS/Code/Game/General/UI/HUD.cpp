@@ -71,7 +71,7 @@ void HUD::RenderTileDisplay() const
 	Vector2 teamPos =		Vector2(	tileImageBounds.mins.x,	tileImageBounds.mins.y - 4.5f	);
 	Vector2 healthPos =		Vector2(	tileImageBounds.mins.x,	tileImageBounds.mins.y - 7.5f	);
 
-	Rgba color = Rgba(255,255,255,200.f);
+	Rgba color = Rgba(255,255,255,200);
 	Texture* theTexture = g_tileSpriteSheet.m_spriteSheetTexture;
 	std::string nameText =  g_currentTile->m_definition->m_name;
 	std::string teamName = "";
@@ -112,8 +112,10 @@ void HUD::RenderUnitDisplay() const
 	Vector2 teamPos =		Vector2(	unitImageBounds.mins.x,	unitImageBounds.mins.y - 4.5f	);
 	Vector2 healthPos =		Vector2(	unitImageBounds.mins.x,	unitImageBounds.mins.y - 7.5f	);
 
+	Sprite currentSprite = *currentUnit.m_renderable->GetSprite();
+
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(currentUnit.m_team));
-	r->DrawTexturedAABB2(currentUnit.m_renderable->GetSprite()->m_image, unitImageBounds);
+	r->DrawTexturedAABB2(unitImageBounds, *currentSprite.m_image, currentSprite.m_uv.mins, currentSprite.m_uv.maxs, Rgba::WHITE);
 	r->DrawText2D(tileNamePos, currentUnit.m_name, 1.f);
 	r->DrawText2D(teamPos, TeamNameToString(currentUnit.m_team), 1.f);
 	r->DrawText2D(healthPos, "HP: " + std::to_string(currentUnit.m_health), 1.f);

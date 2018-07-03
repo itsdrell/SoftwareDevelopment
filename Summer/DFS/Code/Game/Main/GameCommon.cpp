@@ -71,4 +71,8 @@ Rgba GetColorFromTeamName(TeamName team)
 Renderer* g_theRenderer = nullptr;
 InputSystem* g_theInput = nullptr;
 AudioSystem* g_audio = nullptr;
+
+
+SpriteSheet		g_blueUnitSpriteSheet;
+SpriteSheet		g_redUnitSpriteSheet;
 /*Lives* g_amountOfLives = new Lives();*/

@@ -86,9 +86,11 @@ Matrix44 Transform_T::GetMatrix() const
 
 	Matrix44 translation = Matrix44::MakeTranslation2D(position);
 	Matrix44 theRotation = Matrix44::MakeRotationDegrees2D(rotation);
+	//Matrix44 theScale = Matrix44::MakeScale2D(scale.x, scale.y);
 
 	result.Append(translation);
 	result.Append(theRotation);
+	//result.Append(theScale);
 
 	return result;
 }

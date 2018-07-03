@@ -431,7 +431,7 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse)
 
 	m_heatmap->AddHeat(tileCoords);
 
-	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatInRangeOf(theUnitToUse.m_attackRange);
+	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatInRangeOf(theUnitToUse.GetAttackRange());
 
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
@@ -504,7 +504,7 @@ bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& 
 
 bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck)
 {
-	Tags unitTags = theUnitToUse.m_tags;
+	Tags unitTags = theUnitToUse.GetMovementTags();
 
 	Tile* currentTile = GetTile(tileToCheck);
 
@@ -624,7 +624,7 @@ bool Map::IsATeamWithoutUnits()
 
 void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos)
 {
-	Unit* newUnit = new Unit(team);
+	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name));
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
 	newUnit->SetLocalPosition(position);
 

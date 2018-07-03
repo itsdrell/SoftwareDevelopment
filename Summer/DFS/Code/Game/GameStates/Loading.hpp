@@ -28,6 +28,9 @@ public:
 	void LoadDefinitions();
 	void LoadTileDefinitions();
 	void LoadWidgetDefinitions();
+	void LoadUnitDefinitions();
+	
+	void LoadSpriteSheets();
 
 	void Update();
 

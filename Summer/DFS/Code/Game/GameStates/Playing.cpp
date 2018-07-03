@@ -72,8 +72,8 @@ void Playing::StartUp()
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	m_currentMap->CreateUnit("melee", TEAM_BLUE, IntVector2::ZERO);
-	m_currentMap->CreateUnit("melee", TEAM_RED, IntVector2(6,0));
+	m_currentMap->CreateUnit("grunt", TEAM_BLUE, IntVector2::ZERO);
+	m_currentMap->CreateUnit("grunt", TEAM_RED, IntVector2(6,0));
 
 	m_currentMap->CreateBuilding(TEAM_NONE, IntVector2(1,1));
 	

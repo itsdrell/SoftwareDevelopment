@@ -3,6 +3,9 @@
 #include "Game\SystemsAndTools\Tags.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Math\Ranges\IntRange.hpp"
+#include <string>
+#include "Engine\Math\Geometry\AABB2.hpp"
+#include "Engine\Math\Vectors\IntVector2.hpp"
 
 
 //=============================================================
@@ -23,24 +26,54 @@ class Tile;
 //=============================================================
 // Classes
 //=============================================================
+class UnitDefinition
+{
+public:
+	UnitDefinition(tinyxml2::XMLElement& node);
+
+
+	static UnitDefinition* GetUnitDefinition(std::string name);
+
+	static std::map<std::string, UnitDefinition*>	s_definitions;
+
+public:
+	std::string			m_name;
+
+	IntVector2			m_spriteCoords;
+	AABB2				m_uvCoords;
+	
+	Tags				m_movementTags;
+	Tags				m_attackTags;
+
+	IntRange			m_attackRange;
+};
+
+//--------------------------------------------------------------------------
 class Unit : public GameObject2D
 {
 public:
 	Unit(TeamName team);
+	Unit(TeamName team, UnitDefinition& def);
 
+	SpriteSheet GetTeamTexture(TeamName name);
+
+	IntRange GetAttackRange() const { return m_definition->m_attackRange;}
+	Tags GetMovementTags() const { return m_definition->m_movementTags; }
+	Tags GetAttackTags() const { return m_definition->m_attackTags; }
+	std::string GetName() const { return m_definition->m_name; }
+	
 	void Update();
 
 public:
-	TeamName	m_team;
-	uint		m_health;
+	UnitDefinition*		m_definition;
 
-	bool		m_beenMoved;
-	bool		m_usedAction;
+	TeamName			m_team;
+	uint				m_health;
 
-	IntRange	m_attackRange;
+	bool				m_beenMoved;
+	bool				m_usedAction;
 
-	Tags		m_tags;
-	Tile*		m_tileIAmOn;
+	Tile*				m_tileIAmOn;
 };
 
 //=============================================================

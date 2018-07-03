@@ -8,6 +8,7 @@
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Core\Tools\ScopedProfile.hpp"
 #include "..\General\UI\UIWidget.hpp"
+#include "..\General\GameObjects\Unit.hpp"
 
 Loading::Loading()
 {
@@ -19,10 +20,8 @@ void Loading::LoadAssets()
 	ScopedProfile loadTime = ScopedProfile("Load time");
 	g_theAudioSystem->StartUp();
 	
-	// Create the global sprite sheet for all the textures to use
-	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_8x8.png", false);
-	g_tileSpriteSheet = SpriteSheet(TileTexture,8,8);
 	
+	LoadSpriteSheets();
 	LoadDefinitions();
 
 	g_theGame->m_playingState->StartUp();
@@ -36,6 +35,7 @@ void Loading::LoadDefinitions()
 {
 	LoadTileDefinitions();
 	LoadWidgetDefinitions();
+	LoadUnitDefinitions();
 }
 
 void Loading::LoadTileDefinitions()
@@ -76,6 +76,39 @@ void Loading::LoadWidgetDefinitions()
 		newDef = nullptr;
 		delete[] newDef;
 	}
+}
+
+void Loading::LoadUnitDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Units.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: UIWidgets");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		UnitDefinition* newDef = new UnitDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+void Loading::LoadSpriteSheets()
+{
+	// Create the global sprite sheet for all the textures to use
+	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_8x8.png", false);
+	g_tileSpriteSheet = SpriteSheet(TileTexture,8,8);
+
+	Texture* blueTex = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/blueUnits.png");
+	g_blueUnitSpriteSheet = SpriteSheet(blueTex, 5, 4);
+
+	Texture* redTex = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/redUnits.png");
+	g_redUnitSpriteSheet = SpriteSheet(redTex, 5, 4);
 }
 
 void Loading::Update()

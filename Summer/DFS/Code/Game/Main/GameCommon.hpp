@@ -2,6 +2,7 @@
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
+#include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -64,13 +65,16 @@ enum SORTING_LAYER
 //====================================================================================
 // Externs
 //====================================================================================
-extern Renderer* g_theRenderer;
-extern InputSystem* g_theInput;
-extern AudioSystem* g_audio; // not the audio cause we could have multiple...?
+extern Renderer*		g_theRenderer;
+extern InputSystem*		g_theInput;
+extern AudioSystem*		g_audio; // not the audio cause we could have multiple...?
+
+
+extern SpriteSheet		g_blueUnitSpriteSheet;
+extern SpriteSheet		g_redUnitSpriteSheet;
 
 //====================================================================================
 // Written by Zachary Bracken : [6/19/2018]
-//====================================================================================
 //====================================================================================
 
 

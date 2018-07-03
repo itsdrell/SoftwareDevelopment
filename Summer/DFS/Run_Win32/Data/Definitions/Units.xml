@@ -1,0 +1,30 @@
+<Units>
+
+    <Unit
+    name = "grunt"
+    attackRange = "1,1"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "0,3"
+
+    />
+
+
+</Units>
+
+
+<!--
+
+    Notes: 
+    -   Sprite Coords go bottom left up
+
+    <Unit
+    name = ""
+    attackRange = "x,y"
+    movementTags = "ground,water,air"
+    attackTags = "ground,water,air"
+    spriteCoords = "x,y"
+
+    />
+
+-->
