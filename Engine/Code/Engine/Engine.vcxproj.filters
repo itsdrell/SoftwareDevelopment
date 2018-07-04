@@ -250,6 +250,9 @@
     <ClCompile Include="Math\Ray.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\Profiler.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -350,6 +353,7 @@
     <ClInclude Include="Math\Geometry\OBB3.hpp" />
     <ClInclude Include="Math\Geometry\Frustrum.hpp" />
     <ClInclude Include="Math\Ray.hpp" />
+    <ClInclude Include="Core\Tools\Profiler.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

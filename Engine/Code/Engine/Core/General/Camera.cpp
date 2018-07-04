@@ -15,6 +15,18 @@ Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix4
 	m_output = FrameBuffer();
 }
 
+Camera::~Camera()
+{
+	if(m_skyBoxTexture != nullptr)
+	{
+		delete m_skyBoxTexture;
+		m_skyBoxTexture = nullptr;
+
+		delete m_skyMesh;
+		m_skyMesh = nullptr;
+	}
+}
+
 void Camera::CreateSkyBox(std::string imagePath)
 {
 	m_skyBoxTexture = new TextureCube();

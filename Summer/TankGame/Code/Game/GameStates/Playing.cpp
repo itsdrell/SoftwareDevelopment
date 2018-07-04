@@ -386,16 +386,19 @@ void Playing::RemoveTheDead()
 	uint size = (uint)m_enemies.size();
 	for(uint i = 0; i < size; i++)
 	{
-		Enemy*& currentEnemy = m_enemies.at(i);
+		Enemy* currentEnemy = m_enemies.at(i);
 
 		if(currentEnemy->m_isDead)
 		{
 			RemoveRenderable(currentEnemy->m_renderable);
 			RemoveRenderable(currentEnemy->m_eyes);
 
-			size--;
-
+			delete currentEnemy;
+			currentEnemy = nullptr;
 			m_enemies.erase(m_enemies.begin() + i);
+
+			size--;
+			i--;
 		}
 	}
 
@@ -409,9 +412,13 @@ void Playing::RemoveTheDead()
 		{
 			RemoveRenderable(currentSpawner->m_renderable);
 
-			size--;
+
+			delete currentSpawner;
+			currentSpawner = nullptr;
 			m_enemySpawner.erase(m_enemySpawner.begin() + j);
 
+			j--;
+			size--;
 		}
 	}
 

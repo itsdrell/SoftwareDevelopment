@@ -39,6 +39,7 @@ class Enemy : public GameObject
 {
 public:
 	Enemy(const Vector3& pos);
+	virtual ~Enemy();
 
 	void Update();
 

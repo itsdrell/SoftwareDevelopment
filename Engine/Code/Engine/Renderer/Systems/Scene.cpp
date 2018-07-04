@@ -26,7 +26,6 @@ void Scene::RemoveRenderable(Renderable* toRemove)
 
 		if(current == toRemove)
 		{
-			delete toRemove;
 			m_renderables.erase(m_renderables.begin() + i, m_renderables.begin() + (i + 1));
 		}
 	}
@@ -40,7 +39,6 @@ void Scene::RemoveLight(Light* toRemove)
 
 		if(current == toRemove)
 		{
-			delete toRemove;
 			m_lights.erase(m_lights.begin() + i, m_lights.begin() + (i + 1));
 		}
 	}

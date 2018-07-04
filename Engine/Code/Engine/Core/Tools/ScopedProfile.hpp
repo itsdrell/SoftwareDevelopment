@@ -10,7 +10,9 @@
 //=============================================================
 // Type Defs + Defines
 //=============================================================
+#define PROFILE_LOG_SCOPE(tag) ScopedProfile __timer__ ## __LINE__ ## (tag)
 
+#define PROFILE_LOG_SCOPE_FUNCTION() ScopedProfile __timer__ ## __LINE__ ## __FUNCTION__ ## (__FUNCTION__)
 
 //=============================================================
 // ENUMS
@@ -21,9 +23,6 @@
 // Structs
 //=============================================================
 
-//====================================================================================
-// How to use: Put something like this at the start of function 
-//	ScopedProfile LoadLength = ScopedProfile();
 
 //=============================================================
 // Classes

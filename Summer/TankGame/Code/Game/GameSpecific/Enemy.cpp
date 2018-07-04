@@ -9,6 +9,7 @@
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "..\Main\GameCommon.hpp"
+#include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 
 //====================================================================================
 float seekWeight = 1.f;
@@ -105,6 +106,13 @@ Enemy::Enemy(const Vector3& pos)
 	m_eyes->SetMaterial(eyeMaterial);
 
 	g_theGame->m_playingState->AddRenderable(m_eyes);
+}
+
+Enemy::~Enemy()
+{
+	delete m_eyes;
+	m_eyes = nullptr;
+
 }
 
 void Enemy::Update()

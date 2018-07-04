@@ -59,6 +59,7 @@ class AudioSystem
 public:
 	AudioSystem();
 	virtual ~AudioSystem();
+	virtual void DestroyClips();
 
 	static AudioSystem* GetInstance();
 

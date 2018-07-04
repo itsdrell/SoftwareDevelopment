@@ -9,6 +9,7 @@ public:
 	GameObject(std::string name);
 	GameObject(std::string name, Renderable& renderable, Transform transform = Transform());
 
+	virtual ~GameObject();
 
 	virtual void Update();
 	//virtual void Render() const;

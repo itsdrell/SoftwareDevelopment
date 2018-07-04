@@ -87,12 +87,25 @@ AudioSystem::AudioSystem()
 //-----------------------------------------------------------------------------------------------
 AudioSystem::~AudioSystem()
 {
+	DestroyClips();
+	
 	FMOD_RESULT result = m_fmodSystem->release();
 	ValidateResult( result );
 
 	m_fmodSystem = nullptr; // #Fixme: do we delete/free the object also, or just do this?
 }
 
+
+void AudioSystem::DestroyClips()
+{
+	for(std::vector<AudioClip*>::iterator it = m_audioClips.begin(); it != m_audioClips.end(); ++it)
+	{
+		AudioClip* current = *it;
+
+		delete current;
+		current = nullptr;
+	}
+}
 
 AudioSystem* AudioSystem::GetInstance()
 {

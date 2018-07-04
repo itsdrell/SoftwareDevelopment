@@ -1,5 +1,7 @@
 #include "ScopedProfile.hpp"
 #include "..\Platform\Time.hpp"
+#include "DevConsole.hpp"
+#include "..\Utils\StringUtils.hpp"
 
 ScopedProfile::ScopedProfile(std::string name)
 {
@@ -13,5 +15,8 @@ ScopedProfile::~ScopedProfile()
 
 	uint64_t elapsed = endTime - m_startTime;
 
-	DebuggerPrintf("\n Time elapsed for %s: %f \n", m_name.c_str(), PerformanceCountToSeconds(elapsed));
+	std::string text = Stringf("\nTime elapsed for %s: %f \n", m_name.c_str(), PerformanceCountToSeconds(elapsed));
+
+	DebuggerPrintf(text.c_str());
+	DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue(text, GetRandomColorInRainbow()));
 }

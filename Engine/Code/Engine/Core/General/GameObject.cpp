@@ -23,6 +23,12 @@ GameObject::GameObject(std::string name, Renderable & renderable, Transform tran
 	m_isDead = false;
 }
 
+GameObject::~GameObject()
+{
+	delete m_renderable;
+	m_renderable = nullptr;
+}
+
 void GameObject::Update()
 {
 

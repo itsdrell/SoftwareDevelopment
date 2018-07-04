@@ -17,7 +17,7 @@ public:
 	
 	// Default to identity, but allows us to create a camera with a specific matrix if wanted
 	Camera(Matrix44 cameraMatrix = Matrix44(), Matrix44 view = Matrix44(), Matrix44 proj = Matrix44());
-	~Camera() {}
+	~Camera();
 
 	void CreateSkyBox(std::string imagePath);
 	void RenderSkyBox() const;

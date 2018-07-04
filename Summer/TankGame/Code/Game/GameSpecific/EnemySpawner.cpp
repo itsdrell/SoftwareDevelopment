@@ -20,6 +20,12 @@ EnemySpawner::EnemySpawner(const Vector2 pos)
 	m_amountToSpawn = TOWER_SPAWN_AMOUNT;
 }
 
+EnemySpawner::~EnemySpawner()
+{
+	delete m_spawnTimer;
+	m_spawnTimer = nullptr;
+}
+
 void EnemySpawner::Update()
 {
 	if(m_spawnTimer->HasElapsed())

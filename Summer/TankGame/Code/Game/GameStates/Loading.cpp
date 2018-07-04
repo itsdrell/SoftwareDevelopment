@@ -12,8 +12,8 @@ Loading::Loading()
 
 void Loading::LoadAssets()
 {
-	ScopedProfile LoadLength = ScopedProfile("Load times");
-	
+	PROFILE_LOG_SCOPE("Load Times");
+
 	g_theAudioSystem->StartUp();
 
 	g_theGame->m_playingState->StartUp();

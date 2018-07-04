@@ -14,6 +14,7 @@
 #include "Engine/Math/Trajectory.hpp"
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
+#include "Engine/Core/Tools/Profiler.hpp"
 
 
 //  For testing blackboard
@@ -63,6 +64,8 @@ void App::StartUp()
 
 void App::RunFrame()
 {
+	MARK_FRAME;
+	
 	ClockSystemBeginFrame();
 	g_theInput->BeginFrame();
 	g_theRenderer->BeginFrame();
@@ -71,6 +74,7 @@ void App::RunFrame()
 	g_theInput->Update();
 
 	Update();
+	Profiler* current = Profiler::GetInstance();
 	Render();
 
 	g_theInput->EndFrame();
@@ -91,7 +95,8 @@ void App::Render() const
 
 void App::Update()
 {
-	
+	PROFILE_PUSH();
+
 	//float deltaSeconds = GetDeltaTime();
 
 	g_theGame->Update();
