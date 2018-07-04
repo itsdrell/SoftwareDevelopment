@@ -8,31 +8,21 @@
 #include "Engine/Math/Vectors/Vector4.hpp"
 
 
-
-////////////////////////////////////////////////////////////////////////// 
-// Externs and classes
+//====================================================================================
+// Forward Declare
+//====================================================================================
 class Blackboard;
 class SpriteSheet;
 class RenderBuffer;
 
-
-extern Blackboard g_gameConfigBlackboard;
-extern SpriteSheet g_tileSpriteSheet;
-extern SpriteSheet g_dialogueSpriteSheet;
-
-//////////////////////////////////////////////////////////////////////////
-// DEFINES
-
+//====================================================================================
+// Type Defs + Defines
+//====================================================================================
 #define MAX_LIGHTS (8)
 #define STATIC
 #define EPSILON (FLT_EPSILON)
 #define UNUSED(x) (void)(x);
 
-//////////////////////////////////////////////////////////////////////////
-// MACROS
-
-//////////////////////////////////////////////////////////////////////////
-// Putting the Todo thing in engine common since its part of engine? eh
 // Source from http://www.flipcode.com/archives/FIXME_TODO_Notes_As_Warnings_In_Compiler_Output.shtml
 #define _QUOTE(x) # x
 #define QUOTE(x) _QUOTE(x)
@@ -52,14 +42,44 @@ extern SpriteSheet g_dialogueSpriteSheet;
 #define UNIMPLEMENTED()  TODO( "IMPLEMENT: " QUOTE(__FILE__) " (" QUOTE(__LINE__) ")" ); ASSERT_RECOVERABLE(1,"")
 
 
-//////////////////////////////////////////////////////////////////////////
-// Type defs
 typedef std::vector<std::string>	Strings;
 typedef std::vector<int>			Ints;
 typedef unsigned int				uint;
 
 //TODO("Make an actual uniform buffer pls");
 typedef RenderBuffer				UniformBuffer; 
+
+//====================================================================================
+// ENUMS
+//====================================================================================
+
+
+//====================================================================================
+// Structs
+//====================================================================================
+
+
+//====================================================================================
+// Classes
+//====================================================================================
+
+
+//====================================================================================
+// Standalone C Functions
+//====================================================================================
+void EngineStartUp();
+void EngineShutDown();
+
+//====================================================================================
+// Externs
+//====================================================================================
+extern Blackboard g_gameConfigBlackboard;
+extern SpriteSheet g_tileSpriteSheet;
+extern SpriteSheet g_dialogueSpriteSheet;
+
+//====================================================================================
+// Written by Zachary Bracken : [7/4/2018]
+//====================================================================================
 
 
 

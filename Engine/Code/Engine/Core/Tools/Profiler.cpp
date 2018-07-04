@@ -1,6 +1,7 @@
 #include "Profiler.hpp"
 #include "..\Platform\Time.hpp"
 #include "Game\Main\EngineBuildPreferences.hpp"
+#include "..\..\Math\MathUtils.hpp"
 
 
 //====================================================================================
@@ -21,7 +22,7 @@ void ResumeProfiler(Command& theCommand)
 {
 	UNUSED(theCommand);
 	
-	Profiler::GetInstance()->m_isPaused = false;
+	Profiler::GetInstance()->m_isResuming = true;
 }
 
 
@@ -60,14 +61,8 @@ Profiler::Profiler()
 
 void Profiler::MarkFrame()
 {
-	if(m_isPausing)
-	{
-		m_isPaused = true;
-		m_isPausing = false;
-	}
-	
 
-	if(m_activeNode != nullptr && m_isPaused == false)
+	if(m_activeNode != nullptr)
 	{
 		//if(m_frameHistory.size() == MAX_AMOUNT_OF_MEASUREMENTS)
 		//{
@@ -92,8 +87,20 @@ void Profiler::MarkFrame()
 
 		m_frameHistory[m_currentIndex] = m_activeNode;
 
-		//m_prevFrame = m_activeNode;
-		//m_frameHistory.push(m_activeNode);
+		// do this after we finished storing the last frame
+		if(m_isPausing)
+		{
+			m_isPaused = true;
+			m_isPausing = false;
+		}
+
+		if(m_isResuming)
+		{
+			m_isPaused = false;
+			m_isResuming = false;
+		}
+
+
 		Pop();
 
 		// not null - someone forgot to pop
@@ -134,6 +141,27 @@ void Profiler::Pop()
 	}
 }
 
+
+ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
+{
+	// 0 is the previous frame so we are gonna add one in here
+	int desiredIndex = m_currentIndex - (skip_count + 1);
+
+	// make sure we dont enter 500000 or something like that
+	desiredIndex = ClampInt(desiredIndex, 0, MAX_AMOUNT_OF_MEASUREMENTS);
+
+	if(desiredIndex > 0)
+	{
+		return m_frameHistory[desiredIndex];
+	}
+	else
+	{
+		desiredIndex = MAX_AMOUNT_OF_MEASUREMENTS + desiredIndex; // this is negative so add now :D
+		return m_frameHistory[desiredIndex];
+	}
+
+}
+
 #else
 
 //====================================================================================
@@ -151,6 +179,7 @@ Profiler::Profiler() {}
 void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
+ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) {}
 
 void PauseProfiler(Command& theCommand) {}
 void ResumeProfiler(Command& theCommand) {}
@@ -171,3 +200,4 @@ Profiler* Profiler::GetInstance()
 
 	return s_instance;
 }
+

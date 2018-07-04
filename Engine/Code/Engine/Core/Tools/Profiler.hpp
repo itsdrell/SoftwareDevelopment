@@ -69,6 +69,8 @@ public:
 
 	static Profiler* GetInstance();
 
+	ProfileMeasurement* ProfileGetPreviousFrame( int skip_count = 0 ); 
+
 	void MarkFrame();
 
 	void Push(std::string id);
@@ -82,6 +84,7 @@ public:
 
 	bool												m_isPausing;
 	bool												m_isPaused;
+	bool												m_isResuming;
 
 	static Profiler*									s_instance;
 };

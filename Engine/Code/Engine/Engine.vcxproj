@@ -274,6 +274,7 @@
     <ClCompile Include="Core\Tools\DevConsole.cpp" />
     <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp" />
     <ClCompile Include="Core\Tools\Profiler.cpp" />
+    <ClCompile Include="Core\Tools\ProfilerReport.cpp" />
     <ClCompile Include="Core\Tools\ScopedProfile.cpp" />
     <ClCompile Include="Core\Tools\Stopwatch.cpp" />
     <ClCompile Include="Core\Utils\StringUtils.cpp" />
@@ -354,6 +355,7 @@
     <ClInclude Include="Core\Tools\DevConsole.hpp" />
     <ClInclude Include="Core\Tools\ErrorWarningAssert.hpp" />
     <ClInclude Include="Core\Tools\Profiler.hpp" />
+    <ClInclude Include="Core\Tools\ProfilerReport.hpp" />
     <ClInclude Include="Core\Tools\ScopedProfile.hpp" />
     <ClInclude Include="Core\Tools\Stopwatch.hpp" />
     <ClInclude Include="Core\Utils\StringUtils.hpp" />
