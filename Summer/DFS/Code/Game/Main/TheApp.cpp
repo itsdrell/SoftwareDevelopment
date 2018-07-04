@@ -31,9 +31,14 @@ App::App()
 	LoadFromXML( "Data/GameConfig.xml", g_gameConfigBlackboard );
 
 	g_theMasterClock = new Clock(nullptr); // renderer might use this so im gonna put it first
-	g_theRenderer = new Renderer();
-	g_theInput = new InputSystem();
-	g_audio = new AudioSystem();
+	
+	EngineStartUp();
+
+	// these are created in engine start up so we just store off for helper reasons
+	g_theRenderer =		Renderer::GetInstance();
+	g_theInput =		InputSystem::GetInstance();
+	g_audio =			AudioSystem::GetInstance();
+
 	g_theGame = new Game(); // this needs to be last
 
 	// Clean up render log so we only get fresh data
@@ -48,11 +53,11 @@ App::~App()
 {
 	delete g_theGame;
 	g_theGame = nullptr;
-	delete g_theInput;
+
+	EngineShutDown();
+
 	g_theInput = nullptr;
-	delete g_theRenderer;
 	g_theRenderer = nullptr;
-	delete g_audio;
 	g_audio = nullptr;
 }
 

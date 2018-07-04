@@ -145,8 +145,6 @@ void Initialize( HINSTANCE applicationInstanceHandle )
 	
 	g_theApp = new App();	// #SD1ToDo: create an App class and instance it here
 	
-	g_theRenderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
-
 	// This starts a chain call allowing other classes to create dependences that might
 	// not have been ready on initialization
 	g_theApp->StartUp();

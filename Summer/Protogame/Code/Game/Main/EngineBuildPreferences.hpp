@@ -10,3 +10,5 @@
 
 //#define ENGINE_DISABLE_AUDIO	// (If uncommented) Disables AudioSystem code and fmod linkage.
 
+
+// #define PROFILING_ENABLED

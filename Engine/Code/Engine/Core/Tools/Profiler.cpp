@@ -179,7 +179,7 @@ Profiler::Profiler() {}
 void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
-ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) {}
+ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) { return nullptr; }
 
 void PauseProfiler(Command& theCommand) {}
 void ResumeProfiler(Command& theCommand) {}
