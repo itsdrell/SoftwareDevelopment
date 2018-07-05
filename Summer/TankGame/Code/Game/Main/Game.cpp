@@ -35,7 +35,7 @@
 #include "Game/GameStates/Defeat.hpp"
 #include "../GameStates/Playing.hpp"
 #include "Game/GameSpecific/GameMap.hpp"
-#include "Engine/Core/Tools/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -1,8 +1,8 @@
 #include "ProfilerReport.hpp"
-#include "ErrorWarningAssert.hpp"
-#include "..\Utils\StringUtils.hpp"
-#include "..\General\EngineCommon.hpp"
-#include "DevConsole.hpp"
+#include "Engine\Core/Tools/ErrorWarningAssert.hpp"
+#include "Engine/Core\Utils\StringUtils.hpp"
+#include "Engine/Core\General\EngineCommon.hpp"
+#include "Engine/Core/Tools/DevConsole.hpp"
 
 
 //====================================================================================

@@ -273,9 +273,9 @@
     <ClCompile Include="Core\Tools\Command.cpp" />
     <ClCompile Include="Core\Tools\DevConsole.cpp" />
     <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp" />
-    <ClCompile Include="Core\Tools\Profiler.cpp" />
-    <ClCompile Include="Core\Tools\ProfilerReport.cpp" />
-    <ClCompile Include="Core\Tools\ScopedProfile.cpp" />
+    <ClCompile Include="Core\Tools\Profiling\Profiler.cpp" />
+    <ClCompile Include="Core\Tools\Profiling\ProfilerReport.cpp" />
+    <ClCompile Include="Core\Tools\Profiling\ScopedProfile.cpp" />
     <ClCompile Include="Core\Tools\Stopwatch.cpp" />
     <ClCompile Include="Core\Utils\StringUtils.cpp" />
     <ClCompile Include="Core\Utils\XmlUtilities.cpp" />
@@ -354,9 +354,9 @@
     <ClInclude Include="Core\Tools\Command.hpp" />
     <ClInclude Include="Core\Tools\DevConsole.hpp" />
     <ClInclude Include="Core\Tools\ErrorWarningAssert.hpp" />
-    <ClInclude Include="Core\Tools\Profiler.hpp" />
-    <ClInclude Include="Core\Tools\ProfilerReport.hpp" />
-    <ClInclude Include="Core\Tools\ScopedProfile.hpp" />
+    <ClInclude Include="Core\Tools\Profiling\Profiler.hpp" />
+    <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />
+    <ClInclude Include="Core\Tools\Profiling\ScopedProfile.hpp" />
     <ClInclude Include="Core\Tools\Stopwatch.hpp" />
     <ClInclude Include="Core\Utils\StringUtils.hpp" />
     <ClInclude Include="Core\Utils\XmlUtilities.hpp" />

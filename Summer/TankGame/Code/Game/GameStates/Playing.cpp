@@ -23,7 +23,7 @@
 #include "Engine/Core/Platform/Window.hpp"
 #include "../GameSpecific/Projectile.hpp"
 #include "Engine/Renderer/Images/Fonts/BitmapFont.hpp"
-#include "Engine/Core/Tools/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
 
 //====================================================================================
 void GameWon(Command& thecommand)

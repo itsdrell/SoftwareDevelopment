@@ -3,7 +3,7 @@
 #include "Engine\Math\Geometry\AABB2.hpp"
 #include "..\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
-#include "Engine\Core\Tools\ScopedProfile.hpp"
+#include "Engine\Core\Tools\Profiling/ScopedProfile.hpp"
 
 Loading::Loading()
 {

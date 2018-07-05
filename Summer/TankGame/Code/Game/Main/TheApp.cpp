@@ -14,8 +14,8 @@
 #include "Engine/Math/Trajectory.hpp"
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
-#include "Engine/Core/Tools/Profiler.hpp"
-#include "Engine/Core/Tools/ProfilerReport.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/ProfilerReport.hpp"
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 
@@ -73,7 +73,7 @@ void App::StartUp()
 void App::RunFrame()
 {
 	MARK_FRAME;
-	PROFILE_PUSH();
+	PROFILE_PUSH(); // I need this if I want to include run frame total
 	
 	ClockSystemBeginFrame();
 	g_theInput->BeginFrame();

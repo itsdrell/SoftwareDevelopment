@@ -10,7 +10,7 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "..\Main\GameCommon.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
-#include "Engine\Core\Tools\Profiler.hpp"
+#include "Engine\Core\Tools\Profiling/Profiler.hpp"
 
 //====================================================================================
 float seekWeight = 1.f;
