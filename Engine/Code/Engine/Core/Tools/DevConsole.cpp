@@ -190,7 +190,7 @@ DevConsole::DevConsole(Renderer* rendererToUse)
 		m_barIndex = 0;
 
 		// Determine height of text
-		m_textSize = 15.f;
+		m_textSize = 12.f;
 		m_defaultColor = GetRandomColorInRainbow();
 
 		m_isOpen = false;

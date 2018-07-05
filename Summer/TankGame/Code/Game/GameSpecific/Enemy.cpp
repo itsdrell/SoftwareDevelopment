@@ -10,6 +10,7 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "..\Main\GameCommon.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
+#include "Engine\Core\Tools\Profiler.hpp"
 
 //====================================================================================
 float seekWeight = 1.f;
@@ -117,6 +118,8 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
+	PROFILE_PUSH();
+	
 	Vector3 playerPos = g_theGame->m_playingState->m_player->m_transform.GetWorldPosition();
 	Matrix44 lookAt = Matrix44::LookAt(m_transform.GetWorldPosition(), playerPos);
 

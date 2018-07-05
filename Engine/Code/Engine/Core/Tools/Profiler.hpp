@@ -35,6 +35,10 @@ struct ProfileMeasurement
 	void Finish();
 	void AddChild(ProfileMeasurement* newChild) { m_children.push_back(newChild); }
 
+	double GetElapsedTime();
+	double GetTimeFromChildren();
+	double GetRootTotalTime();
+
 	//--------------------------------------------------------------------------
 	std::string									m_id;
 	uint64_t									m_startHPC;

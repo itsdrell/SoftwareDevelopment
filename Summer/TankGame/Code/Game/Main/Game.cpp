@@ -154,7 +154,8 @@ void Game::ClockDebug()
 
 void Game::Render() const
 {
-	
+	PROFILE_PUSH();
+
 	switch (m_currentState)
 	{
 	case NONE:

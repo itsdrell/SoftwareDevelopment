@@ -2,6 +2,7 @@
 #include "..\Platform\Time.hpp"
 #include "Game\Main\EngineBuildPreferences.hpp"
 #include "..\..\Math\MathUtils.hpp"
+#include "ProfilerReport.hpp"
 
 
 //====================================================================================
@@ -37,6 +38,38 @@ ProfileMeasurement::ProfileMeasurement(std::string id)
 void ProfileMeasurement::Finish()
 {
 	m_endHPC = GetPerformanceCounter();
+}
+
+double ProfileMeasurement::GetElapsedTime()
+{
+	return (double) m_endHPC - m_startHPC;
+}
+
+double ProfileMeasurement::GetTimeFromChildren()
+{
+	double total = 0.0;
+
+	for(uint i = 0; i < m_children.size(); i++)
+	{
+		ProfileMeasurement* current = m_children.at(i);
+
+		total +=  current->GetElapsedTime();
+
+	}
+
+	return total;
+}
+
+double ProfileMeasurement::GetRootTotalTime()
+{
+	if(m_parent != nullptr)
+	{
+		return m_parent->GetRootTotalTime();
+	}
+	else
+	{
+		return GetElapsedTime();
+	}
 }
 
 //====================================================================================
@@ -145,7 +178,7 @@ void Profiler::Pop()
 ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
 {
 	// 0 is the previous frame so we are gonna add one in here
-	int desiredIndex = m_currentIndex - (skip_count + 1);
+	int desiredIndex = m_currentIndex - (skip_count);
 
 	// make sure we dont enter 500000 or something like that
 	desiredIndex = ClampInt(desiredIndex, 0, MAX_AMOUNT_OF_MEASUREMENTS);
@@ -173,6 +206,8 @@ ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
 
 ProfileMeasurement::ProfileMeasurement(std::string id) {}
 void ProfileMeasurement::Finish() {}
+double ProfileMeasurement::GetElapsedTime() { return 0.0; }
+double ProfileMeasurement::GetRootTotalTime() { return 0.0; }
 ProfilerScope::ProfilerScope(std::string id) {}
 ProfilerScope::~ProfilerScope() {}
 Profiler::Profiler() {}
@@ -180,7 +215,7 @@ void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
 ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) { return nullptr; }
-
+double ProfileMeasurement::GetTimeFromChildren() {}
 void PauseProfiler(Command& theCommand) {}
 void ResumeProfiler(Command& theCommand) {}
 
@@ -194,8 +229,13 @@ Profiler* Profiler::GetInstance()
 	{
 		s_instance = new Profiler();
 
+		// this is so the console cant try and call the commands when it doesn't work
+#ifdef PROFILING_ENABLED
 		CommandRegister("profilerPause", "", "Pauses Profiler", PauseProfiler);
 		CommandRegister("profilerResume", "", "Resume Profiler", ResumeProfiler);
+		CommandRegister("profilerReport", "", "Print Last Frame Report (tree or flat)", PrintFrameToConsole);
+#endif // PROFILING_ENABLED
+
 	}
 
 	return s_instance;

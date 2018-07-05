@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "Engine/Math/MathUtils.hpp"
 #include "DebugRenderSystem.hpp"
+#include "../../Core/Tools/Profiler.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,6 +63,8 @@ ForwardRenderingPath::ForwardRenderingPath()
 //////////////////////////////////////////////////////////////////////////
 void ForwardRenderingPath::Render(Scene* scene) const
 {
+	PROFILE_PUSH();
+
 	// We have to render the sky box first, so find the camera with it and render it
 	// shouldn't be slow since camera 0 should have it but will check all
 	RenderSkyBox(scene);
@@ -87,6 +90,8 @@ void ForwardRenderingPath::Render(Scene* scene) const
 
 void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) const
 {
+	PROFILE_PUSH();
+	
 	Renderer* r = Renderer::GetInstance();
 
 	r->SetCamera(cam);

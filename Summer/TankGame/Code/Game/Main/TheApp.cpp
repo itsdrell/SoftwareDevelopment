@@ -15,6 +15,8 @@
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
 #include "Engine/Core/Tools/Profiler.hpp"
+#include "Engine/Core/Tools/ProfilerReport.hpp"
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 
 //  For testing blackboard
@@ -71,6 +73,7 @@ void App::StartUp()
 void App::RunFrame()
 {
 	MARK_FRAME;
+	PROFILE_PUSH();
 	
 	ClockSystemBeginFrame();
 	g_theInput->BeginFrame();
@@ -80,9 +83,28 @@ void App::RunFrame()
 	g_theInput->Update();
 
 	Update();
-	Profiler* current = Profiler::GetInstance();
-	//ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
 	Render();
+
+	//--------------------------------------------------------------------------
+	// pls delete
+	Profiler* current = Profiler::GetInstance();
+	ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
+
+	if(previous != nullptr)
+	{
+		ProfilerReport* theReport = new ProfilerReport();
+		theReport->GenerateReportFlatFromFrame(previous);
+		Strings report = theReport->GenerateReportText();
+		for(uint i = 0; i < report.size(); i++)
+		{
+			DebugRenderLog(0.f, report.at(i), GetRainbowColor(i, report.size()));
+		}
+
+		delete theReport;
+		theReport = nullptr;
+
+	}
+	//_________________________________________________________
 
 	g_theInput->EndFrame();
 	g_theRenderer->EndFrame();
@@ -96,6 +118,7 @@ void App::RunFrame()
 
 void App::Render() const
 {
+	PROFILE_PUSH();
 	g_theGame->Render();
 }
 

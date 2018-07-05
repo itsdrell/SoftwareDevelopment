@@ -1,47 +1,187 @@
 #include "ProfilerReport.hpp"
+#include "ErrorWarningAssert.hpp"
+#include "..\Utils\StringUtils.hpp"
+#include "..\General\EngineCommon.hpp"
+#include "DevConsole.hpp"
+
+
+//====================================================================================
+void PrintFrameToConsole(Command& theCommand)
+{
+	std::string wayToPrint = "tree";
+
+	if(theCommand.m_commandArguements.size() > 1)
+		wayToPrint = theCommand.m_commandArguements.at(1);
+
+	//--------------------------------------------------------------------------
+
+	Profiler* current = Profiler::GetInstance();
+	ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
+
+	ProfilerReport* theReport = new ProfilerReport();
+	
+
+	Strings report;
+	if(wayToPrint == "flat")
+	{
+		theReport->GenerateReportFlatFromFrame(previous);
+	}
+	else
+	{
+		theReport->GenerateReportTreeFromFrame(previous);
+	}
+
+	report = theReport->GenerateReportText();
+
+	DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue("Report from last frame", Rgba::WHITE));
+	for(uint i = 0; i < report.size(); i++)
+	{
+		DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue(report.at(i), GetRainbowColor(i, report.size())));
+		//DebugRenderLog(0.f, report.at(i), GetRainbowColor(i, report.size()));
+	}
+
+	delete theReport;
+	theReport = nullptr;
+}
+
+
+//====================================================================================
+ProfilerReportEntry::ProfilerReportEntry(std::string id)
+{
+	m_id = id; 
+	m_call_count =		0; 
+	m_total_time =		0.0; // inclusive time; 
+	m_self_time =		0.0;  // exclusive time
+	m_percent_time =	0.0;
+	m_indentAmount =	0;
+}
+
+ProfilerReportEntry::~ProfilerReportEntry()
+{
+	for (std::map<std::string,ProfilerReportEntry*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+}
 
 void ProfilerReportEntry::PopulateTree(ProfileMeasurement * node)
 {
-	//AccumulateData(node); 
-	//
-	//foreach (child in node->children) {
-	//	ProfileReportEntry *entry = GetOrCreateChild(child->m_id); 
-	//	entry->PopulateTree( child ); 
-	//}
+	AccumulateData(node); 
+	
+	for(uint i = 0; i < node->m_children.size(); i++)
+	{
+		ProfileMeasurement* current = node->m_children.at(i);
+		
+		ProfilerReportEntry* entry = GetOrCreateChild(current->m_id.c_str(), true); 
+		entry->PopulateTree( current ); 
+	}
+
 }
 
-void ProfilerReportEntry::AccumulateData(ProfileMeasurement * node)
+void ProfilerReportEntry::AccumulateData(ProfileMeasurement* node)
 {
-	//m_call_count++; 
-	//m_total_time += node->get_elapsed_time(); 
-	//// m_percent_time = ?; // figure it out later;
+	m_call_count++; 
+	m_total_time += node->GetElapsedTime(); 
+	
+	double children = node->GetTimeFromChildren();
+
+	m_self_time = m_total_time - children;  // exclusive time (self time = totalTime - GetTimeFromChildren())
+	m_percent_time = m_total_time / node->GetRootTotalTime(); // total time / root total time
 }
 
-void ProfilerReportEntry::PopulateFlat(ProfileMeasurement * node)
-{
-	//foreach (child in node->children) {
-	//	ProfileReportEntry *entry = GetOrCreateChild(child->m_id); 
-	//	entry->AccumulateData(child); 
-	//	PopulateFlat( child ); 
-	//}
+void ProfilerReportEntry::PopulateFlat(ProfileMeasurement* node)
+{	
+	AccumulateData(node); 
+
+	
+	for(uint i = 0; i < node->m_children.size(); i++)
+	{
+		ProfileMeasurement* current = node->m_children.at(i);
+
+		ProfilerReportEntry* entry = GetOrCreateChild(current->m_id.c_str()); 
+		entry->AccumulateData(current); 
+		PopulateFlat( current ); 
+	}
 }
 
-ProfilerReportEntry * ProfilerReportEntry::GetOrCreateChild(char const * str)
+Strings ProfilerReportEntry::GenerateReportForFrame()
 {
-	//ProfileReportEntry *entry = FindEntry(str); 
-	//if (entry == nullptr) {
-	//	entry = new ProfileReportEntry(child->m_id); 
-	//	entry->m_parent = this; 
-	//	m_children[entry->m_id] = entry; 
-	//}
-	//return entry;
+	Strings theTextReport;
+
+	for (std::map<std::string,ProfilerReportEntry*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		ProfilerReportEntry* current = it->second;
+
+		std::string newEntry = Stringf("%*s %s, Call count: %-10u, Total Time: %-10f, Self Time: %-10f, Percent: %-15f",
+			current->m_indentAmount, " ",
+			current->m_id.c_str(), 
+			current->m_call_count, 
+			current->m_total_time,
+			current->m_self_time,
+			current->m_percent_time);
+
+		theTextReport.push_back(newEntry);
+
+		Strings childrenText = current->GenerateReportForFrame();
+		for(uint i = 0; i < childrenText.size(); i++)
+		{
+			theTextReport.push_back(childrenText.at(i));
+		}
+	}
+
+	return theTextReport;
+}
+
+ProfilerReportEntry * ProfilerReportEntry::GetOrCreateChild(char const * str,  bool addIndex)
+{
+	ProfilerReportEntry *entry = FindEntry(str); 
+	
+	if (entry == nullptr) 
+	{
+		entry = new ProfilerReportEntry(str); 
+		entry->m_parent = this; 
+		m_children[entry->m_id] = entry; 
+
+		if(addIndex)
+			entry->m_indentAmount = this->m_indentAmount + 1;
+	}
+	
+	return entry;
+
+}
+
+ProfilerReportEntry* ProfilerReportEntry::FindEntry(const char* str)
+{
+	std::map<std::string,ProfilerReportEntry*>::iterator entryIterator;
+	entryIterator = m_children.find(str);
+	if(entryIterator != m_children.end()){return entryIterator->second;}
+
 	return nullptr;
 }
 
+ProfilerReport::~ProfilerReport()
+{
+	delete m_root;
+	m_root = nullptr;
+}
+
+//====================================================================================
 void ProfilerReport::GenerateReportTreeFromFrame(ProfileMeasurement * root)
 {
-	//m_root = new ProfilerReportEntry(root->m_id); 
-	//m_root->PopulateTree( root ); 
+	m_root = new ProfilerReportEntry(root->m_id); 
+	m_root->PopulateTree( root ); 
+}
+
+void ProfilerReport::GenerateReportFlatFromFrame(ProfileMeasurement * root)
+{
+	m_root = new ProfilerReportEntry(root->m_id); 
+	m_root->PopulateFlat( root ); 
+}
+
+Strings ProfilerReport::GenerateReportText()
+{
+	return m_root->GenerateReportForFrame();
 }
 
 void ProfilerReport::SortBySelfTime()
@@ -58,3 +198,5 @@ double ProfilerReport::GetTotalFrameTime()
 	//return m_root->get_total_elapsed_time(); 
 	return 1.0000;
 }
+
+
