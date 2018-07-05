@@ -4,7 +4,7 @@
 #include "Engine/Renderer/Pipeline/VertexLayout.hpp"
 #include "Game/Main/GameCommon.hpp"
 #include "../Platform/Window.hpp"
-#include "../Tools/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
 
 
 //====================================================================================

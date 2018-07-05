@@ -256,6 +256,9 @@
     <ClCompile Include="Core\Tools\Profiling\ScopedProfile.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\Profiling\ProfilerUI.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -358,6 +361,7 @@
     <ClInclude Include="Core\Tools\Profiling\Profiler.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ScopedProfile.hpp" />
+    <ClInclude Include="Core\Tools\Profiling\ProfilerUI.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

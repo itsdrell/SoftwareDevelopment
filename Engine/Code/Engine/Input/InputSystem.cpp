@@ -142,7 +142,7 @@ void InputSystem::Update()
 void InputSystem::EndFrame()
 {
 	//MouseEndFrame();
-	if(g_isMouseHidden)
+	if(m_mouseMode == MOUSE_MODE_RELATIVE)
 		SetMouseClientPosition( GetCenterOfClientWindow() );
 
 	// reset mouse delta
@@ -205,7 +205,7 @@ void InputSystem::CheckForAltTab()
 		if(m_mouseMode == MOUSE_MODE_RELATIVE)
 		{
 			ShowCursor(true);
-			::ClipCursor(nullptr);
+			//::ClipCursor(nullptr);
 			g_isMouseHidden = false;
 		}
 	}
@@ -227,8 +227,43 @@ Vector2 InputSystem::GetMouseDelta()
 
 void InputSystem::ShowCursor(bool show)
 {
+
+	if(show)
+	{
+		while(::ShowCursor(show) < 1)
+		{
+			::ShowCursor(show);
+		}
+	}
+	else
+	{
+		while(::ShowCursor(show) > -1)
+		{
+			::ShowCursor(show);
+		}
+	}
+
+
 	g_isMouseHidden = !show;
-	::ShowCursor(show);
+
+}
+
+void InputSystem::UnlockMouse(bool unlock)
+{
+	if(unlock)
+	{
+		ShowCursor(unlock);
+		m_mouseMode = MOUSE_MODE_ABSOLUTE;
+	}
+	else
+	{
+		// Reset the values
+		std::string mouseMode = g_gameConfigBlackboard.GetValue("mouseMode", "relative");
+		bool showMouse = g_gameConfigBlackboard.GetValue("showCursor", false);
+
+		m_mouseMode = GetMouseModeFromString(mouseMode); 
+		ShowCursor(showMouse);
+	}
 }
 
 void InputSystem::MouseBeginFrame()

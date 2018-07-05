@@ -1,5 +1,6 @@
 #pragma once
-#include "Profiler.hpp"
+#include "..\Command.hpp"
+#include "Engine\Math\Geometry\AABB2.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -24,77 +25,50 @@
 //====================================================================================
 // Classes
 //====================================================================================
-class ProfilerReportEntry 
+class ProfilerUI
 {
 public:
-	ProfilerReportEntry(std::string id);
+	ProfilerUI();
+	~ProfilerUI();
 
-	~ProfilerReportEntry();
+	static ProfilerUI* GetInstance();
 
-	void PopulateTree( ProfileMeasurement* node ) ;
+	void Update();
 
-	void AccumulateData( ProfileMeasurement* node );
+	void Render() const;
+	void RenderBackgrounds() const;
+	void RenderFPS() const;
+	void RenderGraph() const;
+	void RenderHelper() const;
 
-	void PopulateFlat( ProfileMeasurement* node );
 
-	Strings GenerateReportForFrame();
+	void Open();
+	void Close();
+	void Toggle();
 
-
-	ProfilerReportEntry* GetOrCreateChild( char const *str, bool addIndex = false);
-	ProfilerReportEntry* FindEntry(const char* str);
-
-public:
-	std::string					m_id; 
-	uint						m_call_count; 
-	double						m_total_time; // inclusive time; 
-	double						m_self_time;  // exclusive time
-	double						m_totalPercentTime;
-	double						m_selfPercentTime;
-
-	int							m_indentAmount;
-
-	// if you care about new piece data - add time; 
-	// mean
-	// median
-	// high water
-	// low water
-
-	ProfilerReportEntry *m_parent = nullptr; 
-	std::map<std::string,ProfilerReportEntry*> m_children;
-};
-
-//====================================================================================
-class ProfilerReport 
-{
-public:
-	
-	ProfilerReport() {}
-	~ProfilerReport();
-	
-	void GenerateReportTreeFromFrame( ProfileMeasurement* root );
-	void GenerateReportFlatFromFrame( ProfileMeasurement* root );
-
-	Strings GenerateReportText();
-
-	void SortBySelfTime();
-
-	void SortByTotalTime();
-
-	double GetTotalFrameTime();
+	bool IsOpen() { return m_isOpen; }
 
 public:
-	ProfilerReportEntry *m_root = nullptr; 
+	bool		m_isOpen;
+	bool		m_hasControlOfInput;
+	bool		m_mouseHidden;
+
+private:
+	AABB2			m_textBox;
+	AABB2			m_fpsBox;
+	AABB2			m_graphBox;
+	AABB2			m_helpCommandsBox;
 };
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
+void ShowOrHideProfiler(Command& theCommand);
 
 //====================================================================================
 // Externs
 //====================================================================================
-void PrintFrameToConsole(Command& theCommand);
+extern ProfilerUI* g_theProfilerUI;
 
 //====================================================================================
 // Written by Zachary Bracken : [7/4/2018]

@@ -36,6 +36,9 @@
 #include "../GameStates/Playing.hpp"
 #include "Game/GameSpecific/GameMap.hpp"
 #include "Engine/Core/Tools/Profiling/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/ProfilerUI.hpp"
+#include "Engine/Input/Mouse.hpp"
+#include "Engine/Core/Platform/Window.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -78,7 +81,7 @@ void Game::StartUp()
 void Game::Update()
 {
 	PROFILE_PUSH();
-
+	
 	switch (m_currentState)
 	{
 	case NONE:
@@ -107,10 +110,11 @@ void Game::Update()
 		break;
 	}
 
-
+	DebugRenderLog(0.f, std::to_string(g_isMouseHidden));
 	
 	CheckKeyBoardInputs();
 	m_console->Update(); // using engine clock?
+	ProfilerUI::GetInstance()->Update();
 }
 
 void Game::ClockDebug()
@@ -186,6 +190,7 @@ void Game::Render() const
 
 	//////////////////////////////////////////////////////////////////////////
 	// Show the console, we return instantly if its not open
+	ProfilerUI::GetInstance()->Render();
 	m_console->Render();
 	
 }

@@ -244,4 +244,8 @@ float GetDeltaTime()
 	return g_theMasterClock->frame.seconds;
 }
 
+float GetFPS()
+{
+	return ( 1.f / g_theMasterClock->deltaTime);
+}
 

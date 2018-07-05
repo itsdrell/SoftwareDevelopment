@@ -52,7 +52,7 @@ ProfilerReportEntry::ProfilerReportEntry(std::string id)
 	m_call_count =		0; 
 	m_total_time =		0.0; // inclusive time; 
 	m_self_time =		0.0;  // exclusive time
-	m_percent_time =	0.0;
+	m_totalPercentTime =	0.0;
 	m_indentAmount =	0;
 }
 
@@ -87,7 +87,9 @@ void ProfilerReportEntry::AccumulateData(ProfileMeasurement* node)
 	double children = node->GetTimeFromChildren();
 
 	m_self_time = m_total_time - children;  // exclusive time (self time = totalTime - GetTimeFromChildren())
-	m_percent_time = m_total_time / node->GetRootTotalTime(); // total time / root total time
+	
+	m_selfPercentTime = m_self_time / m_total_time;
+	m_totalPercentTime = m_total_time / node->GetRootTotalTime(); // total time / root total time
 }
 
 void ProfilerReportEntry::PopulateFlat(ProfileMeasurement* node)
@@ -119,7 +121,7 @@ Strings ProfilerReportEntry::GenerateReportForFrame()
 			current->m_call_count, 
 			current->m_total_time,
 			current->m_self_time,
-			current->m_percent_time);
+			current->m_totalPercentTime);
 
 		theTextReport.push_back(newEntry);
 

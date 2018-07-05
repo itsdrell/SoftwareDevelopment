@@ -1,7 +1,7 @@
 #include "ScopedProfile.hpp"
-#include "..\Platform\Time.hpp"
-#include "DevConsole.hpp"
-#include "..\Utils\StringUtils.hpp"
+#include "Engine/Core\Platform\Time.hpp"
+#include "Engine/Core/Tools/DevConsole.hpp"
+#include "Engine/Core\Utils\StringUtils.hpp"
 
 ScopedProfile::ScopedProfile(std::string name)
 {

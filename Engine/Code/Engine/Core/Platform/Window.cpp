@@ -123,8 +123,8 @@ Window::Window(const char* name, float aspectRatio)
 	
 	//g_displayDeviceContext = GetDC( (HWND)m_hwnd );
 	
-	HCURSOR cursor = LoadCursor( NULL, IDC_ARROW );
-	SetCursor( cursor );
+	m_cursor = (void*) LoadCursor( NULL, IDC_ARROW );
+	SetCursor( (HCURSOR ) m_cursor );
 	
 	PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
 	memset( &pixelFormatDescriptor, 0, sizeof( pixelFormatDescriptor ) );
@@ -240,6 +240,20 @@ void SetClipboardsData(std::string data)
 	SetClipboardData(CF_TEXT,hData); //set our data
 
 	CloseClipboard();//finished!!
+}
+
+void ShowTheCursor(bool value)
+{
+	Window* currentWindow = Window::GetInstance();
+
+	if(value)
+	{
+		SetCursor(nullptr);
+	}
+	else
+	{
+		SetCursor((HCURSOR)currentWindow->GetCursor());
+	}
 }
 
 Window* Window::GetInstance()

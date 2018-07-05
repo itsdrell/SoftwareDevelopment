@@ -3,6 +3,7 @@
 #include "Game\Main\EngineBuildPreferences.hpp"
 #include "..\..\Math\MathUtils.hpp"
 #include "ProfilerReport.hpp"
+#include "ProfilerUI.hpp"
 
 
 //====================================================================================
@@ -234,6 +235,7 @@ Profiler* Profiler::GetInstance()
 		CommandRegister("profilerPause", "", "Pauses Profiler", PauseProfiler);
 		CommandRegister("profilerResume", "", "Resume Profiler", ResumeProfiler);
 		CommandRegister("profilerReport", "", "Print Last Frame Report (tree or flat)", PrintFrameToConsole);
+		CommandRegister("profiler", "", "Show Profiler", ShowOrHideProfiler);
 #endif // PROFILING_ENABLED
 
 	}

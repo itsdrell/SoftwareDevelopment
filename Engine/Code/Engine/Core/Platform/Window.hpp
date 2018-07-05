@@ -28,6 +28,8 @@ public:
 	float GetHeight() const {return m_height;}
 	float GetAspect() const { return m_aspect; } // aspect is width / height
 
+	void* GetCursor() { return m_cursor; }
+
 	// This may need to be called during construction
 	void SetTitle( char const* new_title ); 
 
@@ -38,6 +40,7 @@ private:
 	float m_height;
 	float m_aspect;
 
+	void* m_cursor;
 
 	const char* APP_NAME = "Made with the Deku Engine :p ";
 
@@ -49,6 +52,7 @@ public:
 	
 	
 	static Window* GetInstance();
+
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -56,3 +60,4 @@ public:
 bool CheckIfWindowIsActive();
 std::string GetClipboardText();
 void SetClipboardsData(std::string data);
+void ShowTheCursor(bool value);

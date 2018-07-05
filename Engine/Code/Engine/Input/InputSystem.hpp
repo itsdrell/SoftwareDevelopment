@@ -42,6 +42,7 @@ public:
 	void					CheckForAltTab();
 	Vector2					GetMouseDelta();
 	void					ShowCursor(bool show);
+	void					UnlockMouse(bool unlock);
 	void					MouseBeginFrame();
 	void					MouseEndFrame();
 

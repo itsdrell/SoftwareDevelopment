@@ -8,7 +8,7 @@
 #include <algorithm>
 #include "Engine/Math/MathUtils.hpp"
 #include "DebugRenderSystem.hpp"
-#include "../../Core/Tools/Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////

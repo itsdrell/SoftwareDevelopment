@@ -527,7 +527,8 @@ void DevConsole::Open()
 
 	if(InputSystem::GetInstance()->m_mouseMode == MOUSE_MODE_RELATIVE)
 	{
-		::ShowCursor(true);
+		//::ShowCursor(true);
+		ShowCursor(true);
 		MouseLockToScreen(false);
 	}
 	
@@ -542,7 +543,8 @@ void DevConsole::Close()
 	// do stuff on close
 	if(InputSystem::GetInstance()->m_mouseMode == MOUSE_MODE_RELATIVE)
 	{
-		::ShowCursor(false);
+		//::ShowCursor(false);
+		ShowCursor(false);
 		MouseLockToScreen(true);
 	}
 	

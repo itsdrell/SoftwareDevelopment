@@ -238,3 +238,15 @@ AABB2 AABB2::operator+(const Vector2& translation) const
 	return newAABB2;
 }
 
+//====================================================================================
+AABB2 GetBounds(const AABB2& theBounds, const Vector2& minPercentage, const Vector2& maxPercentage)
+{
+	float width = theBounds.GetWidth();
+	float height = theBounds.GetHeight();
+
+	Vector2 newMins = Vector2(minPercentage.x * width, minPercentage.y * height);
+	Vector2 newMaxs = Vector2(maxPercentage.x * width, maxPercentage.y * height);
+
+
+	return AABB2(theBounds.mins + newMins, theBounds.mins + newMaxs);
+}

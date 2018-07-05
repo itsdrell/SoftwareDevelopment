@@ -106,7 +106,7 @@ double GetTheCurrentTime();
 float GetDeltaTime();
 //float GetFrameStartTime();
 
-
+float GetFPS();
 
 
 
