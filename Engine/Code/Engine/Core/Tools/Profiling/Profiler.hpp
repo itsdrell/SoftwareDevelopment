@@ -31,6 +31,7 @@ class Profiler;
 struct ProfileMeasurement
 {
 	ProfileMeasurement(std::string id);
+	ProfileMeasurement();
 	
 	void Finish();
 	void AddChild(ProfileMeasurement* newChild) { m_children.push_back(newChild); }
@@ -75,6 +76,9 @@ public:
 
 	ProfileMeasurement* ProfileGetPreviousFrame( int skip_count = 0 ); 
 
+	std::vector<double>		GetFrameLengths();
+	double					GetLongestFrame();
+
 	void MarkFrame();
 
 	void Push(std::string id);
@@ -83,7 +87,7 @@ public:
 public:
 	ProfileMeasurement*									m_activeNode = nullptr;
 
-	ProfileMeasurement*									m_frameHistory[MAX_AMOUNT_OF_MEASUREMENTS];
+	ProfileMeasurement*									m_frameHistory[MAX_AMOUNT_OF_MEASUREMENTS] = { nullptr };
 	int													m_currentIndex;
 
 	bool												m_isPausing;

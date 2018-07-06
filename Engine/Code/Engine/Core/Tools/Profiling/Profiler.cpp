@@ -4,6 +4,8 @@
 #include "..\..\Math\MathUtils.hpp"
 #include "ProfilerReport.hpp"
 #include "ProfilerUI.hpp"
+#include <algorithm>
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 
 //====================================================================================
@@ -34,6 +36,13 @@ ProfileMeasurement::ProfileMeasurement(std::string id)
 	m_startHPC = GetPerformanceCounter();
 	m_id = id;
 
+}
+
+ProfileMeasurement::ProfileMeasurement()
+{
+	m_id = "NON-INITIALIZED";
+	m_startHPC = 0;
+	m_endHPC = 0;
 }
 
 void ProfileMeasurement::Finish()
@@ -93,9 +102,31 @@ Profiler::Profiler()
 	m_currentIndex = 0;
 }
 
+std::vector<double> Profiler::GetFrameLengths()
+{
+	std::vector<double> times;
+	
+	for(uint i = 0; i < MAX_AMOUNT_OF_MEASUREMENTS; i++)
+	{
+		ProfileMeasurement* current = ProfileGetPreviousFrame(i);
+
+		if(current != nullptr)
+			times.push_back(current->GetElapsedTime());
+	}
+
+	return times;
+}
+
+double Profiler::GetLongestFrame()
+{
+	std::vector<double> frameLengths = GetFrameLengths();
+	
+	return *std::max_element(frameLengths.begin(), frameLengths.end());
+}
+
 void Profiler::MarkFrame()
 {
-
+	DebuggerPrintf(( std::to_string(m_currentIndex) + std::string("\n") ).c_str());
 	if(m_activeNode != nullptr)
 	{
 		//if(m_frameHistory.size() == MAX_AMOUNT_OF_MEASUREMENTS)
@@ -184,14 +215,9 @@ ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
 	// make sure we dont enter 500000 or something like that
 	desiredIndex = ClampInt(desiredIndex, 0, MAX_AMOUNT_OF_MEASUREMENTS);
 
-	if(desiredIndex > 0)
+	if(desiredIndex >= 0)
 	{
-		return m_frameHistory[desiredIndex];
-	}
-	else
-	{
-		desiredIndex = MAX_AMOUNT_OF_MEASUREMENTS + desiredIndex; // this is negative so add now :D
-		return m_frameHistory[desiredIndex];
+		return (m_frameHistory[desiredIndex] != nullptr) ? m_frameHistory[desiredIndex] : nullptr;
 	}
 
 }
@@ -206,6 +232,7 @@ ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
 //====================================================================================
 
 ProfileMeasurement::ProfileMeasurement(std::string id) {}
+ProfileMeasurement::ProfileMeasurement() {}
 void ProfileMeasurement::Finish() {}
 double ProfileMeasurement::GetElapsedTime() { return 0.0; }
 double ProfileMeasurement::GetRootTotalTime() { return 0.0; }
@@ -215,6 +242,8 @@ Profiler::Profiler() {}
 void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
+std::vector<double> Profiler::GetFrameLengths() { return std::vector<double> }
+double Profiler::GetLongestFrame() { return 0.f; }
 ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) { return nullptr; }
 double ProfileMeasurement::GetTimeFromChildren() {}
 void PauseProfiler(Command& theCommand) {}

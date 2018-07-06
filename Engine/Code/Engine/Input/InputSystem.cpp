@@ -200,12 +200,16 @@ void InputSystem::CheckForAltTab()
 	// This lets the mouse know what to do when alt tab based on
 	// the mouse mode. So it sets and resets values basically
 
+	
+	//#TODO pls fix this 
+
 	if( CheckIfWindowIsActive() == false)
 	{
 		if(m_mouseMode == MOUSE_MODE_RELATIVE)
 		{
 			ShowCursor(true);
-			//::ClipCursor(nullptr);
+			::ClipCursor(nullptr);
+			UnlockMouse(true);
 			g_isMouseHidden = false;
 		}
 	}
@@ -214,6 +218,7 @@ void InputSystem::CheckForAltTab()
 		if(m_mouseMode == MOUSE_MODE_RELATIVE)
 		{
 			g_isMouseHidden = true;
+			//UnlockMouse(false);
 			ShowCursor(false);
 		}
 	}

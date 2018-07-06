@@ -7,6 +7,8 @@
 #include "Profiler.hpp"
 #include "ProfilerReport.hpp"
 #include "..\..\Utils\StringUtils.hpp"
+#include "Engine\Renderer\Systems\MeshBuilder.hpp"
+#include "Engine\Math\MathUtils.hpp"
 
 
 
@@ -123,6 +125,7 @@ void ProfilerUI::Render() const
 	RenderBackgrounds();
 	RenderFPS();
 	RenderGraph();
+	RenderTextGraph();
 	RenderHelper();
 }
 
@@ -162,6 +165,50 @@ void ProfilerUI::RenderFPS() const
 
 void ProfilerUI::RenderGraph() const
 {
+	Profiler* current = Profiler::GetInstance();
+
+	std::vector<double> frameLengths = current->GetFrameLengths();
+	double highestFrame = current->GetLongestFrame();
+
+	float stepSize = m_graphBox.GetDimensions().x / (float) MAX_AMOUNT_OF_MEASUREMENTS;
+
+	Vector2 currentPos = Vector2(m_graphBox.maxs.x, m_graphBox.mins.y);
+
+	MeshBuilder mb;
+	for(uint i = frameLengths.size() - 1; i > 0;  i--)
+	{
+		double currentTime = frameLengths.at(i);
+
+		float height = RangeMapFloat((float) currentTime, 0.f, (float) highestFrame, m_graphBox.mins.y, m_graphBox.maxs.y - 3);
+
+		mb.Add2DPlane(AABB2( currentPos.x - stepSize, m_graphBox.mins.y, currentPos.x, height),GetRainbowColor(i, frameLengths.size()));
+
+		currentPos.x -= stepSize;
+	}
+
+	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	Renderer::GetInstance()->DrawMesh(theMesh);
+
+	delete theMesh;
+	theMesh = nullptr;
+
+}
+
+void ProfilerUI::RenderHelper() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	std::string helpText = Stringf("%-20s %s %20s",
+		"M for mouse input : ",
+		"V for Toggle Map/Flat : ",
+		"L for Toggle Total/Self Time");
+
+	r->DrawText2D(Vector2(m_textBox.mins.x, m_textBox.maxs.y + 2.f), helpText, 1.f, Rgba::BLACK);
+}
+
+void ProfilerUI::RenderTextGraph() const
+{
 	std::string wayToPrint = "tree";
 
 	//--------------------------------------------------------------------------
@@ -194,7 +241,7 @@ void ProfilerUI::RenderGraph() const
 	}
 
 	report = theReport->GenerateReportText();
-	
+
 	//--------------------------------------------------------------------------
 	std::string helpbar = Stringf("%-60s %-10s %-10s %-10s %-10s %-10s", 
 		"FUNCTION NAME",
@@ -210,18 +257,6 @@ void ProfilerUI::RenderGraph() const
 
 	delete theReport;
 	theReport = nullptr;
-}
-
-void ProfilerUI::RenderHelper() const
-{
-	Renderer* r = Renderer::GetInstance();
-
-	std::string helpText = Stringf("%-20s %s %20s",
-		"M for mouse input : ",
-		"V for Toggle Map/Flat : ",
-		"L for Toggle Total/Self Time");
-
-	r->DrawText2D(Vector2(m_textBox.mins.x, m_textBox.maxs.y + 2.f), helpText, 1.f, Rgba::BLACK);
 }
 
 void ProfilerUI::Open()

@@ -46,6 +46,7 @@ public:
 	void RenderFPS() const;
 	void RenderGraph() const;
 	void RenderHelper() const;
+	void RenderTextGraph() const;
 
 
 	void Open();
