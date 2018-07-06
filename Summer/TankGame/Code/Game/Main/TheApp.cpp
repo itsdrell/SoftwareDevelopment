@@ -85,27 +85,6 @@ void App::RunFrame()
 	Update();
 	Render();
 
-	//--------------------------------------------------------------------------
-	// pls delete
-	Profiler* current = Profiler::GetInstance();
-	ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
-
-	if(previous != nullptr)
-	{
-		ProfilerReport* theReport = new ProfilerReport();
-		theReport->GenerateReportFlatFromFrame(previous);
-		Strings report = theReport->GenerateReportText();
-		for(uint i = 0; i < report.size(); i++)
-		{
-			DebugRenderLog(0.f, report.at(i), GetRainbowColor(i, report.size()));
-		}
-
-		delete theReport;
-		theReport = nullptr;
-
-	}
-	//_________________________________________________________
-
 	g_theInput->EndFrame();
 	g_theRenderer->EndFrame();
 	g_audio->EndFrame();

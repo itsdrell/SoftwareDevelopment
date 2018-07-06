@@ -90,7 +90,7 @@ void ForwardRenderingPath::Render(Scene* scene) const
 
 void ForwardRenderingPath::RenderSceneForCamera(Camera * cam, Scene * scene) const
 {
-	PROFILE_PUSH();
+	//PROFILE_PUSH();
 	
 	Renderer* r = Renderer::GetInstance();
 

@@ -15,7 +15,12 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum PROFILER_HISTORY_VIEW_TYPE
+{
+	PROFILER_MAP_VIEW,
+	PROFILER_TREE_TOTAL_VIEW,
+	PROFILER_TREE_SELF_VIEW
+};
 
 //====================================================================================
 // Structs
@@ -34,6 +39,7 @@ public:
 	static ProfilerUI* GetInstance();
 
 	void Update();
+	void HandleInput();
 
 	void Render() const;
 	void RenderBackgrounds() const;
@@ -53,11 +59,15 @@ public:
 	bool		m_hasControlOfInput;
 	bool		m_mouseHidden;
 
+
 private:
-	AABB2			m_textBox;
-	AABB2			m_fpsBox;
-	AABB2			m_graphBox;
-	AABB2			m_helpCommandsBox;
+
+	PROFILER_HISTORY_VIEW_TYPE		m_viewType;
+
+	AABB2							m_textBox;
+	AABB2							m_fpsBox;
+	AABB2							m_graphBox;
+	AABB2							m_helpCommandsBox;
 };
 
 //====================================================================================

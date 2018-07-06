@@ -88,13 +88,13 @@ void ProfilerReportEntry::AccumulateData(ProfileMeasurement* node)
 
 	m_self_time = m_total_time - children;  // exclusive time (self time = totalTime - GetTimeFromChildren())
 	
-	m_selfPercentTime = m_self_time / m_total_time;
+	m_selfPercentTime = m_self_time / node->GetRootTotalTime();
 	m_totalPercentTime = m_total_time / node->GetRootTotalTime(); // total time / root total time
 }
 
 void ProfilerReportEntry::PopulateFlat(ProfileMeasurement* node)
 {	
-	AccumulateData(node); 
+	//AccumulateData(node); 
 
 	
 	for(uint i = 0; i < node->m_children.size(); i++)
@@ -115,13 +115,15 @@ Strings ProfilerReportEntry::GenerateReportForFrame()
 	{
 		ProfilerReportEntry* current = it->second;
 
-		std::string newEntry = Stringf("%*s %s, Call count: %-10u, Total Time: %-10f, Self Time: %-10f, Percent: %-15f",
+		std::string newEntry = Stringf("%-*s %-*s %-10u %-10.2f %-10.2f %-10.2f %-10.2f",
 			current->m_indentAmount, " ",
-			current->m_id.c_str(), 
+			(60 - current->m_indentAmount), current->m_id.c_str(), 
 			current->m_call_count, 
+			current->m_totalPercentTime,
 			current->m_total_time,
-			current->m_self_time,
-			current->m_totalPercentTime);
+			current->m_selfPercentTime,
+			current->m_self_time
+			);
 
 		theTextReport.push_back(newEntry);
 
@@ -147,6 +149,11 @@ ProfilerReportEntry * ProfilerReportEntry::GetOrCreateChild(char const * str,  b
 
 		if(addIndex)
 			entry->m_indentAmount = this->m_indentAmount + 1;
+		
+	}
+	else
+	{
+		int i = 0;
 	}
 	
 	return entry;
@@ -184,6 +191,22 @@ void ProfilerReport::GenerateReportFlatFromFrame(ProfileMeasurement * root)
 Strings ProfilerReport::GenerateReportText()
 {
 	return m_root->GenerateReportForFrame();
+}
+
+std::string ProfilerReport::GetReportString()
+{
+	std::string result;
+	
+	Strings allTheData = GenerateReportText();
+
+	for(uint i = 0; i < allTheData.size(); i++)
+	{
+		std::string current = allTheData.at(i);
+
+		result += (current + "\n");
+	}
+
+	return result;
 }
 
 void ProfilerReport::SortBySelfTime()

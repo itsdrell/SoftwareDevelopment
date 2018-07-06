@@ -75,6 +75,7 @@ public:
 	void GenerateReportFlatFromFrame( ProfileMeasurement* root );
 
 	Strings GenerateReportText();
+	std::string GetReportString();
 
 	void SortBySelfTime();
 
