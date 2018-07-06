@@ -32,6 +32,8 @@ struct ProfileMeasurement
 {
 	ProfileMeasurement(std::string id);
 	ProfileMeasurement();
+
+	~ProfileMeasurement();
 	
 	void Finish();
 	void AddChild(ProfileMeasurement* newChild) { m_children.push_back(newChild); }

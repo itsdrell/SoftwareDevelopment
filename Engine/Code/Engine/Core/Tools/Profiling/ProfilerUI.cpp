@@ -9,6 +9,9 @@
 #include "..\..\Utils\StringUtils.hpp"
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Math\MathUtils.hpp"
+#include "Engine\Renderer\Renderer.hpp"
+#include "Engine\Core\General\Camera.hpp"
+#include "..\..\Platform\Time.hpp"
 
 
 
@@ -103,7 +106,56 @@ void ProfilerUI::HandleInput()
 			m_viewType = PROFILER_TREE_SELF_VIEW;
 	}
 
+	if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON)) // select a frame
+	{
+		if(CheckIfUserSelectedFrame())
+		{
+			SelectFrame();
+		}
 
+	}
+
+
+	if(WasMouseButtonJustPressed(RIGHT_MOUSE_BUTTON)) // un select the mode
+	{
+		UnselectFrame();
+	}
+
+
+
+}
+
+bool ProfilerUI::CheckIfUserSelectedFrame()
+{
+	Vector2 cmouse = GetMouseCurrentPosition();
+	Vector3 mousePos = Renderer::GetInstance()->m_defaultUICamera->ScreenToWorldCoordinate(cmouse, 0.f);
+	
+	return m_graphBox.IsPointInside(mousePos.xy());
+}
+
+void ProfilerUI::SelectFrame()
+{
+	Profiler* p = Profiler::GetInstance();
+
+	p->m_isPausing = true;
+	m_useSelectedFrame = true;
+
+	Vector2 cmouse = GetMouseCurrentPosition();
+	Vector3 mousePos = Renderer::GetInstance()->m_defaultUICamera->ScreenToWorldCoordinate(cmouse, 0.f);
+	Vector2 percents = m_graphBox.GetPercentInBox(mousePos.xy());
+
+	int indx = (int) RangeMapFloat(percents.x, 0.f, 1.f, 0.f, (float) MAX_AMOUNT_OF_MEASUREMENTS);
+	m_currentFrame = p->ProfileGetPreviousFrame(indx);
+
+}
+
+void ProfilerUI::UnselectFrame()
+{
+	Profiler* p = Profiler::GetInstance();
+
+	p->m_isResuming = true;
+
+	m_useSelectedFrame = false;
 }
 
 void ProfilerUI::Render() const
@@ -170,18 +222,23 @@ void ProfilerUI::RenderGraph() const
 	std::vector<double> frameLengths = current->GetFrameLengths();
 	double highestFrame = current->GetLongestFrame();
 
+	Renderer::GetInstance()->DrawText2D(Vector2(m_graphBox.maxs.x + .1f, m_graphBox.maxs.y), std::to_string(PerformanceCountToSeconds((uint64_t) highestFrame)),1.f);
+
 	float stepSize = m_graphBox.GetDimensions().x / (float) MAX_AMOUNT_OF_MEASUREMENTS;
 
 	Vector2 currentPos = Vector2(m_graphBox.maxs.x, m_graphBox.mins.y);
 
 	MeshBuilder mb;
-	for(uint i = frameLengths.size() - 1; i > 0;  i--)
+	//for(uint i = frameLengths.size() - 1; i > 0;  i--)
+	for(uint i = 0; i < frameLengths.size() - 1;  i++)
 	{
 		double currentTime = frameLengths.at(i);
 
 		float height = RangeMapFloat((float) currentTime, 0.f, (float) highestFrame, m_graphBox.mins.y, m_graphBox.maxs.y - 3);
 
-		mb.Add2DPlane(AABB2( currentPos.x - stepSize, m_graphBox.mins.y, currentPos.x, height),GetRainbowColor(i, frameLengths.size()));
+		mb.Add2DPlane(
+			AABB2( currentPos.x - stepSize, m_graphBox.mins.y, currentPos.x, height),
+			GetRainbowColor((int)i, (int)frameLengths.size()));
 
 		currentPos.x -= stepSize;
 	}
@@ -189,9 +246,10 @@ void ProfilerUI::RenderGraph() const
 	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
 
 	Renderer::GetInstance()->DrawMesh(theMesh);
-
 	delete theMesh;
 	theMesh = nullptr;
+
+	
 
 }
 
@@ -213,9 +271,11 @@ void ProfilerUI::RenderTextGraph() const
 
 	//--------------------------------------------------------------------------
 
-	Profiler* current = Profiler::GetInstance();
+	//Profiler* current = Profiler::GetInstance();
 	ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
 
+	if(m_useSelectedFrame)
+		previous = m_currentFrame;
 
 	if(previous == nullptr)
 		return;

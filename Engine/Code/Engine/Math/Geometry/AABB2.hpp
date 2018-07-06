@@ -27,6 +27,7 @@ public:
 	// Accessors/Queries
 	bool IsPointInside( float x, float y ) const; // is “x,y” within box’s interior?
 	bool IsPointInside( const Vector2& point ) const; // is “point” within box’s interior?
+	Vector2 GetPercentInBox( const Vector2& point) const;
 	Vector2 GetDimensions() const; // return a Vector2 of ( width, height )
 	Vector2 GetCenter() const; // return the center position of the box
 	float GetWidth() const;

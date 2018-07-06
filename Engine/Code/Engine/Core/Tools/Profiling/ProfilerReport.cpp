@@ -3,6 +3,7 @@
 #include "Engine/Core\Utils\StringUtils.hpp"
 #include "Engine/Core\General\EngineCommon.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
+#include "../../Platform/Time.hpp"
 
 
 //====================================================================================
@@ -15,7 +16,7 @@ void PrintFrameToConsole(Command& theCommand)
 
 	//--------------------------------------------------------------------------
 
-	Profiler* current = Profiler::GetInstance();
+	//Profiler* current = Profiler::GetInstance();
 	ProfileMeasurement* previous = Profiler::GetInstance()->ProfileGetPreviousFrame();
 
 	ProfilerReport* theReport = new ProfilerReport();
@@ -36,7 +37,7 @@ void PrintFrameToConsole(Command& theCommand)
 	DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue("Report from last frame", Rgba::WHITE));
 	for(uint i = 0; i < report.size(); i++)
 	{
-		DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue(report.at(i), GetRainbowColor(i, report.size())));
+		DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue(report.at(i), GetRainbowColor((int) i, (int) report.size())));
 		//DebugRenderLog(0.f, report.at(i), GetRainbowColor(i, report.size()));
 	}
 
@@ -86,7 +87,7 @@ void ProfilerReportEntry::AccumulateData(ProfileMeasurement* node)
 	
 	double children = node->GetTimeFromChildren();
 
-	m_self_time = m_total_time - children;  // exclusive time (self time = totalTime - GetTimeFromChildren())
+	m_self_time += node->GetElapsedTime() - children;  // exclusive time (self time += node->GetElapsedTime - GetTimeFromChildren())
 	
 	m_selfPercentTime = m_self_time / node->GetRootTotalTime();
 	m_totalPercentTime = m_total_time / node->GetRootTotalTime(); // total time / root total time
@@ -115,14 +116,14 @@ Strings ProfilerReportEntry::GenerateReportForFrame()
 	{
 		ProfilerReportEntry* current = it->second;
 
-		std::string newEntry = Stringf("%-*s %-*s %-10u %-10.2f %-10.2f %-10.2f %-10.2f",
+		std::string newEntry = Stringf("%-*s %-*s %-10u %-10.2f %-10.4f %-10.2f %-10.4f",
 			current->m_indentAmount, " ",
 			(60 - current->m_indentAmount), current->m_id.c_str(), 
 			current->m_call_count, 
 			current->m_totalPercentTime,
-			current->m_total_time,
+			PerformanceCountToSeconds((uint64_t) current->m_total_time),
 			current->m_selfPercentTime,
-			current->m_self_time
+			PerformanceCountToSeconds((uint64_t) current->m_self_time)
 			);
 
 		theTextReport.push_back(newEntry);
@@ -150,10 +151,6 @@ ProfilerReportEntry * ProfilerReportEntry::GetOrCreateChild(char const * str,  b
 		if(addIndex)
 			entry->m_indentAmount = this->m_indentAmount + 1;
 		
-	}
-	else
-	{
-		int i = 0;
 	}
 	
 	return entry;

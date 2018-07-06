@@ -151,6 +151,21 @@ bool AABB2::IsPointInside(const Vector2& point) const
 	return answer;
 }
 
+Vector2 AABB2::GetPercentInBox(const Vector2 & point) const
+{
+	// returns the x and y percents
+	if(IsPointInside(point) == false)
+		return Vector2(0.f, 0.f);
+
+	float width = GetWidth();
+	float height = GetHeight();
+
+	float xPercent = (maxs.x - point.x) / width;
+	float yPercent = (maxs.y - point.y) / height;
+
+	return Vector2(xPercent, yPercent);
+}
+
 Vector2 AABB2::GetDimensions() const
 {
 	float xx = maxs.x - mins.x;

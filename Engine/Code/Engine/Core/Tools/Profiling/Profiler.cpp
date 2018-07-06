@@ -45,6 +45,18 @@ ProfileMeasurement::ProfileMeasurement()
 	m_endHPC = 0;
 }
 
+ProfileMeasurement::~ProfileMeasurement()
+{
+	for(uint i = 0; i < m_children.size(); i++)
+	{
+		ProfileMeasurement* current = m_children.at(i);
+
+		m_children.at(i) = nullptr;
+		delete current;
+	}
+
+}
+
 void ProfileMeasurement::Finish()
 {
 	m_endHPC = GetPerformanceCounter();
@@ -126,8 +138,23 @@ double Profiler::GetLongestFrame()
 
 void Profiler::MarkFrame()
 {
-	DebuggerPrintf(( std::to_string(m_currentIndex) + std::string("\n") ).c_str());
-	if(m_activeNode != nullptr)
+
+	if(m_isResuming)
+	{
+		m_isPaused = false;
+		m_isResuming = false;
+		return;
+	}
+
+	// do this after we finished storing the last frame
+	if(m_isPausing)
+	{
+		m_isPaused = true;
+		m_isPausing = false;
+		return;
+	}
+
+	if(m_activeNode != nullptr && m_isPaused == false)
 	{
 		//if(m_frameHistory.size() == MAX_AMOUNT_OF_MEASUREMENTS)
 		//{
@@ -149,27 +176,14 @@ void Profiler::MarkFrame()
 			current = nullptr;
 		}
 
-
 		m_frameHistory[m_currentIndex] = m_activeNode;
 
-		// do this after we finished storing the last frame
-		if(m_isPausing)
-		{
-			m_isPaused = true;
-			m_isPausing = false;
-		}
-
-		if(m_isResuming)
-		{
-			m_isPaused = false;
-			m_isResuming = false;
-		}
-
+		
 
 		Pop();
 
 		// not null - someone forgot to pop
-		GUARANTEE_OR_DIE(m_activeNode == nullptr, "You didn't pop");
+		//GUARANTEE_OR_DIE(m_activeNode == nullptr, "You didn't pop");
 	}
 
 	Push("frame");
@@ -209,16 +223,14 @@ void Profiler::Pop()
 
 ProfileMeasurement* Profiler::ProfileGetPreviousFrame(int skip_count)
 {
-	// 0 is the previous frame so we are gonna add one in here
-	int desiredIndex = m_currentIndex - (skip_count);
-
-	// make sure we dont enter 500000 or something like that
-	desiredIndex = ClampInt(desiredIndex, 0, MAX_AMOUNT_OF_MEASUREMENTS);
+	int desiredIndex = (m_currentIndex + MAX_AMOUNT_OF_MEASUREMENTS - skip_count) % MAX_AMOUNT_OF_MEASUREMENTS;
 
 	if(desiredIndex >= 0)
 	{
 		return (m_frameHistory[desiredIndex] != nullptr) ? m_frameHistory[desiredIndex] : nullptr;
 	}
+
+	return nullptr;
 
 }
 

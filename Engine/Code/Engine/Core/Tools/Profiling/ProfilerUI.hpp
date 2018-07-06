@@ -5,7 +5,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+struct ProfileMeasurement;
 
 //====================================================================================
 // Type Defs + Defines
@@ -41,6 +41,10 @@ public:
 	void Update();
 	void HandleInput();
 
+	bool CheckIfUserSelectedFrame();
+	void SelectFrame();
+	void UnselectFrame();
+
 	void Render() const;
 	void RenderBackgrounds() const;
 	void RenderFPS() const;
@@ -64,6 +68,9 @@ public:
 private:
 
 	PROFILER_HISTORY_VIEW_TYPE		m_viewType;
+	bool							m_useSelectedFrame;
+
+	ProfileMeasurement*				m_currentFrame;
 
 	AABB2							m_textBox;
 	AABB2							m_fpsBox;
