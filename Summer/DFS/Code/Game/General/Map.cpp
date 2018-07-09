@@ -348,9 +348,9 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 	bool check = false;
 
 	// We just need to see if the tile pos we have is in our cached off list
-	for(uint i = 0; i < m_hoverTiles.size(); i++)
+	for(uint i = 0; i < m_attackTiles.size(); i++)
 	{
-		HoverTile* currentTile = m_hoverTiles.at(i);
+		HoverTile* currentTile = m_attackTiles.at(i);
 		
 		IntVector2 current = currentTile->m_tileCoords * tileSize;
 
@@ -362,7 +362,7 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 			switch (currentTile->m_type)
 			{
 			case ATTACK_RANGE_TILE_TYPE:
-				AttackUnitAt(m_hoverTiles.at(i)->m_tileCoords);
+				AttackUnitAt(m_attackTiles.at(i)->m_tileCoords);
 				break;
 			default:
 				break;
@@ -444,14 +444,14 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 			{
 				HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
 
-				m_hoverTiles.push_back(newTile);
+				m_attackTiles.push_back(newTile);
 			}
 		}
 		else
 		{
 			HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
 
-			m_hoverTiles.push_back(newTile);
+			m_attackTiles.push_back(newTile);
 		}
 
 	}
@@ -511,7 +511,7 @@ bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& 
 
 		if(theUnit->m_team != theUnitToUse.m_team)
 		{
-			if(DoTagsShareATag(theUnitToUse.m_definition->m_attackTags, theUnit->m_definition->m_attackTags))
+			if(DoTagsShareATag(theUnitToUse.m_definition->m_attackTags, theUnit->m_definition->m_movementTags))
 				return true;
 		}
 	}
@@ -545,9 +545,23 @@ void Map::ClearHoverTiles()
 	for(uint i = 0; i < m_hoverTiles.size(); i++)
 	{
 		g_theGame->m_playingState->RemoveRenderable(m_hoverTiles.at(i)->m_renderable);
+
+		delete m_hoverTiles.at(i);
 	}
 
 	m_hoverTiles.clear();
+}
+
+void Map::ClearAttackTiles()
+{
+	for(uint i = 0; i < m_attackTiles.size(); i++)
+	{
+		g_theGame->m_playingState->RemoveRenderable(m_attackTiles.at(i)->m_renderable);
+
+		delete m_attackTiles.at(i);
+	}
+
+	m_attackTiles.clear();
 }
 
 void Map::RemoveDeadGameObjects()

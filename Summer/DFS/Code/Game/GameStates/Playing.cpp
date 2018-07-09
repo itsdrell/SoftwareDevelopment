@@ -245,7 +245,7 @@ void Playing::CheckKeyBoardInputs()
 				// make sure they clicked a valid action
 				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
 				{
-					m_currentMap->ClearHoverTiles();
+					m_currentMap->ClearAttackTiles();
 					m_actionMenu->ClearWidgets();
 					m_currentPlayState = SELECTING;
 				}
@@ -290,7 +290,7 @@ void Playing::ShowAttackRange()
 
 		if(WasKeyJustReleased(G_THE_LETTER_R))
 		{
-			m_currentMap->ClearHoverTiles();
+			m_currentMap->ClearAttackTiles();
 		}
 	}
 }

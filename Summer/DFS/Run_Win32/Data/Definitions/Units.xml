@@ -107,6 +107,26 @@
 
     />
 
+    <Unit
+    name = "battleShip"
+    movement = "4"
+    attackRange = "1~6"
+    movementTags = "water"
+    attackTags = "water,ground"
+    spriteCoords = "0,0"
+
+    />
+
+    <Unit
+    name = "cruiser"
+    movement = "4"
+    attackRange = "1~6"
+    movementTags = "water"
+    attackTags = "air"
+    spriteCoords = "1,0"
+
+    />
+
 
 
 <!-- AIR UNITS --->
@@ -127,6 +147,16 @@
     movementTags = "air"
     attackTags = "air,ground,water"
     spriteCoords = "3,1"
+
+    />
+
+    <Unit
+    name = "bomber"
+    movement = "6"
+    attackRange = "1"
+    movementTags = "air"
+    attackTags = "ground"
+    spriteCoords = "2,1"
 
     />
 

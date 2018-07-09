@@ -77,6 +77,7 @@ public:
 	bool CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck);
 
 	void ClearHoverTiles();
+	void ClearAttackTiles();
 	void RemoveDeadGameObjects();
 
 	void GoToNextTurn();
@@ -101,15 +102,16 @@ public:
 
 	std::vector<Tile>					m_tiles;
 	std::vector<HoverTile*>				m_hoverTiles;
+	std::vector<HoverTile*>				m_attackTiles;
 	std::vector<GameObject2D*>			m_gameObjects;
 	std::vector<Unit*>					m_units;
 	std::vector<Building*>				m_buildings;
 
 	TurnOrder							m_turnOrder;
-	HeatMap*							m_heatmap;
+	HeatMap*							m_heatmap = nullptr;
 	
-	Unit*								m_selectedUnit;
-	Building*							m_buildingToCapture; // for console command 
+	Unit*								m_selectedUnit = nullptr;
+	Building*							m_buildingToCapture = nullptr; // for console command 
 };
 
 
