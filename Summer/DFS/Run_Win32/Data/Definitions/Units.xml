@@ -14,12 +14,85 @@
     />
 
     <Unit
+    name = "mech"
+    attackRange = "1~1"
+    movement = "3"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "1,3"
+    capture = "true"
+
+    />
+
+    <Unit
+    name = "recon"
+    attackRange = "1~1"
+    movement = "7"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "2,3"
+
+    />
+
+    <Unit
+    name = "antiAir"
+    attackRange = "1~1"
+    movement = "7"
+    movementTags = "ground"
+    attackTags = "ground,air"
+    spriteCoords = "4,2"
+
+    />
+
+    <Unit
+    name = "tank"
+    attackRange = "1~1"
+    movement = "5"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "3,3"
+
+    />
+
+    <Unit
+    name = "medTank"
+    attackRange = "1~1"
+    movement = "4"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "4,3"
+
+    />
+
+
+<!-- Ranged ground Units -->
+    <Unit
+    name = "cannon"
+    attackRange = "2~3"
+    movement = "4"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "2,2"
+
+    />
+
+    <Unit
     name = "rockets"
     movement = "2"
-    attackRange = "2~4"
+    attackRange = "3~5"
     movementTags = "ground"
     attackTags = "ground"
     spriteCoords = "3,2"
+
+    />
+
+    <Unit
+    name = "missiles"
+    movement = "4"
+    attackRange = "2~5"
+    movementTags = "ground"
+    attackTags = "air"
+    spriteCoords = "0,1"
 
     />
 

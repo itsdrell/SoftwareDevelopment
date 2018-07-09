@@ -1,4 +1,4 @@
-#include "DebugRenderSystem.hpp"
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 #include "Engine\Core\Tools/Clock.hpp"
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Renderer\Renderer.hpp"

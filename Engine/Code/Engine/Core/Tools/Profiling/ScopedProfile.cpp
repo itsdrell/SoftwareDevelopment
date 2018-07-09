@@ -1,4 +1,4 @@
-#include "ScopedProfile.hpp"
+#include "Engine/Core/Tools/Profiling/ScopedProfile.hpp"
 #include "Engine/Core\Platform\Time.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Engine/Core\Utils\StringUtils.hpp"

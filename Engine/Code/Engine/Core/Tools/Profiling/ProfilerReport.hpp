@@ -1,5 +1,5 @@
 #pragma once
-#include "Profiler.hpp"
+#include "Engine/Core/Tools/Profiling/Profiler.hpp"
 
 //====================================================================================
 // Forward Declare

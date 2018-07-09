@@ -73,7 +73,7 @@ void AddUnit(Command& theCommand)
 
 	if(unitName == "help")
 	{
-
+		dc->AddHeader("Params: unitName team pos hp", Rgba::WHITE, 2);
 		dc->AddHeader("Possible Units to spawn", Rgba::WHITE);
 		
 		Strings unitNames = UnitDefinition::GetAllUnitNames();
@@ -120,7 +120,7 @@ void AddBuilding(Command& theCommand)
 
 	if(buildingName == "help")
 	{
-
+		dc->AddHeader("Params: buildingName team pos", Rgba::WHITE, 2);
 		dc->AddHeader("Possible Buildings to spawn", Rgba::WHITE);
 
 		Strings buildingNames = BuildingDefinition::GetAllBuildingNames();

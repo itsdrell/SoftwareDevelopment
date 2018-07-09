@@ -1,9 +1,9 @@
-#include "ProfilerReport.hpp"
+#include "Engine/Core/Tools/Profiling/ProfilerReport.hpp"
 #include "Engine\Core/Tools/ErrorWarningAssert.hpp"
 #include "Engine/Core\Utils\StringUtils.hpp"
 #include "Engine/Core\General\EngineCommon.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
-#include "../../Platform/Time.hpp"
+#include "Engine/Core/Platform/Time.hpp"
 
 
 //====================================================================================

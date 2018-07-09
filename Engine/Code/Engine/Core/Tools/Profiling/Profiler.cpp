@@ -1,7 +1,7 @@
 #include "Profiler.hpp"
 #include "Engine/Core\Platform\Time.hpp"
 #include "Game\Main\EngineBuildPreferences.hpp"
-#include "..\..\Math\MathUtils.hpp"
+#include "Engine\Math\MathUtils.hpp"
 #include "ProfilerReport.hpp"
 #include "ProfilerUI.hpp"
 #include <algorithm>

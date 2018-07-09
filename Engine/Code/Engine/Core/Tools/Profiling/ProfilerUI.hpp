@@ -1,5 +1,5 @@
 #pragma once
-#include "..\Command.hpp"
+#include "Engine/Core/Tools/Command.hpp"
 #include "Engine\Math\Geometry\AABB2.hpp"
 
 //====================================================================================
