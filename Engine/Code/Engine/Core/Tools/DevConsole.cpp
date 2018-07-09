@@ -1045,6 +1045,11 @@ void DevConsole::AddConsoleDialogue(ConsoleDialogue newDialogue)
 	DevConsole::GetInstance()->GenerateTextMesh();
 }
 
+void DevConsole::AddConsoleDialogue(const std::string& text, const Rgba& color)
+{
+	DevConsole::AddConsoleDialogue(ConsoleDialogue(text, color));
+}
+
 void DevConsole::AddErrorMessage(std::string errorText)
 {
 	ConsoleDialogue errorMessage = ConsoleDialogue(errorText,Rgba::RED);

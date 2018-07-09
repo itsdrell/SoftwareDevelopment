@@ -6,6 +6,7 @@
 #include <map>
 #include "../Core/General/EngineCommon.hpp"
 
+
 //=============================================================
 // Forward Declare
 //=============================================================
@@ -80,11 +81,18 @@ public:
 	virtual void				SetSoundPlaybackBalance( SoundPlaybackID soundPlaybackID, float balance );	// balance is in [-1,1], where 0 is L/R centered
 	virtual void				SetSoundPlaybackSpeed( SoundPlaybackID soundPlaybackID, float speed );		// speed is frequency multiplier (1.0 == normal)
 
+	virtual void				SetMasterVolume(float volume);
+	virtual float				GetMasterVolume();
+	virtual void				ToggleMasterMute();
+
 	virtual void				ValidateResult( FMOD_RESULT result );
 
 	Strings						GetAllAudioClipNames();
 
 protected:
+	bool								m_isMuted;
+	float								m_tempPreviousMasterVolume;
+
 	FMOD::System*						m_fmodSystem;
 	std::map< std::string, SoundID >	m_registeredSoundIDs;
 	std::vector< FMOD::Sound* >			m_registeredSounds;

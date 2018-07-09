@@ -87,6 +87,7 @@ public:
 
 	static DevConsole* GetInstance(); 
 	static void	AddConsoleDialogue(ConsoleDialogue newDialogue);
+	static void AddConsoleDialogue(const std::string& text, const Rgba& color = GetRandomColorInRainbow());
 	static void AddErrorMessage(std::string errorText);
 	static void ClearConsoleOutput();
 	static void AddSpace(uint lines);

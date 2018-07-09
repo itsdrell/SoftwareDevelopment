@@ -64,6 +64,12 @@ void DevConsolePlayOneShot(Command& thecommand)
 
 }
 
+void ToggleMute(Command& theCommand)
+{
+	UNUSED(theCommand);
+
+	AudioSystem::GetInstance()->ToggleMasterMute();
+}
 
 //-----------------------------------------------------------------------------------------------
 // Initialization code based on example from "FMOD Studio Programmers API for Windows"
@@ -79,7 +85,7 @@ AudioSystem::AudioSystem()
 	ValidateResult( result );
 
 	CommandRegister("oneShot","Type: help","Play a one shot of a sound", DevConsolePlayOneShot);
-
+	CommandRegister("mute", "", "Toggles mute of sound", ToggleMute);
 	g_theAudioSystem = this;
 }
 
@@ -345,6 +351,53 @@ void AudioSystem::SetSoundPlaybackSpeed( SoundPlaybackID soundPlaybackID, float 
 }
 
 
+void AudioSystem::SetMasterVolume(float volume)
+{
+	// credit Michael Dale
+	
+	FMOD::ChannelGroup* master;
+	m_fmodSystem->getMasterChannelGroup(&master);
+
+	master->setVolume(volume);
+
+	master = nullptr;
+}
+
+float AudioSystem::GetMasterVolume()
+{
+	// credit Michael Dale
+
+	FMOD::ChannelGroup* master;
+	m_fmodSystem->getMasterChannelGroup(&master);
+
+	float volume = 1.f;
+
+	master->getVolume(&volume);
+
+	master = nullptr;
+	return volume;
+}
+
+void AudioSystem::ToggleMasterMute()
+{
+	// credit Michael Dale
+
+	m_isMuted = !m_isMuted;
+
+	if (m_isMuted == true)
+	{
+		DevConsole::AddConsoleDialogue("AUDIO MUTED", Rgba::RED);
+		m_tempPreviousMasterVolume = GetMasterVolume();
+		SetMasterVolume(0.0f);
+	}
+	else
+	{
+		DevConsole::AddConsoleDialogue("AUDIO UNMUTED", Rgba::GREEN);
+		SetMasterVolume(m_tempPreviousMasterVolume);
+	}
+
+}
+
 //-----------------------------------------------------------------------------------------------
 void AudioSystem::ValidateResult( FMOD_RESULT result )
 {
@@ -410,3 +463,5 @@ void PlayOneShotFromGroup(std::string groupName, float volume, float balance, fl
 	oneToPlay->m_playbackID = g_theAudioSystem->PlaySound(oneToPlay->m_soundID, false, volume, balance, speed, isPaused);
 
 }
+
+
