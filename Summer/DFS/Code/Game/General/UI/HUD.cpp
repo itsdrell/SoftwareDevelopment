@@ -88,6 +88,7 @@ void HUD::RenderTileDisplay() const
 		nameText = theBuilding->m_name;
 		teamName = TeamNameToString(theBuilding->m_team);
 		health = "HP: " + std::to_string(theBuilding->m_health);
+		//health = "HP: " + theBuilding->m_health;
 	}
 
 

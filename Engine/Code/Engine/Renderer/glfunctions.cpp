@@ -78,7 +78,7 @@ PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf = nullptr;
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;
 PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = nullptr;
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
-
+PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = nullptr;
 
 //////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------

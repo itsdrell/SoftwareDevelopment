@@ -134,7 +134,9 @@ void Renderer::PostStartup()
 	// Load default shaders that are built in into the engine
 	BuiltInShaders::CreateAllBuiltInShaders();
 	
-	
+	// Turn off VSync
+	wglSwapIntervalEXT( 0 ); 
+
 	// default_vao is a GLuint member variable
 	glGenVertexArrays( 1, &m_defaultVAO ); 
 	glBindVertexArray( m_defaultVAO );  
@@ -1977,6 +1979,7 @@ void BindNewWGLFunctions()
 	GL_BIND_FUNCTION( wglGetExtensionsStringARB ); 
 	GL_BIND_FUNCTION( wglChoosePixelFormatARB ); 
 	GL_BIND_FUNCTION( wglCreateContextAttribsARB );
+	GL_BIND_FUNCTION( wglSwapIntervalEXT );
 }
 
 // This is where you bind any new open gl function you will need
