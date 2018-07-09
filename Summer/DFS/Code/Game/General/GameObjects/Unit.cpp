@@ -8,6 +8,7 @@
 #include "Engine\Core\Utils\XmlUtilities.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
+#include "Engine\Core\Tools\DevConsole.hpp"
 
 //====================================================================================
 
@@ -114,6 +115,9 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 	m_name = ParseXmlAttribute(node,"name","Error");
 	m_spriteCoords = ParseXmlAttribute(node, "spriteCoords", IntVector2(0,0));
 	
+	m_canCapture = ParseXmlAttribute(node, "capture", false);
+	m_movement = ParseXmlAttribute(node, "movement", 1);
+
 	Strings a;
 	m_movementTags = ParseXmlAttribute(node, "movementTags", a);
 	m_attackTags = ParseXmlAttribute(node, "attackTags", a);
@@ -134,5 +138,6 @@ UnitDefinition* UnitDefinition::GetUnitDefinition(std::string name)
 	if(unitIterator != UnitDefinition::s_definitions.end()){ return unitIterator->second;}
 
 	//ERROR_AND_DIE("Could not find definition");
-	return nullptr;
+	DevConsole::GetInstance()->AddErrorMessage("Could not find unit: " + name + " so have a grunt");
+	return GetUnitDefinition("grunt");
 }

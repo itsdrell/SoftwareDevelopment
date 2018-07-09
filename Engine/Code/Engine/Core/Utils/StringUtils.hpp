@@ -38,3 +38,4 @@ bool ParseString( std::string text, bool defaultValue);
 float ParseString( std::string text, float defaultValue );
 Rgba ParseString( std::string text, Rgba defaultValue );
 Vector2 ParseString( std::string text, Vector2 defaultValue);
+IntVector2 ParseString( std::string& text, const IntVector2& defaultValue);

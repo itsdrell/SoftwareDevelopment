@@ -2,8 +2,8 @@
 
   <TileDefinition name="default" spriteCoords="0,0" rgbaValue="0,0,0" movement=""/>
 
-  <TileDefinition name="grass" spriteCoords="1,0" rgbaValue="0,255,0" movement="ground"/>
-  <TileDefinition name="water" spriteCoords="4,7" rgbaValue="0,0,255" movement="water"/>
+  <TileDefinition name="grass" spriteCoords="1,0" rgbaValue="0,255,0" movement="ground,air"/>
+  <TileDefinition name="water" spriteCoords="4,7" rgbaValue="0,0,255" movement="water,air"/>
   
 
 </TileDefinitions>

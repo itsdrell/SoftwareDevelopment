@@ -102,7 +102,7 @@ void HoverTile::CreateAttackTile()
 
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetSprite(newSprite);
-	m_renderable->SetLayer(HOVER_TILES);
+	m_renderable->SetLayer(UI);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }

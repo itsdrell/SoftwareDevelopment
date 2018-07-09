@@ -70,6 +70,15 @@ typedef RenderBuffer				UniformBuffer;
 void EngineStartUp();
 void EngineShutDown();
 
+template< typename T >
+bool IsIndexValid(uint idx, std::vector<T>& theVector);
+
+template< typename T >
+bool IsIndexValid(uint idx, std::vector<T>& theVector)
+{
+	return (idx > 0 && idx < theVector.size());
+}
+
 //====================================================================================
 // Externs
 //====================================================================================

@@ -6,7 +6,7 @@
 #include "Engine\ThirdParty\tinyxml\tinyxml2.h"
 #include "..\General\Tiles\TileDefinition.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
-#include "Engine\Core\Tools\ScopedProfile.hpp"
+#include "Engine\Core\Tools\Profiling\ScopedProfile.hpp"
 #include "..\General\UI\UIWidget.hpp"
 #include "..\General\GameObjects\Unit.hpp"
 

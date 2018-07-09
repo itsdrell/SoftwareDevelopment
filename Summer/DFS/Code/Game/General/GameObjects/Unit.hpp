@@ -39,6 +39,10 @@ public:
 public:
 	std::string			m_name;
 
+	
+	bool				m_canCapture;
+	int					m_movement;
+
 	IntVector2			m_spriteCoords;
 	AABB2				m_uvCoords;
 	
@@ -61,6 +65,7 @@ public:
 	Tags GetMovementTags() const { return m_definition->m_movementTags; }
 	Tags GetAttackTags() const { return m_definition->m_attackTags; }
 	std::string GetName() const { return m_definition->m_name; }
+	float GetMovement() const { return (float) m_definition->m_movement; }
 	
 	void Update();
 

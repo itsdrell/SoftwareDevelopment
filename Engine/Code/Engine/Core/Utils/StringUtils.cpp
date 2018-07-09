@@ -225,6 +225,30 @@ bool ParseString(std::string text, bool defaultValue)
 	return defaultValue;
 }
 
+IntVector2 ParseString(std::string& text, const IntVector2& defaultValue)
+{
+	IntVector2 result;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// String formatting stuff
+	text = RemoveCharacterFromString(text, "(");
+	text = RemoveCharacterFromString(text, ")");
+	Strings s = SplitString(text, ",");
+
+	//////////////////////////////////////////////////////////////////////////
+	// Catch exceptions
+	if(s.size() < 2)
+		return defaultValue;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Create result
+	result.x = ParseString(s.at(0), defaultValue.x);
+	result.y = ParseString(s.at(1), defaultValue.y);
+
+	return result;
+
+}
+
 uint GetLargestLengthInStrings(Strings listToCheck)
 {
 	uint result = 0;

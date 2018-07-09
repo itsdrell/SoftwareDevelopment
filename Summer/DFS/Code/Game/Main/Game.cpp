@@ -76,6 +76,7 @@ void Game::RegisterCommands()
 	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
 	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
 	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
+	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
 }
 
 void Game::Update()

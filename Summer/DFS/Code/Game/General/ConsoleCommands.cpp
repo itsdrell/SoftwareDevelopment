@@ -49,3 +49,28 @@ void CaptureBuilding(Command& theCommand)
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 	g_theCurrentMap->ClearHoverTiles();
 }
+
+void AddUnit(Command& theCommand)
+{
+	DevConsole* dc = DevConsole::GetInstance();
+	
+	// addUnit name team pos health 
+	std::string unitName = "grunt";
+	TeamName teamName = TEAM_RED;
+	IntVector2 pos = IntVector2(0,0);
+	int hp = 10;
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		unitName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		teamName = StringFromTeamName(theCommand.m_commandArguements.at(2));
+	if(IsIndexValid(3, theCommand.m_commandArguements))
+		pos = ParseString(theCommand.m_commandArguements.at(3), pos);
+	if(IsIndexValid(4, theCommand.m_commandArguements))
+		hp = ParseString(theCommand.m_commandArguements.at(4), hp);
+
+
+	g_theCurrentMap->CreateUnit(unitName, teamName, pos, hp);
+
+
+}

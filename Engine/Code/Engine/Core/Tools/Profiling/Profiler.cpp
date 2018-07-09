@@ -6,6 +6,7 @@
 #include "ProfilerUI.hpp"
 #include <algorithm>
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
+#include <vector>
 
 
 //====================================================================================
@@ -254,10 +255,10 @@ Profiler::Profiler() {}
 void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
-std::vector<double> Profiler::GetFrameLengths() { return std::vector<double> }
+std::vector<double> Profiler::GetFrameLengths() { return std::vector<double>(); }
 double Profiler::GetLongestFrame() { return 0.f; }
 ProfileMeasurement * Profiler::ProfileGetPreviousFrame(int skip_count) { return nullptr; }
-double ProfileMeasurement::GetTimeFromChildren() {}
+double ProfileMeasurement::GetTimeFromChildren() { return 0.0f; }
 void PauseProfiler(Command& theCommand) {}
 void ResumeProfiler(Command& theCommand) {}
 

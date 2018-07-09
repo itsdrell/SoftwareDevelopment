@@ -32,7 +32,7 @@
 void EndTurn(Command& theCommand);
 void HaveAUnitWait(Command& theCommand);
 void CaptureBuilding(Command& theCommand);
-
+void AddUnit(Command& theCommand);
 
 //====================================================================================
 // Externs

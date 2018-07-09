@@ -69,7 +69,7 @@ public:
 
 	void CreateMovementTiles(const Unit& theUnitToUse);
 	void CreateActionTiles(const Unit& theUnitToUse);
-	void CreateAttackTiles(const Unit& theUnitToUse);
+	void CreateAttackTiles(const Unit& theUnitToUse, bool showRange = false);
 
 	bool CanUnitCaptureBuilding(const Unit& theUnitToUse);
 	bool CanPlayerMoveThere(IntVector2& posToCheck);
@@ -89,7 +89,7 @@ public:
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
 	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
 	
-	void CreateUnit(std::string name, TeamName team, IntVector2 pos);
+	void CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
 	void CreateBuilding(const TeamName& team, const IntVector2& pos);
 	
 public:

@@ -385,6 +385,7 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 	Unit* target = theTile->m_unit;
 	m_selectedUnit->m_usedAction = true;
 	target->m_isDead = true;
+	theTile->m_unit = nullptr; // important for ui
 }
 
 void Map::CreateMovementTiles(const Unit& theUnitToUse)
@@ -397,7 +398,7 @@ void Map::CreateMovementTiles(const Unit& theUnitToUse)
 
 	m_heatmap->AddHeat(tileCoords);
 
-	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatLessOrEqual(3);
+	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatLessOrEqual(theUnitToUse.GetMovement());
 	
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
@@ -421,7 +422,7 @@ void Map::CreateActionTiles(const Unit& theUnitToUse)
 	CreateAttackTiles(theUnitToUse);
 }
 
-void Map::CreateAttackTiles(const Unit& theUnitToUse)
+void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 {
 	m_heatmap->ResetHeatMap();
 
@@ -435,17 +436,32 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse)
 
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
-		if(CanPlayerAttackUnitOnTile(theUnitToUse, tilePos.at(i)))
+		
+		// see if we want to get the attack range of the unit, or just show what we can attack
+		if(showRange == false)
+		{
+			if(CanPlayerAttackUnitOnTile(theUnitToUse, tilePos.at(i)))
+			{
+				HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
+
+				m_hoverTiles.push_back(newTile);
+			}
+		}
+		else
 		{
 			HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
 
 			m_hoverTiles.push_back(newTile);
 		}
+
 	}
 }
 
 bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)
 {
+	if(theUnitToUse.m_definition->m_canCapture == false)
+		return false;
+	
 	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
 	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
 
@@ -495,7 +511,8 @@ bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& 
 
 		if(theUnit->m_team != theUnitToUse.m_team)
 		{
-			return true;
+			if(DoTagsShareATag(theUnitToUse.m_definition->m_attackTags, theUnit->m_definition->m_attackTags))
+				return true;
 		}
 	}
 
@@ -622,11 +639,13 @@ bool Map::IsATeamWithoutUnits()
 	return false;
 }
 
-void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos)
+void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 {
 	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name));
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
 	newUnit->SetLocalPosition(position);
+
+	newUnit->m_health = hp;
 
 	// Put the unit on the tile
 	Tile* tilePlacedOn = GetTile(position);

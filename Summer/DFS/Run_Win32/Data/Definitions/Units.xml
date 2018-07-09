@@ -1,14 +1,61 @@
 <Units>
 
+
+<!-- GROUND UNITS --->
     <Unit
     name = "grunt"
-    attackRange = "1,1"
+    attackRange = "1~1"
+    movement = "3"
     movementTags = "ground"
     attackTags = "ground"
     spriteCoords = "0,3"
+    capture = "true"
 
     />
 
+    <Unit
+    name = "rockets"
+    movement = "2"
+    attackRange = "2~4"
+    movementTags = "ground"
+    attackTags = "ground"
+    spriteCoords = "3,2"
+
+    />
+
+<!-- NAVAL UNITS --->
+    <Unit
+    name = "sub"
+    movement = "4"
+    attackRange = "1"
+    movementTags = "water"
+    attackTags = "water"
+    spriteCoords = "3,0"
+
+    />
+
+
+
+<!-- AIR UNITS --->
+    <Unit
+    name = "jet"
+    movement = "4"
+    attackRange = "1"
+    movementTags = "air"
+    attackTags = "air"
+    spriteCoords = "1,1"
+
+    />
+
+    <Unit
+    name = "copter"
+    movement = "4"
+    attackRange = "1"
+    movementTags = "air"
+    attackTags = "air,ground,water"
+    spriteCoords = "3,1"
+
+    />
 
 </Units>
 
@@ -20,11 +67,12 @@
 
     <Unit
     name = ""
-    attackRange = "x,y"
+    attackRange = "x~y"
+    movement = "3"
     movementTags = "ground,water,air"
     attackTags = "ground,water,air"
     spriteCoords = "x,y"
-
+    capture = "true" -  this is only needed for units that can capture cause ill default it to false if it doesnt exist
     />
 
 -->

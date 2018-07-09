@@ -53,6 +53,7 @@ public:
 
 	void		CheckKeyBoardInputs();
 	void		MoveCamera();
+	void		ShowAttackRange();
 
 
 	void		AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }

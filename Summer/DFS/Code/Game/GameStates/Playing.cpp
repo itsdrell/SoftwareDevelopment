@@ -72,8 +72,8 @@ void Playing::StartUp()
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	m_currentMap->CreateUnit("grunt", TEAM_BLUE, IntVector2::ZERO);
-	m_currentMap->CreateUnit("grunt", TEAM_RED, IntVector2(6,0));
+	CommandRunScriptFromFile("LevelScripts/zooLevel");
+
 
 	m_currentMap->CreateBuilding(TEAM_NONE, IntVector2(1,1));
 	
@@ -261,6 +261,7 @@ void Playing::CheckKeyBoardInputs()
 	}
 
 
+	ShowAttackRange();
 
 	// do this last cause itll move the mouse 
 	MoveCamera();
@@ -280,5 +281,21 @@ void Playing::MoveCamera()
 		m_cameraLocation += Vector2::WEST * TILE_SIZE;
 }
 
+void Playing::ShowAttackRange()
+{
+	// show hover range
+	if(m_currentMap->m_selectedUnit != nullptr)
+	{
+		if(WasKeyJustPressed(G_THE_LETTER_R))
+		{
+			m_currentMap->CreateAttackTiles(*m_currentMap->m_selectedUnit, true);
+		}
+
+		if(WasKeyJustReleased(G_THE_LETTER_R))
+		{
+			m_currentMap->ClearHoverTiles();
+		}
+	}
+}
 
 
