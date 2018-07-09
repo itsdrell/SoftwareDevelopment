@@ -80,12 +80,14 @@ void HUD::RenderTileDisplay() const
 	// if there is a building, we are gonna replace the info
 	if(theBuilding != nullptr)
 	{
+		Sprite currentSprite = *theBuilding->m_renderable->GetSprite();
+		
 		color = GetColorFromTeamName(theBuilding->m_team);
-		imageUvs = AABB2(0.f, 1.f);
+		imageUvs = currentSprite.m_uv;
 		theTexture = theBuilding->m_renderable->GetSprite()->m_image;
 		nameText = theBuilding->m_name;
 		teamName = TeamNameToString(theBuilding->m_team);
-		health = "HP: " + theBuilding->m_health;
+		health = "HP: " + std::to_string(theBuilding->m_health);
 	}
 
 

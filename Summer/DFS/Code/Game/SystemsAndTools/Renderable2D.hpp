@@ -30,8 +30,10 @@ public:
 	Renderable2D();
 	~Renderable2D() {};
 
+	//#TODO Setters should delete previous things :(
+
 	// Get + Setters
-	void SetSprite( Sprite* sprite) { m_sprite = sprite; }
+	void SetSprite( Sprite* sprite);
 	Sprite* GetSprite() const { return m_sprite; }
 
 	void SetMesh( Mesh*	mesh);

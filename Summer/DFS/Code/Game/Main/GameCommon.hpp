@@ -24,18 +24,22 @@ constexpr float		HALF_TILE_SIZE = TILE_SIZE * .5f;
 //====================================================================================
 // ENUMS
 //====================================================================================
+
+// The order matters here because in the sprite sheet for buildings I get the sprite 
+// coords using this since they are all in one row
 enum TeamName
 {
-	TEAM_NONE = -1,
 	TEAM_BLUE,
-	TEAM_GREEN,
 	TEAM_RED,
+	TEAM_NONE,
+	TEAM_GREEN,
 	TEAM_YELLOW,
 	NUM_OF_TEAMS
 };
 std::string TeamNameToString(TeamName team);
 TeamName StringFromTeamName(std::string name);
 Rgba GetColorFromTeamName(TeamName team);
+Strings GetAllTeamNames();
 
 
 enum SORTING_LAYER
@@ -72,6 +76,7 @@ extern AudioSystem*		g_audio; // not the audio cause we could have multiple...?
 
 extern SpriteSheet		g_blueUnitSpriteSheet;
 extern SpriteSheet		g_redUnitSpriteSheet;
+extern SpriteSheet		g_buildingSpriteSheet;
 
 //====================================================================================
 // Written by Zachary Bracken : [6/19/2018]

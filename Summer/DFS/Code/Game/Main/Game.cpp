@@ -77,6 +77,7 @@ void Game::RegisterCommands()
 	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
 	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
 	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
+	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
 }
 
 void Game::Update()

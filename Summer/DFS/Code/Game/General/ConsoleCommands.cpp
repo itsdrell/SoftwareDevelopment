@@ -41,7 +41,8 @@ void CaptureBuilding(Command& theCommand)
 		DevConsole::GetInstance()->AddErrorMessage("No building or unit selected");
 		return;
 	}
-	g_theCurrentMap->m_buildingToCapture->m_team = g_theCurrentMap->m_selectedUnit->m_team;
+
+	g_theCurrentMap->m_buildingToCapture->Captured(g_theCurrentMap->m_selectedUnit->m_team); 
 
 	// reset state
 	g_theCurrentMap->m_selectedUnit->m_usedAction = true;
@@ -51,7 +52,7 @@ void CaptureBuilding(Command& theCommand)
 }
 
 void AddUnit(Command& theCommand)
-{
+{	
 	DevConsole* dc = DevConsole::GetInstance();
 	
 	// addUnit name team pos health 
@@ -70,7 +71,79 @@ void AddUnit(Command& theCommand)
 		hp = ParseString(theCommand.m_commandArguements.at(4), hp);
 
 
-	g_theCurrentMap->CreateUnit(unitName, teamName, pos, hp);
+	if(unitName == "help")
+	{
 
+		dc->AddHeader("Possible Units to spawn", Rgba::WHITE);
+		
+		Strings unitNames = UnitDefinition::GetAllUnitNames();
+		for(uint i = 0; i < unitNames.size(); i++)
+		{
+			dc->AddConsoleDialogue(unitNames.at(i), GetRainbowColor((int) i , (int) unitNames.size()));
+		}
+		
+		dc->AddSpace(1);
+		dc->AddConsoleDialogue("Possible Team to spawn from", Rgba::WHITE);
+
+		Strings teamNames = GetAllTeamNames();
+		for(uint i = 0; i < teamNames.size(); i++)
+		{
+			dc->AddConsoleDialogue(teamNames.at(i), GetColorFromTeamName(StringFromTeamName(teamNames.at(i))));
+		}
+
+		dc->AddFooter();
+		
+	}
+	else
+	{
+		g_theCurrentMap->CreateUnit(unitName, teamName, pos, hp);
+	}
+
+}
+
+void AddBuilding(Command& theCommand)
+{
+	DevConsole* dc = DevConsole::GetInstance();
+	
+	// addUnit name team pos health 
+	std::string buildingName = "default";
+	TeamName teamName = TEAM_RED;
+	IntVector2 pos = IntVector2(0,0);
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		buildingName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		teamName = StringFromTeamName(theCommand.m_commandArguements.at(2));
+	if(IsIndexValid(3, theCommand.m_commandArguements))
+		pos = ParseString(theCommand.m_commandArguements.at(3), pos);
+
+
+	if(buildingName == "help")
+	{
+
+		dc->AddHeader("Possible Buildings to spawn", Rgba::WHITE);
+
+		Strings buildingNames = BuildingDefinition::GetAllBuildingNames();
+		for(uint i = 0; i < buildingNames.size(); i++)
+		{
+			dc->AddConsoleDialogue(buildingNames.at(i), GetRainbowColor((int) i , (int) buildingNames.size()));
+		}
+
+		dc->AddSpace(1);
+		dc->AddConsoleDialogue("Possible Team to spawn from", Rgba::WHITE);
+
+		Strings teamNames = GetAllTeamNames();
+		for(uint i = 0; i < teamNames.size(); i++)
+		{
+			dc->AddConsoleDialogue(teamNames.at(i), GetColorFromTeamName(StringFromTeamName(teamNames.at(i))));
+		}
+
+		dc->AddFooter();
+
+	}
+	else
+	{
+		g_theCurrentMap->CreateBuilding(buildingName, teamName, pos);
+	}
 
 }

@@ -90,7 +90,7 @@ public:
 	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
 	
 	void CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
-	void CreateBuilding(const TeamName& team, const IntVector2& pos);
+	void CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos);
 	
 public:
 	std::string							m_name;

@@ -7,16 +7,19 @@ std::string TeamNameToString(TeamName team)
 	switch (team)
 	{
 	case TEAM_BLUE:
-		name = "BLUE";
+		name = "blue";
 		break;
 	case TEAM_GREEN:
-		name = "GREEN";
+		name = "green";
 		break;
 	case TEAM_RED:
-		name = "RED";
+		name = "red";
 		break;
 	case TEAM_YELLOW:
-		name = "YELLOW";
+		name = "yellow";
+		break;
+	case TEAM_NONE:
+		name = "none";
 		break;
 	default:
 		name = "idk";
@@ -37,7 +40,8 @@ TeamName StringFromTeamName(std::string name)
 		return TEAM_RED;
 	if(name == "yellow")
 		return TEAM_YELLOW;
-
+	if(name == "none")
+		return TEAM_NONE;
 
 	return TEAM_RED;
 }
@@ -68,6 +72,18 @@ Rgba GetColorFromTeamName(TeamName team)
 	return color;
 }
 
+Strings GetAllTeamNames()
+{
+	Strings result;
+
+	for(int i = 0; i < NUM_OF_TEAMS; i++)
+	{
+		result.push_back(TeamNameToString((TeamName) i));
+	}
+
+	return result;
+}
+
 Renderer* g_theRenderer = nullptr;
 InputSystem* g_theInput = nullptr;
 AudioSystem* g_audio = nullptr;
@@ -75,4 +91,5 @@ AudioSystem* g_audio = nullptr;
 
 SpriteSheet		g_blueUnitSpriteSheet;
 SpriteSheet		g_redUnitSpriteSheet;
+SpriteSheet		g_buildingSpriteSheet;
 /*Lives* g_amountOfLives = new Lives();*/

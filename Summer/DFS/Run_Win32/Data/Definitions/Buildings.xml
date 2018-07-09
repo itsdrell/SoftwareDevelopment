@@ -1,0 +1,59 @@
+<Buildings>
+
+  <Building
+  name = "default"
+  underTile = "grass"
+  spriteCoords = "0,2"
+  
+  />
+
+  <Building
+  name = "factory"
+  underTile = "grass"
+  isFactory = "true"
+  spriteCoords = "1,2"
+  
+  />
+
+  <Building
+  name = "airPort"
+  underTile = "grass"
+  isFactory = "true"
+  spriteCoords = "2,2"
+  
+  />
+
+  <Building
+  name = "seaPort"
+  underTile = "shore"
+  isFactory = "true"
+  spriteCoords = "3,2"
+  
+  />
+  
+
+</Buildings>
+
+
+<!-- 
+
+
+  NOTES: 
+
+  - We might later want to change it from sprite coords and specifically allow the user to assign
+  -- sprite indexes so its more customizable (so redTeamBuilding is x,y and blueTeamBuilding is a,b)
+
+  <Building
+  name = "default"
+  isHQ = "false"
+  isFactory = "false"
+  underTile = "grass"
+  spriteCoords = "0,2"
+  
+  />
+
+
+
+
+
+--->

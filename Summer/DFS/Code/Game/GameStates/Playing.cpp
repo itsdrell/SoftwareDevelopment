@@ -73,9 +73,6 @@ void Playing::StartUp()
 	//---------------------------------------------------------
 	// Creating a test scene
 	CommandRunScriptFromFile("LevelScripts/zooLevel");
-
-
-	m_currentMap->CreateBuilding(TEAM_NONE, IntVector2(1,1));
 	
 }
 

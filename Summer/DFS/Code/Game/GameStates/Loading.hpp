@@ -29,6 +29,7 @@ public:
 	void LoadTileDefinitions();
 	void LoadWidgetDefinitions();
 	void LoadUnitDefinitions();
+	void LoadBuildingDefinitions();
 	
 	void LoadSpriteSheets();
 

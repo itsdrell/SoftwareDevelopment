@@ -658,16 +658,20 @@ void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 	AddUnit(*newUnit);
 }
 
-void Map::CreateBuilding(const TeamName& team, const IntVector2& pos)
+void Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
 {
-	Building* newBuilding = new Building();
+	Building* newBuilding = new Building(team, *BuildingDefinition::GetDefinition(name));
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
 	newBuilding->SetLocalPosition(position);
 
 	Tile* tilePlacedOn = GetTile(position);
 	tilePlacedOn->m_building = newBuilding;
 
-	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
+	if(tilePlacedOn->m_definition != newBuilding->m_definition->m_tileToSpawnBeneath)
+		tilePlacedOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;
+
+	if(team != TEAM_NONE)
+		m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
 
 	AddGameObject(*newBuilding);
 	AddBuilding(*newBuilding);

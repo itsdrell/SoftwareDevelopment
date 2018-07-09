@@ -4,3 +4,8 @@ addUnit rockets blue 1,1
 addUnit sub blue 7,7
 addUnit jet red 2,1
 addUnit copter blue 4,1
+
+addBuilding factory blue 1,1
+addBuilding default none 0,2
+addBuilding airPort blue 0,3
+addBuilding seaPort blue 3,3

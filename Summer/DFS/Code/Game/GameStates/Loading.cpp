@@ -9,6 +9,7 @@
 #include "Engine\Core\Tools\Profiling\ScopedProfile.hpp"
 #include "..\General\UI\UIWidget.hpp"
 #include "..\General\GameObjects\Unit.hpp"
+#include "..\General\GameObjects\Building.hpp"
 
 Loading::Loading()
 {
@@ -36,6 +37,7 @@ void Loading::LoadDefinitions()
 	LoadTileDefinitions();
 	LoadWidgetDefinitions();
 	LoadUnitDefinitions();
+	LoadBuildingDefinitions();
 }
 
 void Loading::LoadTileDefinitions()
@@ -98,6 +100,26 @@ void Loading::LoadUnitDefinitions()
 	}
 }
 
+void Loading::LoadBuildingDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Buildings.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: UIWidgets");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		BuildingDefinition* newDef = new BuildingDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
 void Loading::LoadSpriteSheets()
 {
 	// Create the global sprite sheet for all the textures to use
@@ -109,6 +131,9 @@ void Loading::LoadSpriteSheets()
 
 	Texture* redTex = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/redUnits.png");
 	g_redUnitSpriteSheet = SpriteSheet(redTex, 5, 4);
+
+	Texture* buildingTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/Buildings.png");
+	g_buildingSpriteSheet = SpriteSheet(buildingTexture, 4,3);
 }
 
 void Loading::Update()

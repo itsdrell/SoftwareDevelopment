@@ -1071,6 +1071,19 @@ void DevConsole::AddSpace(uint lines)
 	}
 }
 
+void DevConsole::AddHeader(const std::string & text, const Rgba & theColor, int padding)
+{
+	AddSpace(padding);
+	AddConsoleDialogue(SEPERATOR_TEXT, theColor);
+	AddConsoleDialogue(text, theColor);
+}
+
+void DevConsole::AddFooter(const Rgba & theColor, int padding)
+{
+	AddConsoleDialogue(SEPERATOR_TEXT, theColor);
+	AddSpace(padding);
+}
+
 std::vector<ConsoleDialogue> DevConsole::GetHistory()
 {
 	return s_history;

@@ -14,6 +14,9 @@ class Texture;
 class Camera;
 class Mesh;
 
+
+#define SEPERATOR_TEXT ("-------------------------------------------------------------")
+
 //////////////////////////////////////////////////////////////////////////
 // Creating a struct that holds what needs to be printed for the console
 struct ConsoleDialogue
@@ -91,6 +94,8 @@ public:
 	static void AddErrorMessage(std::string errorText);
 	static void ClearConsoleOutput();
 	static void AddSpace(uint lines);
+	static void AddHeader(const std::string& text, const Rgba& theColor = Rgba::WHITE, int padding = 1);
+	static void AddFooter(const Rgba& theColor = Rgba::WHITE, int padding = 1);
 	static std::vector<ConsoleDialogue> GetHistory();
 
 

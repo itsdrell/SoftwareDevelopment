@@ -44,6 +44,7 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 	m_health = 10;
 	m_team = team;
 	m_definition = &def;
+	m_name = m_definition->m_name;
 
 	//--------------------------------------------------------------------------
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
@@ -140,4 +141,19 @@ UnitDefinition* UnitDefinition::GetUnitDefinition(std::string name)
 	//ERROR_AND_DIE("Could not find definition");
 	DevConsole::GetInstance()->AddErrorMessage("Could not find unit: " + name + " so have a grunt");
 	return GetUnitDefinition("grunt");
+}
+
+Strings UnitDefinition::GetAllUnitNames()
+{
+	Strings result;
+	
+	std::map<std::string,UnitDefinition*>::iterator unitIterator;
+
+	for(unitIterator = s_definitions.begin(); unitIterator != s_definitions.end(); unitIterator++)
+	{
+		std::string current = unitIterator->second->m_name;
+		result.push_back(current);
+	}
+
+	return result;
 }

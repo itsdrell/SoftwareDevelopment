@@ -33,6 +33,7 @@ public:
 
 
 	static UnitDefinition* GetUnitDefinition(std::string name);
+	static Strings GetAllUnitNames();
 
 	static std::map<std::string, UnitDefinition*>	s_definitions;
 

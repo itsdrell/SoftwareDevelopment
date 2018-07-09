@@ -14,6 +14,7 @@ class Sprite
 {
 public:
 	Sprite() {}
+	~Sprite() {}
 	Sprite(Texture& theTextureToUse, Vector2 dimensions, float pixelsPerUnit = 1.f, Vector2 pivot = Vector2(.5f,.5f), AABB2 theUVs = AABB2(0.f,0.f,1.f,1.f));
 	Sprite(std::string pathOfTexture, Vector2 dimensions, float pixelsPerUnit = 1.f, Vector2 pivot = Vector2(.5f,.5f), AABB2 theUVs = AABB2(0.f,0.f,1.f,1.f));
 
