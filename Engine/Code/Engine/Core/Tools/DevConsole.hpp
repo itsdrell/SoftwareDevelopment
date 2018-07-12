@@ -1,9 +1,10 @@
 #pragma once
 #include "Engine/Math/Geometry/AABB2.hpp"
 #include "Engine/Core/General/Rgba.hpp"
+#include "Engine/Renderer/Pipeline/renderbuffer.hpp"
+#include "Engine/Async/ThreadSafeQueue.hpp"
 #include <vector>
 #include <string>
-#include "Engine/Renderer/Pipeline/renderbuffer.hpp"
 #include "Stopwatch.hpp"
 #include "LogSystem.hpp"
 
@@ -47,6 +48,7 @@ public:
 
 	// Handles all input
 	void Update();
+	void CheckAndAddThreadQueue();
 
 	// Renders the display
 	void Render(); 
@@ -92,6 +94,7 @@ public:
 	static DevConsole* GetInstance(); 
 	static void	AddConsoleDialogue(ConsoleDialogue newDialogue);
 	static void AddConsoleDialogue(const std::string& text, const Rgba& color = GetRandomColorInRainbow());
+	static void AddConsoleDialogueToQueue(const std::string& text, const Rgba& color = GetRandomColorInRainbow());
 	static void AddErrorMessage(std::string errorText);
 	static void ClearConsoleOutput();
 	static void AddSpace(uint lines);
@@ -150,10 +153,11 @@ private:
 	float	m_yheightToGrow;
 
 	// Inputs
-	static std::vector<ConsoleDialogue>		s_history;
-	std::vector<std::string>				m_commandHistory;
-	int									    m_commandHistoryIndex;
-	std::string								m_currentEntry;
+	static std::vector<ConsoleDialogue>			s_history;
+	static ThreadSafeQueue<ConsoleDialogue>		s_dialogueQueue;
+	std::vector<std::string>					m_commandHistory;
+	int											m_commandHistoryIndex;
+	std::string									m_currentEntry;
 
 
 	// Background

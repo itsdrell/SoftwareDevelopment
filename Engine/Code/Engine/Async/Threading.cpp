@@ -105,7 +105,7 @@ void ThreadCreateAndDetach(thread_cb cb, void * user_data)
 
 void ThreadSleep(uint ms)
 {
-	std::this_thread::sleep_for(std::chrono::seconds(ms));
+	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
 void ThreadYield()

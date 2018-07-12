@@ -58,11 +58,17 @@ STATIC void LogSystem::LogThreadWorker(void * data)
 	while (g_LogSystem->IsRunning()) 
 	{
 		g_LogSystem->Flush(); 
-		ThreadSleep(1);  // this makes my close slow :(
+		ThreadSleep(10);  
 	}
 
 	// do the inner side of the loop again right before exiting
 	g_LogSystem->Flush(); 
+
+}
+
+void LogFlush()
+{
+
 }
 
 //--------------------------------------------------------------------------

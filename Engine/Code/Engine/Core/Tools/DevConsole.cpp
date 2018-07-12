@@ -27,7 +27,8 @@
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
-std::vector<ConsoleDialogue> DevConsole::s_history;
+std::vector<ConsoleDialogue>		DevConsole::s_history;
+ThreadSafeQueue<ConsoleDialogue>	DevConsole::s_dialogueQueue;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -172,7 +173,7 @@ void ConsolePrintf(char const *format, ...)
 void PrintLogToConsole(const Log& data)
 {
 	String text = data.tag + " : " + data.text;
-	DevConsole::AddConsoleDialogue(text, GetRandomColorInRainbow());
+	DevConsole::AddConsoleDialogueToQueue(text, GetRandomColorInRainbow());
 }
 
 void CommandRunScript(char const* theCommand)
@@ -299,6 +300,9 @@ void DevConsole::Update()
 
 	float ds = g_theMasterClock->deltaTime;
 
+	// See if we got any new dialogue from a thread
+	CheckAndAddThreadQueue();
+
 	UpdateTimer(ds);
 	UpdateFPS(ds);
 	TrackHighlightSelection();
@@ -306,6 +310,21 @@ void DevConsole::Update()
 	HandleAutoComplete();
 	UpdateRoll(ds);
 	
+}
+
+void DevConsole::CheckAndAddThreadQueue()
+{
+	ConsoleDialogue data; 
+	bool genMesh = false;
+
+	while (s_dialogueQueue.dequeue(&data)) 
+	{
+		AddConsoleDialogue(data);
+		genMesh = true;
+	}
+	
+	if(genMesh)
+		GenerateTextMesh();
 }
 
 void DevConsole::Render()
@@ -1082,6 +1101,11 @@ void DevConsole::AddConsoleDialogue(ConsoleDialogue newDialogue)
 void DevConsole::AddConsoleDialogue(const std::string& text, const Rgba& color)
 {
 	DevConsole::AddConsoleDialogue(ConsoleDialogue(text, color));
+}
+
+void DevConsole::AddConsoleDialogueToQueue(const std::string& text, const Rgba& color /*= GetRandomColorInRainbow()*/)
+{
+	s_dialogueQueue.enqueue(ConsoleDialogue(text, color));
 }
 
 void DevConsole::AddErrorMessage(std::string errorText)
