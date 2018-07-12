@@ -72,7 +72,7 @@ void App::StartUp()
 {
 	g_theGame->StartUp();
 
-	//ThreadCreateAndDetach((thread_cb) LogTaggedPrintv, "Test stuff", "Another tag", nullptr);
+	CommandRegister("threadTest", "", "print a bunch to a file", RunThreadTest);
 }
 
 void App::RunFrame()
@@ -150,10 +150,10 @@ void App::LoadFromXML( const std::string& filePath, Blackboard& out_whereToStore
 }
 
 
-void Test()
+void ThreadTest()
 {
 	std::ofstream outputFile;
-	outputFile.open("test.txt", std::fstream::trunc); 
+	outputFile.open("Log/test.txt", std::fstream::trunc); 
 
 	if(outputFile.is_open() == false)
 		return DebuggerPrintf("\n Didn't work\n");
@@ -167,4 +167,10 @@ void Test()
 
 	outputFile.close(); 
 	DebuggerPrintf( "Finished ThreadTestWork" );
+}
+
+void RunThreadTest(Command& cb)
+{
+	UNUSED(cb);
+	ThreadCreateAndDetach((thread_cb) ThreadTest, nullptr);
 }

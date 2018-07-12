@@ -310,26 +310,10 @@ void Renderer::CheckToCreateScreenshot()
 	if(m_takeScreenshot == false)
 		return;
 
-	if(m_screenshotTexture != nullptr)
-		delete m_screenshotTexture;
-
-	m_screenshotTexture = Texture::CreateCompatible(m_defaultColorTarget);
-
-	ThreadCreateAndDetach( (thread_cb) CreateScreenshot);
-	m_takeScreenshot = false;
-}
-
-void CreateScreenshot()
-{
-	std::string path = "..\\Run_Win32\\Screenshots\\";
-	std::string timeStamp = CurrentDateTime();
-
-	std::string filename = path+timeStamp + ".png";
-
-
 	// Take the shot
-	Renderer::GetInstance()->m_screenshotTexture->CreatePNGFromTexture(filename);
+	m_defaultColorTarget->CreatePNGFromTexture();
 
+	m_takeScreenshot = false;
 }
 
 void Renderer::DrawPoint(const Vector3& position, Rgba theColor /*= Rgba::WHITE*/)

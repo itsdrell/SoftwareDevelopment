@@ -9,6 +9,16 @@
 
 class Image;
 
+struct ScreenShot
+{
+	ScreenShot(unsigned char* data, const IntVector2& dim)
+		: m_data(data)
+		, m_dimensions(dim) {}
+	
+	unsigned char*		m_data;
+	IntVector2			m_dimensions;
+};
+
 //---------------------------------------------------------------------------
 class Texture
 {
@@ -31,9 +41,8 @@ private:
 
 	static Texture* CreateCompatible(Texture* theTextureToUse);
 
-public:
-
-	bool CreatePNGFromTexture(std::string nameOfPath);
+	bool CreatePNGFromTexture();
+	
 
 private:
 	unsigned int								m_textureID;
@@ -49,3 +58,4 @@ public:
 };
 
 
+void CreateScreenshotPNG(void* imageData);

@@ -10,6 +10,8 @@
 #include "Engine/Renderer/glfunctions.h"
 #include "Engine/ThirdParty/stbi/stb_image_write.h"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Core/Platform/Time.hpp"
+#include "Engine/Async/Threading.hpp"
 
 
 //-----------------------------------------------------------------------------------------------
@@ -163,9 +165,8 @@ Texture* Texture::CreateFromFile(const std::string& imageFilePath)
 	return newTexture;
 }
 
-bool Texture::CreatePNGFromTexture(std::string nameOfPath)
+bool Texture::CreatePNGFromTexture()
 {
-	
 	// example found here http://docs.gl/gl4/glGetTexImage
 	glBindTexture( GL_TEXTURE_2D, m_textureID );    // bind our texture to our current texture unit (0)
 
@@ -173,15 +174,35 @@ bool Texture::CreatePNGFromTexture(std::string nameOfPath)
 	m_data = (unsigned char*)malloc(size);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE,m_data);
 	
+	ScreenShot* ss = new ScreenShot(m_data, m_dimensions);
+	ThreadCreateAndDetach((thread_cb) CreateScreenshotPNG, (void*)ss);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the png
-	stbi_flip_vertically_on_write(1);
-	
-	// char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes
-	int flag = stbi_write_png(nameOfPath.c_str(), m_dimensions.x, m_dimensions.y, 4, m_data, 0); // using zero auto formats
+	//stbi_flip_vertically_on_write(1);
+	//
+	//// char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes
+	//int flag = stbi_write_png(nameOfPath.c_str(), m_dimensions.x, m_dimensions.y, 4, m_data, 0); // using zero auto formats
 
-	return (bool) flag;
+	return (bool) true;
+}
+
+void CreateScreenshotPNG(void* imageData)
+{
+	ScreenShot* shot = (ScreenShot*) imageData;
+	
+	std::string path = "..\\Run_Win32\\Screenshots\\";
+	std::string timeStamp = CurrentDateTime();
+
+	std::string filename = path+timeStamp + ".png";
+	
+	stbi_flip_vertically_on_write(1);
+
+	// char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes
+	int flag = stbi_write_png(filename.c_str(), shot->m_dimensions.x, shot->m_dimensions.y, 4, shot->m_data, 0); // using zero auto formats
+
+	delete shot->m_data;
+	delete shot;
 }
 
 bool Texture::CreateRenderTarget(int width, int height, eTextureFormat fmt)

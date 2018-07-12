@@ -273,6 +273,3 @@ public:
 void GLShutdown();
 void BindNewWGLFunctions();
 void BindGLFunctions();
-
-
-void CreateScreenshot();

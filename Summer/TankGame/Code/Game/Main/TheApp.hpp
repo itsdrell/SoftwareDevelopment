@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Core/Tools/Command.hpp"
 #include <string>
 
 class Blackboard;
@@ -25,6 +26,7 @@ public:
 	
 };
 
-void Test();
+void RunThreadTest(Command& cb);
+void ThreadTest();
 
 extern App* g_theApp;
