@@ -17,7 +17,10 @@
 #include "Engine/Core/Tools/Profiling/Profiler.hpp"
 #include "Engine/Core/Tools/Profiling/ProfilerReport.hpp"
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
-
+#include "Engine/Async/Threading.hpp"
+#include <iostream>
+#include <fstream>
+#include "Engine/Core/Tools/LogSystem.hpp"
 
 //  For testing blackboard
 // #include "Engine/Math/IntRange.hpp"
@@ -68,6 +71,8 @@ App::~App()
 void App::StartUp()
 {
 	g_theGame->StartUp();
+
+	//ThreadCreateAndDetach((thread_cb) LogTaggedPrintv, "Test stuff", "Another tag", nullptr);
 }
 
 void App::RunFrame()
@@ -121,6 +126,11 @@ void App::Update()
 		Shader::ReloadShaders();
 	}
 
+	if(WasKeyJustPressed(G_THE_LETTER_Z))
+	{
+		LogTaggedPrintv("Zac", "THIS IS A TEST NUMBER %i", 10);
+	}
+
 }
 
 void App::LoadFromXML( const std::string& filePath, Blackboard& out_whereToStoreValues )
@@ -137,4 +147,24 @@ void App::LoadFromXML( const std::string& filePath, Blackboard& out_whereToStore
 	// Populate the blackboard that we wanted
 	out_whereToStoreValues.PopulateFromXmlElementAttributes( *rootElement );
 
+}
+
+
+void Test()
+{
+	std::ofstream outputFile;
+	outputFile.open("test.txt", std::fstream::trunc); 
+
+	if(outputFile.is_open() == false)
+		return DebuggerPrintf("\n Didn't work\n");
+
+	for (uint i = 0; i < 12000000; ++i) {
+		uint rand_uint = GetRandomIntRange(0,1); 
+		std::string log = std::to_string(rand_uint);
+
+		outputFile << log;
+	}
+
+	outputFile.close(); 
+	DebuggerPrintf( "Finished ThreadTestWork" );
 }

@@ -5,6 +5,7 @@
 #include "Game/Main/GameCommon.hpp"
 #include "../Platform/Window.hpp"
 #include "Engine/Core/Tools/Profiling/Profiler.hpp"
+#include "../Tools/LogSystem.hpp"
 
 
 //====================================================================================
@@ -21,6 +22,8 @@ void EngineStartUp()
 	Renderer* renderer = new Renderer();
 
 	renderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
+
+	LogSystemStartUp();
 
 	audio = nullptr;
 	input = nullptr;
@@ -39,4 +42,6 @@ void EngineShutDown()
 
 	if(Profiler::GetInstance() != nullptr)
 		delete Profiler::GetInstance();
+
+	LogSystemShutDown();
 }

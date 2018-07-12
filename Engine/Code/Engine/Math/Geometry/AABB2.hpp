@@ -48,5 +48,5 @@ public:
 	Vector2 maxs;
 };
 
-
+//Vector2 GetAlignedPosition( const AABB2& box, const Vector2& align ); 
 AABB2 GetBounds(const AABB2& theBounds, const Vector2& minPercentage, const Vector2& maxPercentage);

@@ -5,6 +5,7 @@
 #include <string>
 #include "Engine/Renderer/Pipeline/renderbuffer.hpp"
 #include "Stopwatch.hpp"
+#include "LogSystem.hpp"
 
 
 
@@ -183,11 +184,13 @@ public:
 bool IsDevConsoleOpen();  
 
 // Should add a line of coloured text to the output 
-//void ConsolePrintf( const Rgba &color, char const *format, ... ); 
+void ConsolePrintf( const Rgba &color, char const *format, ... ); 
 
 // Same as previous, be defaults to a color visible easily on your console
-//void ConsolePrintf( char const *format, ... ); 
+void ConsolePrintf( char const *format, ... ); 
 
+
+void PrintLogToConsole(const Log& data);
 
 void CommandRunScript(char const* theCommand);
 void CommandRunScriptFromFile(char const* filePath);

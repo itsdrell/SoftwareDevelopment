@@ -27,11 +27,13 @@ private:
 	Texture* CreateFromImage(Image imageToCreateFrom);
 	Texture* CreateFromFile(const std::string& imageFilePath);
 
-	bool CreatePNGFromTexture(std::string nameOfPath);
-
 	bool CreateRenderTarget( int width, int height, eTextureFormat fmt );
 
 	static Texture* CreateCompatible(Texture* theTextureToUse);
+
+public:
+
+	bool CreatePNGFromTexture(std::string nameOfPath);
 
 private:
 	unsigned int								m_textureID;

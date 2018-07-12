@@ -68,6 +68,7 @@ public:
 	// Screenshot
 	void PrepForScreenShot() {m_takeScreenshot = true;}
 	void CheckToCreateScreenshot();
+	
 
 	// Draw functions
 	void DrawPoint(const Vector3& position, Rgba theColor = Rgba::WHITE);
@@ -213,11 +214,11 @@ public:
 
 public:
 	
-	Camera*	m_defaultCamera;
-	Camera*	m_defaultUICamera;
-	Camera* m_currentCamera;
-	Camera*	m_effectCamera;
-	Camera*	m_debugCamera;
+	Camera*	m_defaultCamera = nullptr;
+	Camera*	m_defaultUICamera = nullptr;
+	Camera* m_currentCamera = nullptr;
+	Camera*	m_effectCamera = nullptr;
+	Camera*	m_debugCamera = nullptr;
 	
 	// Containers
 	std::vector<Texture*>					m_listOfTextures;
@@ -260,6 +261,7 @@ public:
 	Texture*				m_defaultDepthTarget = nullptr;
 	Texture*				m_effectTarget = nullptr;
 	Texture*				m_effectScratch = nullptr;
+	Texture*				m_screenshotTexture = nullptr;
 
 	BitmapFont*				m_defaultFont = nullptr;
 
@@ -273,4 +275,4 @@ void BindNewWGLFunctions();
 void BindGLFunctions();
 
 
- 
+void CreateScreenshot();

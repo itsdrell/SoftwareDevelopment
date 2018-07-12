@@ -253,6 +253,12 @@ AABB2 AABB2::operator+(const Vector2& translation) const
 	return newAABB2;
 }
 
+
+// Vector2 GetAlignedPosition(const AABB2& box, const Vector2& align)
+// {
+// 	return box.mins + align * box.GetDimensions();
+// }
+
 //====================================================================================
 AABB2 GetBounds(const AABB2& theBounds, const Vector2& minPercentage, const Vector2& maxPercentage)
 {

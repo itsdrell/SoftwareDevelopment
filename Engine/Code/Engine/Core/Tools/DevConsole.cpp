@@ -143,6 +143,38 @@ bool IsDevConsoleOpen()
 	return DevConsole::GetInstance()->IsOpen();
 }
 
+void ConsolePrintf(const Rgba &color, char const *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[1000];
+	vsnprintf_s(buffer, 1000, format, args);
+	va_end(args);
+
+	std::string text = Stringf(format, args);
+
+	DevConsole::AddConsoleDialogue(text, color);
+}
+
+void ConsolePrintf(char const *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[1000];
+	vsnprintf_s(buffer, 1000, format, args);
+	va_end(args);
+
+	std::string text = Stringf(format, args);
+
+	DevConsole::AddConsoleDialogue(text, GetRandomColorInRainbow());
+}
+
+void PrintLogToConsole(const Log& data)
+{
+	String text = data.tag + " : " + data.text;
+	DevConsole::AddConsoleDialogue(text, GetRandomColorInRainbow());
+}
+
 void CommandRunScript(char const* theCommand)
 {
 	DevConsole* dc = DevConsole::GetInstance();
@@ -256,6 +288,8 @@ void DevConsole::CreateDefaultCommands()
 
 	//CommandRegister("echo_with_color","Type: echo_with_color r,g,b,a ''string''", "Prints a colored string", PrintStringWithAColor);
 
+	// Let the LogSystem know we too want the data (hook it up)
+	LogSystem::AddHook((log_cb) PrintLogToConsole, nullptr);
 
 }
 

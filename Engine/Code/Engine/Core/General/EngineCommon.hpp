@@ -41,7 +41,7 @@ class RenderBuffer;
 // Unimplemented (Todo comment on steroids)
 #define UNIMPLEMENTED()  TODO( "IMPLEMENT: " QUOTE(__FILE__) " (" QUOTE(__LINE__) ")" ); ASSERT_RECOVERABLE(1,"")
 
-
+typedef std::string					String;
 typedef std::vector<std::string>	Strings;
 typedef std::vector<int>			Ints;
 typedef unsigned int				uint;

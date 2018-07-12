@@ -258,6 +258,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Async\Threading.cpp" />
     <ClCompile Include="Audio\AudioSystem.cpp" />
     <ClCompile Include="Core\General\Blackboard.cpp" />
     <ClCompile Include="Core\General\Camera.cpp" />
@@ -273,6 +274,7 @@
     <ClCompile Include="Core\Tools\Command.cpp" />
     <ClCompile Include="Core\Tools\DevConsole.cpp" />
     <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp" />
+    <ClCompile Include="Core\Tools\LogSystem.cpp" />
     <ClCompile Include="Core\Tools\Profiling\Profiler.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ProfilerReport.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ProfilerUI.cpp" />
@@ -340,6 +342,8 @@
     <ClCompile Include="ThirdParty\tinyxml\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Async\Threading.hpp" />
+    <ClInclude Include="Async\ThreadSafeQueue.hpp" />
     <ClInclude Include="Audio\AudioSystem.hpp" />
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\General\Camera.hpp" />
@@ -355,6 +359,7 @@
     <ClInclude Include="Core\Tools\Command.hpp" />
     <ClInclude Include="Core\Tools\DevConsole.hpp" />
     <ClInclude Include="Core\Tools\ErrorWarningAssert.hpp" />
+    <ClInclude Include="Core\Tools\LogSystem.hpp" />
     <ClInclude Include="Core\Tools\Profiling\Profiler.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerUI.hpp" />

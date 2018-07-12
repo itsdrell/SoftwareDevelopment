@@ -259,6 +259,12 @@
     <ClCompile Include="Core\Tools\Profiling\ProfilerUI.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Async\Threading.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\LogSystem.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -362,6 +368,9 @@
     <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ScopedProfile.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerUI.hpp" />
+    <ClInclude Include="Async\Threading.hpp" />
+    <ClInclude Include="Core\Tools\LogSystem.hpp" />
+    <ClInclude Include="Async\ThreadSafeQueue.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

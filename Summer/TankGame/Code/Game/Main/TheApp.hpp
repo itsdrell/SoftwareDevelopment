@@ -25,4 +25,6 @@ public:
 	
 };
 
+void Test();
+
 extern App* g_theApp;

@@ -28,6 +28,7 @@
 #include "BuiltInShader.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
 #include "Images/Image.hpp"
+#include "../Async/Threading.hpp"
 
 
 
@@ -309,6 +310,17 @@ void Renderer::CheckToCreateScreenshot()
 	if(m_takeScreenshot == false)
 		return;
 
+	if(m_screenshotTexture != nullptr)
+		delete m_screenshotTexture;
+
+	m_screenshotTexture = Texture::CreateCompatible(m_defaultColorTarget);
+
+	ThreadCreateAndDetach( (thread_cb) CreateScreenshot);
+	m_takeScreenshot = false;
+}
+
+void CreateScreenshot()
+{
 	std::string path = "..\\Run_Win32\\Screenshots\\";
 	std::string timeStamp = CurrentDateTime();
 
@@ -316,10 +328,8 @@ void Renderer::CheckToCreateScreenshot()
 
 
 	// Take the shot
-	m_defaultColorTarget->CreatePNGFromTexture(filename);
-	
-	// turn off the flag
-	m_takeScreenshot = false;
+	Renderer::GetInstance()->m_screenshotTexture->CreatePNGFromTexture(filename);
+
 }
 
 void Renderer::DrawPoint(const Vector3& position, Rgba theColor /*= Rgba::WHITE*/)
