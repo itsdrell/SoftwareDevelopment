@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <stdarg.h> 
+#include "..\Platform\Time.hpp"
+
 
 //====================================================================================
 LogSystem* g_LogSystem = nullptr;
@@ -27,12 +29,18 @@ void LogSystem::StartUp()
 	ThreadCreate(LOG_THREAD_NAME, LogThreadWorker, nullptr);
 
 	m_outputFile.open(LOG_FILE_PATH, std::fstream::trunc);
+	
+	std::string historyPath = LOG_HISTORY_PATH + CurrentDateTime() + ".log";
+	m_historyFile.open(historyPath, std::fstream::trunc);
 }
 //--------------------------------------------------------------------------
 void LogSystem::ShutDown()
 {
 	m_is_running = false;
 	ThreadJoin(LOG_THREAD_NAME);
+
+	m_outputFile.close();
+	m_historyFile.close();
 }
 
 //--------------------------------------------------------------------------
@@ -157,7 +165,54 @@ void LogTaggedPrintv(const char* tag, const char* format, ...)
 }
 
 //--------------------------------------------------------------------------
+void LogPrintf(char const *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[1000];
+	vsnprintf_s(buffer, 1000, format, args);
+	va_end(args);
+
+	Log* log = new Log(); 
+	log->tag = "Log"; 
+	log->text = Stringf( format, args );
+
+	g_LogSystem->m_log_queue.enqueue(log);
+}
+
+void LogWarning(const char * format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[1000];
+	vsnprintf_s(buffer, 1000, format, args);
+	va_end(args);
+
+	Log* log = new Log(); 
+	log->tag = "WARNING"; 
+	log->text = Stringf( format, args );
+
+	g_LogSystem->m_log_queue.enqueue(log);
+}
+
+void LogError(const char * format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[1000];
+	vsnprintf_s(buffer, 1000, format, args);
+	va_end(args);
+
+	Log* log = new Log(); 
+	log->tag = "ERROR"; 
+	log->text = Stringf( format, args );
+
+	g_LogSystem->m_log_queue.enqueue(log);
+}
+
+//--------------------------------------------------------------------------
 void LogToFile(const Log& data)
 {
 	LogSystem::GetInstance()->m_outputFile << (data.tag + " : " + data.text + "\n");
+	LogSystem::GetInstance()->m_historyFile << (data.tag + " : " + data.text + "\n");
 }

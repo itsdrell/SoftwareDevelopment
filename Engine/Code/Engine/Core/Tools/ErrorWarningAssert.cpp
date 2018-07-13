@@ -12,6 +12,7 @@
 //-----------------------------------------------------------------------------------------------
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 #include "Engine/Core/Utils/StringUtils.hpp"
+#include "Engine/Core/Tools/LogSystem.hpp"
 #include <stdarg.h>
 #include <iostream>
 
@@ -68,6 +69,8 @@ void DebuggerPrintf( const char* messageFormat, ... )
 		OutputDebugStringA( messageLiteral );
 	}
 #endif
+
+	LogTaggedPrintv( "debug", messageLiteral);
 
 	std::cout << messageLiteral;
 }

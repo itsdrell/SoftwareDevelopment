@@ -17,6 +17,6 @@ ScopedProfile::~ScopedProfile()
 
 	std::string text = Stringf("\nTime elapsed for %s: %f \n", m_name.c_str(), PerformanceCountToSeconds(elapsed));
 
-	DebuggerPrintf(text.c_str());
+	//DebuggerPrintf(text.c_str());
 	DevConsole::GetInstance()->AddConsoleDialogue(ConsoleDialogue(text, GetRandomColorInRainbow()));
 }

@@ -73,6 +73,10 @@ void App::StartUp()
 	g_theGame->StartUp();
 
 	CommandRegister("threadTest", "", "print a bunch to a file", RunThreadTest);
+	DebuggerPrintf("This is my debuggerPrintF test for log system");
+	LogPrintf("This is my test for LogPrintf");
+	LogWarning("This is a test of warning helper");
+	LogError("This is a test of an error helper");
 }
 
 void App::RunFrame()

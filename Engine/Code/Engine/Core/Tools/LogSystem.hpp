@@ -14,6 +14,7 @@
 //====================================================================================
 #define LOG_THREAD_NAME ("logThread")
 #define LOG_FILE_PATH ("Log/Log.log")
+#define LOG_HISTORY_PATH ("Log/History/") // this is for our timestamped history
 
 //====================================================================================
 // ENUMS
@@ -73,6 +74,7 @@ public:
 	SpinLock						m_hookLock;
 
 	std::ofstream					m_outputFile;
+	std::ofstream					m_historyFile;
 
 	static std::vector<LogHook>		s_callbacks;
 }; 
@@ -87,7 +89,10 @@ void LogSystemShutDown();
 
 // Works like ("tag", "The number is: %i", 10)
 void LogTaggedPrintv( const char* tag, const char* format, ...);
+void LogPrintf( char const *format, ... );
 
+void LogWarning(const char* format, ...);
+void LogError(const char* format, ...);
 
 void LogToFile(const Log& data);
 
