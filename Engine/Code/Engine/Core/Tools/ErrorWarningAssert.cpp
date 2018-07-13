@@ -193,7 +193,6 @@ int SystemDialogue_YesNoCancel( const std::string& messageTitle, const std::stri
 	return answerCode;
 }
 
-
 //-----------------------------------------------------------------------------------------------
 __declspec( noreturn ) void FatalError( const char* filePath, const char* functionName, int lineNum, const std::string& reasonForError, const char* conditionText )
 {

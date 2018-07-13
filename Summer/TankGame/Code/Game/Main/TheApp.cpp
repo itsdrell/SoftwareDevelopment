@@ -74,6 +74,7 @@ void App::StartUp()
 
 	CommandRegister("threadTest", "", "print a bunch to a file", RunThreadTest);
 	CommandRegister("bigText", "", "See if log system thread drowns", BigTextTest);
+	CommandRegister("flush", "", "Test force flushed", FlushTest );
 
 	DebuggerPrintf("This is my debuggerPrintF test for log system");
 	LogPrintf("This is my test for LogPrintf");
@@ -206,4 +207,15 @@ void ReadBigBoi(void* data)
 		LogTaggedPrintf( "BigBoi", line.c_str());
 	}
 
+}
+
+void FlushTest(Command& cb)
+{
+	LogTaggedPrintf("LogflushTest", "Log Flush Test --------------------");
+	ForceLogSystemFlush();
+
+	int i = 1;
+	
+	UNUSED(cb);
+	UNUSED(i);
 }

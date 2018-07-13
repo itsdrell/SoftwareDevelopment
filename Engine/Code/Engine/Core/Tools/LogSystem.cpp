@@ -3,16 +3,58 @@
 #include "Engine\Async\Threading.hpp"
 #include "Engine\Core\Platform\File.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
+#include "Engine\Core\Platform\Time.hpp"
+#include "Engine\Core\Tools\Command.hpp"
+#include "Engine\Core\Tools\DevConsole.hpp"
+#include "Engine\Core\Tools\ErrorWarningAssert.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdarg.h> 
-#include "..\Platform\Time.hpp"
+#include <debugapi.h>
 
 
 //====================================================================================
 LogSystem* g_LogSystem = nullptr;
 
 std::vector<LogHook>		LogSystem::s_callbacks;
+//====================================================================================
+// Console
+//====================================================================================
+void ShowTagCommand(Command& cb)
+{
+	if(cb.m_commandArguements.size() <= 1)
+		return;
+
+	String addTag = cb.m_commandArguements.at(1);
+
+	LogSystem::GetInstance()->ShowTag(addTag);
+}
+
+void HideTagCommand(Command& cb)
+{
+	if(cb.m_commandArguements.size() <= 1)
+		return;
+
+	String addTag = cb.m_commandArguements.at(1);
+
+	LogSystem::GetInstance()->HideTag(addTag);
+}
+
+void ToggleTagMode(Command& cb)
+{
+	LogSystem* ls = LogSystem::GetInstance();
+
+	bool toggle = !ls->m_selectionIgnored;
+
+	if(cb.m_commandArguements.size() > 1)
+		toggle = ParseString(cb.m_commandArguements.at(1), toggle);
+
+	ls->m_selectionIgnored = toggle;
+
+	DevConsole::GetInstance()->AddConsoleDialogue("Mode switched to: " + std::to_string(toggle));
+}
+
+
 //====================================================================================
 LogSystem* LogSystem::GetInstance()
 {
@@ -27,6 +69,10 @@ LogSystem* LogSystem::GetInstance()
 void LogSystem::StartUp()
 {
 	ThreadCreate(LOG_THREAD_NAME, LogThreadWorker, nullptr);
+
+	CommandRegister("showTag", "", "", ShowTagCommand);
+	CommandRegister("hideTag", "", "", HideTagCommand);
+	CommandRegister("toggleTag", "", "Switched between white list and black", ToggleTagMode);
 
 	m_outputFile.open(LOG_FILE_PATH, std::fstream::out | std::fstream::trunc);
 	
@@ -58,6 +104,45 @@ void LogSystem::Flush()
 		}
 		
 	}
+
+	m_doneFlushing = true;
+}
+
+//--------------------------------------------------------------------------
+void LogSystem::ForceFlush()
+{
+	m_doneFlushing = false;
+
+	while(!m_doneFlushing) {}
+
+	m_historyFile.flush();
+	m_outputFile.flush();
+}
+
+//--------------------------------------------------------------------------
+void LogSystem::ShowTag(const std::string & tag)
+{
+	if(m_selectionIgnored)
+	{
+		RemoveTag(tag);
+	}
+	else
+	{
+		AddTag(tag);
+	}
+}
+
+//--------------------------------------------------------------------------
+void LogSystem::HideTag(const std::string & tag)
+{
+	if(!m_selectionIgnored)
+	{
+		RemoveTag(tag);
+	}
+	else
+	{
+		AddTag(tag);
+	}
 }
 
 //--------------------------------------------------------------------------
@@ -66,16 +151,11 @@ STATIC void LogSystem::LogThreadWorker(void * data)
 	while (g_LogSystem->IsRunning()) 
 	{
 		g_LogSystem->Flush(); 
-		ThreadSleep(10);  
+		ThreadSleep(3000);  
 	}
 
 	// do the inner side of the loop again right before exiting
 	g_LogSystem->Flush(); 
-
-}
-
-void LogFlush()
-{
 
 }
 
@@ -130,6 +210,20 @@ STATIC void LogSystem::RunCallbacks(const Log & data)
 	}
 }
 
+//--------------------------------------------------------------------------
+void LogSystem::AddTag(const std::string & tag)
+{
+	if(m_tags.DoesContain(tag) == false)
+		m_tags.Add(tag);
+}
+
+//--------------------------------------------------------------------------
+void LogSystem::RemoveTag(const std::string & tag)
+{
+	if(m_tags.DoesContain(tag) == true)
+		m_tags.Remove(tag);
+}
+
 
 //====================================================================================
 void LogSystemStartUp()
@@ -138,6 +232,7 @@ void LogSystemStartUp()
 	ls->StartUp();
 
 	ls->AddHook((log_cb) LogToFile, nullptr);
+	ls->AddHook((log_cb) LogToOutputWindow, nullptr);
 
 }
 
@@ -151,7 +246,6 @@ void LogSystemShutDown()
 //--------------------------------------------------------------------------
 void LogTaggedPrintv(const char* tag, const char* format, va_list args)
 {
-	
 	Log* log = new Log(); 
 	log->tag = tag; 
 	log->text = Stringf( format, args );
@@ -202,3 +296,17 @@ void LogToFile(const Log& data)
 	LogSystem::GetInstance()->m_outputFile << (data.tag + " : " + data.text + "\n");
 	LogSystem::GetInstance()->m_historyFile << (data.tag + " : " + data.text + "\n");
 }
+
+//--------------------------------------------------------------------------
+void LogToOutputWindow(const Log& theLog)
+{
+	String text = "\n" + theLog.tag + " : " + theLog.text + "\n";
+	OutputDebugStringA(text.c_str());
+}
+
+//--------------------------------------------------------------------------
+void ForceLogSystemFlush()
+{
+	LogSystem::GetInstance()->ForceFlush();
+}
+

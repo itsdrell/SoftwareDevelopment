@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 //-----------------------------------------------------------------------------------------------
 // ErrorWarningAssert.hpp
@@ -37,8 +38,6 @@ void SystemDialogue_Okay( const std::string& messageTitle, const std::string& me
 bool SystemDialogue_OkayCancel( const std::string& messageTitle, const std::string& messageText, SeverityLevel severity );
 bool SystemDialogue_YesNo( const std::string& messageTitle, const std::string& messageText, SeverityLevel severity );
 int SystemDialogue_YesNoCancel( const std::string& messageTitle, const std::string& messageText, SeverityLevel severity );
-
-
 
 //-----------------------------------------------------------------------------------------------
 // ERROR_AND_DIE
