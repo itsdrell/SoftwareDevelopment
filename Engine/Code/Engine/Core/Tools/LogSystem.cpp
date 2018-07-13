@@ -28,10 +28,10 @@ void LogSystem::StartUp()
 {
 	ThreadCreate(LOG_THREAD_NAME, LogThreadWorker, nullptr);
 
-	m_outputFile.open(LOG_FILE_PATH, std::fstream::trunc);
+	m_outputFile.open(LOG_FILE_PATH, std::fstream::out | std::fstream::trunc);
 	
 	std::string historyPath = LOG_HISTORY_PATH + CurrentDateTime() + ".log";
-	m_historyFile.open(historyPath, std::fstream::trunc);
+	m_historyFile.open(historyPath, std::fstream::out | std::fstream::trunc);
 }
 //--------------------------------------------------------------------------
 void LogSystem::ShutDown()
@@ -149,13 +149,8 @@ void LogSystemShutDown()
 }
 
 //--------------------------------------------------------------------------
-void LogTaggedPrintv(const char* tag, const char* format, ...)
+void LogTaggedPrintv(const char* tag, const char* format, va_list args)
 {
-	va_list args;
-	va_start(args, format);
-	char buffer[1000];
-	vsnprintf_s(buffer, 1000, format, args);
-	va_end(args);
 	
 	Log* log = new Log(); 
 	log->tag = tag; 
@@ -165,49 +160,40 @@ void LogTaggedPrintv(const char* tag, const char* format, ...)
 }
 
 //--------------------------------------------------------------------------
+void LogTaggedPrintf(const char* tag, const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	LogTaggedPrintv(tag , format, args);
+	va_end(args);
+}
+
+//--------------------------------------------------------------------------
 void LogPrintf(char const *format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	char buffer[1000];
-	vsnprintf_s(buffer, 1000, format, args);
+	LogTaggedPrintv("LOG", format, args);
 	va_end(args);
 
-	Log* log = new Log(); 
-	log->tag = "Log"; 
-	log->text = Stringf( format, args );
-
-	g_LogSystem->m_log_queue.enqueue(log);
 }
 
+//--------------------------------------------------------------------------
 void LogWarning(const char * format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	char buffer[1000];
-	vsnprintf_s(buffer, 1000, format, args);
+	LogTaggedPrintv("WARNING", format, args);
 	va_end(args);
-
-	Log* log = new Log(); 
-	log->tag = "WARNING"; 
-	log->text = Stringf( format, args );
-
-	g_LogSystem->m_log_queue.enqueue(log);
 }
 
+//--------------------------------------------------------------------------
 void LogError(const char * format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	char buffer[1000];
-	vsnprintf_s(buffer, 1000, format, args);
+	LogTaggedPrintv("ERROR", format, args);
 	va_end(args);
-
-	Log* log = new Log(); 
-	log->tag = "ERROR"; 
-	log->text = Stringf( format, args );
-
-	g_LogSystem->m_log_queue.enqueue(log);
 }
 
 //--------------------------------------------------------------------------

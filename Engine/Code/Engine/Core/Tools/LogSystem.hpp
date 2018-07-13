@@ -88,7 +88,8 @@ void LogSystemStartUp();
 void LogSystemShutDown();
 
 // Works like ("tag", "The number is: %i", 10)
-void LogTaggedPrintv( const char* tag, const char* format, ...);
+void LogTaggedPrintv( const char* tag, const char* format, va_list args);
+void LogTaggedPrintf( const char* tag, const char* format, ...);
 void LogPrintf( char const *format, ... );
 
 void LogWarning(const char* format, ...);

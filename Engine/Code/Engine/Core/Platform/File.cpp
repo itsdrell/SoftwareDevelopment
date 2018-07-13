@@ -38,9 +38,9 @@ void LogStringToFile(const char* filename, const char* text, bool overwrite)
 
 	// try to open file http://www.cplusplus.com/reference/fstream/fstream/open/
 	if(overwrite == false)
-		outputFile.open(filename, std::fstream::app);
+		outputFile.open(filename, std::fstream::out | std::fstream::app);
 	else
-		outputFile.open(filename, std::fstream::trunc); // erase the file (for clean up)
+		outputFile.open(filename, std::fstream::out | std::fstream::trunc); // erase the file (for clean up)
 
 	// See if we opened it
 	if(outputFile.is_open() == false)

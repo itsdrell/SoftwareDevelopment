@@ -73,6 +73,8 @@ void App::StartUp()
 	g_theGame->StartUp();
 
 	CommandRegister("threadTest", "", "print a bunch to a file", RunThreadTest);
+	CommandRegister("bigText", "", "See if log system thread drowns", BigTextTest);
+
 	DebuggerPrintf("This is my debuggerPrintF test for log system");
 	LogPrintf("This is my test for LogPrintf");
 	LogWarning("This is a test of warning helper");
@@ -132,7 +134,7 @@ void App::Update()
 
 	if(WasKeyJustPressed(G_THE_LETTER_Z))
 	{
-		LogTaggedPrintv("Zac", "THIS IS A TEST NUMBER %i", 10);
+		LogTaggedPrintf("Zac", "THIS IS A TEST NUMBER %i", 10);
 	}
 
 }
@@ -177,4 +179,31 @@ void RunThreadTest(Command& cb)
 {
 	UNUSED(cb);
 	ThreadCreateAndDetach((thread_cb) ThreadTest, nullptr);
+}
+
+void BigTextTest(Command& cb)
+{
+	int amountOfThreads = 2;
+	if(cb.m_commandArguements.size() > 1)
+		amountOfThreads = ParseString(cb.m_commandArguements.at(1), amountOfThreads);
+
+	for(int i = 0; i < amountOfThreads; i++)
+	{
+		ThreadCreateAndDetach(ReadBigBoi, nullptr);
+	}
+}
+
+void ReadBigBoi(void* data)
+{
+	UNUSED(data);
+
+	std::ifstream infile("Data/bigText.txt");
+	//std::ifstream infile("Data/babyText.txt");
+
+	std::string line;
+	while (std::getline(infile, line))
+	{
+		LogTaggedPrintf( "BigBoi", line.c_str());
+	}
+
 }

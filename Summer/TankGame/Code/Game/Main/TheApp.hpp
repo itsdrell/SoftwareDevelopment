@@ -28,5 +28,8 @@ public:
 
 void RunThreadTest(Command& cb);
 void ThreadTest();
+void ReadBigBoi(void* data);
+void BigTextTest(Command& cb);
+
 
 extern App* g_theApp;

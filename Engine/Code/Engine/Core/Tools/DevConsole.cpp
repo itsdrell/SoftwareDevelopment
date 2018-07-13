@@ -262,7 +262,7 @@ void DevConsole::StartUp()
 	// reset the default camera
 	m_theRenderer->SetCamera();
 
-	//CommandRunScriptFromFile("startup");
+	CommandRunScriptFromFile("startup");
 
 	// Load Images
 	m_roll = new SpriteSheet(m_theRenderer->CreateOrGetTexture("Data/Images/roll_exe.png"), 3, 1);
@@ -317,7 +317,7 @@ void DevConsole::CheckAndAddThreadQueue()
 	ConsoleDialogue data; 
 	bool genMesh = false;
 
-	while (s_dialogueQueue.dequeue(&data)) 
+	if(s_dialogueQueue.dequeue(&data))
 	{
 		AddConsoleDialogue(data);
 		genMesh = true;
