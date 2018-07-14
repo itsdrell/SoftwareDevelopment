@@ -370,7 +370,7 @@
     <ClInclude Include="Core\Tools\Profiling\ProfilerUI.hpp" />
     <ClInclude Include="Async\Threading.hpp" />
     <ClInclude Include="Core\Tools\LogSystem.hpp" />
-    <ClInclude Include="Async\ThreadSafeQueue.hpp" />
+    <ClInclude Include="Async\ThreadSafeContainers.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

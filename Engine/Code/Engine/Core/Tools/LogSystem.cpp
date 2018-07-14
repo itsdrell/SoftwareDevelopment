@@ -30,6 +30,7 @@ void ShowTagCommand(Command& cb)
 	LogSystem::GetInstance()->ShowTag(addTag);
 }
 
+//--------------------------------------------------------------------------
 void HideTagCommand(Command& cb)
 {
 	if(cb.m_commandArguements.size() <= 1)
@@ -40,6 +41,7 @@ void HideTagCommand(Command& cb)
 	LogSystem::GetInstance()->HideTag(addTag);
 }
 
+//--------------------------------------------------------------------------
 void ToggleTagMode(Command& cb)
 {
 	LogSystem* ls = LogSystem::GetInstance();
@@ -54,6 +56,29 @@ void ToggleTagMode(Command& cb)
 	DevConsole::GetInstance()->AddConsoleDialogue("Mode switched to: " + std::to_string(toggle));
 }
 
+//--------------------------------------------------------------------------
+void EnableFiltering(Command& cb)
+{
+	LogSystem* ls = LogSystem::GetInstance();
+
+	bool toggle = !ls->m_usingFilering;
+
+	if(cb.m_commandArguements.size() > 1)
+		toggle = ParseString(cb.m_commandArguements.at(1), toggle);
+
+	ls->m_usingFilering = toggle;
+
+	DevConsole::GetInstance()->AddConsoleDialogue("Filtering is now " + std::to_string(toggle));
+}
+
+//--------------------------------------------------------------------------
+void ClearTags(Command& cb)
+{
+	UNUSED(cb);
+	
+	LogSystem* ls = LogSystem::GetInstance();
+	ls->m_tags.Clear();
+}
 
 //====================================================================================
 LogSystem* LogSystem::GetInstance()
@@ -73,6 +98,9 @@ void LogSystem::StartUp()
 	CommandRegister("showTag", "", "", ShowTagCommand);
 	CommandRegister("hideTag", "", "", HideTagCommand);
 	CommandRegister("toggleTag", "", "Switched between white list and black", ToggleTagMode);
+	CommandRegister("toggleFiltering", "", "Switched between using filtering and not", EnableFiltering);
+	CommandRegister("clearTags", "", "Clear all tags in log system", ClearTags);
+
 
 	m_outputFile.open(LOG_FILE_PATH, std::fstream::out | std::fstream::trunc);
 	
@@ -148,10 +176,12 @@ void LogSystem::HideTag(const std::string & tag)
 //--------------------------------------------------------------------------
 STATIC void LogSystem::LogThreadWorker(void * data)
 {
+	UNUSED(data);
+	
 	while (g_LogSystem->IsRunning()) 
 	{
 		g_LogSystem->Flush(); 
-		ThreadSleep(3000);  
+		ThreadSleep(10);  
 	}
 
 	// do the inner side of the loop again right before exiting
@@ -202,12 +232,32 @@ STATIC void LogSystem::RemoveHook(log_cb cb)
 //--------------------------------------------------------------------------
 STATIC void LogSystem::RunCallbacks(const Log & data)
 {
-	for(uint i = 0; i < s_callbacks.size(); i++)
-	{
-		LogHook current = s_callbacks.at(i);
+	// check for tags
+	String tag = data.tag;
+	LogSystem* ls = LogSystem::GetInstance();
 
-		current.callback(data, current.user_argument);
+	if(ls->m_usingFilering)
+	{
+		if(ls->m_tags.DoesContain(tag) == !ls->m_selectionIgnored)
+		{
+			for(uint i = 0; i < s_callbacks.size(); i++)
+			{
+				LogHook current = s_callbacks.at(i);
+
+				current.callback(data, current.user_argument);
+			}
+		}
 	}
+	else
+	{
+		for(uint i = 0; i < s_callbacks.size(); i++)
+		{
+			LogHook current = s_callbacks.at(i);
+
+			current.callback(data, current.user_argument);
+		}
+	}
+	
 }
 
 //--------------------------------------------------------------------------
@@ -248,7 +298,7 @@ void LogTaggedPrintv(const char* tag, const char* format, va_list args)
 {
 	Log* log = new Log(); 
 	log->tag = tag; 
-	log->text = Stringf( format, args );
+	log->text = Stringv( format, args );
 
 	g_LogSystem->m_log_queue.enqueue(log); 
 }

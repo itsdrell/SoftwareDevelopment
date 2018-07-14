@@ -343,7 +343,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Async\Threading.hpp" />
-    <ClInclude Include="Async\ThreadSafeQueue.hpp" />
+    <ClInclude Include="Async\ThreadSafeContainers.hpp" />
     <ClInclude Include="Audio\AudioSystem.hpp" />
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\General\Camera.hpp" />

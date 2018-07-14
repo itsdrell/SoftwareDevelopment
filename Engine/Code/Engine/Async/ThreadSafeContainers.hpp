@@ -98,7 +98,6 @@ public:
 		// no longer true...
 	}
 
-
 	// return if it succeeds
 	bool Remove( const T thingToRemove) 
 	{
@@ -126,7 +125,7 @@ public:
 		return has_item; 
 	}
 
-	bool DoesContain( const T thingToRemove)
+	bool DoesContain( const T theObject)
 	{
 		m_lock.Enter();
 
@@ -137,7 +136,7 @@ public:
 			{
 				T current = m_data.at(i);
 
-				if(current == thingToRemove)
+				if(current == theObject)
 				{
 					m_lock.Leave();
 					return true;
@@ -147,7 +146,16 @@ public:
 
 		m_lock.Leave();
 
-		return has_item; 
+		return false; 
+	}
+
+	void Clear()
+	{
+		m_lock.Enter();
+
+		m_data.clear();
+
+		m_lock.Leave();
 	}
 
 public:

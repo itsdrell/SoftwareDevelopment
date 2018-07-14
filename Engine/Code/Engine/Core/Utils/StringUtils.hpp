@@ -10,7 +10,7 @@
 const std::string Stringf( const char* format, ... );
 const std::string Stringf( const int maxLength, const char* format, ... );
 
-
+std::string Stringv(const char* format, va_list args);
 
 //std::vector<std::string> GetTokensFromString(const char * stringToReadFrom, const char * seperator, int howManytokenYouWant);
 

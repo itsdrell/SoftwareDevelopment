@@ -11,8 +11,8 @@
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-#define	TOWER_SPAWN_AMOUNT			(20)
-#define TOWER_SPAWN_RATE			(1.f)
+#define	TOWER_SPAWN_AMOUNT			(0)
+#define TOWER_SPAWN_RATE			(0.0f)
 
 #define MAX_AMOUNT_OF_ENEMIES		(50)
 

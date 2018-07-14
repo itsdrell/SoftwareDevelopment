@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/Async/ThreadSafeQueue.hpp"
+#include "Engine/Async/ThreadSafeContainers.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include <vector>
 #include <iostream>
@@ -79,19 +79,20 @@ private:
 
 public:
 
-	bool							m_is_running = true;
-	bool							m_doneFlushing = false;
+	bool								m_is_running = true;
+	bool								m_doneFlushing = false;
 
 	ThreadSafeVector<std::string>		m_tags;
-	bool							m_selectionIgnored = true;
+	bool								m_usingFilering = true;
+	bool								m_selectionIgnored = true;
 
-	ThreadSafeQueue<Log*>			m_log_queue; 
-	SpinLock						m_hookLock;
+	ThreadSafeQueue<Log*>				m_log_queue; 
+	SpinLock							m_hookLock;
 
-	std::ofstream					m_outputFile;
-	std::ofstream					m_historyFile;
+	std::ofstream							m_outputFile;
+	std::ofstream							m_historyFile;
 
-	static std::vector<LogHook>		s_callbacks;
+	static std::vector<LogHook>			s_callbacks;
 }; 
 
 
@@ -117,6 +118,8 @@ void LogToOutputWindow(const Log& theLog);
 void ShowTagCommand(Command& cb);
 void HideTagCommand(Command& cb);
 void ToggleTagMode(Command& cb);
+void EnableFiltering(Command& cb);
+void ClearTags(Command& cb);
 
 //====================================================================================
 // Externs

@@ -199,7 +199,7 @@ void CreateScreenshotPNG(void* imageData)
 	stbi_flip_vertically_on_write(1);
 
 	// char const *filename, int w, int h, int comp, const void *data, int stride_in_bytes
-	int flag = stbi_write_png(filename.c_str(), shot->m_dimensions.x, shot->m_dimensions.y, 4, shot->m_data, 0); // using zero auto formats
+	stbi_write_png(filename.c_str(), shot->m_dimensions.x, shot->m_dimensions.y, 4, shot->m_data, 0); // using zero auto formats
 
 	delete shot->m_data;
 	delete shot;
