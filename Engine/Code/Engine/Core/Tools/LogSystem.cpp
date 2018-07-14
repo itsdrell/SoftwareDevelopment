@@ -104,6 +104,8 @@ void LogSystem::StartUp()
 
 	m_outputFile.open(LOG_FILE_PATH, std::fstream::out | std::fstream::trunc);
 	
+
+	CreateDirectoryA(LOG_HISTORY_PATH, NULL);
 	std::string historyPath = LOG_HISTORY_PATH + CurrentDateTime() + ".log";
 	m_historyFile.open(historyPath, std::fstream::out | std::fstream::trunc);
 }
