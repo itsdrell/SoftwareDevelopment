@@ -323,6 +323,9 @@
     <ClInclude Include="General\GameObjects\Cursor.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\Map.hpp" />
+    <ClInclude Include="General\Player\CommandingOfficer.hpp" />
+    <ClInclude Include="General\Player\Controller.hpp" />
+    <ClInclude Include="General\Player\PlayerController.hpp" />
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
     <ClInclude Include="General\UI\Container.hpp" />

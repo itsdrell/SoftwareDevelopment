@@ -122,5 +122,8 @@
     <ClInclude Include="General\UI\Container.hpp" />
     <ClInclude Include="General\ConsoleCommands.hpp" />
     <ClInclude Include="General\UI\HUD.hpp" />
+    <ClInclude Include="General\Player\CommandingOfficer.hpp" />
+    <ClInclude Include="General\Player\Controller.hpp" />
+    <ClInclude Include="General\Player\PlayerController.hpp" />
   </ItemGroup>
 </Project>
