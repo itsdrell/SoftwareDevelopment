@@ -43,11 +43,29 @@ UIWidget::UIWidget( UIWidgetDefinition& definition)
 	m_active = true;
 	m_isHoveredOver = false;
 	m_definition = &definition;
+
+	m_hoverColor = m_definition->m_defaultHoverColor;
+	m_nonHoverColor = m_definition->m_defaultNonHoverColor;
+	m_borderColor = m_definition->m_defaultBorderColor;
+	m_fontColor = m_definition->m_defaultFontColor;
 }
 
 void UIWidget::Update()
 {
 	CheckForMouseOverlap();
+}
+
+void UIWidget::Render() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	if(m_isHoveredOver)
+		r->DrawAABB2(m_bounds, m_hoverColor );
+	else
+		r->DrawAABB2(m_bounds, m_nonHoverColor);
+
+	r->DrawAABB2(m_bounds, m_borderColor, false);
+	r->DrawFittedTextInBox(m_bounds, m_definition->m_text, 2.f, 1.f, m_fontColor);
 }
 
 void UIWidget::CheckForMouseOverlap()
@@ -94,6 +112,11 @@ UIWidgetDefinition::UIWidgetDefinition(tinyxml2::XMLElement& node)
 {
 	m_name = ParseXmlAttribute(node, "name", "IDK");
 	m_text = ParseXmlAttribute(node, "displayText", "IDK");
+
+	m_defaultHoverColor = ParseXmlAttribute(node, "hoverColor", Rgba::WHITE);
+	m_defaultNonHoverColor = ParseXmlAttribute(node, "defaultColor", Rgba::BLUE);
+	m_defaultBorderColor = ParseXmlAttribute(node, "borderColor", Rgba::WHITE);
+	m_defaultFontColor = ParseXmlAttribute(node, "fontColor", Rgba::BLACK);
 
 	std::string filePath = ParseXmlAttribute(node, "scriptFile", "idk");
 

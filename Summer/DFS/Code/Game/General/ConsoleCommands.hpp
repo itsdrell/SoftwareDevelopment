@@ -29,11 +29,16 @@
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
+
+void RegisterGameCommands();
+
 void EndTurn(Command& theCommand);
 void HaveAUnitWait(Command& theCommand);
 void CaptureBuilding(Command& theCommand);
 void AddUnit(Command& theCommand);
 void AddBuilding(Command& theCommand);
+void CloseOpenMenu(Command& theCommand);
+
 
 //====================================================================================
 // Externs

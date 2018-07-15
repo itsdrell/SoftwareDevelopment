@@ -8,6 +8,17 @@
 #include "Game/General/UI/Container.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
 
+
+void RegisterGameCommands()
+{
+	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
+	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
+	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
+	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
+	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
+	CommandRegister("closeMenu", "", "Close current Open Menu", CloseOpenMenu);
+}
+
 void EndTurn(Command & theCommand)
 {
 	UNUSED(theCommand);
@@ -146,4 +157,11 @@ void AddBuilding(Command& theCommand)
 		g_theCurrentMap->CreateBuilding(buildingName, teamName, pos);
 	}
 
+}
+
+void CloseOpenMenu(Command& theCommand)
+{
+	UNUSED(theCommand);
+
+	g_theCurrentMap->m_currentContainer->CloseMenu();
 }

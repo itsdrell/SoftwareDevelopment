@@ -13,6 +13,7 @@ class Unit;
 class HoverTile;
 class HeatMap;
 class CommandingOfficer;
+class Container;
 
 //====================================================================================
 // Typedefs
@@ -120,6 +121,7 @@ public:
 	CommandingOfficer*					m_currentOfficer = nullptr;
 	Unit*								m_selectedUnit = nullptr;
 	Building*							m_buildingToCapture = nullptr; // for console command 
+	Container*							m_currentContainer = nullptr;
 };
 
 

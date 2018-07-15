@@ -58,9 +58,9 @@ void HUD::RenderPlayerDisplay() const
 
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(theTeam));
 	r->DrawTexturedAABB2( r->m_defaultTexture, iconBounds);
-	r->DrawText2D( nameTextLocation, name, 1.f);
-	r->DrawText2D( moneyTextLocation, "g: " + money , 1.f);
-	r->DrawText2D( turnTextLocation, "Day: " + turnOrder , 1.f);
+	r->DrawText2D( nameTextLocation, name, 1.f, Rgba::BLACK);
+	r->DrawText2D( moneyTextLocation, "g: " + money , 1.f, Rgba::BLACK);
+	r->DrawText2D( turnTextLocation, "Day: " + turnOrder , 1.f, Rgba::BLACK);
 
 }
 
@@ -100,9 +100,9 @@ void HUD::RenderTileDisplay() const
 
 	r->DrawAABB2(backgroundBounds, color);
 	r->DrawTexturedAABB2(tileImageBounds, *theTexture, imageUvs.mins, imageUvs.maxs, Rgba::WHITE);
-	r->DrawText2D(tileNamePos, nameText, 1.f);
-	r->DrawText2D(teamPos, teamName, 1.f);
-	r->DrawText2D(healthPos,health, 1.f);
+	r->DrawText2D(tileNamePos, nameText, 1.f, Rgba::BLACK);
+	r->DrawText2D(teamPos, teamName, 1.f, Rgba::BLACK);
+	r->DrawText2D(healthPos,health, 1.f, Rgba::BLACK);
 	
 }
 
@@ -125,9 +125,9 @@ void HUD::RenderUnitDisplay() const
 
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(currentUnit.m_team));
 	r->DrawTexturedAABB2(unitImageBounds, *currentSprite.m_image, currentSprite.m_uv.mins, currentSprite.m_uv.maxs, Rgba::WHITE);
-	r->DrawText2D(tileNamePos, currentUnit.m_name, 1.f);
-	r->DrawText2D(teamPos, TeamNameToString(currentUnit.m_team), 1.f);
-	r->DrawText2D(healthPos, "HP: " + std::to_string(currentUnit.m_health), 1.f);
+	r->DrawText2D(tileNamePos, currentUnit.m_name, 1.f, Rgba::BLACK);
+	r->DrawText2D(teamPos, TeamNameToString(currentUnit.m_team), 1.f, Rgba::BLACK);
+	r->DrawText2D(healthPos, "HP: " + std::to_string(currentUnit.m_health), 1.f, Rgba::BLACK);
 }
 
 void HUD::RenderAttackChance() const

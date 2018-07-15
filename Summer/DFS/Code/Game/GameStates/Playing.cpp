@@ -67,7 +67,7 @@ void Playing::StartUp()
 
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
-	m_actionMenu = new Container(5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
+	m_actionMenu = new Container("Main Menu", 5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
 	m_hud = new HUD();
 
 	//---------------------------------------------------------
@@ -176,6 +176,7 @@ void Playing::CheckKeyBoardInputs()
 				{
 					// Pop up the general menu for now 
 					m_actionMenu->AddPauseMenu();
+					g_theCurrentMap->m_currentContainer = m_actionMenu;
 					return;
 				}
 
@@ -196,6 +197,7 @@ void Playing::CheckKeyBoardInputs()
 				else
 				{
 					// Show general menu
+					g_theCurrentMap->m_currentContainer = m_actionMenu;
 					m_actionMenu->AddPauseMenu();
 					return;
 				}
@@ -246,7 +248,7 @@ void Playing::CheckKeyBoardInputs()
 				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
 				{
 					m_currentMap->ClearAttackTiles();
-					m_actionMenu->ClearWidgets();
+					m_actionMenu->CloseMenu();
 					m_currentPlayState = SELECTING;
 				}
 				

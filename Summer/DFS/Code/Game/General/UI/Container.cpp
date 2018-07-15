@@ -6,17 +6,26 @@
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
+#include "Game\General\Map.hpp"
 
 
-Container::Container(uint amoutOfWidgets, const Vector2& center, const AABB2& menuSize)
+Container::Container(const String& name, uint amoutOfWidgets, const Vector2& center, const AABB2& menuSize)
 {
 	m_amountOfWidgets = amoutOfWidgets;
+	m_name = name;
 	m_centerPos = center;
 	m_menuSize = menuSize;
 	m_menuSize.Translate(center);
 
+	m_headerBox = AABB2(Vector2(m_menuSize.mins.x, m_menuSize.maxs.y), Vector2(m_menuSize.maxs.x, m_menuSize.maxs.y + 6.f));
+
 	CreateWidgetSlots();
 
+	m_close = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("close"));
+	m_close->m_bounds =  AABB2(Vector2(m_menuSize.mins.x, m_menuSize.mins.y - 6.f), Vector2(m_menuSize.maxs.x, m_menuSize.mins.y));
+
+	m_backgroundColor = Rgba::CYAN;
+	m_fontColor = Rgba::BLACK;
 }
 
 void Container::Update()
@@ -27,6 +36,8 @@ void Container::Update()
 
 		current->Update();
 	}
+
+	m_close->Update();
 }
 
 void Container::Render() const
@@ -43,21 +54,18 @@ void Container::Render() const
 	r->ClearDepth(1.f);
 	r->EnableDepth(COMPARE_ALWAYS, true);
 
+	r->DrawAABB2(m_menuSize, m_backgroundColor);
+
+	r->DrawAABB2(m_headerBox, Rgba::GREEN);
+	r->DrawFittedTextInBox(m_headerBox, m_name, 2.f, 1.f, m_fontColor);
+
 	for(UIWidget* currentWidget : m_widgets)
 	{
-		std::string name = currentWidget->GetText();
-		AABB2 box = currentWidget->m_bounds;
 
-		if(currentWidget->m_isHoveredOver)
-			r->DrawAABB2(box, Rgba::YELLOW);
-		else
-			r->DrawAABB2(box, Rgba::BLUE);
-		
-		r->DrawAABB2(box, Rgba::WHITE, false);
-		r->DrawFittedTextInBox(box, name, 2.f);
-
+		currentWidget->Render();
 	}
 
+	m_close->Render();
 }
 
 bool Container::CanWeAddWidgets()
@@ -73,7 +81,7 @@ bool Container::CanWeAddWidgets()
 	return true;
 }
 
-void Container::OnClick()
+void Container::OnClick() 
 {
 	// see if a button is being hovered over
 
@@ -84,10 +92,22 @@ void Container::OnClick()
 		if(current->m_isHoveredOver)
 		{
 			current->OnClick();
-			ClearWidgets();
+			CloseMenu();
 			return;
 		}
 	}
+
+	if(m_close->m_isHoveredOver)
+	{
+		m_close->OnClick();
+		CloseMenu();
+	}
+}
+
+void Container::CloseMenu()
+{
+	ClearWidgets();
+	g_theCurrentMap->m_currentContainer = nullptr;
 }
 
 void Container::AddPauseMenu()

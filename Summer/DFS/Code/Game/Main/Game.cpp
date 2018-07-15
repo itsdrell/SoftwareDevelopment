@@ -73,11 +73,7 @@ void Game::StartUp()
 void Game::RegisterCommands()
 {
 	CommandRegister("quit","Type: quit","Exits Application", QuitGame);
-	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
-	CommandRegister("wait", "", "Have current unit wait", HaveAUnitWait);
-	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
-	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
-	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
+	RegisterGameCommands();
 }
 
 void Game::Update()

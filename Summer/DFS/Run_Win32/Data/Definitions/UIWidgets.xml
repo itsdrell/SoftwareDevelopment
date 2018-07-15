@@ -18,6 +18,15 @@
     scriptFile = "endTurn"
     />
 
+    <Widget
+    name = "close"
+    displayText = "Close"
+    scriptFile = "closeOpenMenu"
+    hoverColor = "255,255,255,255"
+    defaultColor = "255,0,0,255"
+    fontColor = "0,0,0,255"
+    />
+
 </UIWidgets>
 
 
@@ -28,7 +37,10 @@
     name = ""
     displayText = ""
     scriptFile = "Data/Scripts/UIScripts/theScript.script"
-    
+    hoverColor = r,g,b,a
+    defaultColor = r,g,b,a
+    borderColor = r,g,b,a
+    fontColor = r,g,b,a
     />
 
 -->

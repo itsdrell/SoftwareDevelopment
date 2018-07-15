@@ -37,10 +37,15 @@ public:
 	static UIWidgetDefinition* GetUIWidgetDefinition(std::string name);
 
 public:
-	std::string		m_name;
-	std::string		m_text;
+	std::string					m_name;
+	std::string					m_text;
 	
-	Strings			m_commands;
+	Strings						m_commands;
+
+	Rgba						m_defaultFontColor;
+	Rgba						m_defaultHoverColor;
+	Rgba						m_defaultNonHoverColor;
+	Rgba						m_defaultBorderColor;
 
 	static std::map<std::string, UIWidgetDefinition*>		s_definitions;
 };
@@ -56,6 +61,8 @@ public:
 
 	// check for clicks
 	void Update();
+
+	void Render() const;
 
 	void CheckForMouseOverlap();
 
@@ -75,6 +82,13 @@ public:
 
 	Vector2						m_centerPos;
 	AABB2						m_bounds;
+
+
+	Rgba						m_hoverColor;
+	Rgba						m_nonHoverColor;
+	Rgba						m_borderColor;
+	Rgba						m_fontColor;
+
 };
 
 //====================================================================================
