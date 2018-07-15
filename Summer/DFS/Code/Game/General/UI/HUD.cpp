@@ -13,6 +13,7 @@
 #include "Game\GameStates\Playing.hpp"
 #include "..\..\Main\GameCommon.hpp"
 #include "..\GameObjects\Building.hpp"
+#include "Game\General\Player\CommandingOfficer.hpp"
 
 void HUD::Render() const
 {
@@ -50,11 +51,16 @@ void HUD::RenderPlayerDisplay() const
 	Vector2 moneyTextLocation = Vector2(		iconBounds.maxs.x + 1.f,		backgroundBounds.maxs.y - 4.5f);
 	Vector2 turnTextLocation =  Vector2(		iconBounds.maxs.x + 1.f,		backgroundBounds.maxs.y - 7.5f);
 
+	CommandingOfficer* current = g_theCurrentMap->m_currentOfficer;
+	String name = (current != nullptr) ? current->m_name : "NULL NAME";
+	String money = (current != nullptr) ? std::to_string(current->m_money) : "";
+	String turnOrder = std::to_string(g_theCurrentMap->m_turnOrder.m_turnCount);
+
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(theTeam));
 	r->DrawTexturedAABB2( r->m_defaultTexture, iconBounds);
-	r->DrawText2D( nameTextLocation, "PLAYER", 1.f);
-	r->DrawText2D( moneyTextLocation, "MONEY", 1.f);
-	r->DrawText2D( turnTextLocation, "TURN: X", 1.f);
+	r->DrawText2D( nameTextLocation, name, 1.f);
+	r->DrawText2D( moneyTextLocation, "g: " + money , 1.f);
+	r->DrawText2D( turnTextLocation, "Day: " + turnOrder , 1.f);
 
 }
 

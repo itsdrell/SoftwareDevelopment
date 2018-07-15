@@ -12,6 +12,7 @@ class GameObject2D;
 class Unit;
 class HoverTile;
 class HeatMap;
+class CommandingOfficer;
 
 //====================================================================================
 // Typedefs
@@ -39,8 +40,9 @@ struct TurnOrder
 	std::string GetCurrentTurnString() const { return TeamNameToString(m_order.at(m_current)); }
 
 	//--------------------------------------------------------------------------
+	uint						m_current = 0U;
+	uint						m_turnCount = 1U;
 	std::vector<TeamName>		m_order;
-	uint						m_current;
 };
 
 //=============================================================
@@ -53,9 +55,12 @@ public:
 	Map(std::string name, Image& mapImage);
 
 	void Update();
+	void UpdateCurrentCO();
 
 	void CreateMapRenderable(bool makeDebug = false);
 	void CreateMapRenderableFromImage();
+
+	void CreateCommandingOfficer(TeamName theTeam); // v1 for now
 
 	Tile* GetTile(const Vector2& worldPos);
 	Tile* GetTile(const IntVector2& tilePos);
@@ -81,6 +86,7 @@ public:
 	void RemoveDeadGameObjects();
 
 	void GoToNextTurn();
+	void GenerateIncome();
 
 	void CheckForVictory();
 	bool IsATeamWithoutUnits();
@@ -106,10 +112,12 @@ public:
 	std::vector<GameObject2D*>			m_gameObjects;
 	std::vector<Unit*>					m_units;
 	std::vector<Building*>				m_buildings;
+	std::vector<CommandingOfficer*>		m_officers;
 
 	TurnOrder							m_turnOrder;
 	HeatMap*							m_heatmap = nullptr;
 	
+	CommandingOfficer*					m_currentOfficer = nullptr;
 	Unit*								m_selectedUnit = nullptr;
 	Building*							m_buildingToCapture = nullptr; // for console command 
 };

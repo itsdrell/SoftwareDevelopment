@@ -21,6 +21,8 @@ constexpr float		HALF_TILE_SIZE = TILE_SIZE * .5f;
 #define MAX_MAP_WIDTH	(30)
 #define MAX_MAP_HEIGHT	(30)
 
+#define MONEY_PER_BUILDING (1000)
+
 //====================================================================================
 // ENUMS
 //====================================================================================

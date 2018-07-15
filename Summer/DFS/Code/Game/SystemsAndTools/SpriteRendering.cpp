@@ -4,6 +4,7 @@
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include <algorithm>
+#include "Engine\Core\Tools\Profiling\Profiler.hpp"
 
 bool CompareSortOrder(DrawCall2D a, DrawCall2D b)
 {
@@ -100,6 +101,8 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 	// Do the Draw
 	for(uint drawIndex = 0; drawIndex < drawCalls.size(); drawIndex++)
 	{
+		PROFILE_PUSH();
+		
 		DrawCall2D current = drawCalls.at(drawIndex);
 
 		r->BindMaterial(current.m_material);

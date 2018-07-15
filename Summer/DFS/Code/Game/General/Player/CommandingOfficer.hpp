@@ -15,7 +15,11 @@ class Controller;
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum CO_TYPES
+{
+	PLAYER_CO,
+	AI_CO
+};
 
 //====================================================================================
 // Structs
@@ -28,12 +32,12 @@ class Controller;
 class CommandingOfficer
 {
 public:
-
+	CommandingOfficer(const String name, const TeamName& team, CO_TYPES typeOfController = AI_CO);
 
 public:
 	String			m_name;
 	TeamName		m_team;
-	float			m_money;
+	uint			m_money;
 
 	Controller*		m_controller = nullptr;
 };

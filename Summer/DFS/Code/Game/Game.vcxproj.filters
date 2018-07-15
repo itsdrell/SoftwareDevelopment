@@ -85,6 +85,9 @@
     <ClCompile Include="General\UI\HUD.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\Player\CommandingOfficer.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">

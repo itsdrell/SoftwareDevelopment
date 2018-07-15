@@ -168,6 +168,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -218,6 +219,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -293,6 +295,7 @@
     <ClCompile Include="General\GameObjects\Cursor.cpp" />
     <ClCompile Include="General\GameObjects\Unit.cpp" />
     <ClCompile Include="General\Map.cpp" />
+    <ClCompile Include="General\Player\CommandingOfficer.cpp" />
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />
     <ClCompile Include="General\UI\Container.cpp" />

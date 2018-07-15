@@ -18,6 +18,7 @@
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
+#include "Game\General\Player\CommandingOfficer.hpp"
 
 //====================================================================================
 // Externs
@@ -101,7 +102,10 @@ void TurnOrder::GoToNextTurn()
 	m_current++;
 	
 	if(m_current >= m_order.size())
+	{
 		m_current = 0;
+		m_turnCount++;
+	}
 
 }
 
@@ -125,6 +129,7 @@ void TurnOrder::CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck)
 
 	// we don't know about the team so lets add em
 	AddTeam(teamToCheck);
+	g_theCurrentMap->CreateCommandingOfficer(teamToCheck);
 }
 
 //====================================================================================
@@ -160,12 +165,22 @@ Map::Map(std::string name, Image& mapImage)
 
 void Map::Update()
 {
+	UpdateCurrentCO();
+	
 	for(uint i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects.at(i)->Update();
 	}
 
+	
+
 	CheckForVictory();
+}
+
+void Map::UpdateCurrentCO()
+{
+	if(m_currentOfficer != m_officers.at(m_turnOrder.m_current))
+		m_currentOfficer = m_officers.at(m_turnOrder.m_current);
 }
 
 void Map::CreateMapRenderable(bool makeDebug)
@@ -285,6 +300,15 @@ void Map::CreateMapRenderableFromImage()
 	m_mapRenderable->SetMaterial(mapMat);
 
 	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
+}
+
+void Map::CreateCommandingOfficer(TeamName theTeam)
+{
+	String playerName = "Player " + std::to_string(m_officers.size() + 1U);
+	
+	CommandingOfficer* newOfficer = new CommandingOfficer(playerName, theTeam, PLAYER_CO);
+
+	m_officers.push_back(newOfficer);
 }
 
 Tile* Map::GetTile(const Vector2& worldPos)
@@ -616,6 +640,23 @@ void Map::GoToNextTurn()
 		current->m_beenMoved = false;
 		current->m_usedAction = false;
 	}
+
+	GenerateIncome();
+}
+
+void Map::GenerateIncome()
+{
+	uint allowance = 0U;
+
+	for(uint i = 0; i < m_buildings.size(); i ++)
+	{
+		Building& current = *m_buildings.at(i);
+
+		if(current.m_team == m_currentOfficer->m_team)
+			allowance += MONEY_PER_BUILDING;
+	}
+
+	m_currentOfficer->m_money += allowance;
 }
 
 void Map::CheckForVictory()
