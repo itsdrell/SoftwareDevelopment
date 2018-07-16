@@ -23,6 +23,11 @@ void MaterialPropertiesFloat::Bind(int programHandle)
 		glUniform1fv(idx, 1, &m_data);
 }
 
+MaterialProperties* MaterialPropertiesFloat::Clone()
+{
+	return new MaterialPropertiesFloat(m_name, m_data);
+}
+
 void MaterialPropertiesVector4::Bind(int programHandle)
 {
 	float value[4] 
@@ -37,6 +42,11 @@ void MaterialPropertiesVector4::Bind(int programHandle)
 
 	if(idx >= 0)
 		glUniform4fv(idx, 1, value);
+}
+
+MaterialProperties* MaterialPropertiesVector4::Clone()
+{
+	return new MaterialPropertiesVector4(m_name, m_data);
 }
 
 void MaterialPropertiesRgba::Bind(int programHandle)
@@ -58,11 +68,21 @@ void MaterialPropertiesRgba::Bind(int programHandle)
 }
 
 
+MaterialProperties* MaterialPropertiesRgba::Clone()
+{
+	return new MaterialPropertiesRgba(m_name, m_data);
+}
+
 void MaterialPropertiesSpecular::Bind(int programHandle)
 {
 	// Sets the data to the UBO which is later bound in the renderpath
 	programHandle = programHandle;
 	Renderer::GetInstance()->SetSpecularConstants(m_specularAmount, m_specularPower);
+}
+
+MaterialProperties* MaterialPropertiesSpecular::Clone()
+{
+	return new MaterialPropertiesSpecular(m_name, m_specularPower, m_specularAmount);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -80,7 +100,14 @@ Material::Material(Material& copyFrom)
 	m_name = copyFrom.m_name;
 
 	m_shader = copyFrom.m_shader;
-	m_properties = copyFrom.m_properties;
+
+	for(uint i = 0; i < copyFrom.m_properties.size(); i++)
+	{
+		MaterialProperties* cloneProperty = copyFrom.m_properties.at(i)->Clone();
+		m_properties.push_back(cloneProperty);
+	}
+
+	//m_properties = copyFrom.m_properties;
 	m_textures = copyFrom.m_textures;
 	m_samplers = copyFrom.m_samplers;
 	//m_blocks = copyFrom.m_blocks;

@@ -28,6 +28,8 @@ layout(binding=2, std140) uniform cCameraBlock
 
 uniform mat4 MODEL;
 
+uniform vec4 TINT = vec4(1);
+
 // per model data
 /*
 layout(binding=3, std140) uniform cModelBlock 

@@ -7,4 +7,7 @@
 
     <!-- Material Defaults -->
      <Texture path = "Images/defaultTexture.png" sampler = "default" />
+
+     <Property type = "color" name = "TINT" value = "255,255,255,255"/>
+     
 </shader>

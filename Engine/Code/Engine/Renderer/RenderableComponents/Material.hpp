@@ -22,6 +22,8 @@ public:
 		: m_name(name)
 	{}
 
+	virtual MaterialProperties* Clone() = 0;
+
 	virtual void Bind(int programHandle) = 0;
 
 public:
@@ -38,6 +40,8 @@ public:
 
 	virtual void Bind(int programHandle) override;
 
+	virtual MaterialProperties* Clone() override;
+
 public:
 	float m_data;
 };
@@ -51,6 +55,8 @@ public:
 
 	virtual void Bind(int programHandle) override;
 
+	virtual MaterialProperties* Clone() override;
+
 public:
 	Vector4 m_data;
 };
@@ -63,6 +69,8 @@ public:
 		, m_data( value ) {}
 
 	virtual void Bind(int programHandle) override;
+
+	virtual MaterialProperties* Clone() override;
 
 public:
 	Rgba m_data;
@@ -78,6 +86,8 @@ public:
 		, m_specularPower (power) {}
 
 	virtual void Bind(int programHandle) override;
+
+	virtual MaterialProperties* Clone() override;
 
 public:
 	float m_specularPower;

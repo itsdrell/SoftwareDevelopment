@@ -1,6 +1,8 @@
 // spriteShader.fs
 #version 420 core
 
+#include "inc/common.glsl"
+
 // create a uniform for our sampler2D.
 // layout binding = 0 is us binding it to texture slot 0.  
 layout(binding = 0) uniform sampler2D gTexDiffuse;
@@ -25,7 +27,6 @@ void main( void )
       discard; 
    }
 
-   outColor = final_color; 
+   outColor = final_color * TINT; 
    
-   outColor = diffuse * passColor;
 }

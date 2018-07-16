@@ -89,16 +89,21 @@ void Unit::Update()
 	if(m_health <= 0)
 		m_isDead = true;
 
+	if(m_beenMoved == false)
+		m_renderable->GetMaterial()->SetTint(Rgba::WHITE);
+
 	// till we get a cool shader so we know
 	if(m_beenMoved)
 	{
 		Vector2 pos = m_transform.GetWorldPosition().xy();
 		
-		if(m_usedAction == false)
-			DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(255,255,0,200), Rgba(255,255,0,200));
-		else
-			DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(100, 100, 100, 200), Rgba(100, 100, 100, 200));
+		//if(m_usedAction == false)
+		//	DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(255,255,0,200), Rgba(255,255,0,200));
+		//else
+		//	DebugRender2DQuad(0.0f, AABB2(pos.x - HALF_TILE_SIZE, pos.y - HALF_TILE_SIZE, pos.x + HALF_TILE_SIZE, pos.y + HALF_TILE_SIZE), Rgba(100, 100, 100, 200), Rgba(100, 100, 100, 200));
 
+		if(m_usedAction == false)
+			m_renderable->GetMaterial()->SetTint(Rgba(150,150,150,220));
 	}
 }
 

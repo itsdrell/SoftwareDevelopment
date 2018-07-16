@@ -5,9 +5,6 @@
 #include "inc/common.glsl"
 
 
-uniform vec4 TINT; 
-
-
 // Attributes - input to this shasder stage (constant as far as the code is concerned)
 in vec3 POSITION;
 in vec4 COLOR;       // NEW - GLSL will use a Vector4 for this;

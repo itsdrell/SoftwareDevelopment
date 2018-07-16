@@ -21,9 +21,9 @@ void EngineStartUp()
 	InputSystem* input = new InputSystem();
 	Renderer* renderer = new Renderer();
 
+	LogSystemStartUp();
 	renderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
 
-	LogSystemStartUp();
 
 	audio = nullptr;
 	input = nullptr;
