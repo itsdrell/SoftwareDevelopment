@@ -35,6 +35,9 @@ public:
 
 	virtual void GenerateBounds(const AABB2& newBounds) override;
 
+	virtual void OnClick() override;
+	void AssignVariables();
+
 public:
 	UnitDefinition*			m_unitToDisplay = nullptr;
 	TeamName				m_team;

@@ -19,6 +19,7 @@ BuildingDefinition::BuildingDefinition(tinyxml2::XMLElement& node)
 
 	m_isHQ = ParseXmlAttribute(node, "isFactory", false);
 	m_isFactory = ParseXmlAttribute(node, "isHQ", false);
+	m_typeOfUnitToSpawn = ParseXmlAttribute(node, "unitType", "NONE");
 
 	m_tileToSpawnBeneath = GetTileDefinition(ParseXmlAttribute(node, "underTile", "default"));
 

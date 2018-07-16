@@ -115,6 +115,7 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 {
 	m_name = ParseXmlAttribute(node,"name","Error");
 	m_cost = (uint) ParseXmlAttribute(node, "cost", 1000);
+	m_factoryTag = ParseXmlAttribute(node, "storeType", "ERROR");
 	m_spriteCoords = ParseXmlAttribute(node, "spriteCoords", IntVector2(0,0));
 	
 	m_canCapture = ParseXmlAttribute(node, "capture", false);
@@ -142,6 +143,19 @@ UnitDefinition* UnitDefinition::GetUnitDefinition(std::string name)
 	//ERROR_AND_DIE("Could not find definition");
 	DevConsole::GetInstance()->AddErrorMessage("Could not find unit: " + name + " so have a grunt");
 	return GetUnitDefinition("grunt");
+}
+
+void UnitDefinition::GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<UnitDefinition*>* list)
+{
+	std::map<std::string,UnitDefinition*>::iterator unitIterator;
+	
+	for(unitIterator = s_definitions.begin(); unitIterator != s_definitions.end(); unitIterator++)
+	{
+		UnitDefinition* current = unitIterator->second;
+
+		if(current->m_factoryTag == tag)
+			list->push_back(current);
+	}
 }
 
 Strings UnitDefinition::GetAllUnitNames()

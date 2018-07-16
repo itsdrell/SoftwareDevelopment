@@ -4,7 +4,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class UnitDefinition;
 
 //====================================================================================
 // Type Defs + Defines
@@ -38,11 +38,13 @@ void CaptureBuilding(Command& theCommand);
 void AddUnit(Command& theCommand);
 void AddBuilding(Command& theCommand);
 void CloseOpenMenu(Command& theCommand);
-
+void PurchaseUnit(Command& theCommand);
 
 //====================================================================================
 // Externs
 //====================================================================================
+extern UnitDefinition* g_unitToSpawn;
+
 
 //====================================================================================
 // Written by Zachary Bracken : [6/25/2018]

@@ -8,6 +8,7 @@
 // Forward Declare
 //=============================================================
 class TileDefinition;
+class Tile;
 
 //=============================================================
 // ENUMS
@@ -36,6 +37,8 @@ public:
 public:
 	std::string			m_name;
 
+	String				m_typeOfUnitToSpawn;
+
 	bool				m_isFactory;
 	bool				m_isHQ;
 
@@ -63,6 +66,7 @@ public:
 	TeamName				m_team;
 
 	uint					m_health;
+	Tile*					m_tileReference;
 
 	BuildingDefinition*		m_definition;
 };

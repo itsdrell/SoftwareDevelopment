@@ -79,6 +79,8 @@ public:
 	void CreateActionTiles(const Unit& theUnitToUse);
 	void CreateAttackTiles(const Unit& theUnitToUse, bool showRange = false);
 
+	void CreateStoreUI();
+
 	bool CanUnitCaptureBuilding(const Unit& theUnitToUse);
 	bool CanPlayerMoveThere(IntVector2& posToCheck);
 	bool CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck);
@@ -99,7 +101,7 @@ public:
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
 	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
 	
-	void CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
+	Unit* CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
 	void CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos);
 	
 public:
@@ -122,6 +124,7 @@ public:
 	
 	CommandingOfficer*					m_currentOfficer = nullptr;
 	Unit*								m_selectedUnit = nullptr;
+	Building*							m_selectedBuilding = nullptr;
 	Building*							m_buildingToCapture = nullptr; // for console command 
 
 	Container*							m_currentContainer = nullptr;

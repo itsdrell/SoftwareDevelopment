@@ -7,8 +7,13 @@
 #include "../GameStates/Playing.hpp"
 #include "Game/General/UI/Container.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
+#include "Game/General/GameObjects/Unit.hpp"
+#include "Game/General/Player/CommandingOfficer.hpp"
 
+//====================================================================================
+UnitDefinition* g_unitToSpawn = nullptr;
 
+//====================================================================================
 void RegisterGameCommands()
 {
 	CommandRegister("endTurn", "", "Ends the player turn" , EndTurn);
@@ -17,6 +22,7 @@ void RegisterGameCommands()
 	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
 	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
 	CommandRegister("closeMenu", "", "Close current Open Menu", CloseOpenMenu);
+	CommandRegister("purchase", "", "Purchase Unit in Store", PurchaseUnit);
 }
 
 void EndTurn(Command & theCommand)
@@ -164,4 +170,28 @@ void CloseOpenMenu(Command& theCommand)
 	UNUSED(theCommand);
 
 	g_theCurrentMap->m_currentContainer->CloseMenu();
+
+	if(g_theCurrentMap->m_selectedUnit != nullptr)
+		g_theCurrentMap->PutSelectedUnitBack();
+}
+
+void PurchaseUnit(Command& theCommand)
+{
+	// subtract funds
+	g_theCurrentMap->m_currentOfficer->m_money -= g_unitToSpawn->m_cost;
+	
+	Vector2 tilePos = g_theCurrentMap->m_selectedBuilding->m_tileReference->m_position.GetAsVector2();
+	tilePos *= (1 / TILE_SIZE);
+
+
+	// add unit
+	Unit* newUnit = g_theCurrentMap->CreateUnit(
+		g_unitToSpawn->m_name, 
+		g_theCurrentMap->m_currentOfficer->m_team, 
+		tilePos.GetVector2AsInt(), 
+		10);
+	
+	// make unit already moved
+	newUnit->m_usedAction = true;
+	newUnit->m_beenMoved = true;
 }

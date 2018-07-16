@@ -107,7 +107,7 @@ void Container::OnClick()
 void Container::CloseMenu()
 {
 	ClearWidgets();
-	g_theCurrentMap->m_currentContainer = nullptr;
+	if(g_theCurrentMap->m_currentContainer != nullptr) g_theCurrentMap->m_currentContainer = nullptr;
 }
 
 void Container::AddPauseMenu()

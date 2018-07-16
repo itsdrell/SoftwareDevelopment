@@ -23,6 +23,7 @@
 #include "../General/UI/Container.hpp"
 #include "../General/UI/UIWidget.hpp"
 #include "../General/UI/HUD.hpp"
+#include "Game/General/Player/CommandingOfficer.hpp"
 
 //====================================================================================
 Tile* g_currentTile = nullptr;
@@ -131,7 +132,8 @@ void Playing::CheckKeyBoardInputs()
 	// UI input (deosnt rely on if there is a tile there or not)
 	if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
 	{
-		m_currentMap->m_actionMenu->OnClick();
+		if(m_currentMap->m_currentContainer != nullptr)
+			m_currentMap->m_currentContainer->OnClick();
 	}
 
 
@@ -168,36 +170,60 @@ void Playing::CheckKeyBoardInputs()
 		{
 			if(m_currentPlayState == SELECTING)
 			{	
+				Tile* currentTile = m_currentMap->GetTile(mousePos.xy());
+				bool isUnit = (currentTile->m_unit != nullptr);
+				bool isBuilding = (currentTile->m_building != nullptr);
+
+
 				// make sure there is a unit there
-				if(m_currentMap->SelectUnit(mousePos.xy()) == false)
+				if(isUnit == false && isBuilding == false)
 				{
-					// Pop up the general menu for now 
-					m_currentMap->m_actionMenu->AddPauseMenu();
-					g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
-					return;
+					if(m_currentMap->m_currentContainer != m_currentMap->m_storeMenu)
+					{
+						// Pop up the general menu for now 
+						m_currentMap->m_actionMenu->AddPauseMenu();
+						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+						return;
+					}
+					
 				}
 
-				// there is a unit there so do something with it
-				if(m_currentMap->m_selectedUnit->m_beenMoved == false)
+				if(isUnit)
 				{
-					// We don't check for if its their turn cause you should be able to 
-					// see where the enemy can go during your turn
+					m_currentMap->m_selectedUnit = currentTile->m_unit;
+					
+					// there is a unit there so do something with it
+					if(m_currentMap->m_selectedUnit->m_beenMoved == false)
+					{
+						// We don't check for if its their turn cause you should be able to 
+						// see where the enemy can go during your turn
 
-					m_currentMap->CreateMovementTiles(*m_currentMap->m_selectedUnit);
-					m_cursor->m_renderable->m_hidden = true;
-					m_currentPlayState = MOVEMENT;
+						m_currentMap->CreateMovementTiles(*m_currentMap->m_selectedUnit);
+						m_cursor->m_renderable->m_hidden = true;
+						m_currentPlayState = MOVEMENT;
+					}
+					else if(m_currentMap->m_selectedUnit->m_beenMoved)
+					{
+						// Do an action
+					}
+					else
+					{
+						// Show general menu
+						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+						m_currentMap->m_actionMenu->AddPauseMenu();
+						return;
+					}
 				}
-				else if(m_currentMap->m_selectedUnit->m_beenMoved)
+				else if(isBuilding)
 				{
-					// Do an action
+					// not your factory
+					if(currentTile->m_building->m_team != m_currentMap->m_currentOfficer->m_team)
+						return;
+					
+					m_currentMap->m_selectedBuilding = currentTile->m_building;
+					m_currentMap->CreateStoreUI();
 				}
-				else
-				{
-					// Show general menu
-					g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
-					m_currentMap->m_actionMenu->AddPauseMenu();
-					return;
-				}
+				
 				
 				
 			}
@@ -222,6 +248,7 @@ void Playing::CheckKeyBoardInputs()
 
 						UIWidget* newWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("wait"));
 						m_currentMap->m_actionMenu->AddWidget(*newWidget);
+						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
 
 						m_currentMap->PlaceUnit(mousePos.xy());
 						m_currentPlayState = ACTION;

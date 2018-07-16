@@ -33,6 +33,7 @@ public:
 
 
 	static UnitDefinition* GetUnitDefinition(std::string name);
+	static void GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<UnitDefinition*>* list);
 	static Strings GetAllUnitNames();
 
 	static std::map<std::string, UnitDefinition*>	s_definitions;
@@ -41,6 +42,7 @@ public:
 	std::string			m_name;
 
 	uint				m_cost;
+	String				m_factoryTag;
 	
 	bool				m_canCapture;
 	int					m_movement;

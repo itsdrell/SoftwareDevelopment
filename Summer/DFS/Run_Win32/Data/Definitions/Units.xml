@@ -5,6 +5,7 @@
     <Unit
     name = "grunt"
     cost = "1000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "3"
     movementTags = "ground"
@@ -16,6 +17,8 @@
 
     <Unit
     name = "mech"
+    cost = "3000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "3"
     movementTags = "ground"
@@ -27,6 +30,8 @@
 
     <Unit
     name = "recon"
+    cost = "3000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "7"
     movementTags = "ground"
@@ -37,6 +42,8 @@
 
     <Unit
     name = "antiAir"
+    cost = "6000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "7"
     movementTags = "ground"
@@ -47,6 +54,8 @@
 
     <Unit
     name = "tank"
+    cost = "7000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "5"
     movementTags = "ground"
@@ -57,6 +66,8 @@
 
     <Unit
     name = "medTank"
+    cost = "10000"
+    storeType = "ground"
     attackRange = "1~1"
     movement = "4"
     movementTags = "ground"
@@ -69,6 +80,8 @@
 <!-- Ranged ground Units -->
     <Unit
     name = "cannon"
+    cost = "6000"
+    storeType = "ground"
     attackRange = "2~3"
     movement = "4"
     movementTags = "ground"
@@ -79,6 +92,8 @@
 
     <Unit
     name = "rockets"
+    cost = "15000"
+    storeType = "ground"
     movement = "2"
     attackRange = "3~5"
     movementTags = "ground"
@@ -89,6 +104,8 @@
 
     <Unit
     name = "missiles"
+    cost = "12000"
+    storeType = "ground"
     movement = "4"
     attackRange = "2~5"
     movementTags = "ground"
@@ -100,6 +117,8 @@
 <!-- NAVAL UNITS --->
     <Unit
     name = "sub"
+    cost = "10000"
+    storeType = "water"
     movement = "4"
     attackRange = "1"
     movementTags = "water"
@@ -110,6 +129,8 @@
 
     <Unit
     name = "battleShip"
+    cost = "20000"
+    storeType = "water"
     movement = "4"
     attackRange = "1~6"
     movementTags = "water"
@@ -120,6 +141,8 @@
 
     <Unit
     name = "cruiser"
+    cost = "15000"
+    storeType = "water"
     movement = "4"
     attackRange = "1~6"
     movementTags = "water"
@@ -133,6 +156,8 @@
 <!-- AIR UNITS --->
     <Unit
     name = "jet"
+    cost = "20000"
+    storeType = "air"
     movement = "4"
     attackRange = "1"
     movementTags = "air"
@@ -143,6 +168,8 @@
 
     <Unit
     name = "copter"
+    cost = "8000"
+    storeType = "air"
     movement = "4"
     attackRange = "1"
     movementTags = "air"
@@ -153,6 +180,8 @@
 
     <Unit
     name = "bomber"
+    cost = "15000"
+    storeType = "air"
     movement = "6"
     attackRange = "1"
     movementTags = "air"
@@ -171,6 +200,8 @@
 
     <Unit
     name = ""
+    cost = "1000"
+    storeType = "ground, water, air" -- this is what factory should make it
     attackRange = "x~y"
     movement = "3"
     movementTags = "ground,water,air"

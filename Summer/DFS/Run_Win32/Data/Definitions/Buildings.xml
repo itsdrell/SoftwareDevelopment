@@ -11,6 +11,7 @@
   name = "factory"
   underTile = "grass"
   isFactory = "true"
+  unitType = "ground"
   spriteCoords = "1,2"
   
   />
@@ -19,6 +20,7 @@
   name = "airPort"
   underTile = "grass"
   isFactory = "true"
+  unitType = "air"
   spriteCoords = "2,2"
   
   />
@@ -27,6 +29,7 @@
   name = "seaPort"
   underTile = "shore"
   isFactory = "true"
+  unitType = "water"
   spriteCoords = "3,2"
   
   />
@@ -47,6 +50,7 @@
   name = "default"
   isHQ = "false"
   isFactory = "false"
+  unitType = "ground, air, water"  -- This is what type of unit it makes
   underTile = "grass"
   spriteCoords = "0,2"
   

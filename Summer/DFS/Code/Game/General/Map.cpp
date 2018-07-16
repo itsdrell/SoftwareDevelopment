@@ -158,7 +158,7 @@ Map::Map(std::string name, Image& mapImage)
 	m_mapImage = mapImage;
 
 	m_actionMenu = new Container("Main Menu", 5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
-	m_storeMenu = new Container("Purchase", 8, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
+	m_storeMenu = new Container("Purchase", 10, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
 	m_hud = new HUD();
 
 	m_heatmap = new HeatMap(m_dimensions);
@@ -169,8 +169,6 @@ Map::Map(std::string name, Image& mapImage)
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 
-	UIWidget* testWidget = new UnitWidget(TEAM_BLUE, *UnitDefinition::GetUnitDefinition("grunt"), *UIWidgetDefinition::GetUIWidgetDefinition("unit"));
-	m_storeMenu->AddWidget(*testWidget);
 }
 
 void Map::Update()
@@ -497,6 +495,22 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 	}
 }
 
+void Map::CreateStoreUI()
+{
+	String typeOfUnit = m_selectedBuilding->m_definition->m_typeOfUnitToSpawn;
+
+	std::vector<UnitDefinition*> units;
+	UnitDefinition::GetAllUnitDefinitionsWithStoreTag(typeOfUnit, &units);
+	
+	for(uint i = 0; i < units.size(); i++)
+	{
+		UIWidget* unitWidget = new UnitWidget(m_currentOfficer->m_team, *units.at(i), *UIWidgetDefinition::GetUIWidgetDefinition("unit"));
+		m_storeMenu->AddWidget(*unitWidget);
+	}
+	
+	m_currentContainer = m_storeMenu;
+}
+
 bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)
 {
 	if(theUnitToUse.m_definition->m_canCapture == false)
@@ -710,7 +724,7 @@ bool Map::IsATeamWithoutUnits()
 	return false;
 }
 
-void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
+Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 {
 	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name));
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
@@ -727,6 +741,8 @@ void Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 
 	AddGameObject(*newUnit);
 	AddUnit(*newUnit);
+
+	return newUnit;
 }
 
 void Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
@@ -737,6 +753,8 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 
 	Tile* tilePlacedOn = GetTile(position);
 	tilePlacedOn->m_building = newBuilding;
+
+	newBuilding->m_tileReference = tilePlacedOn;
 
 	if(tilePlacedOn->m_definition != newBuilding->m_definition->m_tileToSpawnBeneath)
 		tilePlacedOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;
