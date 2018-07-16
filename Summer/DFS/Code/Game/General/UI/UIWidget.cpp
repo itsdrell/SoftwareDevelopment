@@ -107,6 +107,11 @@ void UIWidget::OnClick()
 	
 }
 
+void UIWidget::GenerateBounds(const AABB2& newBounds)
+{
+	m_bounds = newBounds;
+}
+
 //====================================================================================
 UIWidgetDefinition::UIWidgetDefinition(tinyxml2::XMLElement& node)
 {

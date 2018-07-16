@@ -127,7 +127,7 @@ void Container::AddWidget(UIWidget& newWidget)
 	{
 		uint slot = (uint) m_widgets.size();
 
-		newWidget.m_bounds = m_widgetSlots.at(slot);
+		newWidget.GenerateBounds(m_widgetSlots.at(slot));
 		m_widgets.push_back(&newWidget);
 	}
 }

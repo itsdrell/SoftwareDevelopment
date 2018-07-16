@@ -67,8 +67,6 @@ void Playing::StartUp()
 
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
-	m_actionMenu = new Container("Main Menu", 5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
-	m_hud = new HUD();
 
 	//---------------------------------------------------------
 	// Creating a test scene
@@ -83,8 +81,6 @@ void Playing::Update()
 	//DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
 	DebugRender2DText(0.f, Vector2(-20.f, -40.f), m_currentMap->m_turnOrder.GetCurrentTurnString(), 10.f);
 
-	//m_testUnit->Update();
-	m_actionMenu->Update();
 	m_currentMap->Update();
 
 	m_currentMap->RemoveDeadGameObjects();
@@ -108,8 +104,9 @@ void Playing::Render() const
 	m_renderingPath->Render(m_scene);
 	
 	// #TODO make this a renderable once we figure out a clean way to maintain it
-	m_actionMenu->Render();
-	m_hud->Render();
+	m_currentMap->m_actionMenu->Render();
+	m_currentMap->m_hud->Render();
+	m_currentMap->m_storeMenu->Render();
 
 	// Debug heat map
 	if(m_showHeatmap)
@@ -134,7 +131,7 @@ void Playing::CheckKeyBoardInputs()
 	// UI input (deosnt rely on if there is a tile there or not)
 	if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
 	{
-		m_actionMenu->OnClick();
+		m_currentMap->m_actionMenu->OnClick();
 	}
 
 
@@ -175,8 +172,8 @@ void Playing::CheckKeyBoardInputs()
 				if(m_currentMap->SelectUnit(mousePos.xy()) == false)
 				{
 					// Pop up the general menu for now 
-					m_actionMenu->AddPauseMenu();
-					g_theCurrentMap->m_currentContainer = m_actionMenu;
+					m_currentMap->m_actionMenu->AddPauseMenu();
+					g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
 					return;
 				}
 
@@ -197,8 +194,8 @@ void Playing::CheckKeyBoardInputs()
 				else
 				{
 					// Show general menu
-					g_theCurrentMap->m_currentContainer = m_actionMenu;
-					m_actionMenu->AddPauseMenu();
+					g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+					m_currentMap->m_actionMenu->AddPauseMenu();
 					return;
 				}
 				
@@ -220,11 +217,11 @@ void Playing::CheckKeyBoardInputs()
 						if(m_currentMap->CanUnitCaptureBuilding(*m_currentMap->m_selectedUnit))
 						{
 							UIWidget* capWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("capture"));
-							m_actionMenu->AddWidget(*capWidget);
+							m_currentMap->m_actionMenu->AddWidget(*capWidget);
 						}
 
 						UIWidget* newWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("wait"));
-						m_actionMenu->AddWidget(*newWidget);
+						m_currentMap->m_actionMenu->AddWidget(*newWidget);
 
 						m_currentMap->PlaceUnit(mousePos.xy());
 						m_currentPlayState = ACTION;
@@ -248,7 +245,7 @@ void Playing::CheckKeyBoardInputs()
 				if(m_currentMap->CheckForAction(m_currentMap->GetTile(mousePos.xy())->m_position))
 				{
 					m_currentMap->ClearAttackTiles();
-					m_actionMenu->CloseMenu();
+					m_currentMap->m_actionMenu->CloseMenu();
 					m_currentPlayState = SELECTING;
 				}
 				

@@ -694,7 +694,7 @@ void Renderer::DrawTexturedAABB2(const AABB2& bounds, const Texture& texture, co
 
 }
 
-void Renderer::DrawSprite(Vector3& position, Sprite& theSprite, Matrix44 orientation /*= Matrix44()*/)
+void Renderer::DrawSprite(const Vector3& position, const Sprite& theSprite, Matrix44 orientation /*= Matrix44()*/)
 {
 
 	// Figuring out orientation based off the matrix
@@ -705,11 +705,11 @@ void Renderer::DrawSprite(Vector3& position, Sprite& theSprite, Matrix44 orienta
 
 }
 
-void Renderer::DrawSprite(Vector3& position, Sprite& theSprite, const Vector3& rightVec, const Vector3& upVec)
+void Renderer::DrawSprite(const Vector3& position, const Sprite& theSprite, const Vector3& rightVec, const Vector3& upVec)
 {
 	// THIS IS IMPORTANT
-	glEnable(GL_BLEND);// you enable blending function
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_BLEND);// you enable blending function
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	m_currentTexture = theSprite.m_image;
 

@@ -25,7 +25,7 @@ void EndTurn(Command & theCommand)
 	
 	g_theCurrentMap->ClearHoverTiles();
 	g_theCurrentMap->GoToNextTurn();
-	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
+	g_theCurrentMap->m_actionMenu->ClearWidgets();
 }
 
 void HaveAUnitWait(Command& theCommand)
@@ -39,7 +39,7 @@ void HaveAUnitWait(Command& theCommand)
 
 	currentUnit->m_usedAction = true;
 	g_theCurrentMap->ClearHoverTiles();
-	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
+	g_theCurrentMap->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 }
 
@@ -57,7 +57,7 @@ void CaptureBuilding(Command& theCommand)
 
 	// reset state
 	g_theCurrentMap->m_selectedUnit->m_usedAction = true;
-	g_theGame->m_playingState->m_actionMenu->ClearWidgets();
+	g_theCurrentMap->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 	g_theCurrentMap->ClearHoverTiles();
 }

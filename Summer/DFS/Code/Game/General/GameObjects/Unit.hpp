@@ -40,6 +40,7 @@ public:
 public:
 	std::string			m_name;
 
+	uint				m_cost;
 	
 	bool				m_canCapture;
 	int					m_movement;
@@ -60,7 +61,7 @@ public:
 	Unit(TeamName team);
 	Unit(TeamName team, UnitDefinition& def);
 
-	SpriteSheet GetTeamTexture(TeamName name);
+	static SpriteSheet GetTeamTexture(TeamName name);
 
 	IntRange GetAttackRange() const { return m_definition->m_attackRange;}
 	Tags GetMovementTags() const { return m_definition->m_movementTags; }

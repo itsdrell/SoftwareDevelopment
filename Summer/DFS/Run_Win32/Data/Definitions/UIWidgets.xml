@@ -27,6 +27,12 @@
     fontColor = "0,0,0,255"
     />
 
+    <Widget
+    name = "unit"
+    displayText = "unit name"
+    scriptFile = "purchaseUnit"
+    />
+
 </UIWidgets>
 
 

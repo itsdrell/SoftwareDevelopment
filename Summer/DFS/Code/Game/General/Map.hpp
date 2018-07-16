@@ -14,6 +14,7 @@ class HoverTile;
 class HeatMap;
 class CommandingOfficer;
 class Container;
+class HUD;
 
 //====================================================================================
 // Typedefs
@@ -57,6 +58,7 @@ public:
 
 	void Update();
 	void UpdateCurrentCO();
+	void UpdateUI();
 
 	void CreateMapRenderable(bool makeDebug = false);
 	void CreateMapRenderableFromImage();
@@ -121,7 +123,11 @@ public:
 	CommandingOfficer*					m_currentOfficer = nullptr;
 	Unit*								m_selectedUnit = nullptr;
 	Building*							m_buildingToCapture = nullptr; // for console command 
+
 	Container*							m_currentContainer = nullptr;
+	Container*							m_actionMenu = nullptr;
+	Container*							m_storeMenu = nullptr;
+	HUD*								m_hud = nullptr;
 };
 
 

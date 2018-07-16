@@ -88,6 +88,9 @@
     <ClCompile Include="General\Player\CommandingOfficer.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\UI\UnitWidget.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -128,5 +131,6 @@
     <ClInclude Include="General\Player\CommandingOfficer.hpp" />
     <ClInclude Include="General\Player\Controller.hpp" />
     <ClInclude Include="General\Player\PlayerController.hpp" />
+    <ClInclude Include="General\UI\UnitWidget.hpp" />
   </ItemGroup>
 </Project>

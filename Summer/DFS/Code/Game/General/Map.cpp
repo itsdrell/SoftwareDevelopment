@@ -19,6 +19,10 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 #include "Game\General\Player\CommandingOfficer.hpp"
+#include "UI\Container.hpp"
+#include "UI\HUD.hpp"
+#include "UI\UIWidget.hpp"
+#include "UI\UnitWidget.hpp"
 
 //====================================================================================
 // Externs
@@ -153,6 +157,10 @@ Map::Map(std::string name, Image& mapImage)
 	m_dimensions = mapImage.m_dimensions;
 	m_mapImage = mapImage;
 
+	m_actionMenu = new Container("Main Menu", 5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
+	m_storeMenu = new Container("Purchase", 8, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
+	m_hud = new HUD();
+
 	m_heatmap = new HeatMap(m_dimensions);
 
 	CreateMapRenderableFromImage();
@@ -161,6 +169,8 @@ Map::Map(std::string name, Image& mapImage)
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 
+	UIWidget* testWidget = new UnitWidget(TEAM_BLUE, *UnitDefinition::GetUnitDefinition("grunt"), *UIWidgetDefinition::GetUIWidgetDefinition("unit"));
+	m_storeMenu->AddWidget(*testWidget);
 }
 
 void Map::Update()
@@ -173,7 +183,7 @@ void Map::Update()
 	}
 
 	
-
+	UpdateUI();
 	CheckForVictory();
 }
 
@@ -181,6 +191,12 @@ void Map::UpdateCurrentCO()
 {
 	if(m_currentOfficer != m_officers.at(m_turnOrder.m_current))
 		m_currentOfficer = m_officers.at(m_turnOrder.m_current);
+}
+
+void Map::UpdateUI()
+{
+	m_actionMenu->Update();
+	m_storeMenu->Update();
 }
 
 void Map::CreateMapRenderable(bool makeDebug)

@@ -69,8 +69,6 @@ public:
 	GameObject2D*			m_test;
 
 	Map*					m_currentMap;
-	Container*				m_actionMenu;
-	HUD*					m_hud;
 
 	PlayState				m_currentPlayState;
 

@@ -108,8 +108,8 @@ public:
 	void DrawTexturedAABB2(const AABB2& bounds, const Texture& texture,
 		const Vector2& texCoordsAtMins, const Vector2& texCoordsAtMaxs, const Rgba& tint );
 	
-	void DrawSprite(Vector3& position, Sprite& theSprite, Matrix44 orientation = Matrix44());
-	void DrawSprite(Vector3& position, Sprite& theSprite, const Vector3& rightVec, const Vector3& upVec);
+	void DrawSprite(const Vector3& position, const Sprite& theSprite, Matrix44 orientation = Matrix44());
+	void DrawSprite(const Vector3& position, const Sprite& theSprite, const Vector3& rightVec, const Vector3& upVec);
 	
 
 	// Font stuff

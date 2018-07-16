@@ -60,13 +60,15 @@ public:
 	UIWidget(UIWidgetDefinition& definition);
 
 	// check for clicks
-	void Update();
+	virtual void Update();
 
-	void Render() const;
+	virtual void Render() const;
 
-	void CheckForMouseOverlap();
+	virtual void CheckForMouseOverlap();
 
-	void OnClick();
+	virtual void OnClick();
+
+	virtual void GenerateBounds(const AABB2& newBounds);
 
 	std::string GetText() { return m_definition ? m_definition->m_text : m_consoleCommandOnClick;}
 

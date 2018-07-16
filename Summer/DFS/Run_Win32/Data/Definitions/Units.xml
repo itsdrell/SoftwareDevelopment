@@ -4,6 +4,7 @@
 <!-- GROUND UNITS --->
     <Unit
     name = "grunt"
+    cost = "1000"
     attackRange = "1~1"
     movement = "3"
     movementTags = "ground"
