@@ -96,6 +96,7 @@ data/log/
 *.suo
 *.TMP
 data/screenshot/
+*.html
 *.log
 data/config/user.config
 
