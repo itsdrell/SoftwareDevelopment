@@ -94,3 +94,15 @@ const std::string CurrentDateTime() {
 	return buf;
 }
 
+std::string GetTimeStamp()
+{
+	time_t     now = time(0);
+	struct tm  tstruct;
+	char       buf[80];
+	tstruct = *localtime(&now); // this gives a warning
+
+	strftime(buf, sizeof(buf), "(%H:%M:%S)", &tstruct);
+
+	return buf;
+}
+

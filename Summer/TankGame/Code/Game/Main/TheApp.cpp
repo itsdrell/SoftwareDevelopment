@@ -135,9 +135,9 @@ void App::Update()
 
 	if(WasKeyJustPressed(G_THE_LETTER_Z))
 	{
-		LogTaggedPrintf("Zac", "THIS IS A TEST NUMBER %d", 10);
-		LogTaggedPrintf("Emily", "THIS IS A TEST NUMBER %d", 10);
-		LogTaggedPrintf("Dofa", "THIS IS A TEST NUMBER %d", 10);
+		LogTaggedPrintf("Zac", "Test number with tag %d", 10);
+		LogTaggedPrintf("Emily", "Test number with tag %d", 10);
+		LogTaggedPrintf("Dofa", "Test number with tag %d", 10);
 
 	}
 

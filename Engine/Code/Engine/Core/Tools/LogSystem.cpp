@@ -106,12 +106,46 @@ void LogSystem::StartUp()
 	
 
 	CreateDirectoryA(LOG_HISTORY_PATH, NULL);
-	std::string historyPath = LOG_HISTORY_PATH + CurrentDateTime() + ".log";
+	std::string historyPath = LOG_HISTORY_PATH + CurrentDateTime() + ".html";
 	m_historyFile.open(historyPath, std::fstream::out | std::fstream::trunc);
+
+
+	FormatLogStartup();
+
 }
+
+//--------------------------------------------------------------------------
+void LogSystem::FormatLogStartup()
+{
+	const char* header = R"(
+	<html>
+	<body>
+	)";
+
+	m_outputFile << header;
+	m_historyFile << header;
+
+	Log* log = new Log();
+	log->tag = "TAG";
+	log->text = "Log Text";
+	log->color = Rgba::BLACK;
+	log->timeStamp = "Timestamp";
+
+	g_LogSystem->m_log_queue.enqueue(log);
+}
+
 //--------------------------------------------------------------------------
 void LogSystem::ShutDown()
 {
+	const char* closing = R"(
+</body>
+</html>
+	)";
+
+	m_outputFile << closing;
+	m_historyFile << closing;
+	
+
 	m_is_running = false;
 	ThreadJoin(LOG_THREAD_NAME);
 
@@ -296,13 +330,24 @@ void LogSystemShutDown()
 }
 
 //--------------------------------------------------------------------------
-void LogTaggedPrintv(const char* tag, const char* format, va_list args)
+void LogTaggedPrintv(const char* tag, Rgba color, const char* format, va_list args)
 {
 	Log* log = new Log(); 
 	log->tag = tag; 
 	log->text = Stringv( format, args );
+	log->color = color;
+	log->timeStamp = GetTimeStamp();
 
 	g_LogSystem->m_log_queue.enqueue(log); 
+}
+
+//--------------------------------------------------------------------------
+void LogColorTaggedPrintf(const char* tag, Rgba color, const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	LogTaggedPrintv(tag , color , format, args);
+	va_end(args);
 }
 
 //--------------------------------------------------------------------------
@@ -310,7 +355,7 @@ void LogTaggedPrintf(const char* tag, const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	LogTaggedPrintv(tag , format, args);
+	LogTaggedPrintv(tag , Rgba::CYAN, format, args);
 	va_end(args);
 }
 
@@ -319,7 +364,7 @@ void LogPrintf(char const *format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	LogTaggedPrintv("LOG", format, args);
+	LogTaggedPrintv("LOG", Rgba::GREEN, format, args);
 	va_end(args);
 
 }
@@ -329,7 +374,7 @@ void LogWarning(const char * format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	LogTaggedPrintv("WARNING", format, args);
+	LogTaggedPrintv("WARNING", Rgba::RED, format, args);
 	va_end(args);
 }
 
@@ -338,15 +383,24 @@ void LogError(const char * format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	LogTaggedPrintv("ERROR", format, args);
+	LogTaggedPrintv("ERROR", Rgba::BLUE, format, args);
 	va_end(args);
 }
 
 //--------------------------------------------------------------------------
 void LogToFile(const Log& data)
 {
-	LogSystem::GetInstance()->m_outputFile << (data.tag + " : " + data.text + "\n");
-	LogSystem::GetInstance()->m_historyFile << (data.tag + " : " + data.text + "\n");
+	String colorValue = data.color.GetRGBString();
+
+	String line1 = "<font style=\"color : rgb(" + colorValue + ")\">";
+	String line2 = Stringf("<PRE> %-20s %-100s %-30s </PRE><br/><HR>", 
+		data.tag.c_str(), data.text.c_str(), data.timeStamp.c_str());
+	String line3 = "</font>";
+	
+	LogSystem::GetInstance()->m_outputFile << (line1 + line2 + line3 + "\n");
+	LogSystem::GetInstance()->m_historyFile << (line1 + line2 + line3 + "\n");
+	//LogSystem::GetInstance()->m_outputFile << (data.tag + " : " + data.text + "\n");
+	//LogSystem::GetInstance()->m_historyFile << (data.tag + " : " + data.text + "\n");
 }
 
 //--------------------------------------------------------------------------

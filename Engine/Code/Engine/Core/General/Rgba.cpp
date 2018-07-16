@@ -180,6 +180,12 @@ Vector3 Rgba::GetRGBNormalized() const
 	return Vector3(fRed,fGreen,fBlue);
 }
 
+std::string Rgba::GetRGBString() const
+{
+	std::string result = std::to_string(r) + "," + std::to_string(g) + "," + std::to_string(b);
+	return result;
+}
+
 bool RGBvsRGBA(Rgba rgbColor, Rgba rgbaColor)
 {
 	if(rgbColor.r == rgbaColor.r)

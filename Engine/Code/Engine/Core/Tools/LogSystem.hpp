@@ -15,7 +15,7 @@
 // Type Defs + Defines
 //====================================================================================
 #define LOG_THREAD_NAME ("logThread")
-#define LOG_FILE_PATH ("Log/Log.log")
+#define LOG_FILE_PATH ("Log/Log.html")
 #define LOG_HISTORY_PATH ("Log/History/") // this is for our timestamped history
 
 //====================================================================================
@@ -30,6 +30,8 @@ struct Log
 {
 	std::string tag; 
 	std::string text; 
+	std::string timeStamp;
+	Rgba color = Rgba::BLACK;
 };
 
 typedef void (*log_cb)( const Log &log, void* args); 
@@ -57,6 +59,9 @@ public:
 	static LogSystem* GetInstance();
 
 	void StartUp();
+
+	void FormatLogStartup();
+
 	void ShutDown();
 	bool IsRunning() { return m_is_running; }
 	bool Stop() { m_is_running = false; }
@@ -106,7 +111,9 @@ void LogSystemShutDown();
 void ForceLogSystemFlush();
 
 // Works like ("tag", "The number is: %i", 10)
-void LogTaggedPrintv( const char* tag, const char* format, va_list args);
+void LogTaggedPrintv( const char* tag, Rgba color, const char* format, va_list args); // internal call
+
+void LogColorTaggedPrintf( const char* tag, Rgba color, const char* format, ...);
 void LogTaggedPrintf( const char* tag, const char* format, ...);
 void LogPrintf( char const *format, ... );
 void LogWarning(const char* format, ...);

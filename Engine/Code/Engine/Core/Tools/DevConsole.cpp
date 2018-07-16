@@ -173,7 +173,7 @@ void ConsolePrintf(char const *format, ...)
 void PrintLogToConsole(const Log& data)
 {
 	String text = data.tag + " : " + data.text;
-	DevConsole::AddConsoleDialogueToQueue(text, GetRandomColorInRainbow());
+	DevConsole::AddConsoleDialogueToQueue(text, data.color);
 }
 
 void CommandRunScript(char const* theCommand)

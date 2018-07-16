@@ -29,6 +29,7 @@ public:
 	Vector4 GetAsVector4() const;
 	Vector4 GetAsNormalizedVector4() const;
 	Vector3 GetRGBNormalized() const;
+	std::string GetRGBString() const;
 
 public:
 	unsigned char r; // Red byte, 0-255

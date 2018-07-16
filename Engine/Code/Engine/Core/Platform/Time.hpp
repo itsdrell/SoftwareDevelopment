@@ -11,6 +11,7 @@
 double GetCurrentTimeSeconds();
 
 const std::string CurrentDateTime();
+std::string GetTimeStamp();
 
 // Gets raw performance counter
 uint64_t GetPerformanceCounter(); 
