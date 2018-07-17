@@ -62,7 +62,7 @@ void Playing::StartUp()
 
 	m_currentPlayState = SELECTING;
 
-	Image mapImage = Image("Data/Images/Maps/testMap.png");
+	Image mapImage = Image("Data/Images/Maps/beanIsland.png");
 	m_currentMap = new Map("test", mapImage);
 	g_theCurrentMap = m_currentMap;
 
@@ -71,7 +71,7 @@ void Playing::StartUp()
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	CommandRunScriptFromFile("LevelScripts/zooLevel");
+	CommandRunScriptFromFile("LevelScripts/beanIsland");
 	
 }
 
@@ -92,6 +92,8 @@ void Playing::Render() const
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Set up Cameras
+	Renderer::GetInstance()->DrawAABB2(AABB2(-1000,1000), Rgba(51, 102, 255));
+
 
 	m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
@@ -126,7 +128,9 @@ void Playing::CheckKeyBoardInputs()
 		return;
 	Vector2 cmouse = GetMouseCurrentPosition();
 	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(cmouse, 0.f);
-	//DebugRenderLog(0.f, "Mouse Pos: " + mousePos.ToString());
+	//
+	//IntVector2 tileCoord = (cmouse * (1/ TILE_SIZE)).GetVector2AsInt();
+	//DebugRenderLog(3.f, "Mouse Pos: " + tileCoord.ToString());
 
 	//--------------------------------------------------------------------------
 	// UI input (deosnt rely on if there is a tile there or not)

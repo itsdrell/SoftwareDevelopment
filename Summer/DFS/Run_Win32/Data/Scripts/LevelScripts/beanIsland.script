@@ -1,0 +1,33 @@
+addBuilding default red 1,4
+addBuilding default red 2,4
+addBuilding seaPort red 1,6
+addBuilding default red 1,7
+addBuilding airPort red 1,8
+addBuilding factory red 2,7
+addBuilding factory red 3,8
+addBuilding default red 1,10
+addBuilding default red 2,10
+addBuilding default red 6,5
+addBuilding default red 6,7
+
+addBuilding default none 5,10
+addBuilding default none 6,10
+addBuilding default none 7,10
+addBuilding default none 8,10
+addBuilding default none 9,10
+addBuilding default none 10,10
+
+addBuilding default blue 14,4
+addBuilding default blue 13,4
+addBuilding seaPort blue 14,6
+addBuilding default blue 14,7
+addBuilding airPort blue 14,8
+addBuilding factory blue 13,7
+addBuilding factory blue 12,8
+addBuilding default blue 14,10
+addBuilding default blue 13,10
+addBuilding default blue 9,5
+addBuilding default blue 9,7
+
+addUnit grunt red 2,6 
+addUnit grunt blue 13,6
