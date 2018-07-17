@@ -60,7 +60,7 @@ public:
 	Matrix44 GetLocalMatrix() const;
 	void SetLocalMatrix( const Matrix44& mat );
 
-	void SetLocalPosition( Vector2 pos); 
+	void SetLocalPosition(const Vector2& pos); 
 	void TranslateLocal( Vector2 offset );
 	Vector2 GetLocalPosition() const;
 

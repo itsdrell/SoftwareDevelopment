@@ -148,14 +148,14 @@ void Playing::CheckKeyBoardInputs()
 	if(nullptr != currentTile)
 	{
 		// Always update cursor so it never looks like its lagging behind
-		m_cursor->SetLocalPosition(currentTile->GetCenterOfTile());
+		m_cursor->SetLocalPosition(currentTile->GetCenterOfTile()+ Vector2(3.f,-3.f));
 		
 		// Store it off so other classes can use it easier
 		g_currentTile = currentTile;
 
 		if(m_currentPlayState == SELECTING)
 		{
-			m_cursor->SetLocalPosition(currentTile->GetCenterOfTile());
+			m_cursor->SetLocalPosition(currentTile->GetCenterOfTile() + Vector2(3.f,-3.f));
 			
 		}
 		if(m_currentPlayState == MOVEMENT)

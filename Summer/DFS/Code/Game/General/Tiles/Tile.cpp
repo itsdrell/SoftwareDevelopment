@@ -55,8 +55,11 @@ HoverTile::HoverTile(IntVector2& position, HoverTileTypes theType /*= MOVEMENT_T
 	case MOVEMENT_TILE_TYPE:
 		CreateMovementTile();
 		break;
-	case ATTACK_RANGE_TILE_TYPE:
+	case ATTACK_TILE_TYPE:
 		CreateAttackTile();
+		break;
+	case ATTACK_RANGE_TILE_TYPE:
+		CreateAttackRangeTile();
 		break;
 	case NUM_OF_HOVER_TILE_TYPES:
 		break;
@@ -93,6 +96,24 @@ void HoverTile::CreateAttackTile()
 {
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
 	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/target.png");
+	newMaterial->SetTexture(0, testSprite);
+
+	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TILE_SIZE);
+	newSprite->m_pixelsPerUnit = TILE_SIZE;
+
+	m_transform.SetLocalPosition(m_tileCoords.GetAsVector2() * TILE_SIZE);
+
+	m_renderable->SetMaterial(newMaterial);
+	m_renderable->SetSprite(newSprite);
+	m_renderable->SetLayer(UI);
+
+	g_theGame->m_playingState->AddRenderable(m_renderable);
+}
+
+void HoverTile::CreateAttackRangeTile()
+{
+	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
+	Texture* testSprite = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/targetRange.png");
 	newMaterial->SetTexture(0, testSprite);
 
 	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, TILE_SIZE);

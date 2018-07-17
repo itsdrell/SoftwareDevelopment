@@ -401,7 +401,7 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 			// do something based off the action
 			switch (currentTile->m_type)
 			{
-			case ATTACK_RANGE_TILE_TYPE:
+			case ATTACK_TILE_TYPE:
 				AttackUnitAt(m_attackTiles.at(i)->m_tileCoords);
 				break;
 			default:
@@ -482,7 +482,7 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 		{
 			if(CanPlayerAttackUnitOnTile(theUnitToUse, tilePos.at(i)))
 			{
-				HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_RANGE_TILE_TYPE);
+				HoverTile* newTile = new HoverTile(tilePos.at(i), ATTACK_TILE_TYPE);
 
 				m_attackTiles.push_back(newTile);
 			}

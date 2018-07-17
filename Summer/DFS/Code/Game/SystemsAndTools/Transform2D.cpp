@@ -21,7 +21,7 @@ void Transform2D::SetLocalMatrix(const Matrix44 & mat)
 	m_localTransform.SetMatrix(mat);
 }
 
-void Transform2D::SetLocalPosition(Vector2 pos)
+void Transform2D::SetLocalPosition(const Vector2& pos)
 {
 	m_localTransform.SetPosition(pos);
 }

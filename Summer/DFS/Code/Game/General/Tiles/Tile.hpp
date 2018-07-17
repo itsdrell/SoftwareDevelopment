@@ -22,6 +22,7 @@ class Building;
 enum HoverTileTypes
 {
 	MOVEMENT_TILE_TYPE,
+	ATTACK_TILE_TYPE,
 	ATTACK_RANGE_TILE_TYPE,
 	NUM_OF_HOVER_TILE_TYPES
 };
@@ -63,6 +64,7 @@ public:
 
 	void CreateMovementTile();
 	void CreateAttackTile();
+	void CreateAttackRangeTile();
 
 public:
 	HoverTileTypes		m_type;
