@@ -21,6 +21,8 @@ Texture::Texture( const std::string& imageFilePath, bool flip)
 	: m_textureID( 0 )
 	, m_dimensions( 0, 0 )
 {
+	GL_CHECK_ERROR();
+	
 	int numComponents = 0; // Filled in for us to indicate how many color/alpha components the image had (e.g. 3=RGB, 4=RGBA)
 	int numComponentsRequested = 0; // don't care; we support 3 (RGB) or 4 (RGBA)
 
@@ -50,28 +52,36 @@ Texture::Texture()
 //
 void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texelSize, int numComponents )
 {
-	
+	GL_CHECK_ERROR();
+
 	m_dimensions = texelSize;
 
 	// Enable texturing
 	//glEnable( GL_TEXTURE_2D );
 
 	// Tell OpenGL that our pixel data is single-byte aligned
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );		GL_CHECK_ERROR();
 
 	// Ask OpenGL for an unused texName (ID number) to use for this texture
-	glGenTextures( 1, (GLuint*) &m_textureID );
+	glGenTextures( 1, (GLuint*) &m_textureID );		GL_CHECK_ERROR();
+
 
 	// Tell OpenGL to bind (set) this as the currently active texture
-	glBindTexture( GL_TEXTURE_2D, m_textureID );
+	glBindTexture( GL_TEXTURE_2D, m_textureID );	GL_CHECK_ERROR();
+
 
 	// Set texture clamp vs. wrap (repeat)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ); // GL_CLAMP or GL_REPEAT (WAS GL_CLAMP)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ); // GL_CLAMP or GL_REPEAT
 
+	GL_CHECK_ERROR();
+
+
 	// Set magnification (texel > pixel) and minification (texel < pixel) filters
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); // one of: GL_NEAREST, GL_LINEAR
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
+
+	GL_CHECK_ERROR();
 
 	GLenum bufferFormat = GL_RGBA8; // the format our source pixel data is in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
 	if( numComponents == 3 )
@@ -109,7 +119,8 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 		internalFormat, // how is the memory stored on the GPU
 		m_dimensions.x, 
 		m_dimensions.y ); // dimenions
-
+	
+	GL_CHECK_ERROR();
 						 // copies cpu memory to the gpu - needed for texture resources
 	glTexSubImage2D( GL_TEXTURE_2D,
 		0,             // mip layer we're copying to
@@ -120,6 +131,7 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 		GL_UNSIGNED_BYTE,     // how are those channels stored
 		imageData ); // cpu buffer to copy;
 
+	GL_CHECK_ERROR();
 
 	glActiveTexture( GL_TEXTURE0 );
 	glBindTexture( GL_TEXTURE_2D, m_textureID );  

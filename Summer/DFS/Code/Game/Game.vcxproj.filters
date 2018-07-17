@@ -91,6 +91,9 @@
     <ClCompile Include="General\UI\UnitWidget.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\GameHeatMap.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -132,5 +135,6 @@
     <ClInclude Include="General\Player\Controller.hpp" />
     <ClInclude Include="General\Player\PlayerController.hpp" />
     <ClInclude Include="General\UI\UnitWidget.hpp" />
+    <ClInclude Include="General\GameHeatMap.hpp" />
   </ItemGroup>
 </Project>

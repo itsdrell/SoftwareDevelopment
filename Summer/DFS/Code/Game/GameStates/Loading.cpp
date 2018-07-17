@@ -86,7 +86,7 @@ void Loading::LoadUnitDefinitions()
 	doc.LoadFile( "Data/Definitions/Units.xml" );
 
 	tinyxml2::XMLElement* rootElement = doc.RootElement();
-	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: UIWidgets");
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Unit Definitions");
 
 	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
 	while( indexElement )

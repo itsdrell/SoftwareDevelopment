@@ -24,6 +24,7 @@
 #include "../General/UI/UIWidget.hpp"
 #include "../General/UI/HUD.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
+#include "Game/General/GameHeatMap.hpp"
 
 //====================================================================================
 Tile* g_currentTile = nullptr;
@@ -80,7 +81,7 @@ void Playing::Update()
 	CheckKeyBoardInputs();
 
 	//DebugRenderLog(0.f, m_currentMap->m_turnOrder.GetCurrentTurnString());
-	DebugRender2DText(0.f, Vector2(-20.f, -40.f), m_currentMap->m_turnOrder.GetCurrentTurnString(), 10.f);
+	//DebugRender2DText(0.f, Vector2(-20.f, -40.f), m_currentMap->m_turnOrder.GetCurrentTurnString(), 10.f);
 
 	m_currentMap->Update();
 

@@ -28,7 +28,7 @@ public:
 	float GetHeat(const IntVector2& tileCoords);
 	bool isValidCell(const IntVector2& cellToCheck);
 	bool DoWeChangeValue(IntVector2 currentCell, IntVector2 otherCell);
-	void UpdateMap(IntVector2 initialSeed);
+	virtual void UpdateMap(IntVector2 initialSeed);
 
 	void ResetHeatMap();
 

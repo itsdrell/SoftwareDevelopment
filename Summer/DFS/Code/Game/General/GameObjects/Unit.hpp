@@ -38,6 +38,8 @@ public:
 
 	static std::map<std::string, UnitDefinition*>	s_definitions;
 
+	float GetMovementCost(const String& tileName);
+
 public:
 	std::string			m_name;
 
@@ -54,6 +56,8 @@ public:
 	Tags				m_attackTags;
 
 	IntRange			m_attackRange;
+
+	std::map<String, float>		m_movementCosts;
 };
 
 //--------------------------------------------------------------------------
@@ -62,16 +66,17 @@ class Unit : public GameObject2D
 public:
 	Unit(TeamName team);
 	Unit(TeamName team, UnitDefinition& def);
+	
+	void Update();
 
 	static SpriteSheet GetTeamTexture(TeamName name);
 
+	float GetCostForTileType(const String& tileType);
 	IntRange GetAttackRange() const { return m_definition->m_attackRange;}
 	Tags GetMovementTags() const { return m_definition->m_movementTags; }
 	Tags GetAttackTags() const { return m_definition->m_attackTags; }
 	std::string GetName() const { return m_definition->m_name; }
 	float GetMovement() const { return (float) m_definition->m_movement; }
-	
-	void Update();
 
 public:
 	UnitDefinition*		m_definition;

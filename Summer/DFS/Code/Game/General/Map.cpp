@@ -23,6 +23,7 @@
 #include "UI\HUD.hpp"
 #include "UI\UIWidget.hpp"
 #include "UI\UnitWidget.hpp"
+#include "Game\General\GameHeatMap.hpp"
 
 //====================================================================================
 // Externs
@@ -143,7 +144,7 @@ Map::Map(std::string name, const IntVector2 & dimensions)
 	m_name = name;
 	m_dimensions = dimensions;
 
-	m_heatmap = new HeatMap(dimensions);
+	m_heatmap = new GameHeatMap(dimensions);
 
 	CreateMapRenderable();
 	CreateMapRenderable(true);
@@ -161,7 +162,7 @@ Map::Map(std::string name, Image& mapImage)
 	m_storeMenu = new Container("Purchase", 10, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
 	m_hud = new HUD();
 
-	m_heatmap = new HeatMap(m_dimensions);
+	m_heatmap = new GameHeatMap(m_dimensions);
 
 	CreateMapRenderableFromImage();
 	CreateMapRenderable(true);
@@ -366,6 +367,7 @@ void Map::PlaceUnit(Vector2 pos)
 	Tile* selectedTile = GetTile(pos);
 
 	selectedTile->m_unit = m_selectedUnit;
+	m_selectedUnit->m_tileIAmOn->m_unit = nullptr;
 	m_selectedUnit->m_tileIAmOn = selectedTile;
 	m_selectedUnit->m_beenMoved = true;
 }
@@ -735,6 +737,7 @@ Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 	// Put the unit on the tile
 	Tile* tilePlacedOn = GetTile(position);
 	tilePlacedOn->m_unit = newUnit;
+	newUnit->m_tileIAmOn = tilePlacedOn;
 
 	// make sure we know about their team
 	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);

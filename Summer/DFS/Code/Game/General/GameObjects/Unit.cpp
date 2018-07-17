@@ -84,6 +84,11 @@ STATIC SpriteSheet Unit::GetTeamTexture(TeamName name)
 	}
 }
 
+float Unit::GetCostForTileType(const String& tileType)
+{
+	return m_definition->GetMovementCost(tileType);
+}
+
 void Unit::Update()
 {
 	if(m_health <= 0)
@@ -135,6 +140,18 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 	// All sprite sheets share UVs so it doesn't matter which one (yet)
 	m_uvCoords = g_redUnitSpriteSheet.GetTexCoordsForSpriteCoords(m_spriteCoords);
 
+	// Get movement stops
+	tinyxml2::XMLElement* movementNode = node.FirstChildElement("MovementCosts")->FirstChildElement();
+	while(movementNode)
+	{
+		std::string tileName = ParseXmlAttribute(*movementNode, "tile", "ERROR");
+		float cost = ParseXmlAttribute(*movementNode, "cost", 1.f);
+
+		m_movementCosts[tileName] = cost;
+
+		movementNode = movementNode->NextSiblingElement();
+	}
+
 	// Add definition to map
 	s_definitions.insert(std::pair<std::string,UnitDefinition*>(m_name,this));
 }
@@ -177,3 +194,14 @@ Strings UnitDefinition::GetAllUnitNames()
 
 	return result;
 }
+
+//--------------------------------------------------------------------------
+float UnitDefinition::GetMovementCost(const String& tileName)
+{
+	std::map<String,float>::iterator tileCostIterator;
+	tileCostIterator = m_movementCosts.find(tileName);
+	if(tileCostIterator != m_movementCosts.end()){ return tileCostIterator->second;}
+
+	return 1.f;
+}
+
