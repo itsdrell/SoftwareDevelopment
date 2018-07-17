@@ -118,13 +118,14 @@ void Playing::Render() const
 		//g_theRenderer->SetShader(Shader::CreateOrGetShader("default"));
 		g_theRenderer->BindMaterial(Material::CreateOrGetMaterial("sprite"));
 		g_theRenderer->SetUniform("MODEL", Matrix44());
-		m_currentMap->m_heatmap->Render(4);
+		m_currentMap->m_movementHeatMap->Render(4);
 	}
 	
 }
 
 void Playing::CheckKeyBoardInputs()
 {
+	
 	if(IsDevConsoleOpen())
 		return;
 	Vector2 cmouse = GetMouseCurrentPosition();
@@ -155,6 +156,7 @@ void Playing::CheckKeyBoardInputs()
 
 		if(m_currentPlayState == SELECTING)
 		{
+			m_cursor->m_renderable->m_hidden = false;
 			m_cursor->SetLocalPosition(currentTile->GetCenterOfTile() + Vector2(3.f,-3.f));
 			
 		}

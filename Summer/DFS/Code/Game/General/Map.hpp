@@ -10,6 +10,7 @@
 //=============================================================
 class GameObject2D;
 class Unit;
+class HeatMap;
 class HoverTile;
 class GameHeatMap;
 class CommandingOfficer;
@@ -120,7 +121,8 @@ public:
 	std::vector<CommandingOfficer*>		m_officers;
 
 	TurnOrder							m_turnOrder;
-	GameHeatMap*						m_heatmap = nullptr;
+	GameHeatMap*						m_movementHeatMap = nullptr;
+	HeatMap*							m_attackHeatMap = nullptr;
 	
 	CommandingOfficer*					m_currentOfficer = nullptr;
 	Unit*								m_selectedUnit = nullptr;

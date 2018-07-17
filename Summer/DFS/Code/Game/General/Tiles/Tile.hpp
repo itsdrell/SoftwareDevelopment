@@ -3,6 +3,7 @@
 #include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Math/Geometry/AABB2.hpp"
 #include "Game/SystemsAndTools/GameObject2D.hpp"
+#include "Game/General/Tiles/TileDefinition.hpp"
 
 //=============================================================
 // Forward Declare
@@ -40,6 +41,8 @@ public:
 
 	Vector2 GetCenterOfTile() { return m_position.GetAsVector2(); }
 	AABB2 GetTileBounds();
+
+	String GetDisplayName() { return m_definition->m_displayName; }
 
 	void ChangeTileType(TileDefinition& newDef) { m_definition = &newDef; }
 

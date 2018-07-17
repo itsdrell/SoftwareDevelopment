@@ -144,7 +144,7 @@ Map::Map(std::string name, const IntVector2 & dimensions)
 	m_name = name;
 	m_dimensions = dimensions;
 
-	m_heatmap = new GameHeatMap(dimensions);
+	m_movementHeatMap = new GameHeatMap(dimensions);
 
 	CreateMapRenderable();
 	CreateMapRenderable(true);
@@ -162,7 +162,8 @@ Map::Map(std::string name, Image& mapImage)
 	m_storeMenu = new Container("Purchase", 10, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
 	m_hud = new HUD();
 
-	m_heatmap = new GameHeatMap(m_dimensions);
+	m_movementHeatMap = new GameHeatMap(m_dimensions);
+	m_attackHeatMap = new HeatMap(m_dimensions);
 
 	CreateMapRenderableFromImage();
 	CreateMapRenderable(true);
@@ -430,15 +431,15 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 
 void Map::CreateMovementTiles(const Unit& theUnitToUse)
 {
-	m_heatmap->ResetHeatMap();
+	m_movementHeatMap->ResetHeatMap();
 	
 	// Gotta translate from world coords to tileCoords
 	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
 	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
 
-	m_heatmap->AddHeat(tileCoords);
+	m_movementHeatMap->AddHeat(tileCoords);
 
-	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatLessOrEqual(theUnitToUse.GetMovement());
+	std::vector<IntVector2> tilePos = m_movementHeatMap->GetAllTileCoordsWithHeatLessOrEqual(theUnitToUse.GetMovement());
 	
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
@@ -464,15 +465,15 @@ void Map::CreateActionTiles(const Unit& theUnitToUse)
 
 void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 {
-	m_heatmap->ResetHeatMap();
+	m_attackHeatMap->ResetHeatMap();
 
 	// Gotta translate from world coords to tileCoords
 	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
 	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
 
-	m_heatmap->AddHeat(tileCoords);
+	m_attackHeatMap->AddHeat(tileCoords);
 
-	std::vector<IntVector2> tilePos = m_heatmap->GetAllTileCoordsWithHeatInRangeOf(theUnitToUse.GetAttackRange());
+	std::vector<IntVector2> tilePos = m_attackHeatMap->GetAllTileCoordsWithHeatInRangeOf(theUnitToUse.GetAttackRange());
 
 	for(uint i = 0; i < tilePos.size(); i++)
 	{

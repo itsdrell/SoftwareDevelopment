@@ -79,7 +79,7 @@ void HUD::RenderTileDisplay() const
 
 	Rgba color = Rgba(255,255,255,200);
 	Texture* theTexture = g_tileSpriteSheet.m_spriteSheetTexture;
-	std::string nameText =  g_currentTile->m_definition->m_name;
+	std::string nameText =  g_currentTile->GetDisplayName();
 	std::string teamName = "";
 	std::string health = "";
 
@@ -91,7 +91,7 @@ void HUD::RenderTileDisplay() const
 		color = GetColorFromTeamName(theBuilding->m_team);
 		imageUvs = currentSprite.m_uv;
 		theTexture = theBuilding->m_renderable->GetSprite()->m_image;
-		nameText = theBuilding->m_name;
+		nameText = theBuilding->GetDisplayName();
 		teamName = TeamNameToString(theBuilding->m_team);
 		health = "HP: " + std::to_string(theBuilding->m_health);
 		//health = "HP: " + theBuilding->m_health;
@@ -125,7 +125,7 @@ void HUD::RenderUnitDisplay() const
 
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(currentUnit.m_team));
 	r->DrawTexturedAABB2(unitImageBounds, *currentSprite.m_image, currentSprite.m_uv.mins, currentSprite.m_uv.maxs, Rgba::WHITE);
-	r->DrawText2D(tileNamePos, currentUnit.m_name, 1.f, Rgba::BLACK);
+	r->DrawText2D(tileNamePos, currentUnit.GetDisplayName(), 1.f, Rgba::BLACK);
 	r->DrawText2D(teamPos, TeamNameToString(currentUnit.m_team), 1.f, Rgba::BLACK);
 	r->DrawText2D(healthPos, "HP: " + std::to_string(currentUnit.m_health), 1.f, Rgba::BLACK);
 }

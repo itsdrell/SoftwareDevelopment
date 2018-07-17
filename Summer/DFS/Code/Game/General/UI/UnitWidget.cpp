@@ -42,7 +42,7 @@ void UnitWidget::Render() const
 	//r->DrawAABB2(m_unitPriceBounds, Rgba::VIOLET);
 
 	r->DrawTexturedAABB2(m_spriteBounds, *m_sprite->m_image, m_sprite->m_uv.mins, m_sprite->m_uv.maxs, Rgba::WHITE);
-	r->DrawFittedTextInBox(m_unitNameBounds, m_unitToDisplay->m_name, 1.f, 1.f, m_definition->m_defaultFontColor);
+	r->DrawFittedTextInBox(m_unitNameBounds, m_unitToDisplay->m_displayName, 1.f, 1.f, m_definition->m_defaultFontColor);
 	r->DrawFittedTextInBox(m_unitPriceBounds, std::to_string(m_unitToDisplay->m_cost), 1.f, 1.f, m_definition->m_defaultFontColor);
 
 	if(g_theCurrentMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)

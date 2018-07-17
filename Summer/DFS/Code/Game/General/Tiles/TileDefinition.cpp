@@ -39,6 +39,7 @@ TileDefinition* GetTileDefinition(Rgba& color)
 TileDefinition::TileDefinition(const tinyxml2::XMLElement & definitionNode)
 {
 	m_name = ParseXmlAttribute(definitionNode,"name","Error");
+	m_displayName = ParseXmlAttribute(definitionNode, "displayName", "ERROR");
 	m_spriteCoords = ParseXmlAttribute(definitionNode, "spriteCoords", IntVector2(0,0));
 	m_colorRepresentation = ParseXmlAttribute(definitionNode, "rgbaValue", Rgba(0,0,0));
 

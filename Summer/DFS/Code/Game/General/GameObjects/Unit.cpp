@@ -124,6 +124,7 @@ float CalculateWinChance(const Unit& attacking, const Unit& defending)
 UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 {
 	m_name = ParseXmlAttribute(node,"name","Error");
+	m_displayName = ParseXmlAttribute(node, "displayName", "ERROR");
 	m_cost = (uint) ParseXmlAttribute(node, "cost", 1000);
 	m_factoryTag = ParseXmlAttribute(node, "storeType", "ERROR");
 	m_spriteCoords = ParseXmlAttribute(node, "spriteCoords", IntVector2(0,0));

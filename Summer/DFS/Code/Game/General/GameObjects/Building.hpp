@@ -36,7 +36,7 @@ public:
 
 public:
 	std::string			m_name;
-
+	String				m_displayName;
 	String				m_typeOfUnitToSpawn;
 
 	bool				m_isFactory;
@@ -58,6 +58,7 @@ public:
 	Building(const TeamName& theTeam, BuildingDefinition& def);
 	void SetSpriteFromTeam(const TeamName& theTeam);
 
+	String GetDisplayName() const { return m_definition->m_displayName; }
 
 	void Update();
 	void Captured(const TeamName& theTeam);

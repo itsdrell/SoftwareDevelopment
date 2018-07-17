@@ -123,7 +123,7 @@ void Loading::LoadBuildingDefinitions()
 void Loading::LoadSpriteSheets()
 {
 	// Create the global sprite sheet for all the textures to use
-	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/tileSpriteSheet.png", false);
+	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/tileSpriteSheet.png");
 	g_tileSpriteSheet = SpriteSheet(TileTexture,27,3);
 
 	Texture* blueTex = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/blueUnits.png");

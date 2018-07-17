@@ -29,8 +29,10 @@ void Attract::Render() const
 	g_theRenderer->ClearDepth(1.f);
 	g_theRenderer->EnableDepth(COMPARE_ALWAYS, true);
 
-
-	g_theRenderer->DrawAABB2(AABB2(-200.f, -200.f, 200.f, 200.f), Rgba::BLUE);
+	Texture* background = g_theRenderer->CreateOrGetTexture("Data/Images/background1.jpg");
+	//Texture* background = g_theRenderer->CreateOrGetTexture("Data/Images/background2.png");
+	g_theRenderer->DrawTexturedAABB2(background, AABB2(-50.f, 50.f));
+	//g_theRenderer->DrawAABB2(AABB2(-200.f, -200.f, 200.f, 200.f), Rgba::BLUE);
 
 	RenderHoverText();
 }

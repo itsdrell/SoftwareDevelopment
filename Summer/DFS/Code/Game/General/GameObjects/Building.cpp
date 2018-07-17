@@ -15,6 +15,7 @@ std::map<std::string, BuildingDefinition*>	BuildingDefinition::s_definitions;
 BuildingDefinition::BuildingDefinition(tinyxml2::XMLElement& node)
 {
 	m_name = ParseXmlAttribute(node,"name","Error");
+	m_displayName = ParseXmlAttribute(node, "displayName", "ERROR");
 	m_spriteCoords = ParseXmlAttribute(node, "spriteCoords", IntVector2(0,0));
 
 	m_isHQ = ParseXmlAttribute(node, "isFactory", false);

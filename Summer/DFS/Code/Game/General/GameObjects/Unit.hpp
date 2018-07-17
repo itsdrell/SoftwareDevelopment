@@ -42,6 +42,7 @@ public:
 
 public:
 	std::string			m_name;
+	String				m_displayName;
 
 	uint				m_cost;
 	String				m_factoryTag;
@@ -76,6 +77,7 @@ public:
 	Tags GetMovementTags() const { return m_definition->m_movementTags; }
 	Tags GetAttackTags() const { return m_definition->m_attackTags; }
 	std::string GetName() const { return m_definition->m_name; }
+	String GetDisplayName() const { return m_definition->m_displayName; }
 	float GetMovement() const { return (float) m_definition->m_movement; }
 
 public:

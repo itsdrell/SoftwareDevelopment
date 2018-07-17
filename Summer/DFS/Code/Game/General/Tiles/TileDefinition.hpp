@@ -31,6 +31,7 @@ public:
 
 public:
 	std::string			m_name;
+	std::string			m_displayName;
 	IntVector2			m_spriteCoords; // index of sprite in sprite sheet
 	AABB2				m_uvCoords;
 	Rgba				m_colorRepresentation;
