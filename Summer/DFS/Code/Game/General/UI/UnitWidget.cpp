@@ -29,35 +29,45 @@ void UnitWidget::Render() const
 {
 	Renderer* r = Renderer::GetInstance();
 
-	if(m_isHoveredOver)
-		r->DrawAABB2(m_bounds, m_hoverColor );
-	else
-		r->DrawAABB2(m_bounds, m_nonHoverColor);
-
-	r->DrawAABB2(m_bounds, m_borderColor, false);
+// 	if(m_isHoveredOver)
+// 		r->DrawAABB2(m_bounds, m_hoverColor );
+// 	else
+// 		r->DrawAABB2(m_bounds, m_nonHoverColor);
+// 	
+// 	r->DrawAABB2(m_bounds, m_borderColor, false);
 
 	// debug
 	//r->DrawAABB2(m_spriteBounds, Rgba::RED);
 	//r->DrawAABB2(m_unitNameBounds, Rgba::GREEN);
 	//r->DrawAABB2(m_unitPriceBounds, Rgba::VIOLET);
 
+	if(g_theCurrentMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
+	{
+		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"),m_bounds, Rgba(100,100,100,255));
+	}
+	else
+	{
+		if(m_isHoveredOver)
+			r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"),m_bounds, m_hoverColor);
+
+		else
+			r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"),m_bounds, m_nonHoverColor);
+	}
+	
+
 	r->DrawTexturedAABB2(m_spriteBounds, *m_sprite->m_image, m_sprite->m_uv.mins, m_sprite->m_uv.maxs, Rgba::WHITE);
 	r->DrawFittedTextInBox(m_unitNameBounds, m_unitToDisplay->m_displayName, 1.f, 1.f, m_definition->m_defaultFontColor);
 	r->DrawFittedTextInBox(m_unitPriceBounds, std::to_string(m_unitToDisplay->m_cost), 1.f, 1.f, m_definition->m_defaultFontColor);
 
-	if(g_theCurrentMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
-	{
-		r->DrawAABB2(m_bounds, Rgba(150,150,150,200));
-	}
 }
 
 void UnitWidget::GenerateBounds(const AABB2& newBounds)
 {
 	m_bounds = newBounds;
 
-	m_spriteBounds =	GetBounds(newBounds, Vector2::ZERO, Vector2(.2f,1.f));
-	m_unitNameBounds =	GetBounds(newBounds, Vector2(.2f, 0.f), Vector2(.6f, 1.f));
-	m_unitPriceBounds = GetBounds(newBounds, Vector2(.6f, 0.f), Vector2(1.f,1.f));
+	m_spriteBounds =	GetBounds(newBounds, Vector2(.1f,0.f), Vector2(.2f,1.f));
+	m_unitNameBounds =	GetBounds(newBounds, Vector2(.3f, 0.f), Vector2(.6f, 1.f));
+	m_unitPriceBounds = GetBounds(newBounds, Vector2(.7f, 0.f), Vector2(1.f,1.f));
 }
 
 //--------------------------------------------------------------------------

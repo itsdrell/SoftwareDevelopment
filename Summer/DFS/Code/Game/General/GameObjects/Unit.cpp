@@ -10,6 +10,8 @@
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 
+#pragma warning( disable : 4239) // Strings parsing
+
 //====================================================================================
 
 std::map<std::string, UnitDefinition*> UnitDefinition::s_definitions;

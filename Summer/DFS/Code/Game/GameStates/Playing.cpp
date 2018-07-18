@@ -177,7 +177,7 @@ void Playing::CheckKeyBoardInputs()
 		{
 			if(m_currentPlayState == SELECTING)
 			{	
-				Tile* currentTile = m_currentMap->GetTile(mousePos.xy());
+				//Tile* currentTile = m_currentMap->GetTile(mousePos.xy());
 				bool isUnit = (currentTile->m_unit != nullptr);
 				bool isBuilding = (currentTile->m_building != nullptr);
 

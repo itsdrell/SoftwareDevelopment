@@ -84,7 +84,7 @@ public:
 
 	Vector2						m_centerPos;
 	AABB2						m_bounds;
-
+	AABB2						m_textBounds;
 
 	Rgba						m_hoverColor;
 	Rgba						m_nonHoverColor;

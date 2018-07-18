@@ -37,7 +37,7 @@ void Container::Update()
 		current->Update();
 	}
 
-	m_close->Update();
+	//m_close->Update();
 }
 
 void Container::Render() const
@@ -54,11 +54,11 @@ void Container::Render() const
 	r->ClearDepth(1.f);
 	r->EnableDepth(COMPARE_ALWAYS, true);
 
-	r->DrawAABB2(m_menuSize, m_backgroundColor);
+	//r->DrawAABB2(m_menuSize, m_backgroundColor);
 	//r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"),m_menuSize);
 
-	r->DrawAABB2(m_headerBox, Rgba::GREEN);
-	r->DrawFittedTextInBox(m_headerBox, m_name, 2.f, 1.f, m_fontColor);
+	//r->DrawAABB2(m_headerBox, Rgba::GREEN);
+	//r->DrawFittedTextInBox(m_headerBox, m_name, 2.f, 1.f, m_fontColor);
 
 	for(UIWidget* currentWidget : m_widgets)
 	{
@@ -66,7 +66,7 @@ void Container::Render() const
 		currentWidget->Render();
 	}
 
-	m_close->Render();
+	//m_close->Render();
 }
 
 bool Container::CanWeAddWidgets()
@@ -98,11 +98,11 @@ void Container::OnClick()
 		}
 	}
 
-	if(m_close->m_isHoveredOver)
-	{
-		m_close->OnClick();
-		CloseMenu();
-	}
+	//if(m_close->m_isHoveredOver)
+	//{
+	//	m_close->OnClick();
+	//	CloseMenu();
+	//}
 }
 
 void Container::CloseMenu()
@@ -120,6 +120,8 @@ void Container::AddPauseMenu()
 	UIWidget* end = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("endTurn"));
 
 	AddWidget(*end);
+
+	AddCloseWidget();
 }
 
 void Container::AddWidget(UIWidget& newWidget)
@@ -131,6 +133,14 @@ void Container::AddWidget(UIWidget& newWidget)
 		newWidget.GenerateBounds(m_widgetSlots.at(slot));
 		m_widgets.push_back(&newWidget);
 	}
+}
+
+void Container::AddCloseWidget()
+{
+	uint slot = (uint) m_widgets.size();
+	UIWidget* newWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("close"));
+	newWidget->GenerateBounds(m_widgetSlots.at(slot));
+	m_widgets.push_back(newWidget);
 }
 
 void Container::CreateWidgetSlots()
@@ -146,6 +156,9 @@ void Container::CreateWidgetSlots()
 		
 		widgetBounds.maxs.y = m_menuSize.maxs.y - (i * yStep);
 		widgetBounds.mins.y = m_menuSize.maxs.y - ((i + 1) * yStep);
+
+		widgetBounds.mins.x = m_menuSize.mins.x + 4.f;
+		widgetBounds.maxs.x = m_menuSize.maxs.x - 4.f;
 
 		m_widgetSlots.push_back(widgetBounds);
 	}

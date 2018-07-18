@@ -4,26 +4,32 @@
     name="wait"
     displayText="Wait"
     scriptFile="haveUnitWait"
+    hoverColor = "153, 153, 102,255"
+    defaultColor = "255,255,255,255"
     />
 
     <Widget
     name="capture"
     displayText="Capture"
     scriptFile="captureBuilding"
+    hoverColor = "153, 153, 102,255"
+    defaultColor = "255,255,255,255"
     />
 
     <Widget
     name = "endTurn"
     displayText = "End Turn"
     scriptFile = "endTurn"
+    hoverColor = "153, 153, 102,255"
+    defaultColor = "255,255,255,255"
     />
 
     <Widget
     name = "close"
     displayText = "Close"
     scriptFile = "closeOpenMenu"
-    hoverColor = "255,255,255,255"
-    defaultColor = "255,0,0,255"
+    hoverColor = "153, 153, 102,255"
+    defaultColor = "255,255,255,255"
     fontColor = "0,0,0,255"
     />
 
@@ -31,6 +37,8 @@
     name = "unit"
     displayText = "unit name"
     scriptFile = "purchaseUnit"
+    hoverColor = "153, 153, 102,255"
+    defaultColor = "255,255,255,255"
     />
 
 </UIWidgets>

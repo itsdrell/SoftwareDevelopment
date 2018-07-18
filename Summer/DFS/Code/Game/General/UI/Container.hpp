@@ -50,6 +50,7 @@ public:
 	//--------------------------------------------------------------------------
 	// Factory functions for Container
 	void AddPauseMenu();
+	void AddCloseWidget();
 
 public:
 	String						m_name;

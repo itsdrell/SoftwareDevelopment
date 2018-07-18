@@ -8,6 +8,7 @@
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 #include <vector>
 
+#pragma warning( disable : 4100)
 
 //====================================================================================
 Profiler* Profiler::s_instance = nullptr;

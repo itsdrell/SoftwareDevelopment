@@ -7,4 +7,5 @@ CommandingOfficer::CommandingOfficer(const String name, const TeamName & team, C
 	m_money = 0U;
 
 	// make a controller 
+	UNUSED(typeOfController);
 }

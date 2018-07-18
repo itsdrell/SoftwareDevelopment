@@ -9,6 +9,8 @@
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Game/General/GameObjects/Unit.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
+#include "../SystemsAndTools/GameObject2D.hpp"
+#include "Engine/Renderer/RenderableComponents/Material.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -177,6 +179,8 @@ void CloseOpenMenu(Command& theCommand)
 
 void PurchaseUnit(Command& theCommand)
 {
+	UNUSED(theCommand);
+	
 	// subtract funds
 	g_theCurrentMap->m_currentOfficer->m_money -= g_unitToSpawn->m_cost;
 	
@@ -194,4 +198,5 @@ void PurchaseUnit(Command& theCommand)
 	// make unit already moved
 	newUnit->m_usedAction = true;
 	newUnit->m_beenMoved = true;
+	newUnit->m_renderable->GetMaterial()->SetTint(Rgba(150,150,150,220));
 }

@@ -7,7 +7,7 @@
 #include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include "Engine/Math/Geometry/AABB2.hpp"
 #include "StringUtils.hpp"
-
+#include "Engine/Core/General/EngineCommon.hpp"
 
 int ParseXmlAttribute(const tinyxml2::XMLElement & element, const char* attributeName, int defaultValue)
 {

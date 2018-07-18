@@ -3,6 +3,8 @@
 #include "Engine\Core\General\EngineCommon.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 
+#pragma warning( disable : 4239) // Strings parsing
+
 //=========================================================
 std::map<std::string, TileDefinition*> TileDefinition::s_definitions;
 //=========================================================
@@ -43,7 +45,7 @@ TileDefinition::TileDefinition(const tinyxml2::XMLElement & definitionNode)
 	m_spriteCoords = ParseXmlAttribute(definitionNode, "spriteCoords", IntVector2(0,0));
 	m_colorRepresentation = ParseXmlAttribute(definitionNode, "rgbaValue", Rgba(0,0,0));
 
-	Strings a;
+	const Strings a;
 	m_movementTags = ParseXmlAttribute(definitionNode, "movement", a);
 
 	// Translate sprite coords to UV

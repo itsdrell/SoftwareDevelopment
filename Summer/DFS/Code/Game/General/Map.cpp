@@ -512,6 +512,7 @@ void Map::CreateStoreUI()
 	}
 	
 	m_currentContainer = m_storeMenu;
+	m_currentContainer->AddCloseWidget();
 }
 
 bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)

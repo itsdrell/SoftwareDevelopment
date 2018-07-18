@@ -1,6 +1,6 @@
 #include "Renderable2D.hpp"
 #include "Engine\Renderer\RenderableComponents\Mesh.hpp"
-
+#include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 
 Renderable2D::Renderable2D()
 {

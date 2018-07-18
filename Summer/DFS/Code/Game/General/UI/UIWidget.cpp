@@ -60,12 +60,12 @@ void UIWidget::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	if(m_isHoveredOver)
-		r->DrawAABB2(m_bounds, m_hoverColor );
+		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"), m_bounds, m_hoverColor);
 	else
-		r->DrawAABB2(m_bounds, m_nonHoverColor);
+		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"), m_bounds, m_nonHoverColor);
 
 	r->DrawAABB2(m_bounds, m_borderColor, false);
-	r->DrawFittedTextInBox(m_bounds, m_definition->m_text, 2.f, 1.f, m_fontColor);
+	r->DrawFittedTextInBox(m_textBounds, m_definition->m_text, 2.f, 1.f, m_fontColor);
 }
 
 void UIWidget::CheckForMouseOverlap()
@@ -110,6 +110,7 @@ void UIWidget::OnClick()
 void UIWidget::GenerateBounds(const AABB2& newBounds)
 {
 	m_bounds = newBounds;
+	m_textBounds = GetBounds(m_bounds, Vector2(.1f, 0.f), Vector2(.9f, 1.f));
 }
 
 //====================================================================================

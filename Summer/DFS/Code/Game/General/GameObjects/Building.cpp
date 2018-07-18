@@ -106,7 +106,7 @@ Building::Building(const TeamName& theTeam, BuildingDefinition& def)
 
 void Building::SetSpriteFromTeam(const TeamName& theTeam)
 {
-	AABB2 newSpriteCoords = g_buildingSpriteSheet.GetTexCoordsForSpriteCoords(IntVector2(m_definition->m_spriteCoords.x, m_team));
+	AABB2 newSpriteCoords = g_buildingSpriteSheet.GetTexCoordsForSpriteCoords(IntVector2(m_definition->m_spriteCoords.x, theTeam));
 	Sprite* newSprite = new Sprite(*g_buildingSpriteSheet.m_spriteSheetTexture, Vector2::ONE, 16.f, Vector2(.5f, 0.5f), newSpriteCoords);
 	newSprite->m_pixelsPerUnit = 16.f;
 
