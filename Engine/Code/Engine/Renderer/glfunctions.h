@@ -108,7 +108,9 @@ bool wglGetTypedProcAddress( T *out, char const *name )
 
 //////////////////////////////////////////////////////////////////////////
 #define GL_CHECK_ERROR()  GLCheckError( __FILE__, __LINE__ )
+#define GL_CHECK_ERROR_AND_DIE() GLCheckErrorAndDie( __FILE__, __FUNCTION__, __LINE__ )
+
 bool GLCheckError( char const *file, int line );
 bool GLFailed();
 bool GLSucceeded();
-
+void GLCheckErrorAndDie( char const *file, char const* function, int line );

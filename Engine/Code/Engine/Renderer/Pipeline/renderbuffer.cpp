@@ -17,7 +17,7 @@ RenderBuffer::~RenderBuffer()
 	// cleanup for a buffer; 
 	if (handle != NULL) {
 		
-		glDeleteBuffers( 1, &handle ); 
+		glDeleteBuffers( 1, &handle );											GL_CHECK_ERROR();
 		handle = NULL; 
 	}
 
@@ -25,17 +25,19 @@ RenderBuffer::~RenderBuffer()
 
 bool RenderBuffer::CopyToGPU(size_t const byte_count, void const * data)
 {
+	GL_CHECK_ERROR();
+	
 	// handle is a GLuint member - used by OpenGL to identify this buffer
 	// if we don't have one, make one when we first need it [lazy instantiation]
 	if (handle == NULL) {
-		glGenBuffers( 1, &handle ); 
+		glGenBuffers( 1, &handle );												GL_CHECK_ERROR(); 
 	}
 
 	// Bind the buffer to a slot, and copy memory
 	// GL_DYNAMIC_DRAW means the memory is likely going to change a lot (we'll get
 	// during the second project)
-	glBindBuffer( GL_ARRAY_BUFFER, handle ); 
-	glBufferData( GL_ARRAY_BUFFER, byte_count, data, GL_DYNAMIC_DRAW ); 
+	glBindBuffer( GL_ARRAY_BUFFER, handle );									GL_CHECK_ERROR();
+	glBufferData( GL_ARRAY_BUFFER, byte_count, data, GL_DYNAMIC_DRAW );			GL_CHECK_ERROR();
 
 	// buffer_size is a size_t member variable I keep around for 
 	// convenience

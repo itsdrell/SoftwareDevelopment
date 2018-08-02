@@ -289,10 +289,6 @@ void DevConsole::CreateDefaultCommands()
 
 	//CommandRegister("echo_with_color","Type: echo_with_color r,g,b,a ''string''", "Prints a colored string", PrintStringWithAColor);
 
-	// Let the LogSystem know we too want the data (hook it up)
-	//TODO make this specific for game
-	//LogSystem::AddHook((log_cb) PrintLogToConsole, nullptr);
-
 }
 
 void DevConsole::Update()

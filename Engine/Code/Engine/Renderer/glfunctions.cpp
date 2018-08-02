@@ -1,4 +1,5 @@
 #include "Engine/Renderer/glfunctions.h"
+#include "Engine/Core/Utils/StringUtils.hpp"
 
 // These must be null, we will bind them on RenderStartup
 // gl
@@ -104,4 +105,15 @@ bool GLFailed()
 bool GLSucceeded()
 {
 	return !GLFailed();
+}
+
+//--------------------------------------------------------------------------
+void GLCheckErrorAndDie( char const *file, char const* function, int line )
+{
+#if defined(_DEBUG)
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		ERROR_RECOVERABLE( Stringf("\nGL ERROR [0x%04x] in [%s] at [%s(%i)] \n", error, function, file, line).c_str() );
+	}
+#endif
 }

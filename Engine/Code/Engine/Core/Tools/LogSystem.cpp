@@ -7,6 +7,7 @@
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Core\Tools\ErrorWarningAssert.hpp"
+#include "Game\Main\EngineBuildPreferences.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdarg.h> 
@@ -90,9 +91,13 @@ LogSystem* LogSystem::GetInstance()
 
 	return g_LogSystem;
 }
+
 //--------------------------------------------------------------------------
 void LogSystem::StartUp()
 {
+
+#if defined LOG_SYSTEM_ENABLED
+	
 	ThreadCreate(LOG_THREAD_NAME, LogThreadWorker, nullptr);
 
 	CommandRegister("showTag", "", "", ShowTagCommand);
@@ -112,6 +117,7 @@ void LogSystem::StartUp()
 
 	FormatLogStartup();
 
+#endif
 }
 
 //--------------------------------------------------------------------------
@@ -320,6 +326,9 @@ void LogSystemStartUp()
 	ls->AddHook((log_cb) LogToFile, nullptr);
 	ls->AddHook((log_cb) LogToOutputWindow, nullptr);
 
+#if defined HOOK_DEVCONSOLE_TO_LOG_SYSTEM
+	LogSystem::AddHook((log_cb) PrintLogToConsole, nullptr);
+#endif
 }
 
 //--------------------------------------------------------------------------

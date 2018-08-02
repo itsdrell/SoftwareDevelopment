@@ -137,19 +137,19 @@ public:
 	void DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale = 1.f, Rgba textColor = Rgba::WHITE, BitmapFont* font = nullptr);
 
 	// Open GL stuff
-	void PushMatrix();
+	//void PushMatrix();
 	//void Translatef(const Vector2& translation);
 	//void Rotate2D(float degree);
 	//void Scalef(float value); // only takes one right now..?
 	//void Color4ub(Rgba color);
-	void PopMatrix();
+	//void PopMatrix();
 	void ClearScreen( const Rgba& clearColor );
-	void LoadIdentity();
+	//void LoadIdentity();
 	void AdditiveBlend();
 	void RestoreAdditiveBlend();
 	//void ViewPort(Vector2 postion, Vector2 widthAndHeight); // this just gives like a camera view without changing the window
 	
-	void SetOrtho(const Vector3& mins, const Vector3& maxs );
+	//void SetOrtho(const Vector3& mins, const Vector3& maxs );
 	void SetProjectionMatrix( Matrix44 const &proj );
 	void SetProjectionOrtho(float width, float height, float Near, float Far);
 	void SetViewMatrix( Matrix44 const &createViewFrom); 

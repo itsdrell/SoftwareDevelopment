@@ -71,12 +71,6 @@ int g_openGlPrimitiveTypes[ NUM_PRIMITIVE_TYPES ] =
 
 Renderer::Renderer()
 {
-	
-	
-
-	//m_defaultCamera = new Camera();
-
-
 	// This creates the global instance so we don't have to pass it into
 	// other classes to use the renderer. They use ::GetInstance
 	g_theRenderer = this;
@@ -156,7 +150,7 @@ void Renderer::PostStartup()
 	m_defaultNormalTexture = new Texture();
 	m_defaultNormalTexture = m_defaultNormalTexture->CreateFromImage(Image("defaultNormal", IntVector2(8,8), Rgba(127, 127, 255, 255)));
 	m_defaultEmmisiveTexture = new Texture(); 
-	m_defaultEmmisiveTexture = m_defaultEmmisiveTexture->CreateFromImage(Image("defaultNormal", IntVector2(8,8), Rgba::BLACK));
+	m_defaultEmmisiveTexture = m_defaultEmmisiveTexture->CreateFromImage(Image("defaultEmmissive", IntVector2(8,8), Rgba::BLACK));
 
 	// default font 
 	m_defaultFont = CreateOrGetBitmapFont("moved");
@@ -211,12 +205,14 @@ void Renderer::PostStartup()
 	// set our default camera to be our current camera
 	SetCamera(nullptr); 
 
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);					GL_CHECK_ERROR();
 
 }
 
 void Renderer::SetCamera(Camera* camera)
 {
+	GL_CHECK_ERROR();
+
 	if (camera == nullptr) {
 		camera = m_defaultCamera; 
 	}
@@ -234,7 +230,8 @@ void Renderer::SetCamera(Camera* camera)
 
 void Renderer::BindCameraToShader(const Camera& theCamera)
 {
-	//////////////////////////////////////////////////////////////////////////
+	GL_CHECK_ERROR();
+	
 	// Set the variables so that we can use them in the uniform shader
 	
 	m_cameraMatrixData.view = theCamera.m_viewMatrix;
@@ -258,14 +255,13 @@ void Renderer::BindCameraToShader(const Camera& theCamera)
 
 	// bind to the shader
 	m_cameraMatrixBuffer.CopyToGPU(sizeof(m_cameraMatrixData), &m_cameraMatrixData);
-	glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BUFFER_BINDING, m_cameraMatrixBuffer.handle);
+	glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BUFFER_BINDING, m_cameraMatrixBuffer.handle);			GL_CHECK_ERROR();
 
 }
 
 void Renderer::BeginFrame()
 {
-	LoadIdentity();
-	
+	GL_CHECK_ERROR();
 
 	SetCamera(); // this needs to go here before we bind it so we can clear the buffers
 	ClearScreen(Rgba(0,0,0,0));
@@ -279,7 +275,7 @@ void Renderer::BeginFrame()
 						TIME_BUFFER_BINDING, 
 						m_timeBuffer.handle ); 
 	
-
+	GL_CHECK_ERROR();
 }
 
 void Renderer::EndFrame()
@@ -607,16 +603,20 @@ bool Renderer::CopyTexture(Texture* from, Texture* to)
 
 void Renderer::SetCurrentTexture(int bindIndex, std::string path)
 {
+	GL_CHECK_ERROR();
+	
 	m_currentTexture = CreateOrGetTexture(path);
 
 	// Bind the texture
-	glActiveTexture( GL_TEXTURE0 + bindIndex ); 
+	glActiveTexture( GL_TEXTURE0 + bindIndex );					GL_CHECK_ERROR();
 
-	glBindTexture( GL_TEXTURE_2D, m_currentTexture->GetID() );  // This was GetHandle()
+	glBindTexture( GL_TEXTURE_2D, m_currentTexture->GetID() );  GL_CHECK_ERROR();
 }
 
 void Renderer::SetCurrentTexture(int bindIndex, Texture* theTexture /*= nullptr*/)
 {
+	GL_CHECK_ERROR();
+	
 	if(theTexture == nullptr)
 	{
 		theTexture = m_defaultTexture;
@@ -625,23 +625,27 @@ void Renderer::SetCurrentTexture(int bindIndex, Texture* theTexture /*= nullptr*
 	m_currentTexture = theTexture;
 
 	// Bind the texture
-	glActiveTexture( GL_TEXTURE0 + bindIndex ); 
+	glActiveTexture( GL_TEXTURE0 + bindIndex );						GL_CHECK_ERROR();
 
-	glBindTexture( GL_TEXTURE_2D, m_currentTexture->GetID() );  // This was GetHandle()
+	glBindTexture( GL_TEXTURE_2D, m_currentTexture->GetID() );		GL_CHECK_ERROR();
 }
 
 void Renderer::SetCurrentCubeMapTexture(TextureCube* cubeMap, int bindIndex )
 {
-	glActiveTexture(GL_TEXTURE0 + bindIndex);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->get_handle());
+	GL_CHECK_ERROR();
+	
+	glActiveTexture(GL_TEXTURE0 + bindIndex);								GL_CHECK_ERROR();
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMap->get_handle());				GL_CHECK_ERROR();
 	SetSampler(bindIndex,m_defaultSampler);
 }
 
 void Renderer::DrawTexturedAABB2(const Texture* testTexture, const AABB2 bounds, const Rgba& tint)
 {
+	GL_CHECK_ERROR();
+	
 	// THIS IS IMPORTANT
-	glEnable(GL_BLEND);// you enable blending function
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);												GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
 	
 	
 	// bind the texture
@@ -668,9 +672,11 @@ void Renderer::DrawTexturedAABB2(const Texture* testTexture, const AABB2 bounds,
 
 void Renderer::DrawTexturedAABB2(const AABB2& bounds, const Texture& texture, const Vector2& texCoordsAtMins, const Vector2& texCoordsAtMaxs, const Rgba& tint)
 {
+	GL_CHECK_ERROR();
+	
 	// THIS IS IMPORTANT
-	glEnable(GL_BLEND);// you enable blending function
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);												GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
 
 	m_currentTexture = (Texture*) &texture;
 	SetCurrentTexture(0, m_currentTexture);
@@ -814,9 +820,11 @@ void Renderer::DrawText3D(const Vector3& drawMins, const std::string& asciiText,
 
 void Renderer::DrawAABB2(const AABB2& bounds,const  Rgba& color, bool filled)
 {
+	GL_CHECK_ERROR();
+	
 	// THIS IS IMPORTANT
-	glEnable(GL_BLEND);// you enable blending function
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+	glEnable(GL_BLEND);											GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			GL_CHECK_ERROR();
 	
 	
 	m_currentTexture = m_defaultTexture;
@@ -866,11 +874,13 @@ void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 
 void Renderer::DrawCube(Vector3 const &center, Vector3 const &dimensions, Texture* textureToUse, Rgba const &color /*= Rgba::WHITE*/, Rect uv_top /*= Rect::ZERO_TO_ONE*/, Rect uv_side /*= Rect::ZERO_TO_ONE*/, Rect uv_bottom /*= Rect::ZERO_TO_ONE */)
 {
+	GL_CHECK_ERROR();
+	
 	//////////////////////////////////////////////////////////////////////////
 	// used this as a reference http://www.opengl-tutorial.org/beginners-tutorials/tutorial-4-a-colored-cube/
 
-	glEnable(GL_BLEND);// you enable blending function
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+	glEnable(GL_BLEND);												GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
 	
 	// this doesnt have a texture so setting the default
 	if(textureToUse == nullptr)
@@ -1144,7 +1154,7 @@ void Renderer::DrawStringInBox2D(Vector2 alignment, AABB2 box, std::string text,
 void Renderer::DrawFittedTextInBox(const AABB2& box, std::string text, float cellHeight, float aspectScale, Rgba textColor, BitmapFont* font)
 {
 	//---------------------------------------------------------
-	// T O D O
+	// TODO
 	//
 	// What to fix: Make this optimized so it isn't slow. 
 	//				Could return a cellHeight so it can be cached off
@@ -1216,50 +1226,11 @@ void Renderer::DrawFittedTextInBox(const AABB2& box, std::string text, float cel
 
 // Open GL stuff
 
-void Renderer::PushMatrix()
-{
-	
-	//glPushMatrix();
-}
-
-// void Renderer::Translatef(const Vector2& translation)
-// {
-// 	UNIMPLEMENTED();
-// 	//glTranslatef(translation.x,translation.y,0);
-// }
-
-// void Renderer::Rotate2D(float degree)
-// {
-// 	UNIMPLEMENTED();
-// 	//glRotatef(degree,0,0,1);
-// }
-
-// void Renderer::Scalef(float value)
-// {
-// 	UNIMPLEMENTED();
-// 	//glScalef(value,value,value);
-// }
-
-
-
-void Renderer::PopMatrix()
-{
-	//glPopMatrix();
-}
-
-
 void Renderer::ClearScreen(const Rgba& color)
 {
-
 	// new way to do it
 	glClearColor(color.r, color.g, color.b, color.a);
 	glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void Renderer::LoadIdentity()
-{
-	UNIMPLEMENTED();
-	//glLoadIdentity();
 }
 
 void Renderer::AdditiveBlend()
@@ -1271,12 +1242,6 @@ void Renderer::RestoreAdditiveBlend()
 {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 }
-
-// void Renderer::ViewPort(Vector2 postion, Vector2 widthAndHeight)
-// {
-// 	UNIMPLEMENTED();
-// 	//glViewport((GLsizei)postion.x,(GLsizei)postion.y,(GLsizei)widthAndHeight.x,(GLsizei)widthAndHeight.y);
-// }
 
 void Renderer::SetProjectionMatrix(Matrix44 const &proj)
 {
@@ -1313,15 +1278,17 @@ void Renderer::ClearDepth(float amount)
 
 void Renderer::EnableDepth(DepthBufferComparisons comparison, bool shouldWrite)
 {
+	GL_CHECK_ERROR();
+	
 	// idk what the flag is
 	// Reference: http://docs.gl/gl4/glDepthFunc
 
 	// enable/disable the dest
-	glEnable( GL_DEPTH_TEST ); 
-	glDepthFunc( ToGLDepthBufferCompare(comparison) ); 
+	glEnable( GL_DEPTH_TEST );												GL_CHECK_ERROR();
+	glDepthFunc( ToGLDepthBufferCompare(comparison) );						GL_CHECK_ERROR();
 
 	// enable/disable write
-	glDepthMask( shouldWrite ? GL_TRUE : GL_FALSE ); 
+	glDepthMask( shouldWrite ? GL_TRUE : GL_FALSE );						GL_CHECK_ERROR();
 }
 
 void Renderer::DisableDepth()
@@ -1357,6 +1324,8 @@ Texture* Renderer::CreateDepthStencilTarget(int width, int height)
 
 bool Renderer::CopyFrameBuffer(FrameBuffer* dst, FrameBuffer* src)
 {
+	GL_CHECK_ERROR();
+	
 	// we need at least the src.
 	if (src == nullptr) {
 		return false; 
@@ -1376,10 +1345,10 @@ bool Renderer::CopyFrameBuffer(FrameBuffer* dst, FrameBuffer* src)
 	
 
 	// the GL_READ_FRAMEBUFFER is where we copy from
-	glBindFramebuffer( GL_READ_FRAMEBUFFER, src_fbo ); 
+	glBindFramebuffer( GL_READ_FRAMEBUFFER, src_fbo );						GL_CHECK_ERROR();
 
 	// what are we copying to?
-	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, dst_fbo ); 
+	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, dst_fbo );						GL_CHECK_ERROR();
 
 	// blit it over - get the size
 	// (we'll assume dst matches for now - but to be safe,
@@ -1413,17 +1382,19 @@ bool Renderer::CopyFrameBuffer(FrameBuffer* dst, FrameBuffer* src)
 		GL_NEAREST );         // resize filtering rule (in case src/dst don't match)
 
 							  // Make sure it succeeded
-	//GL_CHECK_ERROR(); 
+	GL_CHECK_ERROR(); 
 
 	// cleanup after ourselves
-	glBindFramebuffer( GL_READ_FRAMEBUFFER, NULL ); 
-	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, NULL ); 
+	glBindFramebuffer( GL_READ_FRAMEBUFFER, NULL );						GL_CHECK_ERROR();
+	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, NULL );						GL_CHECK_ERROR();
 
 	return true;
 }
 
 void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, PrimitiveType primitiveType)
 {
+	GL_CHECK_ERROR();
+
 
 	// first, copy the memory to the buffer
 	m_immediateBuffer->CopyToGPU( sizeof(Vertex3D_PCU) * numVertexes, vertexes ); 
@@ -1432,17 +1403,16 @@ void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, Primit
 	GLuint program_handle = m_currentShader->m_program->program_handle; 
 
 
-	//////////////////////////////////////////////////////////////////////////
 	// Bind the Position
-	GLint pos_bind = glGetAttribLocation(program_handle, "POSITION");
+	GLint pos_bind = glGetAttribLocation(program_handle, "POSITION");		GL_CHECK_ERROR();
 
 	// Next, bind the buffer we want to use; 
-	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle ); 
+	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle );				GL_CHECK_ERROR();
 
 	// next, bind where position is in our buffer to that location; 
 	if (pos_bind >= 0) {
 		// enable this location
-		glEnableVertexAttribArray(pos_bind);
+		glEnableVertexAttribArray(pos_bind);								GL_CHECK_ERROR();
 
 		// describe the data
 		glVertexAttribPointer(pos_bind, // where?
@@ -1452,22 +1422,21 @@ void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, Primit
 			sizeof(Vertex3D_PCU),              // stride (how far between each vertex)
 			(GLvoid*)offsetof(Vertex3D_PCU, m_position)); // From the start of a vertex, where is this data?
 	}
-
+	GL_CHECK_ERROR();
 
 	// Now that it is described and bound, draw using our program
-	glUseProgram( program_handle ); 
+	glUseProgram( program_handle );											GL_CHECK_ERROR(); 
 
-	//////////////////////////////////////////////////////////////////////////
 	// Bind the UV
-	GLint uv_bind = glGetAttribLocation(program_handle, "UV");
+	GLint uv_bind = glGetAttribLocation(program_handle, "UV");				GL_CHECK_ERROR();
 
 	// Next, bind the buffer we want to use; 
-	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle ); 
+	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle );				GL_CHECK_ERROR();
 
 	// next, bind where position is in our buffer to that location; 
 	if (uv_bind >= 0) {
 		// enable this location
-		glEnableVertexAttribArray(uv_bind);
+		glEnableVertexAttribArray(uv_bind);									GL_CHECK_ERROR();
 
 		// describe the data
 		glVertexAttribPointer(uv_bind, // where?
@@ -1477,23 +1446,23 @@ void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, Primit
 			sizeof(Vertex3D_PCU),					// stride (how far between each vertex)
 			(GLvoid*)offsetof(Vertex3D_PCU, m_uvTexCoords)); // From the start of a vertex, where is this data?
 	}
+	GL_CHECK_ERROR();
 
-	//////////////////////////////////////////////////////////////////////////
 	// binding frame buffer
-	glBindFramebuffer( GL_FRAMEBUFFER, m_currentCamera->GetFramebufferID() );
+	glBindFramebuffer( GL_FRAMEBUFFER, 
+		m_currentCamera->GetFramebufferID() );								GL_CHECK_ERROR();
 
 	// Now that it is described and bound, draw using our program
-	glUseProgram( program_handle ); 	
+	glUseProgram( program_handle ); 										GL_CHECK_ERROR();
 	
-	//////////////////////////////////////////////////////////////////////////
 	// Next, bind the buffer we want to use;
-	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle );
+	glBindBuffer( GL_ARRAY_BUFFER, m_immediateBuffer->handle );				GL_CHECK_ERROR();
 
 	// next, bind where position is in our buffer to that location;
-	GLint bind = glGetAttribLocation(program_handle, "COLOR");
+	GLint bind = glGetAttribLocation(program_handle, "COLOR");				GL_CHECK_ERROR();
 	if (bind >= 0) {
 		// enable this location
-		glEnableVertexAttribArray(bind);
+		glEnableVertexAttribArray(bind);									GL_CHECK_ERROR();
 
 		// describe the data
 		glVertexAttribPointer(bind, // where?
@@ -1503,11 +1472,11 @@ void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, Primit
 			sizeof(Vertex3D_PCU),              // stride (how far between each vertex)
 			(GLvoid*)offsetof(Vertex3D_PCU, m_color)); // From the start of a vertex, where is this data?
 	}
+	GL_CHECK_ERROR();
 
-	//////////////////////////////////////////////////////////////////////////
 	
 	GLenum glPrimitiveType = g_openGlPrimitiveTypes[ primitiveType ];
-	glDrawArrays(glPrimitiveType, 0, numVertexes );
+	glDrawArrays(glPrimitiveType, 0, numVertexes );							GL_CHECK_ERROR();
 
 
 }
@@ -1542,9 +1511,11 @@ Mesh* Renderer::CreateOrGetMesh(std::string path)
 
 void Renderer::BindMeshToProgram(ShaderProgram* program, Mesh* mesh)
 {
+	GL_CHECK_ERROR();
+	
 	// first, bind the mesh - same as before
-	glBindBuffer( GL_ARRAY_BUFFER, mesh->m_vbo.handle ); 
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, mesh->m_ibo.handle ); 
+	glBindBuffer( GL_ARRAY_BUFFER, mesh->m_vbo.handle );				GL_CHECK_ERROR();
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, mesh->m_ibo.handle );		GL_CHECK_ERROR();
 
 	// we'll need stride later...
 	uint vertex_stride = mesh->GetVertexStride(); 
@@ -1561,11 +1532,11 @@ void Renderer::BindMeshToProgram(ShaderProgram* program, Mesh* mesh)
 		const VertexAttributeT &attrib = mesh->m_layout->GetAttribute(attrib_idx); 
 
 		// a program needs a name;
-		uint bind = glGetAttribLocation( ph, attrib.name.c_str() ); 
+		uint bind = glGetAttribLocation( ph, attrib.name.c_str() );		GL_CHECK_ERROR();
 
 		// this attribute exists in this shader, cool, bind it
 		if (bind >= 0) {
-			glEnableVertexAttribArray( bind );
+			glEnableVertexAttribArray( bind );							GL_CHECK_ERROR();
 
 			// be sure mesh and program are bound at this point
 			// as this links them together
@@ -1577,34 +1548,43 @@ void Renderer::BindMeshToProgram(ShaderProgram* program, Mesh* mesh)
 				(GLvoid*) attrib.member_offset // data offset from start
 				);								// of vertex 
 		
-			//GL_CHECK_ERROR(); 
+			GL_CHECK_ERROR(); 
 		}
 	}
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::DrawMesh(Mesh* mesh)
 {
+	GL_CHECK_ERROR();
+	
 	SetShader(m_currentShader); // this might be redundant
 	BindRenderState(m_currentShader->m_state);
 	BindMeshToProgram(m_currentShader->m_program, mesh);
 
-	//////////////////////////////////////////////////////////////////////////
-	// binding frame buffer
-	glBindFramebuffer( GL_FRAMEBUFFER, m_currentCamera->GetFramebufferID() );
+	GL_CHECK_ERROR();
 
-	//////////////////////////////////////////////////////////////////////////
+	// binding frame buffer
+	glBindFramebuffer( GL_FRAMEBUFFER, (GLuint) m_currentCamera->GetFramebufferID() );					GL_CHECK_ERROR();
+
 	
 	GLenum glPrimitiveType = g_openGlPrimitiveTypes[ mesh->m_drawInstruction.primitiveType ];
 	
 	// if you use indices us DrawElements, else draw arrays
 	if(mesh->m_drawInstruction.usingIndices)
+	{
 		glDrawElements(glPrimitiveType, mesh->m_ibo.m_indexCount, GL_UNSIGNED_INT,	0); // null because we don't have offsets?
+		GL_CHECK_ERROR();
+	}
 	else
-		glDrawArrays(glPrimitiveType, 0, mesh->m_drawInstruction.elemCount );
+		glDrawArrays(glPrimitiveType, 0, mesh->m_drawInstruction.elemCount );			GL_CHECK_ERROR();
 }
 
 void Renderer::DrawMeshImmediate(PrimitiveType thePrimitive, uint vertexCount, Vertex3D_PCU* vertices, uint indicesCount, uint* indices)
 {
+	GL_CHECK_ERROR();
+	
 	// These both bind to GPU
 	m_immediateMesh->SetVertices<Vertex3D_PCU>( vertexCount, vertices); 
 	m_immediateMesh->SetIndices( indicesCount, indices ); 
@@ -1617,6 +1597,8 @@ void Renderer::DrawMeshImmediate(PrimitiveType thePrimitive, uint vertexCount, V
 	m_immediateMesh->SetDrawInstruction(draw); 
 
 	DrawMesh( m_immediateMesh ); 
+
+	GL_CHECK_ERROR();
 }
 
 
@@ -1670,7 +1652,7 @@ void Renderer::SetSampler(int bindIndex, Sampler* theSampler)
 	m_currentSampler = theSampler;
 
 	// Bind the sampler;
-	glBindSampler( bindIndex,(GLuint) m_currentSampler->GetHandle() ); 
+	glBindSampler( bindIndex,(GLuint) m_currentSampler->GetHandle() );					GL_CHECK_ERROR();
 }
 
 void Renderer::ApplyEffect(ShaderProgram* program)
@@ -1723,26 +1705,32 @@ void Renderer::FinishEffects()
 
 void Renderer::BindUniformBuffer(uint slot, UniformBuffer* theBuffer, uint size, const void* data)
 {
+	GL_CHECK_ERROR();
+	
 	theBuffer->CopyToGPU( size, data ); 
 	
 	glBindBufferBase(	GL_UNIFORM_BUFFER, 
 		slot, 
 		theBuffer->handle );
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::BindRenderState(RenderState const & state)
 {
-	glUseProgram(m_currentShader->m_program->program_handle);
+	glUseProgram(m_currentShader->m_program->program_handle);					GL_CHECK_ERROR();
 	
 	// blend mode
 	// dont have to worry about this cause if we want it off we change the values
-	glEnable( GL_BLEND ); 
+	glEnable( GL_BLEND );														GL_CHECK_ERROR();
+	
 	//  could be GlBlendEquationSeperate instead of this twice
 	glBlendFuncSeparate( ToGLBlendFactor(state.m_colorSrcFactor), ToGLBlendFactor(state.m_colorDstFactor),
 		ToGLBlendFactor(state.m_alphaSrcFactor), ToGLBlendFactor(state.m_alphaDstFactor));
+	GL_CHECK_ERROR();
 
 	glBlendEquationSeparate(ToGLBlendOperation(state.m_colorBlendOp), ToGLBlendOperation(state.m_alphaBlendOp));
-
+	GL_CHECK_ERROR();
 
 	// Depth mode ones
 	EnableDepth(state.m_depthCompare , state.m_depthWrite );
@@ -1753,20 +1741,22 @@ void Renderer::BindRenderState(RenderState const & state)
 	// Cull mode
 	if(state.m_cullMode == CULLMODE_NONE)
 	{
-		glDisable(GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);												GL_CHECK_ERROR();
 	}
 	else
 	{
-		glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);													GL_CHECK_ERROR();
 		glCullFace(ToGLCullMode(state.m_cullMode));
 	}
 
 	// Winding Order
-	glFrontFace(ToGLWindOrder(state.m_frontFace));
+	glFrontFace(ToGLWindOrder(state.m_frontFace));								GL_CHECK_ERROR();
 }
 
 void Renderer::SetShader(Shader* shader)
 {
+	GL_CHECK_ERROR();
+	
 	// Be sure to that this eventually does call glUseProgram,
 	// as all your SetUniform* calls requires it (material will
 	// clean this up)
@@ -1778,22 +1768,29 @@ void Renderer::SetShader(Shader* shader)
 
 	m_currentShader = shader;
 
-	glUseProgram(m_currentShader->m_program->program_handle);
+	glUseProgram(m_currentShader->m_program->program_handle);					GL_CHECK_ERROR();
 }
 
 void Renderer::SetUniform(std::string name, float uniform)
 {
-	glUseProgram(m_currentShader->m_program->program_handle ); // but very redundant O WELL
+	GL_CHECK_ERROR();
+
+	// but very redundant O WELL
+	glUseProgram(m_currentShader->m_program->program_handle );											GL_CHECK_ERROR();
 	
-	int bind_idx = glGetUniformLocation( m_currentShader->m_program->program_handle, name.c_str() ); 
+	int bind_idx = glGetUniformLocation( m_currentShader->m_program->program_handle, name.c_str() );	GL_CHECK_ERROR();
 	if (bind_idx >= 0) {
-		glUniform1fv( bind_idx, 1, &uniform );
+		glUniform1fv( bind_idx, 1, &uniform );															GL_CHECK_ERROR();
 	}
 
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::SetUniform(std::string name, Vector3 uniform)
 {
+	GL_CHECK_ERROR();
+
 	glUseProgram(m_currentShader->m_program->program_handle ); // but very redundant O WELL
 
 	// https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
@@ -1808,10 +1805,14 @@ void Renderer::SetUniform(std::string name, Vector3 uniform)
 	if (bind_idx >= 0) {
 		glUniform3fv( bind_idx, 1, value );
 	}
+	
+	GL_CHECK_ERROR();
 }
 
 void Renderer::SetUniform(std::string name, Vector4 uniform)
 {
+	GL_CHECK_ERROR();
+	
 	glUseProgram(m_currentShader->m_program->program_handle ); // but very redundant O WELL
 
 	// https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
@@ -1827,10 +1828,14 @@ void Renderer::SetUniform(std::string name, Vector4 uniform)
 	if (bind_idx >= 0) {
 		glUniform4fv( bind_idx, 1, value );
 	}
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::SetUniform(std::string name, Rgba uniform)
 {
+	GL_CHECK_ERROR();
+	
 	glUseProgram(m_currentShader->m_program->program_handle ); // but very redundant O WELL
 
 	// https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
@@ -1847,10 +1852,14 @@ void Renderer::SetUniform(std::string name, Rgba uniform)
 	if (bind_idx >= 0) {
 		glUniform4fv( bind_idx, 1, value );
 	}
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::SetUniform(std::string name, Matrix44 uniform)
 {
+	GL_CHECK_ERROR();
+	
 	glUseProgram(m_currentShader->m_program->program_handle ); // but very redundant O WELL
 
 	// https://www.khronos.org/opengl/wiki/GLSL_:_common_mistakes
@@ -1861,10 +1870,14 @@ void Renderer::SetUniform(std::string name, Matrix44 uniform)
 	if (bind_idx >= 0) {
 		glUniformMatrix4fv( bind_idx, 1, GL_FALSE, asArray );
 	}
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::BindMaterial(Material* material)
 {
+	GL_CHECK_ERROR();
+	
 	SetShader(material->m_shader);
 
 	for(uint texIndex = 0; texIndex < material->m_textures.size(); texIndex++)
@@ -1882,14 +1895,19 @@ void Renderer::BindMaterial(Material* material)
 	{
 		material->m_properties[propIndex]->Bind(material->m_shader->m_program->program_handle);
 	}
+
+	GL_CHECK_ERROR();
 }
 
 void Renderer::BindLightUBOsToShader()
 {
 	// not really sure where to call this atm (in game or renderer) so making a function so its easy to move and access!
 	
+	GL_CHECK_ERROR();
+
 	BindUniformBuffer(LIGHT_BUFFER_BINDING, &m_lightBuffer, sizeof(m_lightData), &m_lightData);
 	BindUniformBuffer(OBJECT_LIGHT_BUFFER_BINDING, &m_lightObjectBuffer, sizeof(m_lightObjectData), &m_lightObjectData);
+	GL_CHECK_ERROR();
 }
 
 void Renderer::SetAmbientLight(float intesity, const Rgba & color)

@@ -60,27 +60,26 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 	//glEnable( GL_TEXTURE_2D );
 
 	// Tell OpenGL that our pixel data is single-byte aligned
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );		GL_CHECK_ERROR();
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );						GL_CHECK_ERROR();
 
 	// Ask OpenGL for an unused texName (ID number) to use for this texture
-	glGenTextures( 1, (GLuint*) &m_textureID );		GL_CHECK_ERROR();
-
+	glGenTextures( 1, (GLuint*) &m_textureID );						GL_CHECK_ERROR();
 
 	// Tell OpenGL to bind (set) this as the currently active texture
-	glBindTexture( GL_TEXTURE_2D, m_textureID );	GL_CHECK_ERROR();
-
+	glBindTexture( GL_TEXTURE_2D, m_textureID );					GL_CHECK_ERROR();
 
 	// Set texture clamp vs. wrap (repeat)
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT ); // GL_CLAMP or GL_REPEAT (WAS GL_CLAMP)
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ); // GL_CLAMP or GL_REPEAT
-
 	GL_CHECK_ERROR();
 
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT ); // GL_CLAMP or GL_REPEAT
+	GL_CHECK_ERROR();
 
 	// Set magnification (texel > pixel) and minification (texel < pixel) filters
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); // one of: GL_NEAREST, GL_LINEAR
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
+	GL_CHECK_ERROR();
 
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR ); // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
 	GL_CHECK_ERROR();
 
 	GLenum bufferFormat = GL_RGBA8; // the format our source pixel data is in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
@@ -133,11 +132,9 @@ void Texture::PopulateFromData( unsigned char* imageData, const IntVector2& texe
 
 	GL_CHECK_ERROR();
 
-	glActiveTexture( GL_TEXTURE0 );
-	glBindTexture( GL_TEXTURE_2D, m_textureID );  
-	glGenerateMipmap( GL_TEXTURE_2D ); 
-
-	GL_CHECK_ERROR();
+	glActiveTexture( GL_TEXTURE0 );								GL_CHECK_ERROR();
+	glBindTexture( GL_TEXTURE_2D, m_textureID );				GL_CHECK_ERROR();
+	glGenerateMipmap( GL_TEXTURE_2D );							GL_CHECK_ERROR();
 
 }
 
@@ -220,8 +217,10 @@ void CreateScreenshotPNG(void* imageData)
 bool Texture::CreateRenderTarget(int width, int height, eTextureFormat fmt)
 {
 
+	GL_CHECK_ERROR();
+
 	// generate the link to this texture
-	glGenTextures( 1, &m_textureID ); 
+	glGenTextures( 1, &m_textureID );							GL_CHECK_ERROR();
 	if (m_textureID == NULL) {
 		return false; 
 	}
@@ -238,8 +237,8 @@ bool Texture::CreateRenderTarget(int width, int height, eTextureFormat fmt)
 	}
 
 	// Copy the texture - first, get use to be using texture unit 0 for this; 
-	glActiveTexture( GL_TEXTURE0 ); 
-	glBindTexture( GL_TEXTURE_2D, m_textureID );    // bind our texture to our current texture unit (0)
+	glActiveTexture( GL_TEXTURE0 );								GL_CHECK_ERROR();
+	glBindTexture( GL_TEXTURE_2D, m_textureID );				GL_CHECK_ERROR();
 
 												 // Copy data into it;
 	glTexImage2D( GL_TEXTURE_2D, 0, 
@@ -251,12 +250,11 @@ bool Texture::CreateRenderTarget(int width, int height, eTextureFormat fmt)
 		pixel_layout,  // how is the data laid out
 		nullptr );     // don't need to pass it initialization data
 
-	// TODO make sure it succeeded
-	//GL_CHECK_ERROR(); 
+	GL_CHECK_ERROR(); 
 
 	//////////////////////////////////////////////////////////////////////////
-	// cleanup after myself; 
-	glBindTexture( GL_TEXTURE_2D, NULL ); // unset it; 
+	// cleanup after myself and unset it
+	glBindTexture( GL_TEXTURE_2D, NULL );						GL_CHECK_ERROR();
 
 	// Save this all off
 	m_dimensions.x = width;  
