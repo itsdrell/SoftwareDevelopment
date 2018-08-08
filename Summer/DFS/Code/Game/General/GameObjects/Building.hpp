@@ -31,6 +31,7 @@ public:
 
 	static BuildingDefinition* GetDefinition(std::string name);
 	static Strings GetAllBuildingNames();
+	static void DeleteAllDefinitions();
 
 	static std::map<std::string, BuildingDefinition*>	s_definitions;
 

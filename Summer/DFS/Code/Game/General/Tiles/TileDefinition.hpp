@@ -29,6 +29,8 @@ class TileDefinition
 public:
 	TileDefinition(const tinyxml2::XMLElement& definitionNode);
 
+	static void DeleteAllDefinitions();
+
 public:
 	std::string			m_name;
 	std::string			m_displayName;
@@ -36,7 +38,6 @@ public:
 	AABB2				m_uvCoords;
 	Rgba				m_colorRepresentation;
 
-	// Maybe add tags for movement
 	Tags				m_movementTags;
 
 	static std::map<std::string, TileDefinition*>	s_definitions;

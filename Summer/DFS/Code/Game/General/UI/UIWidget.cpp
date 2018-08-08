@@ -145,3 +145,21 @@ UIWidgetDefinition * UIWidgetDefinition::GetUIWidgetDefinition(std::string name)
 
 	return nullptr;
 }
+
+void UIWidgetDefinition::DeleteAllDefinitions()
+{
+	std::map<std::string,UIWidgetDefinition*>::iterator widgetIterator;
+	widgetIterator = UIWidgetDefinition::s_definitions.begin();
+
+	while(widgetIterator != UIWidgetDefinition::s_definitions.end())
+	{
+		UIWidgetDefinition* current = widgetIterator->second;
+
+		delete current;
+		current = nullptr;
+
+		widgetIterator++;
+	}
+
+	s_definitions.clear();
+}

@@ -40,6 +40,7 @@ class Game
 {
 public:
 	Game();
+	~Game();
 
 	void		StartUp();
 	void		RegisterCommands();
@@ -56,15 +57,15 @@ public:
 
 public:
 
-	DevConsole*		m_console;
-	Texture*		m_tileTexture;
+	DevConsole*		m_console = nullptr;
+	Texture*		m_tileTexture = nullptr;
 
 	GameStates		m_currentState;
-	Attract*		m_attractState;
-	Playing*		m_playingState;
-	Loading*		m_loadingState;
+	Attract*		m_attractState = nullptr;
+	Playing*		m_playingState = nullptr;
+	Loading*		m_loadingState = nullptr;
 
-	Timer*			m_loadingScreenTimer;
+	Timer*			m_loadingScreenTimer = nullptr;
 
 
 };

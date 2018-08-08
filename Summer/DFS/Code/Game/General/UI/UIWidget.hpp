@@ -35,6 +35,7 @@ public:
 	UIWidgetDefinition(tinyxml2::XMLElement& node);
 
 	static UIWidgetDefinition* GetUIWidgetDefinition(std::string name);
+	static void DeleteAllDefinitions();
 
 public:
 	std::string					m_name;

@@ -23,6 +23,7 @@ class Loading
 public:
 
 	Loading();
+	~Loading();
 
 	void LoadAssets();
 	void LoadDefinitions();
@@ -33,8 +34,11 @@ public:
 	
 	void LoadSpriteSheets();
 
-	void Update();
 
+	void DeleteAllDefinitions();
+
+
+	void Update();
 	void Render();
 
 public:

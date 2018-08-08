@@ -199,6 +199,25 @@ Strings UnitDefinition::GetAllUnitNames()
 }
 
 //--------------------------------------------------------------------------
+void UnitDefinition::DeleteAllDefinitions()
+{
+	std::map<std::string,UnitDefinition*>::iterator unitIterator;
+	unitIterator = UnitDefinition::s_definitions.begin();
+
+	while(unitIterator != UnitDefinition::s_definitions.end())
+	{
+		UnitDefinition* current = unitIterator->second;
+
+		delete current;
+		current = nullptr;
+
+		unitIterator++;
+	}
+
+	s_definitions.clear();
+}
+
+//--------------------------------------------------------------------------
 float UnitDefinition::GetMovementCost(const String& tileName)
 {
 	std::map<String,float>::iterator tileCostIterator;

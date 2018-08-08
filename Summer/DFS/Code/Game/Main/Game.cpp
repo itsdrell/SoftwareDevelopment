@@ -51,13 +51,35 @@ Game::Game()
 
 	RegisterCommands();
 
-	//=============================================================
+
 	// Create all the states
 	m_currentState = LOADING;
 	m_attractState = new Attract();
 	m_playingState = new Playing();
 	m_loadingState = new Loading();
 	
+}
+
+//--------------------------------------------------------------------------
+Game::~Game()
+{
+	delete m_attractState;
+	m_attractState = nullptr;
+
+	delete m_playingState;
+	m_playingState = nullptr;
+
+	delete m_loadingState;
+	m_loadingState = nullptr;
+
+	delete m_loadingScreenTimer;
+	m_loadingScreenTimer = nullptr;
+
+	delete m_console;
+	m_console = nullptr;
+
+	delete g_theGameClock;
+	g_theGameClock = nullptr;
 }
 
 void Game::StartUp()

@@ -54,3 +54,21 @@ TileDefinition::TileDefinition(const tinyxml2::XMLElement & definitionNode)
 	// Add definition to map
 	s_definitions.insert(std::pair<std::string,TileDefinition*>(m_name,this));
 }
+
+void TileDefinition::DeleteAllDefinitions()
+{
+	std::map<std::string,TileDefinition*>::iterator tileIterator;
+	tileIterator = TileDefinition::s_definitions.begin();
+
+	while(tileIterator != TileDefinition::s_definitions.end())
+	{
+		TileDefinition* current = tileIterator->second;
+
+		delete current;
+		current = nullptr;
+
+		tileIterator++;
+	}
+
+	s_definitions.clear();
+}

@@ -58,6 +58,25 @@ Strings BuildingDefinition::GetAllBuildingNames()
 	return result;
 }
 
+//--------------------------------------------------------------------------
+void BuildingDefinition::DeleteAllDefinitions()
+{
+	std::map<std::string,BuildingDefinition*>::iterator buildingIterator;
+	buildingIterator = BuildingDefinition::s_definitions.begin();
+
+	while(buildingIterator != BuildingDefinition::s_definitions.end())
+	{
+		BuildingDefinition* current = buildingIterator->second;
+
+		delete current;
+		current = nullptr;
+
+		buildingIterator++;
+	}
+
+	s_definitions.clear();
+}
+
 //====================================================================================
 Building::Building(TeamName theTeam)
 	: GameObject2D("testBuilding")

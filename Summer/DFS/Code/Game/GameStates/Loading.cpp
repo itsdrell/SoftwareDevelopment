@@ -16,6 +16,15 @@ Loading::Loading()
 	m_readyToLoad = false;
 }
 
+Loading::~Loading()
+{
+	// Since I do not have an asset data base, Loading will be in charge of 
+	// deleting globals and definitions and other assets creating at the beginning 
+
+	DeleteAllDefinitions();
+
+}
+
 void Loading::LoadAssets()
 {
 	ScopedProfile loadTime = ScopedProfile("Load time");
@@ -34,6 +43,9 @@ void Loading::LoadAssets()
 
 void Loading::LoadDefinitions()
 {
+	// MAKE SURE TO ADD THEM TO THE DELETE DEFINITION FUNCTION
+	// AS WELL
+	
 	LoadTileDefinitions();
 	LoadWidgetDefinitions();
 	LoadUnitDefinitions();
@@ -134,6 +146,16 @@ void Loading::LoadSpriteSheets()
 
 	Texture* buildingTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/Buildings.png");
 	g_buildingSpriteSheet = SpriteSheet(buildingTexture, 4,3);
+}
+
+void Loading::DeleteAllDefinitions()
+{
+	// call a static deconstructor on all definition classes we have made
+
+	TileDefinition::DeleteAllDefinitions();
+	UIWidgetDefinition::DeleteAllDefinitions();
+	UnitDefinition::DeleteAllDefinitions();
+	BuildingDefinition::DeleteAllDefinitions();
 }
 
 void Loading::Update()
