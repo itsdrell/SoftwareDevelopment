@@ -92,4 +92,3 @@ AudioSystem* g_audio = nullptr;
 SpriteSheet		g_blueUnitSpriteSheet;
 SpriteSheet		g_redUnitSpriteSheet;
 SpriteSheet		g_buildingSpriteSheet;
-/*Lives* g_amountOfLives = new Lives();*/

@@ -32,6 +32,8 @@ public:
 	Container() {}
 	Container(const String& name, uint amoutOfWidgets, const Vector2& center, const AABB2& menuSize);
 
+	~Container();
+
 	void CreateWidgetSlots();
 
 	void Update();
@@ -40,7 +42,7 @@ public:
 
 	bool CanWeAddWidgets();
 	void AddWidget(UIWidget& newWidget);
-	void ClearWidgets() { m_widgets.clear(); }
+	void ClearWidgets();
 
 	void OnClick();
 	void CloseMenu();

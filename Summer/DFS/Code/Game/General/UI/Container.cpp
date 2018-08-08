@@ -28,6 +28,14 @@ Container::Container(const String& name, uint amoutOfWidgets, const Vector2& cen
 	m_fontColor = Rgba::BLACK;
 }
 
+Container::~Container()
+{
+	ClearWidgets();
+	
+	delete m_close;
+	m_close = nullptr;
+}
+
 void Container::Update()
 {
 	for(uint i = 0; i < m_widgets.size(); i++)
@@ -133,6 +141,19 @@ void Container::AddWidget(UIWidget& newWidget)
 		newWidget.GenerateBounds(m_widgetSlots.at(slot));
 		m_widgets.push_back(&newWidget);
 	}
+}
+
+void Container::ClearWidgets()
+{
+	for(uint i = 0; i < m_widgets.size(); i++)
+	{
+		UIWidget* current = m_widgets.at(i);
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_widgets.clear();
 }
 
 void Container::AddCloseWidget()

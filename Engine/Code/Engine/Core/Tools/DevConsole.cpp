@@ -250,7 +250,25 @@ DevConsole::DevConsole(Renderer* rendererToUse)
 
 DevConsole::~DevConsole()
 {
-	delete g_devConsole;
+	g_devConsole = nullptr;
+
+	m_theRenderer = nullptr;
+
+	delete m_uiCamera;
+	m_uiCamera = nullptr;
+
+	delete m_textMesh;
+	m_textMesh = nullptr;
+
+	delete m_roll;
+	m_roll = nullptr;
+
+	delete m_dekuTimer;
+	m_dekuTimer = nullptr;
+	
+	m_dekuTexture = nullptr; // renderer deletes
+
+	DevConsole::s_history.clear(); //sanity
 }
 
 void DevConsole::StartUp()

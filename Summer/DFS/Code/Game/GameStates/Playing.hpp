@@ -44,6 +44,7 @@ class Playing
 
 public:
 	Playing();
+	~Playing();
 	
 	void		StartUp();
 
@@ -61,23 +62,23 @@ public:
 
 public:
 
-	SpriteRendering*		m_renderingPath;
-	Scene2D*				m_scene;
+	SpriteRendering*		m_renderingPath = nullptr;
+	Scene2D*				m_scene = nullptr;
 
-	Camera*					m_camera;
+	Camera*					m_camera = nullptr;
 
-	GameObject2D*			m_test;
+	GameObject2D*			m_test = nullptr;
 
-	Map*					m_currentMap;
+	Map*					m_currentMap = nullptr;
 
 	PlayState				m_currentPlayState;
 
-	Cursor*					m_cursor;
+	Cursor*					m_cursor = nullptr;
 	Vector2					m_cameraLocation;
 
 	bool					m_showHeatmap;
 
-	Unit*					m_selectedUnit;
+	Unit*					m_selectedUnit  = nullptr;
 };
 
 

@@ -64,6 +64,12 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }
 
+Unit::~Unit()
+{
+	// definition gets cleaned up in loading
+	m_tileIAmOn = nullptr; // this is not allocated so just set it to null
+}
+
 STATIC SpriteSheet Unit::GetTeamTexture(TeamName name)
 {
 	switch (name)

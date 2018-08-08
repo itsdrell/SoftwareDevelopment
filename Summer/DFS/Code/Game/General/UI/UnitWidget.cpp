@@ -24,6 +24,12 @@ void UnitWidget::CreateSprite()
 
 }
 
+UnitWidget::~UnitWidget()
+{
+	delete m_sprite;
+	m_sprite = nullptr;
+}
+
 //--------------------------------------------------------------------------
 void UnitWidget::Render() const
 {

@@ -34,6 +34,8 @@ class CommandingOfficer
 public:
 	CommandingOfficer(const String name, const TeamName& team, CO_TYPES typeOfController = AI_CO);
 
+	~CommandingOfficer();
+
 public:
 	String			m_name;
 	TeamName		m_team;

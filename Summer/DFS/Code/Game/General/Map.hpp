@@ -57,6 +57,11 @@ public:
 	Map(std::string name, const IntVector2& dimensions);
 	Map(std::string name, Image& mapImage);
 
+	~Map();
+	void DeleteUnits();
+	void DeleteBuildings();
+	void DeleteOfficers();
+
 	void Update();
 	void UpdateCurrentCO();
 	void UpdateUI();

@@ -69,6 +69,8 @@ public:
 	Unit(TeamName team);
 	Unit(TeamName team, UnitDefinition& def);
 	
+	virtual ~Unit();
+
 	void Update();
 
 	static SpriteSheet GetTeamTexture(TeamName name);

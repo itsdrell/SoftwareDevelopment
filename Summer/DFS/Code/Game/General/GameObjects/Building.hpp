@@ -59,6 +59,8 @@ public:
 	Building(const TeamName& theTeam, BuildingDefinition& def);
 	void SetSpriteFromTeam(const TeamName& theTeam);
 
+	virtual ~Building();
+
 	String GetDisplayName() const { return m_definition->m_displayName; }
 
 	void Update();

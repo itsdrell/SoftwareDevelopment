@@ -109,6 +109,18 @@ Clock::Clock(Clock* parent)
 
 Clock::~Clock()
 {
+	// you don't delete the parent, just the children
+	for(uint i = 0; i < m_children.size(); i++)
+	{
+		Clock* current = m_children.at(i);
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_children.clear();
+	
+	m_parent = nullptr;
 }
 
 void Clock::Reset()

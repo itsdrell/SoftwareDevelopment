@@ -105,6 +105,8 @@ public:
 	Material(Shader* shader);
 	Material(std::string path); // for xml
 
+	~Material();
+
 	// We are gonna store all materials and then clone from them to make instances
 	Material(Material& copyFrom);
 

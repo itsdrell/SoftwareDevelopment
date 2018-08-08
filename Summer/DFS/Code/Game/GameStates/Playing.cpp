@@ -35,6 +35,25 @@ Playing::Playing()
 	m_showHeatmap = false;
 }
 
+//--------------------------------------------------------------------------
+Playing::~Playing()
+{
+	delete m_scene;
+	m_scene = nullptr;
+
+	delete m_renderingPath;
+	m_renderingPath = nullptr;
+
+	// camera gets deleted in scene
+	m_camera = nullptr;
+
+	delete m_cursor;
+	m_cursor = nullptr;
+
+	delete m_currentMap;
+	m_currentMap = nullptr;
+}
+
 void Playing::StartUp()
 {
 
@@ -56,10 +75,6 @@ void Playing::StartUp()
 
 	//--------------------------------------------------------------------------
 	// Game specific setup
-
-	Tile newTile = Tile();
-	TileDefinition* def = GetTileDefinition("default");
-	newTile.ChangeTileType(*def);
 
 	m_currentPlayState = SELECTING;
 

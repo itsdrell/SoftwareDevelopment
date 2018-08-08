@@ -28,9 +28,7 @@ class Renderable2D
 {
 public:
 	Renderable2D();
-	~Renderable2D() {};
-
-	//#TODO Setters should delete previous things :(
+	~Renderable2D();
 
 	// Get + Setters
 	void SetSprite( Sprite* sprite);
@@ -39,7 +37,7 @@ public:
 	void SetMesh( Mesh*	mesh);
 	Mesh* GetMesh() const {return m_mesh; }
 
-	void SetMaterial( Material *mat ) { m_material = mat; } 
+	void SetMaterial( Material *mat ); 
 	Material* GetMaterial() { return m_material; } 
 
 	void SetParentTransform( Transform2D& parent) { m_transform.SetParentTransform(parent); } 
@@ -56,13 +54,13 @@ public:
 
 private:
 	Transform2D		m_transform;
-	Material*		m_material;
+	Material*		m_material = nullptr;
 	
 	//---------------------------------------------------------
 	// Adding both a mesh and sprite so that if I wanted to make
 	// a render able at the start that's batched I can
-	Mesh*			m_mesh;
-	Sprite*			m_sprite;
+	Mesh*			m_mesh = nullptr;
+	Sprite*			m_sprite = nullptr;
 
 public:
 	int				m_layer;

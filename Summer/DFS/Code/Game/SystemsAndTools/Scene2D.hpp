@@ -28,6 +28,9 @@ public:
 	Scene2D(std::string name)
 		: m_name( name) {}
 
+	~Scene2D();
+	void DeleteAllRenderables();
+	void DeleteAllCameras();
 
 	void AddRenderable( Renderable2D* r) { m_renderables.push_back(r); }
 	void AddCamera( Camera* c) { m_cameras.push_back(c); }

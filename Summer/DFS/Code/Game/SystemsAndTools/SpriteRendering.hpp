@@ -39,6 +39,7 @@ class SpriteRendering
 {
 public:
 	SpriteRendering() {}
+	~SpriteRendering() {}
 
 	void Render( Scene2D* scene ) const;
 

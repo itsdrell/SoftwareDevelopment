@@ -16,6 +16,7 @@ class StopWatch
 public:
 	// should default to Master if ref_clock is set to nullptr
 	StopWatch( Clock *ref_clock = nullptr ); 
+	~StopWatch() { m_reference = nullptr; }
 
 	// change our reference clock. 
 	// should maintain elapsed time 

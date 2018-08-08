@@ -132,6 +132,12 @@ void Building::SetSpriteFromTeam(const TeamName& theTeam)
 	m_renderable->SetSprite(newSprite);
 }
 
+Building::~Building()
+{
+	// def gets deleted in loading
+	m_tileReference = nullptr; // not allocated so just setting to null
+}
+
 void Building::Update()
 {
 	Vector2 pos = m_transform.GetWorldPosition().xy();

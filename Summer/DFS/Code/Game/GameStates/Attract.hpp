@@ -26,6 +26,7 @@ class Attract
 public:
 
 	Attract();
+	~Attract() {}
 
 	void Update();
 

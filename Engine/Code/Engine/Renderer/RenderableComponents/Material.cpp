@@ -214,6 +214,18 @@ Material::Material(std::string path)
 	}
 }
 
+Material::~Material()
+{
+	if(m_isResource)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+
 void Material::SetShader(Shader * shader)
 {
 	m_shader = shader;

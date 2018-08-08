@@ -29,6 +29,7 @@ class Cursor : public GameObject2D
 {
 public:
 	Cursor();
+	virtual ~Cursor() {}
 
 public:
 

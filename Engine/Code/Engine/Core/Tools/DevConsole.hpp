@@ -109,12 +109,12 @@ public:
 
 private: 
 	
-	Renderer*	m_theRenderer;
-	Camera*		m_uiCamera;
+	Renderer*	m_theRenderer = nullptr;
+	Camera*		m_uiCamera = nullptr;
 
 	bool		m_isOpen;
 
-	Mesh*		m_textMesh;
+	Mesh*		m_textMesh = nullptr;
 
 	// Store Dimensions so we dont have to keep calling window class
 	float m_windowWidth;
@@ -166,7 +166,7 @@ private:
 	uint			m_currentSpriteIndex;
 
 	// Deku
-	Texture*		m_dekuTexture;
+	Texture*		m_dekuTexture = nullptr;
 
 	// FPS timer
 	float		m_fpsTimer;
@@ -174,7 +174,7 @@ private:
 	uint		m_displayFPS;
 
 public:
-	Timer*			m_dekuTimer;
+	Timer*			m_dekuTimer = nullptr;
 
 
 };

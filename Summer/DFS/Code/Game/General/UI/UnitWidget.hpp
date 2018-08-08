@@ -31,6 +31,8 @@ public:
 	UnitWidget(const TeamName& team, UnitDefinition& unitDef, UIWidgetDefinition& definition);
 	void CreateSprite();
 
+	virtual ~UnitWidget();
+
 	virtual void Render() const override;
 
 	virtual void GenerateBounds(const AABB2& newBounds) override;

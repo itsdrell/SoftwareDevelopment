@@ -27,6 +27,7 @@ class HUD
 {
 public:
 	HUD() {}
+	~HUD() {}
 
 	void Render() const; 
 	void RenderPlayerDisplay() const;

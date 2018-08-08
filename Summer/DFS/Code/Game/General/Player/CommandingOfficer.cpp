@@ -9,3 +9,9 @@ CommandingOfficer::CommandingOfficer(const String name, const TeamName & team, C
 	// make a controller 
 	UNUSED(typeOfController);
 }
+
+CommandingOfficer::~CommandingOfficer()
+{
+	delete m_controller;
+	m_controller = nullptr;
+}

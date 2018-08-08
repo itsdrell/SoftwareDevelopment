@@ -173,6 +173,74 @@ Map::Map(std::string name, Image& mapImage)
 
 }
 
+Map::~Map()
+{
+	ClearHoverTiles(); //sanity check
+	DeleteBuildings();
+	DeleteOfficers();
+	DeleteUnits();
+	
+	// this is deleted in the scene 
+	m_mapRenderable = nullptr;
+
+	delete m_debugRenderable;
+	m_debugRenderable = nullptr;
+
+	delete m_movementHeatMap;
+	m_movementHeatMap = nullptr;
+
+	delete m_attackHeatMap;
+	m_attackHeatMap = nullptr;
+
+	delete m_actionMenu;
+	m_actionMenu = nullptr;
+
+	delete m_storeMenu;
+	m_storeMenu = nullptr;
+
+	delete m_hud;
+	m_hud = nullptr;
+}
+
+void Map::DeleteUnits()
+{
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Unit* current = m_units.at(i);
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_units.clear();
+}
+
+void Map::DeleteBuildings()
+{
+	for(uint i = 0; i < m_buildings.size(); i++)
+	{
+		Building* current = m_buildings.at(i);
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_buildings.clear();
+}
+
+void Map::DeleteOfficers()
+{
+	for(uint i = 0; i < m_officers.size(); i++)
+	{
+		CommandingOfficer* current = m_officers.at(i);
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_officers.clear();
+}
+
 void Map::Update()
 {
 	UpdateCurrentCO();
