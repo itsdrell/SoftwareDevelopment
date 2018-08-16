@@ -2,7 +2,7 @@
 
 Scene2D::~Scene2D()
 {
-	DeleteAllRenderables();
+	//DeleteAllRenderables(); //The game objects should be in charge of this..?
 	DeleteAllCameras();
 }
 
@@ -41,7 +41,7 @@ void Scene2D::RemoveRenderable(Renderable2D* toRemove)
 
 		if(current == toRemove)
 		{
-			//delete toRemove;
+			//delete toRemove;  // game object handles deleting
 			m_renderables.erase(m_renderables.begin() + i, m_renderables.begin() + (i + 1));
 		}
 	}

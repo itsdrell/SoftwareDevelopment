@@ -78,8 +78,8 @@ Game::~Game()
 	delete m_console;
 	m_console = nullptr;
 
-	delete g_theGameClock;
-	g_theGameClock = nullptr;
+	//delete g_theGameClock; // the master clock will delete this
+	//g_theGameClock = nullptr;
 }
 
 void Game::StartUp()

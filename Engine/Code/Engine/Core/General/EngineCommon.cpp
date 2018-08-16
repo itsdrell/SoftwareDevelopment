@@ -6,6 +6,7 @@
 #include "../Platform/Window.hpp"
 #include "Engine/Core/Tools/Profiling/Profiler.hpp"
 #include "../Tools/LogSystem.hpp"
+#include "Engine/Async/Threading.hpp"
 
 
 //====================================================================================
@@ -39,9 +40,12 @@ void EngineShutDown()
 	g_theInputSystem = nullptr;
 
 	delete Renderer::GetInstance();
+	g_theRenderer = nullptr;
 
 	if(Profiler::GetInstance() != nullptr)
 		delete Profiler::GetInstance();
 
 	LogSystemShutDown();
+
+	Thread::Shutdown();
 }

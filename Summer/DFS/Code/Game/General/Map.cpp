@@ -782,9 +782,9 @@ bool Map::IsATeamWithoutUnits()
 
 		for(uint unitIndex = 0; unitIndex < m_units.size(); unitIndex++)
 		{
-			Unit currentUnit = *m_units.at(unitIndex);
+			Unit* currentUnit = m_units.at(unitIndex);
 
-			if(currentUnit.m_team == currentTeam)
+			if(currentUnit->m_team == currentTeam)
 				foundOneAlive = true;
 		}
 

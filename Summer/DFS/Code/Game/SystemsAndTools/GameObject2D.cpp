@@ -21,6 +21,12 @@ GameObject2D::GameObject2D(std::string name, Renderable2D& renderable, Transform
   	m_renderable->SetParentTransform(m_transform);
 }
 
+GameObject2D::~GameObject2D()
+{
+	delete m_renderable;
+	m_renderable = nullptr;
+}
+
 void GameObject2D::SetRenderable(Renderable2D& theRenderable)
 {
 	m_renderable = &theRenderable;

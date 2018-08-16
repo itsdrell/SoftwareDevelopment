@@ -156,10 +156,12 @@ void Initialize( HINSTANCE applicationInstanceHandle )
 void Shutdown()
 {
 	// Destroy the global App instance
-	delete g_theApp;			// #SD1ToDo: make sure you delete and null out the App when done
+	delete g_theApp;			
 	g_theApp = nullptr;
 
-	
+	Window* theWindow = Window::GetInstance();
+	delete theWindow;
+	theWindow = nullptr;
 }
 
 

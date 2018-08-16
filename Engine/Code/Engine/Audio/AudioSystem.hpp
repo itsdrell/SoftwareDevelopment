@@ -61,6 +61,7 @@ public:
 	AudioSystem();
 	virtual ~AudioSystem();
 	virtual void DestroyClips();
+	virtual void ReleaseFModAndSounds();
 
 	static AudioSystem* GetInstance();
 

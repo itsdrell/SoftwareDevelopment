@@ -41,9 +41,6 @@ App::App()
 
 	g_theGame = new Game(); // this needs to be last
 
-	// Clean up render log so we only get fresh data
-	//LogStringToFile("Log/Shader.log", std::string(CurrentDateTime() + "\n--------------------------------------\n\n").c_str(), true);
-
 	m_isQuitting = false;
 
 	m_timeSinceStart = 0.f;
@@ -59,6 +56,9 @@ App::~App()
 	g_theInput = nullptr;
 	g_theRenderer = nullptr;
 	g_audio = nullptr;
+
+	delete g_theMasterClock;
+	g_theMasterClock = nullptr;
 }
 
 void App::StartUp()

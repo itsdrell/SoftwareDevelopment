@@ -54,6 +54,24 @@ void Thread::RemoveThread(String name)
 	}
 }
 
+//--------------------------------------------------------------------------
+// This is called on app shutdown to clean up all threads
+void Thread::Shutdown()
+{
+	std::vector<Thread*>	::iterator threadIterator;
+	for( threadIterator = Thread::s_threads.begin(); threadIterator != Thread::s_threads.end(); threadIterator++)
+	{
+		Thread* current = *threadIterator;
+		String currentName = current->m_name;
+
+		current->m_thread.join();
+		delete current;
+		current = nullptr;
+	}
+
+	Thread::s_threads.clear();
+}
+
 //====================================================================================
 void ThreadCreate(String name, thread_cb cb, void* user_data)
 {

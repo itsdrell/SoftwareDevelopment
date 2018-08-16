@@ -28,7 +28,7 @@ public:
 	GameObject2D(std::string name);
 	GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform);
 
-	~GameObject2D() {};
+	~GameObject2D();
 
 	void SetRenderable(Renderable2D& theRenderable);
 

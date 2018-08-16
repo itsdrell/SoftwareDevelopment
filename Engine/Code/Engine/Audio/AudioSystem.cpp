@@ -98,7 +98,9 @@ AudioSystem::~AudioSystem()
 	FMOD_RESULT result = m_fmodSystem->release();
 	ValidateResult( result );
 
-	m_fmodSystem = nullptr; // #Fixme: do we delete/free the object also, or just do this?
+
+	ReleaseFModAndSounds();
+
 }
 
 
@@ -111,6 +113,25 @@ void AudioSystem::DestroyClips()
 		delete current;
 		current = nullptr;
 	}
+
+	m_audioClips.clear();
+}
+
+//--------------------------------------------------------------------------
+void AudioSystem::ReleaseFModAndSounds()
+{
+	// I think this is how you free up fmod. Release all sounds we made and then Release the system
+	
+	for(uint i = 0; i < m_registeredSounds.size(); i++)
+	{
+		//TODO figure out how this works :(
+		//FMOD_RESULT result = m_registeredSounds.at(i)->release();
+	}
+
+	m_registeredSounds.clear();
+
+	m_fmodSystem->release();
+	m_fmodSystem = nullptr; 
 }
 
 AudioSystem* AudioSystem::GetInstance()

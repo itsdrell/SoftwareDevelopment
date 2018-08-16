@@ -49,6 +49,7 @@ public:
 	Thread(String name,thread_cb cb, void* user_data);
 	
 	static void RemoveThread( String name );
+	static void Shutdown();
 
 public:
 
