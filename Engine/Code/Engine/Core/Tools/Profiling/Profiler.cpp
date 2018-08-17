@@ -116,6 +116,22 @@ Profiler::Profiler()
 	m_currentIndex = 0;
 }
 
+Profiler::~Profiler()
+{
+	m_activeNode = nullptr;
+	s_instance = nullptr;
+
+	for(uint i = 0; i < MAX_AMOUNT_OF_MEASUREMENTS; i++)
+	{
+		if(m_frameHistory[i] != nullptr)
+		{
+			delete m_frameHistory[i];
+			m_frameHistory[i] = nullptr;
+		}
+	}
+
+}
+
 std::vector<double> Profiler::GetFrameLengths()
 {
 	std::vector<double> times;
@@ -253,6 +269,7 @@ double ProfileMeasurement::GetRootTotalTime() { return 0.0; }
 ProfilerScope::ProfilerScope(std::string id) {}
 ProfilerScope::~ProfilerScope() {}
 Profiler::Profiler() {}
+Profiler::~Profiler() {}
 void Profiler::MarkFrame() {}
 void Profiler::Push(std::string id) {}
 void Profiler::Pop() {}
@@ -265,6 +282,7 @@ void ResumeProfiler(Command& theCommand) {}
 
 #endif
 
+//====================================================================================
 // this is the only function that isn't in the define
 Profiler* Profiler::GetInstance()
 {

@@ -48,6 +48,7 @@ struct DebugRenderOptions
 		, mode(DEBUG_RENDER_USE_DEPTH)
 	{}
 
+
 	// Shared
 	Rgba start_color; 
 	Rgba end_color; 
@@ -92,6 +93,8 @@ public:
 	DebugRenderTask()
 		: m_isDead(false)
 	{}
+
+	~DebugRenderTask();
 
 	void Age();
 	void Render() const;

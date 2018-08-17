@@ -30,6 +30,11 @@ struct DrawCall2D
 	Sprite*		m_sprite;
 
 	int			m_sort;
+
+	// Each frame we are making a mesh using sprites
+	// but some drawcalls save the mesh (like map)
+	// so we don't want to delete that so here is a flag
+	bool		m_deleteTemporaryMesh = true;
 };
 
 //=============================================================

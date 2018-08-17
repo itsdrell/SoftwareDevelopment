@@ -78,6 +78,11 @@ void DebugRenderController(Command& thecommand)
 }
 
 //////////////////////////////////////////////////////////////////////////
+DebugRenderTask::~DebugRenderTask()
+{
+	// does nothing since the DebugRenderOption isnt newed off
+}
+
 void DebugRenderTask::Age()
 {
 	float dt = g_theMasterClock->deltaTime;
@@ -359,7 +364,7 @@ void DebugRenderUpdateAndRender()
 
 		if(task->m_isDead)
 		{
-			//delete[] task;
+			delete task;
 
 			int size = (int) g_DebugRenderTask.size();
 

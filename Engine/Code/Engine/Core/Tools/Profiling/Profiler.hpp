@@ -74,6 +74,8 @@ class Profiler
 public:
 	Profiler();
 
+	~Profiler();
+
 	static Profiler* GetInstance();
 
 	ProfileMeasurement* ProfileGetPreviousFrame( int skip_count = 0 ); 

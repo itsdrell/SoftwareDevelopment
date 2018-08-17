@@ -69,6 +69,7 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		if(currentRenderable->m_usesMesh == true)
 		{
 			dc.m_mesh = currentRenderable->GetMesh();
+			dc.m_deleteTemporaryMesh = false;
 		}
 		else
 		{
@@ -112,6 +113,10 @@ void SpriteRendering::RenderSceneForCamera(Camera* cam, Scene2D* scene) const
 		// optimize here as well
 		//r->DrawSprite( current.m_model.GetPosition(), *current.m_sprite);
 		r->DrawMesh(current.m_mesh);
+
+		// only delete the meshes we just made
+		if(current.m_deleteTemporaryMesh == true)
+			delete current.m_mesh;
 	}
 
 
