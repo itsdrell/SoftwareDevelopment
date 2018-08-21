@@ -7,6 +7,7 @@
 #include "Engine/Core/Tools/Profiling/Profiler.hpp"
 #include "../Tools/LogSystem.hpp"
 #include "Engine/Async/Threading.hpp"
+#include "Engine/Net/Net.hpp"
 
 
 //====================================================================================
@@ -21,6 +22,7 @@ void EngineStartUp()
 	AudioSystem* audio = new AudioSystem();
 	InputSystem* input = new InputSystem();
 	Renderer* renderer = new Renderer();
+	Net::Startup();
 
 	LogSystemStartUp();
 	renderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
@@ -33,6 +35,8 @@ void EngineStartUp()
 
 void EngineShutDown()
 {
+	Net::Shutdown();
+	
 	delete g_theAudioSystem;
 	g_theAudioSystem = nullptr;
 	

@@ -110,7 +110,15 @@ std::string Command::GetName()
 
 std::string Command::GetNextString()
 {
-	return std::string();
+	String result = "";
+	
+	if(m_commandIndex < m_commandArguements.size())
+	{
+		result = m_commandArguements.at(m_commandIndex);
+		m_commandIndex++;
+	}
+	
+	return result;
 }
 
 

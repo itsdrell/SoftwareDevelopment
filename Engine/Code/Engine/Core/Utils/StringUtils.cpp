@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------------------------
 const int STRINGF_STACK_LOCAL_TEMP_LENGTH = 2048;
 
-
 //-----------------------------------------------------------------------------------------------
 const std::string Stringf( const char* format, ... )
 {
@@ -46,6 +45,7 @@ const std::string Stringf( const int maxLength, const char* format, ... )
 	return returnValue;
 }
 
+//-----------------------------------------------------------------------------------------------
 std::string Stringv(const char* format, va_list args)
 {
 	char textLiteral[ STRINGF_STACK_LOCAL_TEMP_LENGTH ];	
@@ -55,6 +55,7 @@ std::string Stringv(const char* format, va_list args)
 	return std::string( textLiteral );
 }
 
+//-----------------------------------------------------------------------------------------------
 std::vector<std::string> BreakSentenceIntoWords(std::string text)
 {
 	std::vector<std::string> vectorOfWords;
@@ -82,6 +83,7 @@ std::vector<std::string> BreakSentenceIntoWords(std::string text)
 	return vectorOfWords;
 }
 
+//-----------------------------------------------------------------------------------------------
 Strings SplitString(const std::string text, const char* seperator)
 {
 	int found = (int)text.find(seperator);
@@ -104,7 +106,7 @@ Strings SplitString(const std::string text, const char* seperator)
 	return returnStrings;
 }
 
-
+//-----------------------------------------------------------------------------------------------
 std::string RemoveCharacterFromString(std::string stringToChange, const char* thingToRemove)
 {
 	int found = (int)stringToChange.find(thingToRemove);
@@ -119,6 +121,7 @@ std::string RemoveCharacterFromString(std::string stringToChange, const char* th
 	return stringToChange;
 }
 
+//-----------------------------------------------------------------------------------------------
 uint CountHowManyLinesAreInAString(std::string stringToCount)
 {
 	uint total = 0;
@@ -134,6 +137,7 @@ uint CountHowManyLinesAreInAString(std::string stringToCount)
 	return total;
 }
 
+//-----------------------------------------------------------------------------------------------
 int ParseString(std::string text, int defaultValue)
 {
 	int result;
@@ -150,7 +154,7 @@ int ParseString(std::string text, int defaultValue)
 	return result;
 }
 	
-
+//-----------------------------------------------------------------------------------------------
 float ParseString(std::string text, float defaultValue)
 {
 	float result;
@@ -167,6 +171,7 @@ float ParseString(std::string text, float defaultValue)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
 Vector2 ParseString(std::string text, Vector2 defaultValue)
 {
 	Vector2 result;
@@ -190,6 +195,7 @@ Vector2 ParseString(std::string text, Vector2 defaultValue)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
 Rgba ParseString(std::string text, Rgba defaultValue)
 {
 	
@@ -226,6 +232,7 @@ Rgba ParseString(std::string text, Rgba defaultValue)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
 bool ParseString(std::string text, bool defaultValue)
 {
 	if(text == "true") { return true; }
@@ -234,6 +241,7 @@ bool ParseString(std::string text, bool defaultValue)
 	return defaultValue;
 }
 
+//-----------------------------------------------------------------------------------------------
 IntVector2 ParseString(std::string& text, const IntVector2& defaultValue)
 {
 	IntVector2 result;
@@ -258,6 +266,7 @@ IntVector2 ParseString(std::string& text, const IntVector2& defaultValue)
 
 }
 
+//-----------------------------------------------------------------------------------------------
 uint GetLargestLengthInStrings(Strings listToCheck)
 {
 	uint result = 0;
@@ -275,6 +284,7 @@ uint GetLargestLengthInStrings(Strings listToCheck)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
 std::string GetLargestStringInStrings(Strings listToCheck)
 {
 	std::string result = "";
@@ -288,5 +298,11 @@ std::string GetLargestStringInStrings(Strings listToCheck)
 	}
 
 	return result;
+}
+
+//--------------------------------------------------------------------------
+bool StringIsNullOrEmpty(const char* text)
+{
+	return ((text == nullptr) || (text[0] == '\0'));
 }
 

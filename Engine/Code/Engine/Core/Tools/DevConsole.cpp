@@ -24,118 +24,13 @@
 #include "../../Renderer/Systems/MeshBuilder.hpp"
 #include "../../Renderer/RenderableComponents/Material.hpp"
 #include "Stopwatch.hpp"
+#include "../General/EngineConsoleCommands.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
 std::vector<ConsoleDialogue>		DevConsole::s_history;
 ThreadSafeQueue<ConsoleDialogue>	DevConsole::s_dialogueQueue;
 
-
-//////////////////////////////////////////////////////////////////////////
-// Default Commands for the Console
-void ShowAllRegisteredCommands(Command& thecommand)
-{	
-	// Get all the names to print
-	Strings whatToPrint = CommandRegistration::GetAllCommandsAndTheirHelp();
-
-	// Add them to our display
-	for(int i = 0; i < (int)whatToPrint.size(); i++)
-	{
-		
-		ConsoleDialogue newDialogue;
-
-		// Creates a white header and then rainbow after that!
-		if(i == 0)
-			newDialogue = ConsoleDialogue(whatToPrint.at(i),Rgba::WHITE);
-		else
-			newDialogue = ConsoleDialogue(whatToPrint.at(i),GetRainbowColor(i - 1, (int)whatToPrint.size() - 1));
-
-		// Add them to the display
-		DevConsole::AddConsoleDialogue(newDialogue);
-	}
-
-	PlayOneShot("iAmHere");
-	DevConsole::GetInstance()->m_dekuTimer->SetTimer(2.f);
-}
-
-void ClearConsole(Command& thecommand)
-{
-	/*Command::ClearCommands();*/
-	DevConsole::ClearConsoleOutput();
-	
-}
-
-void SaveConsoleToFile(Command& thecommand)
-{
-	std::string path;
-
-	// they entered a path
-	if(thecommand.m_commandArguements.size() > 1)
-		path = thecommand.m_commandArguements[1];
-	else
-		path = "Log/Console.log";
-	
-	std::vector<ConsoleDialogue> history(DevConsole::GetHistory());
-
-	std::ofstream outputFile;
-
-	// try to open file + clear anything inside it
-	outputFile.open(path.c_str(), std::fstream::trunc);
-
-	// See if we opened it
-	if(outputFile.is_open() == false)
-	{
-		DevConsole::AddErrorMessage("Could not Save!");
-		return;
-	}
-
-	// if we can, start printing
-	for(int i = 0; i < (int)history.size(); i++)
-	{
-		outputFile << history.at(i).m_text;
-		outputFile << "\n";
-	}
-
-	// Let user know and close the file
-	DevConsole::AddConsoleDialogue(ConsoleDialogue("Saved Successfully! :D ", Rgba::GREEN));
-	outputFile.close();
-}
-
-// Command input is: name rgbaColor string
-// void PrintStringWithAColor(Command& thecommand)
-// {
-// 	// First make a color (uses argument 1)
-// 	
-// 	Rgba colorToShow = ParseString(thecommand.m_commandArguements.at(1).c_str(), Rgba::WHITE);
-// 
-// 	// Then make the string
-// 	const char* whatToDelete = "\"";
-// 
-// 	std::string stringToShow = RemoveCharacterFromString(thecommand.m_commandArguements.at(2), whatToDelete);
-// 
-// 	// Create output
-// 	ConsoleDialogue newDialogue = ConsoleDialogue(stringToShow,colorToShow);
-// 
-// 	// Add them to the display
-// 	DevConsole::AddConsoleDialogue(newDialogue);
-// }
-
-void SetAppTitle(Command& thecommand)
-{
-	std::string newTitle;
-
-	for(int i = 1; i < thecommand.m_commandArguements.size(); i++)
-	{
-		newTitle.append(thecommand.m_commandArguements.at(i) + " ");
-	}
-	
-	Window::GetInstance()->SetTitle(newTitle.c_str());
-}
-
-void RunScript(Command& thecommand)
-{
-	CommandRunScriptFromFile(thecommand.m_commandArguements.at(1).c_str());
-}
 
 //////////////////////////////////////////////////////////////////////////
 // Helper
@@ -298,15 +193,7 @@ void DevConsole::StartUp()
 
 void DevConsole::CreateDefaultCommands()
 {
-	// Just some default Commands 
-	CommandRegister("help","Type: help","Shows all commands", ShowAllRegisteredCommands);
-	CommandRegister("clear","Type: clear", "Clears the Screen", ClearConsole);
-	CommandRegister("saveLog","Type: save_log <path or none>", "Saves Command Log to File", SaveConsoleToFile);
-	CommandRegister("setTitle","Type: setTitle <title can use spaces even>", "Sets the apps title message", SetAppTitle);
-	CommandRegister("runScript","Type: runScript <Script file name, not full path>", "Runs script from file", RunScript);
-
-	//CommandRegister("echo_with_color","Type: echo_with_color r,g,b,a ''string''", "Prints a colored string", PrintStringWithAColor);
-
+	RegisterEngineCommands();
 }
 
 void DevConsole::Update()

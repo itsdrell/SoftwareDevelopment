@@ -263,6 +263,7 @@
     <ClCompile Include="Core\General\Blackboard.cpp" />
     <ClCompile Include="Core\General\Camera.cpp" />
     <ClCompile Include="Core\General\EngineCommon.cpp" />
+    <ClCompile Include="Core\General\EngineConsoleCommands.cpp" />
     <ClCompile Include="Core\General\GameObject.cpp" />
     <ClCompile Include="Core\General\HeatMap.cpp" />
     <ClCompile Include="Core\General\Rgba.cpp" />
@@ -305,6 +306,8 @@
     <ClCompile Include="Math\Vectors\Vector2.cpp" />
     <ClCompile Include="Math\Vectors\Vector3.cpp" />
     <ClCompile Include="Math\Vectors\Vector4.cpp" />
+    <ClCompile Include="Net\Net.cpp" />
+    <ClCompile Include="Net\NetAddress.cpp" />
     <ClCompile Include="Renderer\BuiltInShader.cpp" />
     <ClCompile Include="Renderer\external\stbi\stb_image.c" />
     <ClCompile Include="Renderer\glfunctions.cpp" />
@@ -348,6 +351,7 @@
     <ClInclude Include="Core\General\Blackboard.hpp" />
     <ClInclude Include="Core\General\Camera.hpp" />
     <ClInclude Include="Core\General\EngineCommon.hpp" />
+    <ClInclude Include="Core\General\EngineConsoleCommands.hpp" />
     <ClInclude Include="Core\General\GameObject.hpp" />
     <ClInclude Include="Core\General\HeatMap.hpp" />
     <ClInclude Include="Core\General\Rgba.hpp" />
@@ -370,6 +374,7 @@
     <ClInclude Include="Input\InputSystem.hpp" />
     <ClInclude Include="Input\Mouse.hpp" />
     <ClInclude Include="Input\XboxController.hpp" />
+    <ClInclude Include="Internal\WindowsCommon.h" />
     <ClInclude Include="Math\CubicSpline.hpp" />
     <ClInclude Include="Math\Geometry\AABB2.hpp" />
     <ClInclude Include="Math\Geometry\AABB3.hpp" />
@@ -390,6 +395,8 @@
     <ClInclude Include="Math\Vectors\Vector2.hpp" />
     <ClInclude Include="Math\Vectors\Vector3.hpp" />
     <ClInclude Include="Math\Vectors\Vector4.hpp" />
+    <ClInclude Include="Net\Net.hpp" />
+    <ClInclude Include="Net\NetAddress.hpp" />
     <ClInclude Include="Renderer\BuiltInShader.hpp" />
     <ClInclude Include="Renderer\external\gl\glcorearb.h" />
     <ClInclude Include="Renderer\external\gl\glext.h" />

@@ -30,6 +30,7 @@ uint CountHowManyLinesAreInAString(std::string stringToCount);
 uint GetLargestLengthInStrings(Strings listToCheck);
 std::string GetLargestStringInStrings(Strings listToCheck);
 
+bool StringIsNullOrEmpty(const char* text);
 
 //////////////////////////////////////////////////////////////////////////
 // Change string to value, catches errors and returns a default value

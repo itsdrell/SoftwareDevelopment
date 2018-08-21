@@ -265,6 +265,15 @@
     <ClCompile Include="Core\Tools\LogSystem.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\Net.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\EngineConsoleCommands.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetAddress.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -371,6 +380,10 @@
     <ClInclude Include="Async\Threading.hpp" />
     <ClInclude Include="Core\Tools\LogSystem.hpp" />
     <ClInclude Include="Async\ThreadSafeContainers.hpp" />
+    <ClInclude Include="Net\Net.hpp" />
+    <ClInclude Include="Internal\WindowsCommon.h" />
+    <ClInclude Include="Net\NetAddress.hpp" />
+    <ClInclude Include="Core\General\EngineConsoleCommands.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

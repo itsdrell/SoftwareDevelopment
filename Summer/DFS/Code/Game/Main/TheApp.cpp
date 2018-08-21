@@ -64,6 +64,7 @@ App::~App()
 void App::StartUp()
 {
 	g_theGame->StartUp();
+
 }
 
 void App::RunFrame()

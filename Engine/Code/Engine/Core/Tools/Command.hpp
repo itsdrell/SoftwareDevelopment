@@ -43,6 +43,8 @@ public:
 	std::string	m_command; 
 	Strings		m_commandArguements;
 
+	uint		m_commandIndex = 1; // the name is the 0, so we start at 1
+
 	// gonna let the dev console hold it..?
 	//static std::vector<Command*>	s_commandHistory;
 };
