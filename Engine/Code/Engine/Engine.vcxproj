@@ -308,6 +308,7 @@
     <ClCompile Include="Math\Vectors\Vector4.cpp" />
     <ClCompile Include="Net\Net.cpp" />
     <ClCompile Include="Net\NetAddress.cpp" />
+    <ClCompile Include="Net\TCPSocket.cpp" />
     <ClCompile Include="Renderer\BuiltInShader.cpp" />
     <ClCompile Include="Renderer\external\stbi\stb_image.c" />
     <ClCompile Include="Renderer\glfunctions.cpp" />
@@ -397,6 +398,7 @@
     <ClInclude Include="Math\Vectors\Vector4.hpp" />
     <ClInclude Include="Net\Net.hpp" />
     <ClInclude Include="Net\NetAddress.hpp" />
+    <ClInclude Include="Net\TCPSocket.hpp" />
     <ClInclude Include="Renderer\BuiltInShader.hpp" />
     <ClInclude Include="Renderer\external\gl\glcorearb.h" />
     <ClInclude Include="Renderer\external\gl\glext.h" />

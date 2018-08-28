@@ -92,7 +92,7 @@ $RECYCLE.BIN/
 *.db
 *.opendb
 *.history
-data/log/
+Log/
 *.suo
 *.TMP
 data/screenshot/

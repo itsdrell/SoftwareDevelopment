@@ -6,6 +6,8 @@
 #include "Engine/Net/NetAddress.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/Platform/Window.hpp"
+#include "../../Async/Threading.hpp"
+#include "../../Net/Net.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -21,6 +23,7 @@ void RegisterEngineCommands()
 	// Network
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
 	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
+	CommandRegister("testHost","","", TestHost);
 }
 
 //--------------------------------------------------------------------------
@@ -66,7 +69,8 @@ void GetAddressName(Command & cb)
 		// you can farther filter here if you want, or return all of them and try them in order; 
 		// for example, if you're using VPN, you'll get two unique addresses for yourself; 
 		// if you're using AF_INET, the address is a sockaddr_in; 
-		if (iter->ai_family == AF_INET) {
+		if (iter->ai_family == AF_INET) 
+		{
 			sockaddr_in* ipv4 = (sockaddr_in*)(iter->ai_addr); 
 			// we have an address - print it!
 
@@ -79,6 +83,7 @@ void GetAddressName(Command & cb)
 			
 			DevConsole::AddConsoleDialogue(Stringf("My Address: %s", out ));
 		}
+		
 		iter = iter->ai_next; 
 	}
 
@@ -153,6 +158,12 @@ void TestConnect(Command& cb)
 
 
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void TestHost(Command& cb)
+{
+	ThreadCreateAndDetach((thread_cb) HostExample, "12345");
 }
 
 //--------------------------------------------------------------------------

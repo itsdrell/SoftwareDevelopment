@@ -17,6 +17,8 @@ class Camera;
 class Mesh;
 
 
+#define MAX_HISTORY_SIZE (64)
+#define HISTORY_FILE_PATH ("Log/ConsoleHistory.txt");
 #define SEPERATOR_TEXT ("-------------------------------------------------------------")
 
 //////////////////////////////////////////////////////////////////////////
@@ -43,6 +45,9 @@ public:
 	DevConsole(Renderer* rendererToUse); 
 	~DevConsole(); 
 	void StartUp();
+
+	void LoadHistory();
+	void SaveHistoryToFile();
 
 	void CreateDefaultCommands();
 

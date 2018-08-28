@@ -20,6 +20,7 @@ void RunScript(Command& thecommand);
 // NETWORKING
 void GetAddressName( Command& cb );
 void TestConnect( Command& cb );
+void TestHost( Command& cb );
 
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]

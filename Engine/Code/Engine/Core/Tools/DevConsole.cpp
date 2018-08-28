@@ -145,6 +145,9 @@ DevConsole::DevConsole(Renderer* rendererToUse)
 
 DevConsole::~DevConsole()
 {
+	DevConsole::GetInstance()->SaveHistoryToFile();
+	DevConsole::s_history.clear(); //sanity
+	
 	g_devConsole = nullptr;
 
 	m_theRenderer = nullptr;
@@ -163,7 +166,6 @@ DevConsole::~DevConsole()
 	
 	m_dekuTexture = nullptr; // renderer deletes
 
-	DevConsole::s_history.clear(); //sanity
 }
 
 void DevConsole::StartUp()
@@ -176,6 +178,7 @@ void DevConsole::StartUp()
 	m_theRenderer->SetCamera();
 
 	CommandRunScriptFromFile("startup");
+	LoadHistory();
 
 	// Load Images
 	m_roll = new SpriteSheet(m_theRenderer->CreateOrGetTexture("Data/Images/roll_exe.png"), 3, 1);
@@ -188,6 +191,46 @@ void DevConsole::StartUp()
 	//m_errorSound = AudioSystem::GetInstance()->CreateOrGetSound("Data/Audio/error.wav");
 
 	m_fpsTracker = 0;
+
+
+}
+
+void DevConsole::LoadHistory()
+{
+	String path = HISTORY_FILE_PATH;
+	Strings lines = GetAllLinesFromFile(path.c_str());
+
+	for(uint i = 0; i < lines.size(); i++)
+	{
+		m_currentEntry = lines.at(i);
+		AddACommandToHistory();
+	}
+}
+
+void DevConsole::SaveHistoryToFile()
+{
+	int historySize = (int) m_commandHistory.size();
+	String path = HISTORY_FILE_PATH;
+
+	// If size is less than max amount just print in order
+	if(historySize < MAX_HISTORY_SIZE)
+	{
+		LogStringsToFile(path.c_str(), m_commandHistory);
+	}
+	// if size if bigger, subtract size - maxAmount and that's the starting index and print
+	else 
+	{
+		uint startIndex = m_commandHistory.size() - (uint) MAX_HISTORY_SIZE;
+		Strings history;
+
+		for(uint i = startIndex; startIndex < m_commandHistory.size(); i++)
+		{
+			history.push_back(m_commandHistory.at(i));
+		}
+
+		LogStringsToFile(path.c_str(), history, true);
+	}
+
 
 }
 
@@ -211,6 +254,7 @@ void DevConsole::Update()
 	HandleScrolling();
 	HandleAutoComplete();
 	UpdateRoll(ds);
+
 	
 }
 
@@ -221,7 +265,12 @@ void DevConsole::CheckAndAddThreadQueue()
 
 	if(s_dialogueQueue.dequeue(&data))
 	{
-		AddConsoleDialogue(data);
+		// TODO 
+		// This is why your text has a delay because I had to make it thread safe to
+		// add things to history so sorry
+		// Either make history just thread safe, or maybe print x amount of these at a time
+		
+		s_history.push_back(data);
 		genMesh = true;
 	}
 	
@@ -393,15 +442,18 @@ void DevConsole::RenderAutoCorrect()
 	// Draw completion part
 	if(m_autoIndex >= 0 && m_autoIndex < 1000) // sometimes might be garbage value..?
 	{
-		std::string completionPart = matchingCommands.at(m_autoIndex);
-		completionPart = BreakSentenceIntoWords(completionPart).at(0);
-		completionPart.erase(completionPart.begin(), completionPart.begin() + m_currentEntry.length());
+		if(IsIndexValid(m_autoIndex, matchingCommands))
+		{
+			std::string completionPart = matchingCommands.at(m_autoIndex);
+			completionPart = BreakSentenceIntoWords(completionPart).at(0);
+			completionPart.erase(completionPart.begin(), completionPart.begin() + m_currentEntry.length());
 
-		// Draw
-		float completeWideth =  m_theRenderer->m_defaultFont->GetStringWidth(completionPart, 25.f, .5f);
+			// Draw
+			float completeWideth =  m_theRenderer->m_defaultFont->GetStringWidth(completionPart, 25.f, .5f);
 
-		m_theRenderer->DrawAABB2(AABB2(m_barXPosition, (-m_windowHeight * .5f) + 5.f,m_barXPosition + completeWideth, (-m_windowHeight * .5f) + 30.f), Rgba(255,255,0,200));
-		m_theRenderer->DrawText2D(Vector2(m_barXPosition,(-m_windowHeight * .5f) + 5.f), completionPart, 25.f, Rgba::WHITE, .5f);
+			m_theRenderer->DrawAABB2(AABB2(m_barXPosition, (-m_windowHeight * .5f) + 5.f,m_barXPosition + completeWideth, (-m_windowHeight * .5f) + 30.f), Rgba(255,255,0,200));
+			m_theRenderer->DrawText2D(Vector2(m_barXPosition,(-m_windowHeight * .5f) + 5.f), completionPart, 25.f, Rgba::WHITE, .5f);
+		}
 	}
 	
 
@@ -455,7 +507,7 @@ void DevConsole::GenerateTextMesh()
 	{
 		float currentY = m_startPosition.y + currentYPadding;
 
-		if(m_scrollBarIndex != 0)
+		if(scrollIndex != 0)
 		{
 			ConsoleDialogue currentDialogue = s_history.at(i);
 
@@ -987,6 +1039,10 @@ void DevConsole::BrowseCommandHistory(int direction)
 
 	m_currentEntry = m_commandHistory.at(m_commandHistoryIndex);
 	m_barIndex = (int) m_currentEntry.length();
+
+	m_autoIndex = 0; // this is a bug fixer don't touch
+
+	GenerateTextMesh();
 }
 
 DevConsole* DevConsole::GetInstance()
@@ -996,8 +1052,9 @@ DevConsole* DevConsole::GetInstance()
 
 void DevConsole::AddConsoleDialogue(ConsoleDialogue newDialogue)
 {
-	s_history.push_back(newDialogue);
-	DevConsole::GetInstance()->GenerateTextMesh();
+	//s_history.push_back(newDialogue);
+	//DevConsole::GetInstance()->GenerateTextMesh();
+	s_dialogueQueue.enqueue(newDialogue);
 }
 
 void DevConsole::AddConsoleDialogue(const std::string& text, const Rgba& color)

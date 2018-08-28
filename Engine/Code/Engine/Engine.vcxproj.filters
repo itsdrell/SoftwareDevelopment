@@ -274,6 +274,9 @@
     <ClCompile Include="Net\NetAddress.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\TCPSocket.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -384,6 +387,7 @@
     <ClInclude Include="Internal\WindowsCommon.h" />
     <ClInclude Include="Net\NetAddress.hpp" />
     <ClInclude Include="Core\General\EngineConsoleCommands.hpp" />
+    <ClInclude Include="Net\TCPSocket.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

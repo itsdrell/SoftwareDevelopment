@@ -45,6 +45,12 @@ typedef std::string					String;
 typedef std::vector<std::string>	Strings;
 typedef std::vector<int>			Ints;
 typedef unsigned int				uint;
+typedef unsigned short				uint16;
+typedef unsigned char				Byte; // had to give this boy a T cause already defined in windows?
+
+constexpr unsigned long KILOBYTE = 1024;
+constexpr unsigned long MEGABYTE = 1024 * 1024;
+constexpr unsigned long GIGABYTE = 1024 * 1024 * 1024;
 
 //TODO("Make an actual uniform buffer pls");
 typedef RenderBuffer				UniformBuffer; 

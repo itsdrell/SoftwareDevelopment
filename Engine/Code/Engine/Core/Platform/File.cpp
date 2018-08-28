@@ -4,6 +4,8 @@
 #include <fstream>
 #include "Engine/Core/Tools/ErrorWarningAssert.hpp"
 
+
+//===============================================================================================
 void* FileReadToNewBuffer( char const *filename )
 {
 	// changed this from fopen to fopen_s cause compiler didnt think it was safe
@@ -32,6 +34,7 @@ void* FileReadToNewBuffer( char const *filename )
 	return buffer;  
 }
 
+//-----------------------------------------------------------------------------------------------
 void LogStringToFile(const char* filename, const char* text, bool overwrite)
 {
 	std::ofstream outputFile;
@@ -57,6 +60,37 @@ void LogStringToFile(const char* filename, const char* text, bool overwrite)
 	outputFile.close();
 }
 
+//-----------------------------------------------------------------------------------------------
+void LogStringsToFile(char const* filename, const Strings& theStrings, bool overwrite )
+{
+	std::ofstream outputFile;
+
+	// try to open file http://www.cplusplus.com/reference/fstream/fstream/open/
+	if(overwrite == false)
+		outputFile.open(filename, std::fstream::out | std::fstream::app);
+	else
+		outputFile.open(filename, std::fstream::out | std::fstream::trunc); // erase the file (for clean up)
+
+																			// See if we opened it
+	if(outputFile.is_open() == false)
+	{
+		// this can be called if the file isn't checked out btw :l
+		ERROR_RECOVERABLE("Couldn't log to: " + std::string(filename));
+		return;
+	}
+
+
+	for(uint i = 0; i < theStrings.size(); i++)
+	{
+		outputFile << theStrings.at(i);
+		outputFile << "\n";
+	}
+
+
+	outputFile.close();
+}
+
+//-----------------------------------------------------------------------------------------------
 Strings GetAllLinesFromFile(char const* filename)
 {
 	Strings result;
@@ -72,6 +106,7 @@ Strings GetAllLinesFromFile(char const* filename)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
 uint GetLineLengthOfAFile(char const* filename)
 {
 	uint result = 0;
