@@ -199,7 +199,7 @@ size_t BytePacker::ReadSize(size_t * out_size)
 		numberOfBytes++;
 	}
 	
-	out_size = &theSize;
+	*out_size = theSize;
 	return numberOfBytes;
 }
 
@@ -207,17 +207,32 @@ size_t BytePacker::ReadSize(size_t * out_size)
 bool BytePacker::WriteString(char const * str)
 {
 	
-	// convert to string
-	// WriteSize()
-	// ConvertEndianess()
-	// WriteBytes()
-	return false;
+	String theString = str;
+	bool check =  WriteSize(theString.size());
+	WriteBytes(theString.size(), theString.c_str());
+	
+	return check;
 }
 
 //-----------------------------------------------------------------------------------------------
 size_t BytePacker::ReadString(char * out_str, size_t max_byte_size)
 {
-	return size_t();
+	
+	size_t size;
+	bool check = ReadSize(&size);
+
+	if(size > max_byte_size)
+	{
+		ReadBytes(out_str, max_byte_size);
+		out_str[max_byte_size] = '\0';
+	}
+	else
+	{
+		ReadBytes(out_str, size);
+		out_str[size] = '\0';
+	}
+	
+	return size;
 }
 
 //-----------------------------------------------------------------------------------------------
