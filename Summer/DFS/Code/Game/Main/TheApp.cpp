@@ -14,6 +14,7 @@
 #include "Engine/Math/Trajectory.hpp"
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
+#include "Engine/Core/General/BytePacker.hpp"
 
 
 //  For testing blackboard
@@ -64,6 +65,12 @@ App::~App()
 void App::StartUp()
 {
 	g_theGame->StartUp();
+
+	BytePacker test;
+	test.WriteSize(8675309);
+	size_t testR;
+	test.ReadSize(&testR);
+
 
 }
 
