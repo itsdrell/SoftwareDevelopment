@@ -21,6 +21,7 @@ void RunScript(Command& thecommand);
 void GetAddressName( Command& cb );
 void TestConnect( Command& cb );
 void TestHost( Command& cb );
+void Connect( Command& cb ); // better one
 
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]

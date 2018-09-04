@@ -67,10 +67,15 @@ void App::StartUp()
 	g_theGame->StartUp();
 
 	BytePacker test;
-	test.WriteSize(8675309);
-	size_t testR;
-	test.ReadSize(&testR);
-
+	//test.WriteSize(8675309);
+	//size_t testR;
+	//test.ReadSize(&testR);
+	test.WriteString("Emily is cute");
+	
+	const uint sizeIAmExpecting = 15;
+	char text[sizeIAmExpecting];
+	test.ReadString(text, sizeIAmExpecting);
+	
 
 }
 

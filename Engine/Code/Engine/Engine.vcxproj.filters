@@ -283,6 +283,9 @@
     <ClCompile Include="Core\General\Endianness.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\RemoteCommandService.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -396,6 +399,7 @@
     <ClInclude Include="Net\TCPSocket.hpp" />
     <ClInclude Include="Core\General\Endianness.hpp" />
     <ClInclude Include="Core\General\BytePacker.hpp" />
+    <ClInclude Include="Core\Tools\RemoteCommandService.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

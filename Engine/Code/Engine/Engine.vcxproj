@@ -282,6 +282,7 @@
     <ClCompile Include="Core\Tools\Profiling\ProfilerReport.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ProfilerUI.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ScopedProfile.cpp" />
+    <ClCompile Include="Core\Tools\RemoteCommandService.cpp" />
     <ClCompile Include="Core\Tools\Stopwatch.cpp" />
     <ClCompile Include="Core\Utils\StringUtils.cpp" />
     <ClCompile Include="Core\Utils\XmlUtilities.cpp" />
@@ -373,6 +374,7 @@
     <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerUI.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ScopedProfile.hpp" />
+    <ClInclude Include="Core\Tools\RemoteCommandService.hpp" />
     <ClInclude Include="Core\Tools\Stopwatch.hpp" />
     <ClInclude Include="Core\Utils\StringUtils.hpp" />
     <ClInclude Include="Core\Utils\XmlUtilities.hpp" />

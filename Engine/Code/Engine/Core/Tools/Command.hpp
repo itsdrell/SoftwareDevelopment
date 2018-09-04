@@ -27,6 +27,10 @@ public:
 								   // second: "Hello \"world\""
 								   // third+: ""
 
+	// this is for when your last command is a full string and you want all of it including the spaces
+	std::string GetRestOfCommand();
+	
+	
 	// [OPTIONAL] I like to add helpers for getting arguments
 	// and I just add them as I need them.
 	// Each takes the output variable, and returns whether it succeeded

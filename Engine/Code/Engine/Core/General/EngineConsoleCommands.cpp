@@ -8,6 +8,7 @@
 #include "Engine/Core/Platform/Window.hpp"
 #include "../../Async/Threading.hpp"
 #include "../../Net/Net.hpp"
+#include "../../Net/TCPSocket.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -24,6 +25,7 @@ void RegisterEngineCommands()
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
 	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
 	CommandRegister("testHost","","", TestHost);
+	CommandRegister("connect", "", "", Connect);
 }
 
 //--------------------------------------------------------------------------
@@ -164,6 +166,42 @@ void TestConnect(Command& cb)
 void TestHost(Command& cb)
 {
 	ThreadCreateAndDetach((thread_cb) HostExample, "12345");
+}
+
+//-----------------------------------------------------------------------------------------------
+void Connect(Command& cb)
+{
+	
+	String addr_str = cb.GetNextString();
+	String msg = cb.GetRestOfCommand();
+
+	if(StringIsNullOrEmpty(addr_str.c_str()) || StringIsNullOrEmpty(msg.c_str()))
+	{
+		DevConsole::AddErrorMessage("Invalid input. Missing data");
+		return;
+	}
+
+	NetAddress theAddress = NetAddress(addr_str.c_str());
+
+
+	TCPSocket socket; // defaults to blocking 
+	if (socket.Connect( theAddress )) 
+	{
+		DevConsole::AddConsoleDialogue( "Connected." ); 
+		socket.Send( msg.c_str(), msg.size() + 1 ); 
+
+		char payload[256]; 
+		size_t recvd = socket.Receive( payload, 256 ); 
+		payload[recvd] = NULL;
+		DevConsole::AddConsoleDialogue( Stringf("Received: %s", payload) ); 
+
+		socket.Close(); 
+	} 
+	else 
+	{
+		DevConsole::AddErrorMessage( "Could not connect." );
+	}
+
 }
 
 //--------------------------------------------------------------------------

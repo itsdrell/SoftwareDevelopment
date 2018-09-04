@@ -121,6 +121,20 @@ std::string Command::GetNextString()
 	return result;
 }
 
+std::string Command::GetRestOfCommand()
+{
+	String theText = "";
+	
+	while(m_commandIndex < m_commandArguements.size())
+	{
+		theText += (m_commandArguements.at(m_commandIndex) + " ");
+
+		m_commandIndex++;
+	}
+
+	return theText;
+}
+
 
 // void Command::ClearCommands()
 // {
