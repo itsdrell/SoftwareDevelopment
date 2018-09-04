@@ -1,5 +1,5 @@
 #pragma once
-#include "..\SystemsAndTools\Renderable2D.hpp"
+#include "Engine\Renderer\RenderableComponents\Renderable2D.hpp"
 #include "Tiles\Tile.hpp"
 #include "Engine\Renderer\Images\Image.hpp"
 #include "..\Main\GameCommon.hpp"

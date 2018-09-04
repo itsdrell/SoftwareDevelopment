@@ -1,5 +1,5 @@
 #pragma once
-#include "Game\SystemsAndTools\GameObject2D.hpp"
+#include "Engine/Core/General/GameObject2D.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Core\General\EngineCommon.hpp"
 

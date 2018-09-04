@@ -286,6 +286,24 @@
     <ClCompile Include="Core\Tools\RemoteCommandService.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Systems\Scene2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\Systems\SpriteRendering.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\GameObject2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\RenderableComponents\Renderable2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\Tags.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\Transform2D.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -400,6 +418,12 @@
     <ClInclude Include="Core\General\Endianness.hpp" />
     <ClInclude Include="Core\General\BytePacker.hpp" />
     <ClInclude Include="Core\Tools\RemoteCommandService.hpp" />
+    <ClInclude Include="Renderer\Systems\Scene2D.hpp" />
+    <ClInclude Include="Renderer\Systems\SpriteRendering.hpp" />
+    <ClInclude Include="Core\General\GameObject2D.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Renderable2D.hpp" />
+    <ClInclude Include="Core\General\Tags.hpp" />
+    <ClInclude Include="Core\General\Transform2D.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

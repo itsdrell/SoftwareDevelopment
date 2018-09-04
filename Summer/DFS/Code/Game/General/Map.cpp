@@ -8,7 +8,7 @@
 #include "..\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "GameObjects\Unit.hpp"
-#include "..\SystemsAndTools\GameObject2D.hpp"
+#include "Engine\Core\General\GameObject2D.hpp"
 #include "GameObjects\Building.hpp"
 #include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
 #include "Engine\Core\Tools\Command.hpp"

@@ -9,7 +9,7 @@
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Game/General/GameObjects/Unit.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
-#include "../SystemsAndTools/GameObject2D.hpp"
+#include "Engine\Core\General\GameObject2D.hpp"
 #include "Engine/Renderer/RenderableComponents/Material.hpp"
 
 //====================================================================================

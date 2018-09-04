@@ -2,7 +2,7 @@
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Math/Vectors/Vector2.hpp"
 #include "Engine/Math/Geometry/AABB2.hpp"
-#include "Game/SystemsAndTools/GameObject2D.hpp"
+#include "Engine/Core/General/GameObject2D.hpp"
 #include "Game/General/Tiles/TileDefinition.hpp"
 
 //=============================================================

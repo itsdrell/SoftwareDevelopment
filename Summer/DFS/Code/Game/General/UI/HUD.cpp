@@ -6,7 +6,7 @@
 #include "Engine\Core\General\EngineCommon.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "..\GameObjects\Unit.hpp"
-#include "..\..\SystemsAndTools\GameObject2D.hpp"
+#include "Engine\Core\General\GameObject2D.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "Game\General\Map.hpp"
 #include "Game\Main\Game.hpp"

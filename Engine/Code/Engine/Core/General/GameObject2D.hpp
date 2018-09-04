@@ -1,8 +1,7 @@
 #pragma once
-#include <string>
-#include <vector>
-#include "Renderable2D.hpp"
-#include "Engine\Core\General\Camera.hpp"
+#include "Engine\Core\General\EngineCommon.hpp"
+#include "Engine\Core\General\Transform2D.hpp"
+#include "Engine\Renderer\RenderableComponents\Renderable2D.hpp"
 
 //=============================================================
 // Forward Declare
@@ -22,28 +21,29 @@
 //=============================================================
 // Classes
 //=============================================================
-class Scene2D
+class GameObject2D
 {
 public:
-	Scene2D(std::string name)
-		: m_name( name) {}
+	GameObject2D() {};
+	GameObject2D(std::string name);
+	GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform);
 
-	~Scene2D();
-	void DeleteAllRenderables();
-	void DeleteAllCameras();
+	~GameObject2D();
 
-	void AddRenderable( Renderable2D* r) { m_renderables.push_back(r); }
-	void AddCamera( Camera* c) { m_cameras.push_back(c); }
+	void SetRenderable(Renderable2D& theRenderable);
 
-	void RemoveRenderable(Renderable2D* toRemove);
+	virtual void SetLocalPosition(const Vector2& pos) { m_transform.SetLocalPosition(pos); }
 
+	virtual void Update();
 
 public:
 	std::string		m_name;
+	Transform2D		m_transform;
+	Renderable2D*	m_renderable;
 
-	// Containers
-	std::vector<Renderable2D*>		m_renderables;
-	std::vector<Camera*>			m_cameras;
+	bool			m_isDead;
+	uint			m_ID;
+
 };
 
 //=============================================================
@@ -54,4 +54,3 @@ public:
 //=============================================================
 // Externs
 //=============================================================
-

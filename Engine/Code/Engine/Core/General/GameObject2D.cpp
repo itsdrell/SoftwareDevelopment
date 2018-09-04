@@ -1,4 +1,4 @@
-#include "GameObject2D.hpp"
+#include "Engine/Core/General/GameObject2D.hpp"
 
 
 GameObject2D::GameObject2D(std::string name)

@@ -4,7 +4,7 @@
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Math/Geometry/AABB2.hpp"
 #include "Engine/Core/General/Rgba.hpp"
-#include "Game/SystemsAndTools/Tags.hpp"
+#include "Engine/Core/General/Tags.hpp"
 
 //=============================================================
 // Forward Declare

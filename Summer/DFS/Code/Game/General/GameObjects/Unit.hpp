@@ -1,6 +1,6 @@
 #pragma once
-#include "Game\SystemsAndTools\GameObject2D.hpp"
-#include "Game\SystemsAndTools\Tags.hpp"
+#include "Engine\Core/General\GameObject2D.hpp"
+#include "Engine\Core/General\Tags.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Math\Ranges\IntRange.hpp"
 #include <string>

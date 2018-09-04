@@ -39,6 +39,7 @@ public:
 public:
 	std::vector<TCPSocket*>					m_connectionSlots;
 
+
 	static RemoteCommandService*			s_theService;
 };
 

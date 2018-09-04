@@ -267,9 +267,12 @@
     <ClCompile Include="Core\General\EngineCommon.cpp" />
     <ClCompile Include="Core\General\EngineConsoleCommands.cpp" />
     <ClCompile Include="Core\General\GameObject.cpp" />
+    <ClCompile Include="Core\General\GameObject2D.cpp" />
     <ClCompile Include="Core\General\HeatMap.cpp" />
     <ClCompile Include="Core\General\Rgba.cpp" />
+    <ClCompile Include="Core\General\Tags.cpp" />
     <ClCompile Include="Core\General\Transform.cpp" />
+    <ClCompile Include="Core\General\Transform2D.cpp" />
     <ClCompile Include="Core\Platform\File.cpp" />
     <ClCompile Include="Core\Platform\Time.cpp" />
     <ClCompile Include="Core\Platform\Window.cpp" />
@@ -332,6 +335,7 @@
     <ClCompile Include="Renderer\RenderableComponents\Material.cpp" />
     <ClCompile Include="Renderer\RenderableComponents\Mesh.cpp" />
     <ClCompile Include="Renderer\RenderableComponents\Renderable.cpp" />
+    <ClCompile Include="Renderer\RenderableComponents\Renderable2D.cpp" />
     <ClCompile Include="Renderer\RenderableComponents\Shader.cpp" />
     <ClCompile Include="Renderer\RenderableComponents\shaderprogram.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
@@ -342,6 +346,8 @@
     <ClCompile Include="Renderer\Systems\MeshBuilder.cpp" />
     <ClCompile Include="Renderer\Systems\ParticleEmitter.cpp" />
     <ClCompile Include="Renderer\Systems\Scene.cpp" />
+    <ClCompile Include="Renderer\Systems\Scene2D.cpp" />
+    <ClCompile Include="Renderer\Systems\SpriteRendering.cpp" />
     <ClCompile Include="ThirdParty\MikkT\mikktspace.c" />
     <ClCompile Include="ThirdParty\SquirrelNoise\RawNoise.cpp" />
     <ClCompile Include="ThirdParty\SquirrelNoise\SmoothNoise.cpp" />
@@ -359,9 +365,12 @@
     <ClInclude Include="Core\General\EngineCommon.hpp" />
     <ClInclude Include="Core\General\EngineConsoleCommands.hpp" />
     <ClInclude Include="Core\General\GameObject.hpp" />
+    <ClInclude Include="Core\General\GameObject2D.hpp" />
     <ClInclude Include="Core\General\HeatMap.hpp" />
     <ClInclude Include="Core\General\Rgba.hpp" />
+    <ClInclude Include="Core\General\Tags.hpp" />
     <ClInclude Include="Core\General\Transform.hpp" />
+    <ClInclude Include="Core\General\Transform2D.hpp" />
     <ClInclude Include="Core\Platform\File.hpp" />
     <ClInclude Include="Core\Platform\Time.hpp" />
     <ClInclude Include="Core\Platform\Window.hpp" />
@@ -428,6 +437,7 @@
     <ClInclude Include="Renderer\RenderableComponents\Material.hpp" />
     <ClInclude Include="Renderer\RenderableComponents\Mesh.hpp" />
     <ClInclude Include="Renderer\RenderableComponents\Renderable.hpp" />
+    <ClInclude Include="Renderer\RenderableComponents\Renderable2D.hpp" />
     <ClInclude Include="Renderer\RenderableComponents\Shader.hpp" />
     <ClInclude Include="Renderer\RenderableComponents\shaderprogram.hpp" />
     <ClInclude Include="Renderer\Renderer.hpp" />
@@ -438,6 +448,8 @@
     <ClInclude Include="Renderer\Systems\MeshBuilder.hpp" />
     <ClInclude Include="Renderer\Systems\ParticleEmitter.hpp" />
     <ClInclude Include="Renderer\Systems\Scene.hpp" />
+    <ClInclude Include="Renderer\Systems\Scene2D.hpp" />
+    <ClInclude Include="Renderer\Systems\SpriteRendering.hpp" />
     <ClInclude Include="ThirdParty\fmod\fmod.h" />
     <ClInclude Include="ThirdParty\fmod\fmod.hpp" />
     <ClInclude Include="ThirdParty\fmod\fmod_codec.h" />

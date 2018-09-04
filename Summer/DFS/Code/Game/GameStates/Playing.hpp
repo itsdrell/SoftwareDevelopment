@@ -1,9 +1,9 @@
 #pragma once
-#include "Engine\Math\Vectors/Vector3.hpp"
-#include "Game/SystemsAndTools/Scene2D.hpp"
-#include "Engine\Renderer\Systems/ForwardRenderingPath.hpp"
-#include "../SystemsAndTools/GameObject2D.hpp"
-#include "Engine/Math/Geometry/AABB2.hpp"
+#include "Engine\Math\Vectors\Vector3.hpp"
+#include "Engine\Renderer\Systems\Scene2D.hpp"
+#include "Engine\Renderer\Systems\ForwardRenderingPath.hpp"
+#include "Engine\Core\General\GameObject2D.hpp"
+#include "Engine\Math\Geometry\AABB2.hpp"
 
 //=============================================================
 // Forward Declare
