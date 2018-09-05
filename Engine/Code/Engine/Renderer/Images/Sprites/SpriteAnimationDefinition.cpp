@@ -44,25 +44,25 @@
 // 
 // }
 
-SpriteAnimationDefinition::SpriteAnimationDefinition(const tinyxml2::XMLElement& animElement, SpriteSheet& defaultSpriteSheet, float defaultFps)
-{
-	m_spriteSheet = &defaultSpriteSheet;
-	m_framesPerSecond = ParseXmlAttribute(animElement, "fps", defaultFps);
-	m_name = ParseXmlAttribute(animElement, "name", "ERROR NO NAME");
-	m_spriteIndexes = ParseXmlAttribute(animElement,"spriteIndexes", Ints());
-}
-
-SpriteAnimationDefinition::~SpriteAnimationDefinition()
-{
-}
-
-int SpriteAnimationDefinition::GetSpriteIndexAtTime(float elapsedSeconds) const
-{
-	float length = elapsedSeconds * m_framesPerSecond;
-
-	int currentFrame = (int)length % (int)m_spriteIndexes.size();
-	
-	int frame = ClampInt(currentFrame,0,(int)m_spriteIndexes.size());
-
-	return m_spriteIndexes.at(frame);
-}
+// SpriteAnimationDefinition::SpriteAnimationDefinition(const tinyxml2::XMLElement& animElement, SpriteSheet& defaultSpriteSheet, float defaultFps)
+// {
+// 	m_spriteSheet = &defaultSpriteSheet;
+// 	m_framesPerSecond = ParseXmlAttribute(animElement, "fps", defaultFps);
+// 	m_name = ParseXmlAttribute(animElement, "name", "ERROR NO NAME");
+// 	m_spriteIndexes = ParseXmlAttribute(animElement,"spriteIndexes", Ints());
+// }
+// 
+// SpriteAnimationDefinition::~SpriteAnimationDefinition()
+// {
+// }
+// 
+// int SpriteAnimationDefinition::GetSpriteIndexAtTime(float elapsedSeconds) const
+// {
+// 	float length = elapsedSeconds * m_framesPerSecond;
+// 
+// 	int currentFrame = (int)length % (int)m_spriteIndexes.size();
+// 	
+// 	int frame = ClampInt(currentFrame,0,(int)m_spriteIndexes.size());
+// 
+// 	return m_spriteIndexes.at(frame);
+// }

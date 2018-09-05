@@ -2,7 +2,9 @@
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
 
-
+//===============================================================================================
+std::map<std::string, SpriteSheet*> SpriteSheet::s_spriteSheets;
+//===============================================================================================
 SpriteSheet::SpriteSheet()
 {
 }
@@ -39,7 +41,8 @@ AABB2 SpriteSheet::GetTexCoordsForSpriteCoords(const IntVector2& spriteCoords) c
 	float maxx = fractionX;
 	float maxy = fractionY;
 
-	return AABB2(Vector2(minx,miny),Vector2(maxx,maxy));
+	// What this does is fix the weird texture flip!
+	return AABB2(Vector2(minx, 1.f - maxy),Vector2(maxx,1.f - miny));
 }
 
 AABB2 SpriteSheet::GetTexCoordsForSpriteIndex(int spriteIndex) const
@@ -58,4 +61,32 @@ int SpriteSheet::GetNumSprites() const
 	return amount;
 }
 
+//-----------------------------------------------------------------------------------------------
+SpriteSheet* SpriteSheet::CreateOrGet(const std::string& filePath, const IntVector2& dimensions)
+{
+	std::map<std::string, SpriteSheet*>::iterator it;
+
+	// see if the bitmap already exists in our map
+	it = s_spriteSheets.find(filePath);
+
+	// if it does, return the value
+	if(it != s_spriteSheets.end())
+	{
+		return s_spriteSheets.at(filePath);
+	}
+	else // make a new one
+	{
+		std::string fullpath = "Data/Images/" + filePath + ".png";
+
+		// Create or get texture
+		Texture* fontTexture = Renderer::GetInstance()->CreateOrGetTexture(fullpath, false);
+
+		// Create a spritesheet from that texture
+		SpriteSheet* newSheet = new SpriteSheet( fontTexture, dimensions.x , dimensions.y );
+
+		s_spriteSheets[filePath] = newSheet;
+
+		return newSheet;
+	}
+}
 

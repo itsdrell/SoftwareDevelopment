@@ -304,6 +304,9 @@
     <ClCompile Include="Core\General\Transform2D.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimator.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -424,6 +427,7 @@
     <ClInclude Include="Renderer\RenderableComponents\Renderable2D.hpp" />
     <ClInclude Include="Core\General\Tags.hpp" />
     <ClInclude Include="Core\General\Transform2D.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

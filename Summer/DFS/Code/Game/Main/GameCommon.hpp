@@ -31,9 +31,9 @@ constexpr float		HALF_TILE_SIZE = TILE_SIZE * .5f;
 // coords using this since they are all in one row
 enum TeamName
 {
-	TEAM_BLUE,
-	TEAM_RED,
 	TEAM_NONE,
+	TEAM_RED,
+	TEAM_BLUE,
 	TEAM_GREEN,
 	TEAM_YELLOW,
 	NUM_OF_TEAMS

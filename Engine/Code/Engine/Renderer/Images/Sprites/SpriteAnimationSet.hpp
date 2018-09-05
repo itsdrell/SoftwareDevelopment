@@ -1,28 +1,85 @@
 #pragma once
-#include <string>
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/General/Tags.hpp"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include <map>
-#include "Engine/Math/Geometry/AABB2.hpp"
+
+//====================================================================================
+// Forward Declare
+//====================================================================================
 
 
+//====================================================================================
+// Type Defs + Defines
+//====================================================================================
 
-class SpriteAnimSetDefinition;
-class SpriteAnimation;
-class Texture;
 
+//====================================================================================
+// ENUMS
+//====================================================================================
+
+
+//====================================================================================
+// Structs
+//====================================================================================
+
+
+//====================================================================================
+// Classes
+//====================================================================================
 class SpriteAnimationSet
 {
 public:
-	SpriteAnimationSet( SpriteAnimSetDefinition* animSetDef );
-	~SpriteAnimationSet();
+	SpriteAnimationSet(tinyxml2::XMLElement& definition);
 
-	void 			Update( float deltaSeconds );
-	void 			StartAnim( const std::string& animName );
-	void 			SetCurrentAnim( const std::string& animName );
-	const Texture& 	GetCurrentTexture() const;
-	AABB2 			GetCurrentUVs() const;
+	String GetAnimationName(const String& nameOfAnimation);
 
-protected:
-	SpriteAnimSetDefinition*					m_animSetDef = nullptr;
-	std::map< std::string, SpriteAnimation* >	m_namedAnims;
-	SpriteAnimation*							m_currentAnim = nullptr;
+	static SpriteAnimationSet* AcquireResource(const String& name);
+
+public:
+	String											m_name; // name of the actor
+	std::map<String, String>						m_sets;
+
+	static std::map<String, SpriteAnimationSet*>	s_animationSets;
 };
+
+//====================================================================================
+// Standalone C Functions
+//====================================================================================
+
+
+//====================================================================================
+// Externs
+//====================================================================================
+
+
+//====================================================================================
+// Written by Zachary Bracken : [9/4/2018]
+//====================================================================================
+
+
+
+//===============================================================================================
+// This is what we used in Adventure
+//===============================================================================================
+// class SpriteAnimSetDefinition;
+// class SpriteAnimation;
+// class Texture;
+// 
+// class SpriteAnimationSet
+// {
+// public:
+// 	SpriteAnimationSet( SpriteAnimSetDefinition* animSetDef );
+// 	~SpriteAnimationSet();
+// 
+// 	void 			Update( float deltaSeconds );
+// 	void 			StartAnim( const std::string& animName );
+// 	void 			SetCurrentAnim( const std::string& animName );
+// 	const Texture& 	GetCurrentTexture() const;
+// 	AABB2 			GetCurrentUVs() const;
+// 
+// protected:
+// 	SpriteAnimSetDefinition*					m_animSetDef = nullptr;
+// 	std::map< std::string, SpriteAnimation* >	m_namedAnims;
+// 	SpriteAnimation*							m_currentAnim = nullptr;
+// };

@@ -324,6 +324,7 @@
     <ClCompile Include="Renderer\Images\Sprites\SpriteAnimation.cpp" />
     <ClCompile Include="Renderer\Images\Sprites\SpriteAnimationDefinition.cpp" />
     <ClCompile Include="Renderer\Images\Sprites\SpriteAnimationSet.cpp" />
+    <ClCompile Include="Renderer\Images\Sprites\SpriteAnimator.cpp" />
     <ClCompile Include="Renderer\Images\Sprites\SpriteAnimSetDefinition.cpp" />
     <ClCompile Include="Renderer\Images\Sprites\SpriteSheet.cpp" />
     <ClCompile Include="Renderer\Images\Textures\Texture.cpp" />
@@ -426,6 +427,7 @@
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimation.hpp" />
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimationDefinition.hpp" />
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimationSet.hpp" />
+    <ClInclude Include="Renderer\Images\Sprites\SpriteAnimator.hpp" />
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimSetDefinition.hpp" />
     <ClInclude Include="Renderer\Images\Sprites\SpriteSheet.hpp" />
     <ClInclude Include="Renderer\Images\Textures\Texture.hpp" />

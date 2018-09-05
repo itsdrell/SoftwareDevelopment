@@ -1,10 +1,12 @@
 #pragma once
-#include "Engine\Core\General\EngineCommon.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class Sprite;
+class SpriteAnimationSet;
+class SpriteAnimation;
 
 //====================================================================================
 // Type Defs + Defines
@@ -14,7 +16,14 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum SpritePlayMode
+{
+	SPRITE_PLAY_ONCE,
+	SPRITE_PLAY_LOOP,
+	SPRITE_PLAY_PING_PONG,
+	SPRITE_NUM_OF_MODES
+};
+SpritePlayMode GetPlayModeFromString(String mode);
 
 //====================================================================================
 // Structs
@@ -24,29 +33,35 @@
 //====================================================================================
 // Classes
 //====================================================================================
-class Tags
+class SpriteAnimator
 {
 public:
-	Tags() {}
+	SpriteAnimator(const String& idNameOfAnimationSet); // ex "Grunt" is an ID of an Animation Set
 
-	Tags(Strings& theTags)
-		: m_tags( theTags) {}
+	void Update();
 
-	bool Contains(const std::string& tagToCheck);
-	void AddTag(std::string newTag) { m_tags.push_back(newTag); }
-	uint GetSize() const { return (uint) m_tags.size(); }
-	std::string GetTagAtIndex(uint i) const { return m_tags.at(i); }
+	void Play( const String& name, SpritePlayMode loop_override = SPRITE_PLAY_LOOP );
+	void Pause();
+	void SetTime(float time);
+	bool IsDone();
 
-	bool operator==(const Tags& toCompare) const;
+	Sprite* GetCurrentSprite();
 
 public:
-	Strings			m_tags;
+
+	SpriteAnimationSet*				m_animationSet = nullptr;
+	SpriteAnimation*				m_currentAnimation = nullptr;
+	
+	SpritePlayMode					m_currentPlayMode;
+	bool							m_isPaused = false;
+	float							m_timeIntoAnimation = 0.f;
+
 };
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-bool DoTagsShareATag(Tags& a, Tags& b);
+
 
 //====================================================================================
 // Externs
@@ -54,5 +69,5 @@ bool DoTagsShareATag(Tags& a, Tags& b);
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/18/2018]
+// Written by Zachary Bracken : [9/4/2018]
 //====================================================================================

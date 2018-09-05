@@ -44,3 +44,15 @@ bool Tags::operator==(const Tags& toCompare) const
 
 	return true;
 }
+
+//-----------------------------------------------------------------------------------------------
+bool Tags::Contains(const std::string& tagToCheck)
+{
+	for(uint i = 0; i < m_tags.size(); i++)
+	{
+		if(m_tags.at(i) == tagToCheck)
+			return true;
+	}
+
+	return false;
+}

@@ -1,42 +1,122 @@
 #pragma once
+#include "Engine/Renderer/Images/Sprites/SpriteAnimator.hpp"
+#include "Engine/Math/Vectors/IntVector2.hpp"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 #include <string>
+#include <map>
 
+//====================================================================================
+// Forward Declare
+//====================================================================================
 class SpriteSheet;
-class AABB2;
-class Texture;
-class SpriteAnimationDefinition;
 
-enum SpriteAnimMode
-{
-	SPRITE_ANIM_MODE_PLAY_TO_END,	// Play from time=0 to durationSeconds, then finish
-	SPRITE_ANIM_MODE_LOOPING,		// Play from time=0 to end then repeat (never finish)
-    SPRITE_ANIM_MODE_PINGPONG, 		// optional, play forwards, backwards, forwards...
-	NUM_SPRITE_ANIM_MODES
-};
+//====================================================================================
+// Type Defs + Defines
+//====================================================================================
 
+
+//====================================================================================
+// ENUMS
+//====================================================================================
+
+
+//====================================================================================
+// Structs
+//====================================================================================
+
+
+//====================================================================================
+// Classes
+//====================================================================================
 class SpriteAnimation
 {
 public:
-	SpriteAnimation( const SpriteAnimationDefinition* animDef );
-	~SpriteAnimation();
+	SpriteAnimation(tinyxml2::XMLElement& definition);
+	
+	// This is taking the frames from XML and making sprites from the sprite sheet
+	// that we also got from XML so that our SpriteRenderer can just copy them!
+	void MakeSpritesFromFrames();
 
-	void Update( float deltaSeconds );
-	void PlayFromStart();
-	bool IsFinished() const { return m_isFinished; }
-	float GetElapsedSeconds() const { return m_elapsedSeconds; }
-	float GetElapsedFraction() const; // Hint: Asks its SpriteAnimDefinition for total duration
-	float GetRemainingSeconds() const;
-	float GetRemainingFraction() const;
-	const Texture& GetTexture() const;
-	AABB2 GetCurrentUVs() const;
-	std::string GetName() const;
+	Sprite* Evaluate(float timeIntoAnimation);
 
-protected:
-	const SpriteAnimationDefinition*		m_animDef = nullptr;
-	bool									m_isPlaying = true;
-	bool									m_isFinished = false;
-	float									m_elapsedSeconds = 0.f;
+	static SpriteAnimation* AcquireResource(const String& name);
+
+public:
+
+	SpriteSheet*			m_spriteSheet;
+	SpritePlayMode			m_playMode;
+	String					m_name;
+
+	Ints					m_frames; // keeping these even tho we don't have to
+	std::vector<float>		m_frameLengths;
+	float					m_totalLength;
+
+	// These are more sprite specific data, but since we are making the sprites here,
+	// We need to know this data
+	IntVector2				m_dimensions;
+	float					m_pixelsPerUnit = 16.f;
+
+	// we don't need actual sprites made if we know the sprite sheet and index
+	std::vector<Sprite*>	m_spriteFrames;
+
+	static std::map<String, SpriteAnimation*>	s_animations;
 };
+
+//====================================================================================
+// Standalone C Functions
+//====================================================================================
+
+
+//====================================================================================
+// Externs
+//====================================================================================
+
+
+//====================================================================================
+// Written by Zachary Bracken : [9/4/2018]
+//====================================================================================
+
+
+
+//===============================================================================================
+// This is the version from Adventure
+//===============================================================================================
+// class SpriteSheet;
+// class AABB2;
+// class Texture;
+// class SpriteAnimationDefinition;
+// 
+// enum SpriteAnimMode
+// {
+// 	SPRITE_ANIM_MODE_PLAY_TO_END,	// Play from time=0 to durationSeconds, then finish
+// 	SPRITE_ANIM_MODE_LOOPING,		// Play from time=0 to end then repeat (never finish)
+//     SPRITE_ANIM_MODE_PINGPONG, 		// optional, play forwards, backwards, forwards...
+// 	NUM_SPRITE_ANIM_MODES
+// };
+// 
+// class SpriteAnimation
+// {
+// public:
+// 	SpriteAnimation( const SpriteAnimationDefinition* animDef );
+// 	~SpriteAnimation();
+// 
+// 	void Update( float deltaSeconds );
+// 	void PlayFromStart();
+// 	bool IsFinished() const { return m_isFinished; }
+// 	float GetElapsedSeconds() const { return m_elapsedSeconds; }
+// 	float GetElapsedFraction() const; // Hint: Asks its SpriteAnimDefinition for total duration
+// 	float GetRemainingSeconds() const;
+// 	float GetRemainingFraction() const;
+// 	const Texture& GetTexture() const;
+// 	AABB2 GetCurrentUVs() const;
+// 	std::string GetName() const;
+// 
+// protected:
+// 	const SpriteAnimationDefinition*		m_animDef = nullptr;
+// 	bool									m_isPlaying = true;
+// 	bool									m_isFinished = false;
+// 	float									m_elapsedSeconds = 0.f;
+// };
 
 
 

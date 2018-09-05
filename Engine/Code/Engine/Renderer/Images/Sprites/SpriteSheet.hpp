@@ -12,11 +12,15 @@ public:
 	AABB2 GetTexCoordsForSpriteIndex( int spriteIndex ) const; // for sprite animations
 	int GetNumSprites() const;
 
+	static SpriteSheet* CreateOrGet(const std::string& filePath, const IntVector2& dimensions);
+
 public:
 	Texture*	m_spriteSheetTexture; 	// Texture w/grid-based layout of sprites
 
 private:
 	
 	IntVector2		m_spriteLayout;		// # of sprites across, and down, on the sheet
-	IntVector2 m_dimension;
+	IntVector2		m_dimension;
+
+	static std::map<std::string, SpriteSheet*>		s_spriteSheets;
 };

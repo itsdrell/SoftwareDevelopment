@@ -4,7 +4,7 @@
   name = "default"
   displayName = "Building"
   underTile = "grass"
-  spriteCoords = "0,2"
+  spriteCoords = "0,0"
   
   />
 
@@ -14,7 +14,7 @@
   underTile = "grass"
   isFactory = "true"
   unitType = "ground"
-  spriteCoords = "1,2"
+  spriteCoords = "1,0"
   
   />
 
@@ -24,7 +24,7 @@
   underTile = "grass"
   isFactory = "true"
   unitType = "air"
-  spriteCoords = "2,2"
+  spriteCoords = "2,0"
   
   />
 
@@ -34,7 +34,7 @@
   underTile = "shore"
   isFactory = "true"
   unitType = "water"
-  spriteCoords = "3,2"
+  spriteCoords = "3,0"
   
   />
   

@@ -9,6 +9,7 @@
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
+#include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -47,6 +48,9 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 	m_team = team;
 	m_definition = &def;
 	m_name = m_definition->m_name;
+
+
+	m_animator = new SpriteAnimator(Unit::GetAnimatorName(m_name,m_team));
 
 	//--------------------------------------------------------------------------
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
@@ -92,6 +96,33 @@ STATIC SpriteSheet Unit::GetTeamTexture(TeamName name)
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+STATIC String Unit::GetAnimatorName(const String& unitName, TeamName team)
+{
+	String result = unitName;
+	
+	switch (team)
+	{
+	case TEAM_BLUE:
+		result += ("_B");
+		break;
+	case TEAM_RED:
+		result += ("_R");
+		break;
+	case TEAM_GREEN:
+		result += ("_G");
+		break;
+	case TEAM_YELLOW:
+		result += ("_Y");
+		break;
+	default:
+		result = "ERROR";
+		break;
+	}
+
+	return result;
+}
+
 float Unit::GetCostForTileType(const String& tileType)
 {
 	return m_definition->GetMovementCost(tileType);
@@ -118,6 +149,13 @@ void Unit::Update()
 		if(m_usedAction == false)
 			m_renderable->GetMaterial()->SetTint(Rgba(150,150,150,220));
 	}
+
+	if(m_team != TEAM_BLUE)
+	{
+		m_animator->Update();
+		m_renderable->SetSprite(m_animator->GetCurrentSprite());
+	}
+	
 }
 
 float CalculateWinChance(const Unit& attacking, const Unit& defending)

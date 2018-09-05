@@ -25,8 +25,9 @@ Renderable2D::~Renderable2D()
 
 void Renderable2D::SetSprite(Sprite* sprite)
 {
-	if(m_sprite != nullptr)
-		delete m_sprite;
+	// TODO Got bugs when using this :(
+	//if(m_sprite != nullptr)
+	//	delete m_sprite;
 
 	m_sprite = sprite; 
 }

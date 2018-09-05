@@ -10,6 +10,8 @@
 #include "..\General\UI\UIWidget.hpp"
 #include "..\General\GameObjects\Unit.hpp"
 #include "..\General\GameObjects\Building.hpp"
+#include "Engine\Renderer\Images\Sprites\SpriteAnimation.hpp"
+#include "Engine\Renderer\Images\Sprites\SpriteAnimationSet.hpp"
 
 Loading::Loading()
 {
@@ -47,9 +49,11 @@ void Loading::LoadDefinitions()
 	// AS WELL
 	
 	LoadTileDefinitions();
+	LoadAnimationDefinitions();
 	LoadWidgetDefinitions();
 	LoadUnitDefinitions();
 	LoadBuildingDefinitions();
+
 }
 
 void Loading::LoadTileDefinitions()
@@ -132,6 +136,57 @@ void Loading::LoadBuildingDefinitions()
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+void Loading::LoadAnimationDefinitions()
+{
+	// Animations first then sets
+	LoadRedTeamAnimations();
+	LoadRedTeamAnimationSets();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Loading::LoadRedTeamAnimations()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Animations/Red/RedSmallUnits.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Red Team Animation Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		SpriteAnimation* newDef = new SpriteAnimation(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Loading::LoadRedTeamAnimationSets()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Animations/Red/RedSmallUnitSets.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Red Team AnimationSet Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		SpriteAnimationSet* newDef = new SpriteAnimationSet(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void Loading::LoadSpriteSheets()
 {
 	// Create the global sprite sheet for all the textures to use
@@ -156,6 +211,8 @@ void Loading::DeleteAllDefinitions()
 	UIWidgetDefinition::DeleteAllDefinitions();
 	UnitDefinition::DeleteAllDefinitions();
 	BuildingDefinition::DeleteAllDefinitions();
+
+	// TODO Delete Animation and SpriteSheets
 }
 
 void Loading::Update()

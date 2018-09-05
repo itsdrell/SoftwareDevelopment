@@ -6,31 +6,37 @@
 #include <map>
 #include <vector>
 
-class SpriteSheet;
-class Renderer;
 
-class SpriteAnimationDefinition
-{
-	friend class SpriteAnimation;
-	friend class SpriteAnimSetDefinition;
 
-public:
-	SpriteAnimationDefinition( const tinyxml2::XMLElement& animElement,
-		SpriteSheet& defaultSpriteSheet, 
-		float defaultFps/*Renderer& renderer*/ );
 
-	~SpriteAnimationDefinition();
-
-	float GetDuration() const { return (float) m_spriteIndexes.size() / m_framesPerSecond; }
-	int GetSpriteIndexAtTime( float elapsedSeconds ) const;
-
-protected:
-	std::string			m_name;
-	SpriteSheet*		m_spriteSheet = nullptr;
-	float				m_framesPerSecond = 10.f;
-	Ints				m_spriteIndexes;
-	bool				m_isLooping = true;
-};
+//===============================================================================================
+// This is the version from Adventure
+//===============================================================================================
+// class SpriteSheet;
+// class Renderer;
+// 
+// class SpriteAnimationDefinition
+// {
+// 	friend class SpriteAnimation;
+// 	friend class SpriteAnimSetDefinition;
+// 
+// public:
+// 	SpriteAnimationDefinition( const tinyxml2::XMLElement& animElement,
+// 		SpriteSheet& defaultSpriteSheet, 
+// 		float defaultFps/*Renderer& renderer*/ );
+// 
+// 	~SpriteAnimationDefinition();
+// 
+// 	float GetDuration() const { return (float) m_spriteIndexes.size() / m_framesPerSecond; }
+// 	int GetSpriteIndexAtTime( float elapsedSeconds ) const;
+// 
+// protected:
+// 	std::string			m_name;
+// 	SpriteSheet*		m_spriteSheet = nullptr;
+// 	float				m_framesPerSecond = 10.f;
+// 	Ints				m_spriteIndexes;
+// 	bool				m_isLooping = true;
+// };
 
 
 

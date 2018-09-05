@@ -398,14 +398,18 @@ void RenderLog()
 
 	for(uint i = 0; i < g_DebugRenderLog.size(); i++)
 	{
-		DebugRenderTask currentTask = *g_DebugRenderLog.at(i);
+		if(g_DebugRenderLog.at(i)->m_isDead == false)
+		{
+			DebugRenderTask currentTask = *g_DebugRenderLog.at(i);
+
+			std::string text = currentTask.m_options.text;
+			Rgba color = currentTask.m_options.start_color;
+
+			r->DrawText2D(Vector2(-45.f, yLocation), text, 1.3f, color, .5f);
+
+			yLocation -= 2.f;
+		}
 		
-		std::string text = currentTask.m_options.text;
-		Rgba color = currentTask.m_options.start_color;
-
-		r->DrawText2D(Vector2(-45.f, yLocation), text, 1.3f, color, .5f);
-
-		yLocation -= 2.f;
 	}
 
 

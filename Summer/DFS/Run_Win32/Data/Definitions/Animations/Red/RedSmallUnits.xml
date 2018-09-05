@@ -1,0 +1,40 @@
+<Animations>
+
+    <Animation id= "grunt_idle_r" loop = "loop">
+        
+        <spriteSheet
+        src = "Sprites/redUnits"
+        spriteLayout = "5,4"
+        ppu = "16"
+        />
+
+        <frame idx = "0" time = "1.5" />
+        <frame idx = "1" time = "1.5" />
+        <frame idx = "2" time = "1.5" />
+
+    </Animation>
+
+
+</Animations>
+
+
+<!--
+
+<Animation id="name" loop = "loop,clamp,pingpong">
+        <Spritesheet
+        src = "filePathNoExtensions"
+        spriteLayout = "x,y"
+        ppu = "16" def to 16
+
+        We could also do something with pivot but meh
+
+        />
+
+
+        Make sure these are in order
+        <frame idx="int" time="float" />
+
+    </Animation>
+
+
+-->

@@ -12,6 +12,7 @@
 // Forward Declare
 //=============================================================
 class Tile;
+class SpriteAnimator;
 
 //=============================================================
 // ENUMS
@@ -74,6 +75,7 @@ public:
 	void Update();
 
 	static SpriteSheet GetTeamTexture(TeamName name);
+	static String GetAnimatorName(const String& unitName, TeamName team);
 
 	float GetCostForTileType(const String& tileType);
 	IntRange GetAttackRange() const { return m_definition->m_attackRange;}
@@ -84,7 +86,9 @@ public:
 	float GetMovement() const { return (float) m_definition->m_movement; }
 
 public:
-	UnitDefinition*		m_definition;
+	UnitDefinition*		m_definition = nullptr;
+
+	SpriteAnimator*		m_animator = nullptr;
 
 	TeamName			m_team;
 	uint				m_health;

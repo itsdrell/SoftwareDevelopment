@@ -1,0 +1,9 @@
+<AnimSets>
+
+    <animset id = "grunt_R" >
+        <set id = "idle">
+            <anim id = "grunt_idle_r" />
+        </set>
+    </animset>
+
+</AnimSets>

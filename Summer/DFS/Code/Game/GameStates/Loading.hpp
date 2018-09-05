@@ -31,7 +31,11 @@ public:
 	void LoadWidgetDefinitions();
 	void LoadUnitDefinitions();
 	void LoadBuildingDefinitions();
-	
+
+	void LoadAnimationDefinitions();
+	void LoadRedTeamAnimations();
+	void LoadRedTeamAnimationSets();
+
 	void LoadSpriteSheets();
 
 

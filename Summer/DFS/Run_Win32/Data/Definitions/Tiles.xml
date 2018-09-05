@@ -5,6 +5,6 @@
   <TileDefinition name="grass" displayName = "Grass" spriteCoords="1,1" rgbaValue="0,255,0" movement="ground,air"/>
   <TileDefinition name="water" displayName = "Water" spriteCoords="7,1" rgbaValue="0,0,255" movement="water,air"/>
   <TileDefinition name="shore" displayName = "Shore" spriteCoords="7,1" rgbaValue="0,0,0" movement="water,air,ground"/>
-  <TileDefinition name="smallMountain" displayName = "S. Mtn" spriteCoords="24,0" rgbaValue="217,160,102" movement="air,ground"/>
+  <TileDefinition name="smallMountain" displayName = "S. Mtn" spriteCoords="24,2" rgbaValue="217,160,102" movement="air,ground"/>
 
 </TileDefinitions>

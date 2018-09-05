@@ -3,7 +3,112 @@
 #include "Engine/Renderer/Images/Textures/Texture.hpp"
 #include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 #include "Engine/Renderer/Images/Sprites/SpriteAnimationDefinition.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
+#include "Engine/Renderer/Images/Textures/Texture.hpp"
+#include "Engine/Renderer/Images/Sprites/Sprite.hpp"
+#include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 
+//===============================================================================================
+
+std::map<String, SpriteAnimation*>	SpriteAnimation::s_animations;
+
+//===============================================================================================
+//	Sprite Animation
+//-----------------------------------------------------------------------------------------------
+SpriteAnimation::SpriteAnimation(tinyxml2::XMLElement & definition)
+{
+	m_totalLength = 0.f;
+
+	m_name = ParseXmlAttribute(definition, "id", "ERROR");
+	
+	std::string playMode = ParseXmlAttribute(definition, "loop", "error");
+	m_playMode = GetPlayModeFromString(playMode);
+
+
+	tinyxml2::XMLElement* indexElement = definition.FirstChildElement();
+	while(indexElement)
+	{
+		String currentName = indexElement->Name();
+
+		if(currentName == "spriteSheet")
+		{
+			String spriteSheetName = ParseXmlAttribute(*indexElement, "src", "ERROR");
+			m_dimensions = ParseXmlAttribute(*indexElement, "spriteLayout", m_dimensions);
+			m_pixelsPerUnit = ParseXmlAttribute(*indexElement, "ppu", 16.f);
+			
+			m_spriteSheet = SpriteSheet::CreateOrGet(spriteSheetName, m_dimensions);
+		}
+
+		if(currentName == "frame")
+		{
+			int currentFrame = ParseXmlAttribute(*indexElement, "idx", 0);
+			m_frames.push_back(currentFrame);
+
+			float length = ParseXmlAttribute(*indexElement, "time", -1.f);
+			m_totalLength += length;
+			m_frameLengths.push_back(length);
+		}
+
+
+		indexElement = indexElement->NextSiblingElement();
+	}
+
+	// this uses the frames and spritesheet that we have already to make
+	// the current animation
+	MakeSpritesFromFrames(); 
+
+	s_animations.insert(std::pair<String, SpriteAnimation*>(m_name,this));
+}
+
+//-----------------------------------------------------------------------------------------------
+void SpriteAnimation::MakeSpritesFromFrames()
+{
+	for(uint i = 0; i < m_frames.size(); i++)
+	{
+		AABB2 uvs = m_spriteSheet->GetTexCoordsForSpriteIndex(m_frames.at(i));
+
+		Sprite* newSprite = new Sprite(*m_spriteSheet->m_spriteSheetTexture, m_dimensions.GetAsVector2(), m_pixelsPerUnit, Vector2(.5f,.5f), uvs);
+
+		m_spriteFrames.push_back(newSprite);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+Sprite * SpriteAnimation::Evaluate(float timeIntoAnimation)
+{
+	for(uint i = (uint)m_frameLengths.size(); i > 0; i--)
+	{
+		float length = m_frameLengths.at(i -1) - timeIntoAnimation;
+
+		if(length <= 0)
+		{
+			return m_spriteFrames.at(i -1);
+		}
+	}
+
+	// we are on the first one
+	return m_spriteFrames.at(0);
+}
+
+//-----------------------------------------------------------------------------------------------
+SpriteAnimation * SpriteAnimation::AcquireResource(const String & name)
+{
+	std::map<std::string,SpriteAnimation*>::iterator animIterator;
+	animIterator = SpriteAnimation::s_animations.find(name);
+	if(animIterator != SpriteAnimation::s_animations.end()){return animIterator->second;}
+
+	ERROR_RECOVERABLE("Could not find IsoSpriteAnimation Resorce: " + name);
+
+	return nullptr;
+}
+
+
+
+
+
+//===============================================================================================
+// This is from Adventure
+//===============================================================================================
 // SpriteAnimation::SpriteAnimation(const SpriteSheet& spriteSheet, float durationSeconds, SpriteAnimMode playbackMode, int startSpriteIndex, int endSpriteIndex)
 // {
 // 	m_spriteSheet = &spriteSheet;
@@ -144,65 +249,66 @@
 // {
 // 	deltaSeconds++;
 // }
+// 
+// SpriteAnimation::SpriteAnimation(const SpriteAnimationDefinition* animDef)
+// {
+// 	m_animDef = animDef;
+// }
+// 
+// SpriteAnimation::~SpriteAnimation()
+// {
+// }
+// 
+// void SpriteAnimation::Update(float deltaSeconds)
+// {
+// 	m_elapsedSeconds += deltaSeconds;
+// }
+// 
+// void SpriteAnimation::PlayFromStart()
+// {
+// 	m_elapsedSeconds = 0.0f;
+// }
+// 
+// float SpriteAnimation::GetElapsedFraction() const
+// {
+// 	float duration = m_animDef->GetDuration();
+// 	
+// 	return (m_elapsedSeconds / duration);
+// }
+// 
+// float SpriteAnimation::GetRemainingSeconds() const
+// {
+// 	float duration = m_animDef->GetDuration();
+// 	
+// 	return (duration - m_elapsedSeconds);
+// }
+// 
+// float SpriteAnimation::GetRemainingFraction() const
+// {
+// 	float duration = m_animDef->GetDuration();
+// 
+// 	float remain = duration - m_elapsedSeconds;
+// 
+// 	return (remain / duration);
+// }
+// 
+// const Texture & SpriteAnimation::GetTexture() const
+// {
+// 	return *m_animDef->m_spriteSheet->m_spriteSheetTexture;
+// }
+// 
+// AABB2 SpriteAnimation::GetCurrentUVs() const
+// {
+// 	//float howFarIn = GetElapsedFraction();
+// 
+// 	int currentFrame = m_animDef->GetSpriteIndexAtTime(m_elapsedSeconds);
+// 	AABB2 spriteUVs = m_animDef->m_spriteSheet->GetTexCoordsForSpriteIndex(currentFrame);
+// 
+// 	return spriteUVs;
+// }
+// 
+// std::string SpriteAnimation::GetName() const
+// {
+// 	return m_animDef->m_name;
+// }
 
-SpriteAnimation::SpriteAnimation(const SpriteAnimationDefinition* animDef)
-{
-	m_animDef = animDef;
-}
-
-SpriteAnimation::~SpriteAnimation()
-{
-}
-
-void SpriteAnimation::Update(float deltaSeconds)
-{
-	m_elapsedSeconds += deltaSeconds;
-}
-
-void SpriteAnimation::PlayFromStart()
-{
-	m_elapsedSeconds = 0.0f;
-}
-
-float SpriteAnimation::GetElapsedFraction() const
-{
-	float duration = m_animDef->GetDuration();
-	
-	return (m_elapsedSeconds / duration);
-}
-
-float SpriteAnimation::GetRemainingSeconds() const
-{
-	float duration = m_animDef->GetDuration();
-	
-	return (duration - m_elapsedSeconds);
-}
-
-float SpriteAnimation::GetRemainingFraction() const
-{
-	float duration = m_animDef->GetDuration();
-
-	float remain = duration - m_elapsedSeconds;
-
-	return (remain / duration);
-}
-
-const Texture & SpriteAnimation::GetTexture() const
-{
-	return *m_animDef->m_spriteSheet->m_spriteSheetTexture;
-}
-
-AABB2 SpriteAnimation::GetCurrentUVs() const
-{
-	//float howFarIn = GetElapsedFraction();
-
-	int currentFrame = m_animDef->GetSpriteIndexAtTime(m_elapsedSeconds);
-	AABB2 spriteUVs = m_animDef->m_spriteSheet->GetTexCoordsForSpriteIndex(currentFrame);
-
-	return spriteUVs;
-}
-
-std::string SpriteAnimation::GetName() const
-{
-	return m_animDef->m_name;
-}

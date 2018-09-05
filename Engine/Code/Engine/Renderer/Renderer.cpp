@@ -153,7 +153,7 @@ void Renderer::PostStartup()
 	m_defaultEmmisiveTexture = m_defaultEmmisiveTexture->CreateFromImage(Image("defaultEmmissive", IntVector2(8,8), Rgba::BLACK));
 
 	// default font 
-	m_defaultFont = CreateOrGetBitmapFont("moved");
+	m_defaultFont = CreateOrGetBitmapFont("SquirrelFixedFont");
 
 	//m_defaultShader = Shader::CreateOrGetShader("Data/Shaders/default.shader");
 	m_defaultShader = Shader::CreateOrGetShader("default");
