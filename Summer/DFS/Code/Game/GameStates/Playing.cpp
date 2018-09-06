@@ -87,8 +87,9 @@ void Playing::StartUp()
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	CommandRunScriptFromFile("LevelScripts/beanIsland");
-	
+	//CommandRunScriptFromFile("LevelScripts/beanIsland");
+	CommandRunScriptFromFile("LevelScripts/zooLevel");
+
 }
 
 void Playing::Update()

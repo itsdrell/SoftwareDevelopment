@@ -67,6 +67,7 @@ public:
 
 public:
 	void						StartUp(); // Load from XML
+	void						CreateDefaultSound();
 	void						LoadFromXML(std::string path);
 	virtual void				BeginFrame();
 	virtual void				EndFrame();

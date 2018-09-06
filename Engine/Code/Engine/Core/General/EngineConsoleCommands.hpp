@@ -23,6 +23,8 @@ void TestConnect( Command& cb );
 void TestHost( Command& cb );
 void Connect( Command& cb ); // better one
 
+void SpawnProcess( Command& cb );
+
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]
 //====================================================================================

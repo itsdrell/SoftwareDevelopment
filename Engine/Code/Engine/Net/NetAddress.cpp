@@ -84,13 +84,10 @@ String NetAddress::ToString() const
 }
 
 //-----------------------------------------------------------------------------------------------
-NetAddress NetAddress::GetLocalAddress()
+NetAddress NetAddress::GetLocalAddress(const char* port)
 {
 	char my_name[256];
 	::gethostname( my_name, 256);
-
-	// service is like "http" or "ftp", which translates to a port (80 or 21).  We'll just use port 80 for this example;
-	char const* service = "80";
 
 	// no host name - can't resolve; 
 	if(StringIsNullOrEmpty(my_name))
@@ -110,12 +107,12 @@ NetAddress NetAddress::GetLocalAddress()
 	hints.ai_flags = AI_PASSIVE;
 
 	addrinfo* result;
-	int status = getaddrinfo( my_name, service, &hints, &result);
+	int status = getaddrinfo( my_name, port, &hints, &result);
 
 	if(status != 0)
 	{
 		LogTaggedPrintf("net", "Failed to find addressed for [%s:%s]. Error[%s]", 
-			my_name, service, ::gai_strerror(status));
+			my_name, port, ::gai_strerror(status));
 		return NetAddress();
 	}
 
@@ -149,6 +146,70 @@ NetAddress NetAddress::GetLocalAddress()
 
 	// freeing up
 	::freeaddrinfo( result );
+}
+
+//-----------------------------------------------------------------------------------------------
+std::string NetAddress::GetLocalAddressAsString(const char* port)
+{
+	char my_name[256];
+	::gethostname( my_name, 256);
+
+	std::string theAddress = "ERROR";
+
+	// no host name - can't resolve; 
+	if(StringIsNullOrEmpty(my_name))
+	{
+		return theAddress;
+	}
+
+	// there is a lot of ways to communicate with our machine
+	// and many addresses associated with it - so we need to 
+	// provide a hint to the API to filter down to only the addresses we care about; 
+	addrinfo hints;
+	memset( &hints, 0, sizeof(hints));
+
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+
+	addrinfo* result;
+	int status = getaddrinfo( my_name, port, &hints, &result);
+
+	if(status != 0)
+	{
+		LogTaggedPrintf("net", "Failed to find addressed for [%s:%s]. Error[%s]", 
+			my_name, port, ::gai_strerror(status));
+		
+		return theAddress;
+	}
+
+	addrinfo* iter = result;
+	while(iter != nullptr)
+	{
+		// you can farther filter here if you want, or return all of them and try them in order; 
+		// for example, if you're using VPN, you'll get two unique addresses for yourself; 
+		// if you're using AF_INET, the address is a sockaddr_in; 
+		if (iter->ai_family == AF_INET) 
+		{
+			sockaddr_in* ipv4 = (sockaddr_in*)(iter->ai_addr); 
+			// we have an address - print it!
+
+			// if you look at the bytes - you can "see" the address, but backwards... we'll get to that
+			// (port too)
+			char out[256]; 
+			inet_ntop( ipv4->sin_family, &(ipv4->sin_addr), out, 256 ); 
+			LogTaggedPrintf( "net", "My Address: %s", out ); 
+
+			theAddress = std::string(out);
+		}
+
+		iter = iter->ai_next; 
+	}
+
+	// freeing up
+	::freeaddrinfo( result ); 
+
+	return theAddress + ":" + port;
 }
 
 //-----------------------------------------------------------------------------------------------

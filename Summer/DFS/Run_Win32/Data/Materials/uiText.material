@@ -3,6 +3,6 @@
     <Shader name = "sprite" />
     
     <Textures>
-        <Texture bind = "0" path = "Fonts/moved.png"/>
+        <Texture bind = "0" path = "Fonts/SquirrelFixedFont.png"/>
     </Textures>
 </Material>

@@ -21,6 +21,7 @@ class RenderBuffer;
 #define MAX_LIGHTS (8)
 #define STATIC
 #define EPSILON (FLT_EPSILON)
+#define UINFINITY ((float)INT_MAX);
 #define UNUSED(x) (void)(x);
 
 // Source from http://www.flipcode.com/archives/FIXME_TODO_Notes_As_Warnings_In_Compiler_Output.shtml
@@ -83,6 +84,16 @@ template< typename T >
 bool IsIndexValid(uint idx, std::vector<T>& theVector)
 {
 	return (idx > 0 && idx < theVector.size());
+}
+
+template< typename T>
+void RemoveFast( uint& idx, std::vector<T*>& theVector )
+{
+	T* endThing = theVector.at(theVector.size() - 1);
+	theVector.at(theVector.size() - 1) = theVector.at(idx);
+	theVector.pop_back();
+	theVector.at(idx) = endThing;
+	idx--; // so we don't have to do it outside of the function
 }
 
 //====================================================================================

@@ -26,6 +26,8 @@ void RegisterEngineCommands()
 	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
 	CommandRegister("testHost","","", TestHost);
 	CommandRegister("connect", "", "", Connect);
+
+	CommandRegister("spawnProcess", "", "Spawns a new process", SpawnProcess);
 }
 
 //--------------------------------------------------------------------------
@@ -159,6 +161,33 @@ void TestConnect(Command& cb)
 	::closesocket(sock); 
 
 
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void SpawnProcess(Command& cb)
+{
+	
+	int amountToSpawn = atoi(cb.GetNextString().c_str());
+	
+	// default to always one
+	if(amountToSpawn == 0)
+		amountToSpawn = 1;
+
+	// Do the spawn with ~~black magic~~
+	for(uint i = 0; i < (uint) amountToSpawn; i++)
+	{
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory( &si, sizeof(si) );
+		si.cb = sizeof(si);
+		ZeroMemory( &pi, sizeof(pi) );
+
+		wchar_t buffer[MAX_PATH]; 
+		GetModuleFileName(NULL, buffer, MAX_PATH) ;
+		CreateProcess(buffer, 0, 0, FALSE, 0, 0, 0, 0, &si, &pi);
+	}
 
 }
 

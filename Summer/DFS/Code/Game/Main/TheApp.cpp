@@ -15,6 +15,7 @@
 #include "Engine/Renderer/RenderableComponents/Shader.hpp"
 #include "Engine/Core/Platform/File.hpp"
 #include "Engine/Core/General/BytePacker.hpp"
+#include "Engine/Core/Tools/RemoteCommandService.hpp"
 
 
 //  For testing blackboard
@@ -105,6 +106,7 @@ void App::Render() const
 {
 
 	g_theGame->Render();
+
 }
 
 void App::Update()
@@ -125,6 +127,10 @@ void App::Update()
 	{
 		Shader::ReloadShaders();
 	}
+
+	
+	// this also creates it
+	RemoteCommandService::GetInstance()->Update();
 
 }
 

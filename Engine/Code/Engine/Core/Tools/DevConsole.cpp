@@ -25,6 +25,7 @@
 #include "../../Renderer/RenderableComponents/Material.hpp"
 #include "Stopwatch.hpp"
 #include "../General/EngineConsoleCommands.hpp"
+#include "RemoteCommandService.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
@@ -223,7 +224,7 @@ void DevConsole::SaveHistoryToFile()
 		uint startIndex = m_commandHistory.size() - (uint) MAX_HISTORY_SIZE;
 		Strings history;
 
-		for(uint i = startIndex; startIndex < m_commandHistory.size(); i++)
+		for(uint i = startIndex; i < m_commandHistory.size() - 1; i++)
 		{
 			history.push_back(m_commandHistory.at(i));
 		}
@@ -317,6 +318,7 @@ void DevConsole::Render()
 	//////////////////////////////////////////////////////////////////////////
 	// FPS
 	RenderFPS();
+	RemoteCommandService::GetInstance()->Render();
 
 	// Rainbow background haha
 	//Rgba theColor = InterpolateRainbow(m_defaultColor, (m_currentTimer / m_switchAtThisTime));
@@ -347,6 +349,8 @@ void DevConsole::Render()
 	m_theRenderer->BindMaterial(Material::CreateOrGetMaterial("default"));
 	RenderScrollBar();
 	RenderAutoCorrect();
+	
+
 	
 	//RenderDeku();
 	//RenderBestGirl();
@@ -476,7 +480,7 @@ void DevConsole::RenderFPS()
 	
 	// these are based off the cell height of the text and the window size
 	float xPos = (m_windowWidth * .5f) - 200.f;
-	float yPos = (m_windowHeight * .5f) - 30.f;
+	float yPos = -(m_windowHeight * .5f) + 20.f;
 
 	m_theRenderer->DrawText2D(Vector2(xPos, yPos), fps , 20.f, color, 1.f);
 

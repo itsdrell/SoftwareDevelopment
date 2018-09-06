@@ -84,6 +84,8 @@ AudioSystem::AudioSystem()
 	result = m_fmodSystem->init( 512, FMOD_INIT_NORMAL, nullptr );
 	ValidateResult( result );
 
+	CreateDefaultSound();
+
 	CommandRegister("oneShot","Type: help","Play a one shot of a sound", DevConsolePlayOneShot);
 	CommandRegister("mute", "", "Toggles mute of sound", ToggleMute);
 	g_theAudioSystem = this;
@@ -142,6 +144,22 @@ AudioSystem* AudioSystem::GetInstance()
 void AudioSystem::StartUp()
 {
 	LoadFromXML("Data/Audio/AudioClips.xml");
+}
+
+//-----------------------------------------------------------------------------------------------
+void AudioSystem::CreateDefaultSound()
+{
+	std::string name = "default";
+	std::string group = "NoGroup";
+	std::string path = "error.wav";
+	uint weight = 1U;
+	std::string fullPath = relativePath + path;
+
+	SoundID newID = CreateOrGetSound(fullPath);
+
+	AudioClip* newAudioClip = new AudioClip(name, path, group, weight, newID);
+
+	m_audioClips.push_back(newAudioClip);
 }
 
 void AudioSystem::LoadFromXML(std::string path)

@@ -79,7 +79,7 @@ public:
 
 	eEndianness GetEndianness() const { return m_endianness; } 
 	size_t GetWrittenByteCount() const { return m_writableHead; }   // how much have I written to this buffer
-	size_t GetWritableByteCount() const { return (m_bufferSize - m_writableHead); }   // how much more can I write to this buffer (if growble, this returns UINFINITY)
+	size_t GetWritableByteCount() const;  // how much more can I write to this buffer (if growble, this returns UINFINITY)
 	size_t GetReadableByteCount() const { return (m_writableHead - m_readableHead); }   // how much more data can I read;
 
 

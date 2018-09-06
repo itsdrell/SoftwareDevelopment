@@ -37,7 +37,9 @@ public:
 
 	String ToString() const; 
 
-	static NetAddress GetLocalAddress();
+	static NetAddress GetLocalAddress(const char* port);
+	static std::string GetLocalAddressAsString(const char* port);
+
 	static bool GetBindableAddress( NetAddress* outAddress, String port);
 
 public:

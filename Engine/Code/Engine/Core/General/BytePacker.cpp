@@ -242,3 +242,12 @@ void BytePacker::ResetWrite()
 	m_readableHead = 0U;
 }
 
+//-----------------------------------------------------------------------------------------------
+size_t BytePacker::GetWritableByteCount() const
+{
+	if(AreBitsSet(m_mode, BYTEPACKER_CAN_GROW))
+		return UINFINITY;
+	
+	return (m_bufferSize - m_writableHead);
+}
+
