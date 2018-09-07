@@ -77,13 +77,15 @@ bool BytePacker::SetTotalWrittenByteCount(size_t byte_count)
 }
 
 //-----------------------------------------------------------------------------------------------
-bool BytePacker::WriteBytes(size_t byte_count, void const * data)
+bool BytePacker::WriteBytes(size_t byte_count, void const * data, bool changeEndianness)
 {
 
 	// make a copy of the data so that we can flip it
 	void* newData = malloc(byte_count);
 	memcpy(newData, data, byte_count);
-	ToEndianness(byte_count, newData, m_endianness);
+
+	if(changeEndianness)
+		ToEndianness(byte_count, newData, m_endianness);
 
 	if((byte_count + m_writableHead) > m_bufferSize)
 	{
@@ -112,6 +114,12 @@ bool BytePacker::WriteBytes(size_t byte_count, void const * data)
 	
 	free(newData);
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BytePacker::WriteRawBytes(size_t byte_count, void const *data)
+{
+	return WriteBytes(byte_count, data, false);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -221,7 +229,7 @@ bool BytePacker::WriteString(char const * str)
 	
 	String theString = str;
 	bool check =  WriteSize(theString.size());
-	WriteBytes(theString.size(), theString.c_str());
+	WriteRawBytes(theString.size(), theString.c_str());
 	
 	return check;
 }

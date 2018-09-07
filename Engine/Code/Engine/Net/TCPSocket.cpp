@@ -85,7 +85,7 @@ bool TCPSocket::Listen(String port, uint maxQueued)
 	m_address.ToSocketAddress( (sockaddr*)&saddr, &addrlen ); 
 
 	int result = ::bind( (SOCKET) m_handle, (sockaddr*)&saddr, addrlen ); 
-	if (result == SOCKET_ERROR || HasFatalError()) 
+	if (result == SOCKET_ERROR && HasFatalError()) 
 	{
 		// failed to bind - if you want to know why, call WSAGetLastError()
 		Close(); 
@@ -146,7 +146,7 @@ bool TCPSocket::Connect(NetAddress const &addr)
 	// this non-blocking later so it doesn't hitch the game (more important 
 	// when connecting to remote hosts)
 	int result = ::connect( (SOCKET) m_handle, (sockaddr*)&saddr, (int)addrlen ); 
-	if (result == SOCKET_ERROR || HasFatalError()) 
+	if (result == SOCKET_ERROR && HasFatalError()) 
 	{
 		DevConsole::AddErrorMessage( "Could not connect" ); 
 		Close();
@@ -161,15 +161,16 @@ bool TCPSocket::Connect(NetAddress const &addr)
 void TCPSocket::Close()
 {
 	::closesocket((SOCKET) m_handle); 
+	m_handle = (void*) INVALID_SOCKET;
 	m_isRunning = false;
 }
 
 //-----------------------------------------------------------------------------------------------
-size_t TCPSocket::Send(const char *data, size_t const dataByteSize)
+size_t TCPSocket::Send(const void*data, size_t const dataByteSize)
 {
-	int sent = ::send( (SOCKET) m_handle, data, dataByteSize, MSG_OOB); // options are  MSG_DONTROUTE or MSG_OOB
+	int sent = ::send( (SOCKET) m_handle, (char*) data, dataByteSize, 0); // options are  MSG_DONTROUTE or MSG_OOB
 	
-	if (sent == SOCKET_ERROR || HasFatalError()) 
+	if (sent == SOCKET_ERROR && HasFatalError()) 
 	{
 		// there are non-fatal errors 
 		Close(); 

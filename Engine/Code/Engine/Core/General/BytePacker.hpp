@@ -59,7 +59,8 @@ public:
 	bool SetTotalWrittenByteCount( size_t byte_count );
 
 	// tries to write data to the end of the buffer;  Returns success
-	bool WriteBytes( size_t byte_count, void const *data ); 
+	bool WriteBytes( size_t byte_count, void const *data , bool changeEndianness = true);
+	bool WriteRawBytes(size_t byte_count, void const *data); // this doesn't flip endianness, used for strings
 	
 	// Tries to read into out_data.  Returns how much
 	// ended up being read; 

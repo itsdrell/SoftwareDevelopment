@@ -13,6 +13,7 @@
 
 // this is so that we don't have to include the header 
 typedef void* Socket_t;
+//typedef SOCKET Socket_t;
 
 //====================================================================================
 // ENUMS
@@ -60,7 +61,7 @@ public:
 	// TRAFFIC
 	// - - - - - -
 	// returns how much sent
-	size_t		Send( const char* data, size_t const dataByteSize ); 
+	size_t		Send( const void* data, size_t const dataByteSize ); 
 	
 	// returns how much received
 	size_t		Receive( void *buffer, size_t const maxByteSize ); 

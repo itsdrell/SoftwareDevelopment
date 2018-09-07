@@ -290,7 +290,7 @@ void RemoteCommandService::CleanUpDisconnects()
 void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 {
 	BytePacker message( BIG_ENDIAN ); 
-	TCPSocket *sock = m_connections.at( idx ); 
+	TCPSocket* sock = m_connections.at( idx ); 
 	if (sock == nullptr) 
 	{
 		return; 
@@ -308,7 +308,7 @@ void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 	ToEndianness( sizeof(uslen), &uslen, BIG_ENDIAN ); 
 	
 	// do the send
-	sock->Send( (char*) uslen, sizeof(uint16_t) );  
+	sock->Send(  &uslen, sizeof(uint16_t) );  
 	sock->Send( (char*) message.GetBuffer(), len ); 
 
 }
