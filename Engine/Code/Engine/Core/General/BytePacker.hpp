@@ -63,7 +63,8 @@ public:
 	
 	// Tries to read into out_data.  Returns how much
 	// ended up being read; 
-	size_t ReadBytes( void *out_data, size_t max_byte_count ); 
+	size_t ReadBytes( void *out_data, size_t max_byte_count , bool advanceReadHead = true); 
+	size_t Peek(void * out_data, size_t max_byte_count );
 
 	size_t WriteSize( size_t size ); // returns how many bytes used
 	size_t ReadSize( size_t *out_size ); // returns how many bytes read, fills out_size
@@ -76,12 +77,21 @@ public:
 	// suggested method names for commonly needed information; 
 	void ResetWrite();  // resets writing to the beginning of the buffer.  Make sure read head stays valid (<= write_head)
 	void ResetRead() { m_readableHead = 0U; }   // resets reading to the beginning of the buffer
+	void AdvanceWriteHead(uint step) { m_writableHead += (size_t) step; }
+	void AdvanceReadHead(uint step) { m_readableHead += (size_t) step; }
 
 	eEndianness GetEndianness() const { return m_endianness; } 
 	size_t GetWrittenByteCount() const { return m_writableHead; }   // how much have I written to this buffer
 	size_t GetWritableByteCount() const;  // how much more can I write to this buffer (if growble, this returns UINFINITY)
 	size_t GetReadableByteCount() const { return (m_writableHead - m_readableHead); }   // how much more data can I read;
+	
+	size_t GetReadableHead() const { return m_readableHead; }
+	size_t GetWritableHead() const { return m_writableHead; }
 
+	void* GetWritableLocation() { return (char*)m_buffer + m_writableHead; }
+
+
+	void* GetBuffer() { return m_buffer; }
 
 private:
 

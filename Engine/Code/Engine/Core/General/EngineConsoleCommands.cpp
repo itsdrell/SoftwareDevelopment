@@ -9,6 +9,7 @@
 #include "../../Async/Threading.hpp"
 #include "../../Net/Net.hpp"
 #include "../../Net/TCPSocket.hpp"
+#include "../Tools/RemoteCommandService.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -26,6 +27,9 @@ void RegisterEngineCommands()
 	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
 	CommandRegister("testHost","","", TestHost);
 	CommandRegister("connect", "", "", Connect);
+	
+	// remote command
+	CommandRegister("rc", "", "idx, echo<bool>, message", RemoteCommandServiceSendMessage);
 
 	CommandRegister("spawnProcess", "", "Spawns a new process", SpawnProcess);
 }
@@ -188,6 +192,23 @@ void SpawnProcess(Command& cb)
 		GetModuleFileName(NULL, buffer, MAX_PATH) ;
 		CreateProcess(buffer, 0, 0, FALSE, 0, 0, 0, 0, &si, &pi);
 	}
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void RemoteCommandServiceSendMessage(Command& cb)
+{
+	std::string idx = cb.GetNextString();
+	std::string echo = cb.GetNextString();
+	std::string message = cb.GetRestOfCommand();
+
+	uint theIdx = (uint) atoi(idx.c_str());
+	bool isEcho = false;
+
+	if(echo == "true")
+		isEcho = true;
+
+	SendAMessage(theIdx, isEcho, message.c_str());
 
 }
 

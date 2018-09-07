@@ -30,14 +30,19 @@ typedef void* Socket_t;
 class TCPSocket
 {
 public:
+	// 
 	TCPSocket(); 
 	TCPSocket( Socket_t& theSocket );
+	TCPSocket( const char* netAddressString);
+	TCPSocket( const Socket_t& theSocket, const NetAddress& theAddress);
 	~TCPSocket(); 
 
 	// - - - - - -
 	// Options
 	// - - - - - -
 	// ...todo
+	bool SetBlockType(bool isBlocking);
+	static bool HasFatalError();
 
 	// - - - - - -
 	// STARTING/STOPPING
@@ -66,6 +71,14 @@ public:
 	bool		IsClosed() const; 
 	bool		IsListening() const { return m_isRunning; }
 
+	
+	template <typename T>
+	size_t Receive( T* out )
+	{
+		return receive( out, sizeof(T));
+	}
+
+	//-----------------------------------------------------------------------------------------------
 public:
 	Socket_t		m_handle; 
 

@@ -25,6 +25,8 @@ void Connect( Command& cb ); // better one
 
 void SpawnProcess( Command& cb );
 
+void RemoteCommandServiceSendMessage( Command& cb );
+
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]
 //====================================================================================

@@ -127,7 +127,7 @@ std::string Command::GetRestOfCommand()
 	
 	while(m_commandIndex < m_commandArguements.size())
 	{
-		theText += (m_commandArguements.at(m_commandIndex) + " ");
+		theText += (m_commandArguements.at(m_commandIndex));// + " ");
 
 		m_commandIndex++;
 	}

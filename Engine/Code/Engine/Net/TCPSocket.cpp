@@ -24,9 +24,49 @@ TCPSocket::TCPSocket(Socket_t& theSocket)
 }
 
 //-----------------------------------------------------------------------------------------------
+TCPSocket::TCPSocket(const char* netAddressString)
+{
+	m_isRunning = true;
+
+	m_handle = (Socket_t) ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	m_address = NetAddress(netAddressString);
+}
+
+//-----------------------------------------------------------------------------------------------
+TCPSocket::TCPSocket(const Socket_t& theSocket, const NetAddress& theAddress)
+{
+	m_isRunning = true;
+
+	m_handle = theSocket;
+	m_address = theAddress;
+}
+
+//-----------------------------------------------------------------------------------------------
 TCPSocket::~TCPSocket()
 {
 	::closesocket((SOCKET) m_handle); 
+}
+
+//-----------------------------------------------------------------------------------------------
+bool TCPSocket::SetBlockType(bool isBlocking)
+{
+	// we default to blocking
+	u_long non_blocking = isBlocking ? 0 : 1;
+	int result = ::ioctlsocket( (SOCKET) m_handle, FIONBIO, &non_blocking );
+
+	return (result == 0);
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+STATIC bool TCPSocket::HasFatalError()
+{
+	int theError = WSAGetLastError();
+
+	if(theError == 0 || theError == WSAEWOULDBLOCK || theError == WSAEMSGSIZE || theError == WSAECONNRESET)
+		return false;
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -45,7 +85,7 @@ bool TCPSocket::Listen(String port, uint maxQueued)
 	m_address.ToSocketAddress( (sockaddr*)&saddr, &addrlen ); 
 
 	int result = ::bind( (SOCKET) m_handle, (sockaddr*)&saddr, addrlen ); 
-	if (result == SOCKET_ERROR) 
+	if (result == SOCKET_ERROR || HasFatalError()) 
 	{
 		// failed to bind - if you want to know why, call WSAGetLastError()
 		Close(); 
@@ -59,7 +99,7 @@ bool TCPSocket::Listen(String port, uint maxQueued)
 	// people who calls may be forwarded to.  Once a call is forwarded, the person answering calls can now answer a new one)
 	int max_queued = maxQueued;  // probably pick a number that is <= max number of players in your game. 
 	result = ::listen( (SOCKET) m_handle, max_queued ); 
-	if (result == SOCKET_ERROR) 
+	if (result == SOCKET_ERROR || HasFatalError()) 
 	{
 		Close(); 
 		return false; 
@@ -78,7 +118,14 @@ TCPSocket* TCPSocket::Accept()
 	int their_addrlen = sizeof(sockaddr_storage); // important 
 
 	SOCKET theSocket = ::accept( (SOCKET) m_handle, (sockaddr*)&their_addr, &their_addrlen ); 
-	TCPSocket* theirSocket = new TCPSocket((Socket_t&) theSocket); // emily said this is dumb, should pass address
+
+	if(HasFatalError())
+	{
+		Close();
+		return nullptr;
+	}
+
+	TCPSocket* theirSocket = new TCPSocket((Socket_t&) theSocket, NetAddress((sockaddr*) &their_addr)); 
 	
 	return theirSocket;
 }
@@ -99,7 +146,7 @@ bool TCPSocket::Connect(NetAddress const &addr)
 	// this non-blocking later so it doesn't hitch the game (more important 
 	// when connecting to remote hosts)
 	int result = ::connect( (SOCKET) m_handle, (sockaddr*)&saddr, (int)addrlen ); 
-	if (result == SOCKET_ERROR) 
+	if (result == SOCKET_ERROR || HasFatalError()) 
 	{
 		DevConsole::AddErrorMessage( "Could not connect" ); 
 		Close();
@@ -122,11 +169,9 @@ size_t TCPSocket::Send(const char *data, size_t const dataByteSize)
 {
 	int sent = ::send( (SOCKET) m_handle, data, dataByteSize, MSG_OOB); // options are  MSG_DONTROUTE or MSG_OOB
 	
-	if (sent == SOCKET_ERROR) 
+	if (sent == SOCKET_ERROR || HasFatalError()) 
 	{
-		// there are non-fatal errors - but we'll go over them 
-		// on Monday.  For now, you can assume any error with blocking
-		// is a disconnect; 
+		// there are non-fatal errors 
 		Close(); 
 		return 0U; 
 	} 
@@ -144,6 +189,8 @@ size_t TCPSocket::Receive(void *buffer, size_t const maxByteSize)
 		maxByteSize,         // max we can read
 		0U );             // flags (unused)
 	
+	// check for errors?
+
 	return recvd;
 }
 

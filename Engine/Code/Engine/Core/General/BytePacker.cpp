@@ -115,14 +115,17 @@ bool BytePacker::WriteBytes(size_t byte_count, void const * data)
 }
 
 //-----------------------------------------------------------------------------------------------
-size_t BytePacker::ReadBytes(void * out_data, size_t max_byte_count)
+size_t BytePacker::ReadBytes(void * out_data, size_t max_byte_count, bool advanceReadHead)
 {
 	// make sure we aren't gonna go out of bounds into garbage data
 	if((m_readableHead + max_byte_count) <= m_writableHead)
 	{
 		memcpy(out_data, ((Byte*)m_buffer) + m_readableHead, max_byte_count);
 		FromEndianness(max_byte_count, out_data, m_endianness);
-		m_readableHead += max_byte_count;
+		
+		if(advanceReadHead)
+			m_readableHead += max_byte_count;
+		
 		return max_byte_count;
 	}
 	else
@@ -130,10 +133,19 @@ size_t BytePacker::ReadBytes(void * out_data, size_t max_byte_count)
 		// this is we can't freely read so we can only increase by v
 		memcpy(out_data, (Byte*)m_buffer + m_readableHead, (m_writableHead - m_readableHead));
 		FromEndianness((m_writableHead - m_readableHead), out_data, m_endianness);
-		m_readableHead = m_writableHead;
+		
+		if(advanceReadHead)
+			m_readableHead = m_writableHead;
+		
 		return m_readableHead;
 	}
 	
+}
+
+//-----------------------------------------------------------------------------------------------
+size_t BytePacker::Peek( void * out_data, size_t length)
+{
+	return ReadBytes( out_data, length, false );
 }
 
 //-----------------------------------------------------------------------------------------------

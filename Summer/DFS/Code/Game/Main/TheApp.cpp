@@ -128,9 +128,6 @@ void App::Update()
 		Shader::ReloadShaders();
 	}
 
-	
-	// this also creates it
-	RemoteCommandService::GetInstance()->Update();
 
 }
 
