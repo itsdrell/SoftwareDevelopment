@@ -116,6 +116,8 @@ void RemoteCommandService::ClientUpdate()
 	CleanUpDisconnects();
 
 	// See if there is no host, if not, go back to Init
+	if(m_connections.size() == 0)
+		m_currentState = REMOTE_INITIAL_STATE;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -202,6 +204,7 @@ bool RemoteCommandService::TryToHost()
 	{
 		// We are now a host!
 		m_listeningSocket = socket;
+		m_listeningSocket->SetBlockType(false);
 		return true;
 	}
 	else
@@ -233,6 +236,7 @@ void RemoteCommandService::ProcessAllConnections()
 	{
 		BytePacker* buffer = m_connectionData.at(i);
 		TCPSocket* currentSocket = m_connections.at(i);
+		currentSocket->SetBlockType(false);
 	
 		if( buffer->GetReadableByteCount() < 2)
 		{
@@ -353,6 +357,8 @@ void RemoteCommandService::ProcessMessage(const TCPSocket* socket, BytePacker* p
 		{
 			CommandRunScript(theCommand.c_str());
 		}
+
+		payload->ResetWrite(); // so we don't just keep adding to the buffer
 	}
 }
 

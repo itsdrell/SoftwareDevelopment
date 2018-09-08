@@ -51,15 +51,21 @@ TCPSocket::~TCPSocket()
 bool TCPSocket::SetBlockType(bool isBlocking)
 {
 	// we default to blocking
-	u_long non_blocking = isBlocking ? 0 : 1;
-	int result = ::ioctlsocket( (SOCKET) m_handle, FIONBIO, &non_blocking );
+	u_long blocking;
+
+	if(isBlocking)
+		blocking = 0; // blocking
+	else
+		blocking = 1; // non blocking
+
+	int result = ::ioctlsocket( (SOCKET) m_handle, FIONBIO, &blocking );
 
 	if(result == 0)
 	{
 		m_isBlocking = isBlocking;
 	}
 	
-	return (result == 0);
+	return (result == 0 ); 
 	
 }
 
@@ -110,7 +116,7 @@ bool TCPSocket::Listen(String port, uint maxQueued)
 		return false; 
 	}
 	
-	
+	SetBlockType(false);
 	return true;
 }
 
