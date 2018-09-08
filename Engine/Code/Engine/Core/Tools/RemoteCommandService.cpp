@@ -83,16 +83,16 @@ void RemoteCommandService::UpdateColor()
 //-----------------------------------------------------------------------------------------------
 void RemoteCommandService::InitialUpdate()
 {
-	if(TryToHost())
-	{
-		m_currentState = REMOTE_HOST_STATE;
-		return;
-	}
 	
-
 	if(TryToJoinLocal())
 	{
 		m_currentState = REMOTE_CLIENT_STATE;
+		return;
+	}
+
+	if(TryToHost())
+	{
+		m_currentState = REMOTE_HOST_STATE;
 		return;
 	}
 
@@ -170,17 +170,16 @@ bool RemoteCommandService::TryToJoinLocal()
 	// We are gonna try and join to the server
 	NetAddress theAddress = NetAddress::GetLocalAddress(REMOTE_COMMAND_PORT);
 
+	// we set this to blocklign and then non blocking in the connect call
 	TCPSocket* socket = new TCPSocket(theAddress.ToString().c_str());
-	socket->SetBlockType(true); // this needs to be blocking
 	
 	if (socket->Connect( theAddress )) 
 	{
 		// We are now a client!
-		socket->SetBlockType(false);
 
 		// Now we store off the socket and create a packet for it as well
 		m_connections.push_back(socket);
-		m_connectionData.push_back(new BytePacker());
+		m_connectionData.push_back(new BytePacker(BIG_ENDIAN));
 	
 		return true;
 	}
@@ -203,7 +202,6 @@ bool RemoteCommandService::TryToHost()
 	{
 		// We are now a host!
 		m_listeningSocket = socket;
-
 		return true;
 	}
 	else
@@ -219,10 +217,12 @@ void RemoteCommandService::ProcessNewConnections()
 {
 	TCPSocket* newConnection = m_listeningSocket->Accept();
 
-	if(newConnection != nullptr)
+	if(newConnection != nullptr && m_connections.size() < MAX_AMOUNT_OF_CONNECTIONS)
 	{
+		newConnection->SetBlockType(false);
+		
 		m_connections.push_back(newConnection);
-		m_connectionData.push_back(new BytePacker());
+		m_connectionData.push_back(new BytePacker(BIG_ENDIAN));
 	}
 }
 
@@ -236,24 +236,37 @@ void RemoteCommandService::ProcessAllConnections()
 	
 		if( buffer->GetReadableByteCount() < 2)
 		{
-			size_t read = currentSocket->Receive( buffer->GetWritableLocation(), 2 - buffer->GetWrittenByteCount() );
-			buffer->AdvanceWriteHead( read );
+			void* data = malloc(2);
+			int read = currentSocket->Receive( data, 2U - buffer->GetWrittenByteCount() );
+
+			if(read > 0)
+			{
+				buffer->WriteRawBytes(read, data);
+			}
+
+			free(data);
 		}
 	
 		bool isReadyToProcess = false;
-		if(buffer->GetWrittenByteCount() >= 2)
+		if(buffer->GetWrittenByteCount() >= 2U)
 		{
 			uint16_t len;
 			buffer->Peek( &len, 2U ); // look at the first two bytes but not advance
-	
+
 			uint bytes_needed = len + 2U - buffer->GetWrittenByteCount();
 	
 			if(bytes_needed > 0)
 			{
-				size_t read = currentSocket->Receive( buffer->GetWritableLocation(), bytes_needed);
-				buffer->AdvanceWriteHead( read );
-	
-				bytes_needed -= read;
+				void* data = malloc(bytes_needed);
+				int read = currentSocket->Receive( data, bytes_needed);
+				
+				if(read > 0)
+				{
+					buffer->WriteRawBytes(read, data);
+					bytes_needed -= read;
+				}
+
+				free(data);
 			}
 	
 			isReadyToProcess = (bytes_needed == 0);
@@ -290,6 +303,13 @@ void RemoteCommandService::CleanUpDisconnects()
 void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 {
 	BytePacker message( BIG_ENDIAN ); 
+
+	// make sure the index is valid
+	if(!IsIndexValid(idx, m_connections))
+	{
+		DevConsole::AddErrorMessage("Invalid Index!");
+	}
+
 	TCPSocket* sock = m_connections.at( idx ); 
 	if (sock == nullptr) 
 	{
@@ -319,7 +339,7 @@ void RemoteCommandService::ProcessMessage(const TCPSocket* socket, BytePacker* p
 	bool is_echo;
 	payload->ReadBytes( &is_echo, 1 );
 
-	char* str = "";
+	char str[256];
 	if(payload->ReadString( str, 256))
 	{
 		String theCommand = std::string(str);

@@ -89,6 +89,7 @@ public:
 	NetAddress		m_address; 
 
 	bool			m_isRunning;
+	bool			m_isBlocking = true;
 
 };
 

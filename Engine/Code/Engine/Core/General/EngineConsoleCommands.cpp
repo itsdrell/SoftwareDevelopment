@@ -29,7 +29,7 @@ void RegisterEngineCommands()
 	CommandRegister("connect", "", "", Connect);
 	
 	// remote command
-	CommandRegister("rc", "", "idx, echo<bool>, message", RemoteCommandServiceSendMessage);
+	CommandRegister("rc", "", "idx message", RemoteCommandServiceSendMessage);
 
 	CommandRegister("spawnProcess", "", "Spawns a new process", SpawnProcess);
 }
@@ -199,16 +199,16 @@ void SpawnProcess(Command& cb)
 void RemoteCommandServiceSendMessage(Command& cb)
 {
 	std::string idx = cb.GetNextString();
-	std::string echo = cb.GetNextString();
+	//std::string echo = cb.GetNextString();
 	std::string message = cb.GetRestOfCommand();
 
 	uint theIdx = (uint) atoi(idx.c_str());
-	bool isEcho = false;
+	//bool isEcho = false;
+	//
+	//if(echo == "true")
+	//	isEcho = true;
 
-	if(echo == "true")
-		isEcho = true;
-
-	SendAMessage(theIdx, isEcho, message.c_str());
+	SendAMessage(theIdx, false, message.c_str());
 
 }
 

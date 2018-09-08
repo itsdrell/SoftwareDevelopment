@@ -64,7 +64,7 @@ public:
 	
 	// Tries to read into out_data.  Returns how much
 	// ended up being read; 
-	size_t ReadBytes( void *out_data, size_t max_byte_count , bool advanceReadHead = true); 
+	size_t ReadBytes( void *out_data, size_t max_byte_count , bool advanceReadHead = true, bool checkEndianess = true); 
 	size_t Peek(void * out_data, size_t max_byte_count );
 
 	size_t WriteSize( size_t size ); // returns how many bytes used
@@ -99,10 +99,10 @@ private:
 	eEndianness					m_endianness;
 	eBytePackerOptions			m_mode = 0U;
 	
-	size_t						m_writableHead;
-	size_t						m_readableHead;
+	size_t						m_writableHead = 0U;
+	size_t						m_readableHead = 0U;
 	
-	size_t						m_bufferSize;
+	size_t						m_bufferSize = 0U;
 	void*						m_buffer;
 
 }; 

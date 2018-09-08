@@ -54,6 +54,11 @@ bool TCPSocket::SetBlockType(bool isBlocking)
 	u_long non_blocking = isBlocking ? 0 : 1;
 	int result = ::ioctlsocket( (SOCKET) m_handle, FIONBIO, &non_blocking );
 
+	if(result == 0)
+	{
+		m_isBlocking = isBlocking;
+	}
+	
 	return (result == 0);
 	
 }
@@ -119,9 +124,9 @@ TCPSocket* TCPSocket::Accept()
 
 	SOCKET theSocket = ::accept( (SOCKET) m_handle, (sockaddr*)&their_addr, &their_addrlen ); 
 
-	if(HasFatalError())
+	if(theSocket == INVALID_SOCKET)
 	{
-		Close();
+		//Close();
 		return nullptr;
 	}
 
@@ -133,6 +138,9 @@ TCPSocket* TCPSocket::Accept()
 //-----------------------------------------------------------------------------------------------
 bool TCPSocket::Connect(NetAddress const &addr)
 {
+	// this needs to be a blocking call
+	SetBlockType(true);
+	
 	// sockaddr storage is a sockaddr struct that
 	// is large enough to fit any other sockaddr struct
 	// sizeof(sockaddr_storage) >= sizeof(any other sockaddr)
@@ -150,10 +158,12 @@ bool TCPSocket::Connect(NetAddress const &addr)
 	{
 		DevConsole::AddErrorMessage( "Could not connect" ); 
 		Close();
+		SetBlockType(false);
 		return false; 
 	}
 
 	DevConsole::AddConsoleDialogue( "Connected." ); 
+	SetBlockType(false);
 	return true;
 }
 
