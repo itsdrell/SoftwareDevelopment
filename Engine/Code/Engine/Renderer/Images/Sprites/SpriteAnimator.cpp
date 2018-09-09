@@ -32,7 +32,7 @@ void SpriteAnimator::Update()
 	if(m_isPaused)
 		return;
 
-	DebugRenderLog(1.f, std::to_string(m_timeIntoAnimation));
+	//DebugRenderLog(1.f, std::to_string(m_timeIntoAnimation));
 
 	if(IsDone())
 	{

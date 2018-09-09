@@ -135,7 +135,7 @@ NetAddress NetAddress::GetLocalAddress(const char* port)
 			NetAddress address = NetAddress((sockaddr*) ipv4);
 
 			LogTaggedPrintf( "net", "My Address: %s", out ); 
-			DevConsole::AddConsoleDialogue(Stringf("My Address: %s", out ));
+			//DevConsole::AddConsoleDialogue(Stringf("My Address: %s", out ));
 
 			::freeaddrinfo( result );
 			return address;
@@ -266,7 +266,7 @@ bool NetAddress::GetBindableAddress(NetAddress* outAddress, String port)
 			*outAddress = NetAddress((sockaddr*) ipv4);
 
 			LogTaggedPrintf( "net", "My Address: %s", out ); 
-			DevConsole::AddConsoleDialogue(Stringf("My Address: %s", out ));
+			//DevConsole::AddConsoleDialogue(Stringf("My Address: %s", out ));
 
 			::freeaddrinfo( result );
 			return true;

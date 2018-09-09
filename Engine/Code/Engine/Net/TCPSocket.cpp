@@ -74,7 +74,7 @@ STATIC bool TCPSocket::HasFatalError()
 {
 	int theError = WSAGetLastError();
 
-	if(theError == 0 || theError == WSAEWOULDBLOCK || theError == WSAEMSGSIZE || theError == WSAECONNRESET)
+	if(theError == 0 || theError == WSAEWOULDBLOCK || theError == WSAEMSGSIZE )
 		return false;
 
 	return true;
@@ -206,7 +206,9 @@ size_t TCPSocket::Receive(void *buffer, size_t const maxByteSize)
 		maxByteSize,         // max we can read
 		0U );             // flags (unused)
 	
-	// check for errors?
+	
+	if(HasFatalError())
+		Close();
 
 	return recvd;
 }
@@ -214,6 +216,6 @@ size_t TCPSocket::Receive(void *buffer, size_t const maxByteSize)
 //-----------------------------------------------------------------------------------------------
 bool TCPSocket::IsClosed() const
 {
-	return false;
+	return !m_isRunning;
 }
 

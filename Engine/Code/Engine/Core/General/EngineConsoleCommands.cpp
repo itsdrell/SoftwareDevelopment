@@ -22,6 +22,8 @@ void RegisterEngineCommands()
 	CommandRegister("runScript","Type: runScript <Script file name, not full path>", "Runs script from file", RunScript);
 	//CommandRegister("echo_with_color","Type: echo_with_color r,g,b,a ''string''", "Prints a colored string", PrintStringWithAColor);
 	
+	CommandRegister("spawnProcess", "", "Spawns a new process", SpawnProcess);
+	
 	// Network
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
 	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
@@ -29,9 +31,13 @@ void RegisterEngineCommands()
 	CommandRegister("connect", "", "", Connect);
 	
 	// remote command
-	CommandRegister("rc", "", "idx message", RemoteCommandServiceSendMessage);
+	CommandRegister("rc", "", "idx message", RCSSendMessage);
+	CommandRegister("rca", "", "command", RCSSendMessageToAll);
+	CommandRegister("rcb", "", "command", RCSSendMessageToAllButMe);
+	CommandRegister("rcJoin", "", "address:port", RCSJoin);
+	CommandRegister("rcHost", "", "port", RCSHost);
+	CommandRegister("rcEcho", "", "bool", RCSToggleEcho);
 
-	CommandRegister("spawnProcess", "", "Spawns a new process", SpawnProcess);
 }
 
 //--------------------------------------------------------------------------
@@ -196,7 +202,7 @@ void SpawnProcess(Command& cb)
 }
 
 //-----------------------------------------------------------------------------------------------
-void RemoteCommandServiceSendMessage(Command& cb)
+void RCSSendMessage(Command& cb)
 {
 	std::string idx = cb.GetNextString();
 	//std::string echo = cb.GetNextString();
@@ -210,6 +216,82 @@ void RemoteCommandServiceSendMessage(Command& cb)
 
 	SendAMessage(theIdx, false, message.c_str());
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void RCSSendMessageToAll(Command & cb)
+{
+	std::string message = cb.GetRestOfCommand();
+
+	uint sizeOfConnesctions = RemoteCommandService::GetInstance()->m_connections.size();
+	for(uint i = 0; i < sizeOfConnesctions; i++)
+	{
+		SendAMessage(i, false, message.c_str());
+	}
+
+	// do it on me
+	CommandRunScript(message.c_str());
+}
+
+//-----------------------------------------------------------------------------------------------
+void RCSSendMessageToAllButMe(Command & cb)
+{
+	std::string message = cb.GetRestOfCommand();
+
+	uint sizeOfConnesctions = RemoteCommandService::GetInstance()->m_connections.size();
+	for(uint i = 0; i < sizeOfConnesctions; i++)
+	{
+		SendAMessage(i, false, message.c_str());
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void RCSJoin(Command & cb)
+{
+	String address = cb.GetNextString();
+
+	RemoteCommandService* rcs = RemoteCommandService::GetInstance();
+
+	rcs->m_tryToJoinAddress = address;
+	rcs->m_currentState = REMOTE_COMMAND_TRY_TO_JOIN;
+
+	DevConsole::AddConsoleDialogue("Trying to join at: " + address);
+}
+
+//-----------------------------------------------------------------------------------------------
+void RCSHost(Command & cb)
+{
+	RemoteCommandService* rcs = RemoteCommandService::GetInstance();
+	
+	String port = REMOTE_COMMAND_PORT;
+	if(cb.m_commandArguements.size() > 1)
+		port = cb.GetNextString();
+
+	rcs->m_hostWithPortAddress = port;
+	rcs->m_currentState = REMOTE_COMMAND_TRY_TO_HOST;
+
+	DevConsole::AddConsoleDialogue("Trying to host at: " + port);
+}
+
+//-----------------------------------------------------------------------------------------------
+void RCSToggleEcho(Command & cb)
+{
+	// see if we set the echo value or just do a toggle
+	if(cb.m_commandArguements.size() > 1)
+	{
+		// get the value we wanna set
+		String value = cb.GetNextString();
+		
+		bool flag = false;
+		if(value == "true")
+			flag = true;
+
+		RemoteCommandService::GetInstance()->m_processingEchos = flag;
+	}
+	else
+	{
+		RemoteCommandService::GetInstance()->m_processingEchos = !RemoteCommandService::GetInstance()->m_processingEchos;
+	}
 }
 
 //-----------------------------------------------------------------------------------------------

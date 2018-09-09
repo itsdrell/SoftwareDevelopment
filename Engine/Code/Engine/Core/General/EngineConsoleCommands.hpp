@@ -25,7 +25,14 @@ void Connect( Command& cb ); // better one
 
 void SpawnProcess( Command& cb );
 
-void RemoteCommandServiceSendMessage( Command& cb );
+//-----------------------------------------------------------------------------------------------
+// Remote Command Service
+void RCSSendMessage( Command& cb );
+void RCSSendMessageToAll( Command& cb);
+void RCSSendMessageToAllButMe( Command& cb);
+void RCSJoin( Command& cb);
+void RCSHost( Command& cb);
+void RCSToggleEcho( Command& cb);
 
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]

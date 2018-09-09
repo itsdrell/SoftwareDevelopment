@@ -28,6 +28,11 @@ std::string RemoteCommandStateToString(RemoteCommandStates state)
 	case REMOTE_CLIENT_STATE:
 		result = "CLIENT";
 		break;
+	case REMOTE_COMMAND_TRY_TO_HOST:
+		result = "TryToHost";
+		break;
+	case REMOTE_COMMAND_TRY_TO_JOIN:
+		result = "TryToJoin";
 	default:
 		break;
 	}
@@ -67,6 +72,12 @@ void RemoteCommandService::Update()
 	case REMOTE_CLIENT_STATE:
 		ClientUpdate();
 		break;
+	case REMOTE_COMMAND_TRY_TO_HOST:
+		TryToHost(m_hostWithPortAddress.c_str());
+		break;
+	case REMOTE_COMMAND_TRY_TO_JOIN:
+		TryToJoin(m_tryToJoinAddress.c_str());
+		break;
 	}
 
 	UpdateColor();
@@ -84,7 +95,7 @@ void RemoteCommandService::UpdateColor()
 void RemoteCommandService::InitialUpdate()
 {
 	
-	if(TryToJoinLocal())
+	if(TryToJoin())
 	{
 		m_currentState = REMOTE_CLIENT_STATE;
 		return;
@@ -129,7 +140,7 @@ void RemoteCommandService::Render() const
 	float windowheight = Window::GetInstance()->GetHeight();
 
 	Vector2 pivot;
-	pivot.x = (windowWidth * .5f) - 600.f;
+	pivot.x = (windowWidth * .5f) - 630.f;
 	pivot.y = (windowheight * .5f) - 20.f;
 
 	// Draw the title + state
@@ -137,7 +148,7 @@ void RemoteCommandService::Render() const
 	r->DrawText2D(pivot, title, 16.f, m_currentColor);
 
 	// Draw the joinable IP (port + LocalNetAddress)
-	std::string address = "Join Address: " + NetAddress::GetLocalAddressAsString(REMOTE_COMMAND_PORT);
+	std::string address = "Join Address: " + NetAddress::GetLocalAddressAsString(m_portUsing.c_str());
 	r->DrawText2D(pivot - Vector2(0.f, 20.f), address, 16.f, m_currentColor);
 	
 	// Draw number of connections
@@ -164,13 +175,14 @@ void RemoteCommandService::Render() const
 }
 
 //-----------------------------------------------------------------------------------------------
-bool RemoteCommandService::TryToJoinLocal()
+bool RemoteCommandService::TryToJoin(NetAddress addressToJoin)
 {
-	if(m_currentState != REMOTE_INITIAL_STATE)
-		return false;
-	
+// 	if(m_currentState != REMOTE_INITIAL_STATE)
+// 		return false;
+	ClearAllConnections();
+
 	// We are gonna try and join to the server
-	NetAddress theAddress = NetAddress::GetLocalAddress(REMOTE_COMMAND_PORT);
+	NetAddress theAddress = addressToJoin;
 
 	// we set this to blocklign and then non blocking in the connect call
 	TCPSocket* socket = new TCPSocket(theAddress.ToString().c_str());
@@ -178,6 +190,8 @@ bool RemoteCommandService::TryToJoinLocal()
 	if (socket->Connect( theAddress )) 
 	{
 		// We are now a client!
+		if(m_currentState == REMOTE_COMMAND_TRY_TO_JOIN)
+			m_currentState = REMOTE_CLIENT_STATE;
 
 		// Now we store off the socket and create a packet for it as well
 		m_connections.push_back(socket);
@@ -189,22 +203,34 @@ bool RemoteCommandService::TryToJoinLocal()
 	{
 		// we failed! Try to Host next :)
 		delete socket;
+
+		// for the console command
+		if(m_currentState == REMOTE_COMMAND_TRY_TO_JOIN)
+			m_currentState = REMOTE_INITIAL_STATE;
+
 		return false;
 	}
 }
 
 //-----------------------------------------------------------------------------------------------
-bool RemoteCommandService::TryToHost()
+bool RemoteCommandService::TryToHost(const char* port)
 {
-	if(m_currentState != REMOTE_INITIAL_STATE)
-		return false;
-	
+// 	if(m_currentState != REMOTE_INITIAL_STATE)
+// 		return false;
+	ClearAllConnections();
 	TCPSocket* socket = new TCPSocket();
-	if (socket->Listen( REMOTE_COMMAND_PORT, MAX_AMOUNT_OF_CONNECTIONS ))
+	if (socket->Listen( port, MAX_AMOUNT_OF_CONNECTIONS ))
 	{
 		// We are now a host!
 		m_listeningSocket = socket;
 		m_listeningSocket->SetBlockType(false);
+
+		m_portUsing = port;
+
+		// for console commands
+		if(m_currentState == REMOTE_COMMAND_TRY_TO_HOST)
+			m_currentState = REMOTE_HOST_STATE;
+
 		return true;
 	}
 	else
@@ -307,6 +333,30 @@ void RemoteCommandService::CleanUpDisconnects()
 }
 
 //-----------------------------------------------------------------------------------------------
+void RemoteCommandService::ClearAllConnections()
+{
+	for(uint i = 0; i < m_connections.size(); i++)
+	{
+		delete m_connectionData.at(i);
+		m_connectionData.at(i) = nullptr;
+	
+		m_connections.at(i)->Close();
+		delete m_connections.at(i);
+		m_connections.at(i) = nullptr;
+	}
+	
+	m_connections.clear();
+	m_connectionData.clear();
+	
+	if(m_listeningSocket != nullptr)
+	{
+		m_listeningSocket->Close();
+		delete m_listeningSocket;
+		m_listeningSocket = nullptr;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 {
 	BytePacker message( BIG_ENDIAN ); 
@@ -315,6 +365,11 @@ void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 	if(!IsIndexValid(idx, m_connections))
 	{
 		DevConsole::AddErrorMessage("Invalid Index!");
+	}
+
+	if(m_connections.size() == 0)
+	{
+		DevConsole::AddErrorMessage("You have no connections");
 	}
 
 	TCPSocket* sock = m_connections.at( idx ); 
@@ -354,7 +409,14 @@ void RemoteCommandService::ProcessMessage(const TCPSocket* socket, BytePacker* p
 		// succeeded in getting a command / string
 		if( is_echo)
 		{
-			DevConsole::AddConsoleDialogue(theCommand.c_str());
+			if(m_processingEchos)
+			{
+				String theindex = std::to_string(m_currentConnectedSockedIndex);
+				String fullString = "[" + m_connections.at(m_currentConnectedSockedIndex)->m_address.ToString() 
+					+ "] " + "(idx: " + theindex + ") " + theCommand;
+				
+				DevConsole::AddConsoleDialogue(fullString.c_str(), Rgba(200,200,200,255));
+			}
 		}
 		else
 		{

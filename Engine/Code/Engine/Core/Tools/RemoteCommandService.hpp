@@ -3,6 +3,7 @@
 #include <string>
 #include "Stopwatch.hpp"
 #include "..\General\Rgba.hpp"
+#include "Engine\Net\NetAddress.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -25,6 +26,8 @@ enum RemoteCommandStates
 	REMOTE_INITIAL_STATE,
 	REMOTE_HOST_STATE,
 	REMOTE_CLIENT_STATE,
+	REMOTE_COMMAND_TRY_TO_JOIN, // CALLED FROM CONSOLE COMMAND
+	REMOTE_COMMAND_TRY_TO_HOST, // CALLED FROM CONSOLE COMMAND
 	REMOTE_NONE
 };
 std::string RemoteCommandStateToString(RemoteCommandStates state);
@@ -53,12 +56,13 @@ public:
 
 	void Render() const;
 
-	bool TryToJoinLocal();
-	bool TryToHost();
+	bool TryToJoin(NetAddress addressToJoin = NetAddress::GetLocalAddress(REMOTE_COMMAND_PORT));
+	bool TryToHost(const char* port = REMOTE_COMMAND_PORT);
 
 	void ProcessNewConnections();
 	void ProcessAllConnections();
 	void CleanUpDisconnects();
+	void ClearAllConnections();
 
 	void SendAMessage( uint idx, bool isEcho, char const* str );
 	void ProcessMessage( const TCPSocket* socket, BytePacker* payload);
@@ -76,9 +80,15 @@ public:
 	TCPSocket*								m_listeningSocket = nullptr;
 
 	bool									m_isRunning = true;
+	bool									m_processingEchos = true;
 	uint									m_currentConnectedSockedIndex = 0;
 
+	String									m_portUsing;
 	Rgba									m_currentColor;
+
+	// these are for the console commands to sets
+	String									m_tryToJoinAddress;
+	String									m_hostWithPortAddress;
 
 	static RemoteCommandService*			s_theService;
 };
