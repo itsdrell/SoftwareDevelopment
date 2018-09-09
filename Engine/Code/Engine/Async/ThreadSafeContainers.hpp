@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Core/General/EngineCommon.hpp"
 #include <mutex>
 #include <deque>
 #include <vector>
@@ -157,6 +158,33 @@ public:
 
 		m_lock.Leave();
 	}
+
+	//-----------------------------------------------------------------------------------------------
+	// You need to call lock outside of these before for looping!
+	uint Size() { return m_data.size(); }
+	T At(uint idx) { return m_data.at(idx); }
+	
+	// this is just remove fast but I had issues with the template compiling
+	void Remove( uint& idx )
+	{
+		T endThing = m_data.at(m_data.size() - 1);
+
+		// edge case of size 1
+		if(m_data.size() == 1)
+		{
+			m_data.pop_back();
+			idx--;
+			return;
+		}
+
+		m_data.at(m_data.size() - 1) = m_data.at(idx);
+		m_data.pop_back();
+		m_data.at(idx) = endThing;
+		idx--; // so we don't have to do it outside of the function
+	}
+
+	void Lock() { m_lock.Enter(); }
+	void Unlock() { m_lock.Leave(); }
 
 public:
 	std::vector<T>			m_data; 

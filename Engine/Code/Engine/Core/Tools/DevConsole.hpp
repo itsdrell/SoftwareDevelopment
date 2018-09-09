@@ -21,6 +21,18 @@ class Mesh;
 #define HISTORY_FILE_PATH ("Log/ConsoleHistory.txt");
 #define SEPERATOR_TEXT ("-------------------------------------------------------------")
 
+typedef void (*DevConsole_cb)( const char* message, void* userArgs);
+
+struct DevConsoleHook
+{
+	DevConsoleHook( DevConsole_cb cb, void* theUserArgs)
+		: m_callback(cb)
+		, m_userArgs(theUserArgs) {}
+
+		DevConsole_cb	m_callback;
+		void*			m_userArgs = nullptr;
+};
+
 //////////////////////////////////////////////////////////////////////////
 // Creating a struct that holds what needs to be printed for the console
 struct ConsoleDialogue
@@ -69,6 +81,11 @@ public:
 	void Toggle();
 	bool IsOpen(); 
 
+	// hooks
+	bool CheckIfAlreadyRegisteredCallback( DevConsole_cb theCallback);
+	void AddHook( DevConsole_cb theCallback, void* userArgs);
+	void RemoveHook( DevConsole_cb theCallback);
+
 	// Helpers
 	float DetermineInputBarLocation();
 
@@ -98,6 +115,7 @@ public:
 
 	static DevConsole* GetInstance(); 
 	static void	AddConsoleDialogue(ConsoleDialogue newDialogue);
+	static void RunHooks(ConsoleDialogue newDialogue);
 	static void AddConsoleDialogue(const std::string& text, const Rgba& color = GetRandomColorInRainbow());
 	static void AddConsoleDialogueToQueue(const std::string& text, const Rgba& color = GetRandomColorInRainbow());
 	static void AddErrorMessage(std::string errorText);
@@ -160,6 +178,7 @@ private:
 	// Inputs
 	static std::vector<ConsoleDialogue>			s_history;
 	static ThreadSafeQueue<ConsoleDialogue>		s_dialogueQueue;
+	static ThreadSafeVector<DevConsoleHook>		s_callbacks;
 	std::vector<std::string>					m_commandHistory;
 	int											m_commandHistoryIndex;
 	std::string									m_currentEntry;
@@ -198,8 +217,9 @@ void ConsolePrintf( const Rgba &color, char const *format, ... );
 // Same as previous, be defaults to a color visible easily on your console
 void ConsolePrintf( char const *format, ... ); 
 
-
 void PrintLogToConsole(const Log& data);
 
 void CommandRunScript(char const* theCommand);
 void CommandRunScriptFromFile(char const* filePath);
+
+void RunRemoteCommandScript(char const* theCommand);

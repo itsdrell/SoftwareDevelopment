@@ -90,6 +90,14 @@ template< typename T>
 void RemoveFast( uint& idx, std::vector<T*>& theVector )
 {
 	T* endThing = theVector.at(theVector.size() - 1);
+
+	if(theVector.size() == 1)
+	{
+		theVector.pop_back();
+		idx--;
+		return;
+	}
+
 	theVector.at(theVector.size() - 1) = theVector.at(idx);
 	theVector.pop_back();
 	theVector.at(idx) = endThing;

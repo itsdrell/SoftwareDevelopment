@@ -29,8 +29,9 @@
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
-std::vector<ConsoleDialogue>		DevConsole::s_history;
-ThreadSafeQueue<ConsoleDialogue>	DevConsole::s_dialogueQueue;
+std::vector<ConsoleDialogue>			DevConsole::s_history;
+ThreadSafeQueue<ConsoleDialogue>		DevConsole::s_dialogueQueue;
+ThreadSafeVector<DevConsoleHook>		DevConsole::s_callbacks;
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -83,6 +84,13 @@ void CommandRunScript(char const* theCommand)
 	// change the input to the script command and run it
 	dc->SetCurrentEntry(theCommand);
 	dc->ConsumeInput();
+}
+
+void RunRemoteCommandScript(char const* theCommand)
+{
+	DevConsole::GetInstance()->AddHook( (DevConsole_cb) SendEcho, nullptr );
+	CommandRunScript(theCommand);
+	DevConsole::GetInstance()->RemoveHook( (DevConsole_cb) SendEcho );
 }
 
 void CommandRunScriptFromFile(char const* filePath)
@@ -577,6 +585,45 @@ bool DevConsole::IsOpen()
 	return m_isOpen;
 }
 
+bool DevConsole::CheckIfAlreadyRegisteredCallback(DevConsole_cb theCallback)
+{
+	s_callbacks.Lock();
+	
+	bool check = false;
+	for(uint i = 0; i < s_callbacks.Size(); i++)
+	{
+		DevConsole_cb current = s_callbacks.At(i).m_callback;
+
+		if(current == theCallback)
+			check = true;
+	}
+
+	s_callbacks.Unlock();
+	return check;
+}
+
+void DevConsole::AddHook(DevConsole_cb theCallback, void* userArgs)
+{
+	// Add and check both lock so don't have too here
+	if(CheckIfAlreadyRegisteredCallback(theCallback) == false)
+		s_callbacks.Add( DevConsoleHook(theCallback, userArgs));
+}
+
+void DevConsole::RemoveHook(DevConsole_cb theCallback)
+{
+	s_callbacks.Lock();
+
+	for(uint i = 0; i < s_callbacks.Size(); i++)
+	{
+		DevConsole_cb current = s_callbacks.At(i).m_callback;
+
+		if(current == theCallback)
+			s_callbacks.Remove(i);
+	}
+
+	s_callbacks.Unlock();
+}
+
 float DevConsole::DetermineInputBarLocation()
 {
 	// default location
@@ -1059,11 +1106,25 @@ void DevConsole::AddConsoleDialogue(ConsoleDialogue newDialogue)
 	//s_history.push_back(newDialogue);
 	//DevConsole::GetInstance()->GenerateTextMesh();
 	s_dialogueQueue.enqueue(newDialogue);
+	
+	RunHooks(newDialogue);
 }
 
 void DevConsole::AddConsoleDialogue(const std::string& text, const Rgba& color)
 {
 	DevConsole::AddConsoleDialogue(ConsoleDialogue(text, color));
+}
+
+void DevConsole::RunHooks(ConsoleDialogue newDialogue)
+{
+	s_callbacks.Lock();
+	for(uint i = 0; i < s_callbacks.Size(); i++)
+	{
+		DevConsoleHook current = s_callbacks.At(i);
+
+		current.m_callback(newDialogue.m_text.c_str(), current.m_userArgs);
+	}
+	s_callbacks.Unlock();
 }
 
 void DevConsole::AddConsoleDialogueToQueue(const std::string& text, const Rgba& color /*= GetRandomColorInRainbow()*/)

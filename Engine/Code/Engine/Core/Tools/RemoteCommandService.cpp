@@ -234,6 +234,9 @@ void RemoteCommandService::ProcessAllConnections()
 {
 	for(uint i = 0; i < m_connections.size(); i ++)
 	{
+		// this is for the echo to know who to send back to
+		m_currentConnectedSockedIndex = i;
+		
 		BytePacker* buffer = m_connectionData.at(i);
 		TCPSocket* currentSocket = m_connections.at(i);
 		currentSocket->SetBlockType(false);
@@ -355,7 +358,7 @@ void RemoteCommandService::ProcessMessage(const TCPSocket* socket, BytePacker* p
 		}
 		else
 		{
-			CommandRunScript(theCommand.c_str());
+			RunRemoteCommandScript(theCommand.c_str());
 		}
 
 		payload->ResetWrite(); // so we don't just keep adding to the buffer
@@ -389,5 +392,12 @@ void RemoteCommandServiceUpdate()
 void SendAMessage(uint idx, bool isEcho, char const* str)
 {
 	RemoteCommandService::GetInstance()->SendAMessage(idx, isEcho, str);
+}
+
+//-----------------------------------------------------------------------------------------------
+void SendEcho(const char* message)
+{
+	RemoteCommandService* rcs = RemoteCommandService::GetInstance();
+	rcs->SendAMessage(rcs->m_currentConnectedSockedIndex, true, message);
 }
 

@@ -76,6 +76,7 @@ public:
 	TCPSocket*								m_listeningSocket = nullptr;
 
 	bool									m_isRunning = true;
+	uint									m_currentConnectedSockedIndex = 0;
 
 	Rgba									m_currentColor;
 
@@ -87,6 +88,7 @@ public:
 //====================================================================================
 void RemoteCommandServiceUpdate();
 void SendAMessage(uint idx, bool isEcho, char const* str);
+void SendEcho(const char* message);
 
 //====================================================================================
 // Externs
