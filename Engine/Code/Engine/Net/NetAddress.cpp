@@ -51,7 +51,7 @@ bool NetAddress::FromSocketAddress(const sockaddr* addr)
 	uint port = ::ntohs( ipv4->sin_port);
 
 	m_address = ip;
-	m_port = port;
+	m_port = (uint16) port;
 	return true;
 }
 
@@ -146,6 +146,7 @@ NetAddress NetAddress::GetLocalAddress(const char* port)
 
 	// freeing up
 	::freeaddrinfo( result );
+	return NetAddress();
 }
 
 //-----------------------------------------------------------------------------------------------

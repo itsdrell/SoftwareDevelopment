@@ -270,7 +270,7 @@ void RemoteCommandService::ProcessAllConnections()
 		if( buffer->GetReadableByteCount() < 2)
 		{
 			void* data = malloc(2);
-			int read = currentSocket->Receive( data, 2U - buffer->GetWrittenByteCount() );
+			int read = (int) currentSocket->Receive( data, 2U - buffer->GetWrittenByteCount() );
 
 			if(read > 0)
 			{
@@ -286,12 +286,12 @@ void RemoteCommandService::ProcessAllConnections()
 			uint16_t len;
 			buffer->Peek( &len, 2U ); // look at the first two bytes but not advance
 
-			uint bytes_needed = len + 2U - buffer->GetWrittenByteCount();
+			uint bytes_needed = (uint)(len + 2U - buffer->GetWrittenByteCount());
 	
 			if(bytes_needed > 0)
 			{
 				void* data = malloc(bytes_needed);
-				int read = currentSocket->Receive( data, bytes_needed);
+				int read = (int) currentSocket->Receive( data, bytes_needed);
 				
 				if(read > 0)
 				{
@@ -398,6 +398,8 @@ void RemoteCommandService::SendAMessage(uint idx, bool isEcho, char const* str)
 //-----------------------------------------------------------------------------------------------
 void RemoteCommandService::ProcessMessage(const TCPSocket* socket, BytePacker* payload)
 {
+	UNUSED(socket);
+	
 	bool is_echo;
 	payload->ReadBytes( &is_echo, 1 );
 
@@ -434,10 +436,9 @@ RemoteCommandService * RemoteCommandService::GetInstance()
 	{
 		s_theService = new RemoteCommandService();
 	}
-	else
-	{
-		return s_theService;
-	}
+
+	return s_theService;
+
 
 }
 

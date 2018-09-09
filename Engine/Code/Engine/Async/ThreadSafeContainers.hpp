@@ -161,7 +161,7 @@ public:
 
 	//-----------------------------------------------------------------------------------------------
 	// You need to call lock outside of these before for looping!
-	uint Size() { return m_data.size(); }
+	uint Size() { return (uint) m_data.size(); }
 	T At(uint idx) { return m_data.at(idx); }
 	
 	// this is just remove fast but I had issues with the template compiling

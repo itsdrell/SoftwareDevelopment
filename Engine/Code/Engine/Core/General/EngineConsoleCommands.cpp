@@ -223,7 +223,7 @@ void RCSSendMessageToAll(Command & cb)
 {
 	std::string message = cb.GetRestOfCommand();
 
-	uint sizeOfConnesctions = RemoteCommandService::GetInstance()->m_connections.size();
+	uint sizeOfConnesctions = (uint) RemoteCommandService::GetInstance()->m_connections.size();
 	for(uint i = 0; i < sizeOfConnesctions; i++)
 	{
 		SendAMessage(i, false, message.c_str());
@@ -238,7 +238,7 @@ void RCSSendMessageToAllButMe(Command & cb)
 {
 	std::string message = cb.GetRestOfCommand();
 
-	uint sizeOfConnesctions = RemoteCommandService::GetInstance()->m_connections.size();
+	uint sizeOfConnesctions = (uint) RemoteCommandService::GetInstance()->m_connections.size();
 	for(uint i = 0; i < sizeOfConnesctions; i++)
 	{
 		SendAMessage(i, false, message.c_str());
@@ -297,6 +297,7 @@ void RCSToggleEcho(Command & cb)
 //-----------------------------------------------------------------------------------------------
 void TestHost(Command& cb)
 {
+	UNUSED(cb);
 	ThreadCreateAndDetach((thread_cb) HostExample, "12345");
 }
 

@@ -50,7 +50,7 @@ void HostExampleWinSock(void* port)
 	size_t addrlen; 
 	addr.ToSocketAddress( (sockaddr*)&saddr, &addrlen ); 
 
-	int result = ::bind( sock, (sockaddr*)&saddr, addrlen ); 
+	int result = (int) ::bind( sock, (sockaddr*)&saddr, (int) addrlen ); 
 	if (result == SOCKET_ERROR) 
 	{
 		// failed to bind - if you want to know why, call WSAGetLastError()
@@ -123,7 +123,7 @@ void HostExample(void* port)
 	TCPSocket host; 
 	if (!host.Listen( theport, max_queued )) 
 	{
-		DevConsole::AddErrorMessage(Stringf("Cannot listen on port %u", theport ));
+		DevConsole::AddErrorMessage(Stringf("Cannot listen on port %u", theport.c_str() ));
 
 	} 
 
@@ -133,7 +133,7 @@ void HostExample(void* port)
 		if (them != nullptr) 
 		{
 			Byte buffer[KILOBYTE]; 
-			uint received = them->Receive( buffer, KILOBYTE - 1U ); 
+			uint received = (uint) them->Receive( buffer, KILOBYTE - 1U ); 
 
 			if (received > 0U) 
 			{

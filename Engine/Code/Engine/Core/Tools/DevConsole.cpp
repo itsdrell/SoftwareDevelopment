@@ -229,7 +229,7 @@ void DevConsole::SaveHistoryToFile()
 	// if size if bigger, subtract size - maxAmount and that's the starting index and print
 	else 
 	{
-		uint startIndex = m_commandHistory.size() - (uint) MAX_HISTORY_SIZE;
+		uint startIndex = (uint) m_commandHistory.size() - (uint) MAX_HISTORY_SIZE;
 		Strings history;
 
 		for(uint i = startIndex; i < m_commandHistory.size() - 1; i++)

@@ -95,7 +95,7 @@ bool TCPSocket::Listen(String port, uint maxQueued)
 	size_t addrlen; 
 	m_address.ToSocketAddress( (sockaddr*)&saddr, &addrlen ); 
 
-	int result = ::bind( (SOCKET) m_handle, (sockaddr*)&saddr, addrlen ); 
+	int result = (int) ::bind( (SOCKET) m_handle, (sockaddr*)&saddr, (int) addrlen ); 
 	if (result == SOCKET_ERROR && HasFatalError()) 
 	{
 		// failed to bind - if you want to know why, call WSAGetLastError()
@@ -184,7 +184,7 @@ void TCPSocket::Close()
 //-----------------------------------------------------------------------------------------------
 size_t TCPSocket::Send(const void*data, size_t const dataByteSize)
 {
-	int sent = ::send( (SOCKET) m_handle, (char*) data, dataByteSize, 0); // options are  MSG_DONTROUTE or MSG_OOB
+	int sent = (int) ::send( (SOCKET) m_handle, (char*) data, (int) dataByteSize, 0); // options are  MSG_DONTROUTE or MSG_OOB
 	
 	if (sent == SOCKET_ERROR && HasFatalError()) 
 	{
@@ -203,8 +203,8 @@ size_t TCPSocket::Receive(void *buffer, size_t const maxByteSize)
 {	
 	size_t recvd = ::recv( (SOCKET) m_handle, 
 		(char*) buffer,           // what we read into
-		maxByteSize,         // max we can read
-		0U );             // flags (unused)
+		(int) maxByteSize,         // max we can read
+		0 );             // flags (unused)
 	
 	
 	if(HasFatalError())

@@ -243,7 +243,7 @@ size_t BytePacker::ReadString(char * out_str, size_t max_byte_size)
 {
 	
 	size_t size;
-	bool check = ReadSize(&size);
+	ReadSize(&size);
 
 	if(size > max_byte_size)
 	{
@@ -270,7 +270,7 @@ void BytePacker::ResetWrite()
 size_t BytePacker::GetWritableByteCount() const
 {
 	if(AreBitsSet(m_mode, BYTEPACKER_CAN_GROW))
-		return UINFINITY;
+		return (size_t) UINFINITY;
 	
 	return (m_bufferSize - m_writableHead);
 }

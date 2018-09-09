@@ -11,8 +11,8 @@ void ToEndianness(size_t const size, void * buffer, eEndianness endianness)
 
 	Byte* byte_buffer = (Byte*) buffer;
 
-	uint i = 0;
-	uint j = size - 1U;
+	uint i = 0U;
+	uint j = (uint)size - 1U;
 
 	while(i<j)
 	{
@@ -21,7 +21,7 @@ void ToEndianness(size_t const size, void * buffer, eEndianness endianness)
 		--j;
 	}
 
-	byte_buffer[i] == *(byte_buffer + i);
+	byte_buffer[i] = *(byte_buffer + i);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ void FromEndianness(size_t const size, void * buffer, eEndianness endianness)
 	Byte* byte_buffer = (Byte*) buffer;
 
 	uint i = 0;
-	uint j = size - 1U;
+	uint j = (uint)size - 1U;
 
 	while(i<j)
 	{
@@ -44,7 +44,7 @@ void FromEndianness(size_t const size, void * buffer, eEndianness endianness)
 		--j;
 	}
 
-	byte_buffer[i] == *(byte_buffer + i);
+	byte_buffer[i] = *(byte_buffer + i);
 }
 
 //-----------------------------------------------------------------------------------------------
