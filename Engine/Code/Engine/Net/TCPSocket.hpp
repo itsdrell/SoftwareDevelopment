@@ -1,6 +1,7 @@
 #pragma once
 #include "..\Core\General\EngineCommon.hpp"
 #include "NetAddress.hpp"
+#include "Engine/Net/Socket.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -12,7 +13,7 @@
 //====================================================================================
 
 // this is so that we don't have to include the header 
-typedef void* Socket_t;
+
 //typedef SOCKET Socket_t;
 
 //====================================================================================

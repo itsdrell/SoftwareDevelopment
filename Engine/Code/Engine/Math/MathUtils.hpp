@@ -188,3 +188,12 @@ T Max(T a, T b)
 	else
 		return a;
 }
+
+template <typename T>
+T Min(T a, T b)
+{
+	if(b < a)
+		return b;
+	else
+		return a;
+}

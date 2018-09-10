@@ -28,6 +28,7 @@
 #include "Engine/Core/Tools/Stopwatch.hpp"
 #include "../GameStates/Loading.hpp"
 #include "Game/General/ConsoleCommands.hpp"
+#include "Engine/Net/UDPSocket.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -89,6 +90,8 @@ void Game::StartUp()
 	m_loadingScreenTimer->SetTimer(3.f);
 
 	m_console->StartUp();
+
+	bool check = UDPTest::GetInstance()->Start();
 }
 
 
@@ -100,7 +103,7 @@ void Game::RegisterCommands()
 
 void Game::Update()
 {
-	
+	UDPTest::GetInstance()->Update();
 
 	switch (m_currentState)
 	{

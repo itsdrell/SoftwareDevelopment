@@ -10,6 +10,7 @@
 #include "../../Net/Net.hpp"
 #include "../../Net/TCPSocket.hpp"
 #include "../Tools/RemoteCommandService.hpp"
+#include "../../Net/UDPSocket.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -26,9 +27,6 @@ void RegisterEngineCommands()
 	
 	// Network
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
-	CommandRegister("testConnect", "[ipaddress:port] [dialogue]", "Test Connection", TestConnect);
-	CommandRegister("testHost","","", TestHost);
-	CommandRegister("connect", "", "", Connect);
 	
 	// remote command
 	CommandRegister("rc", "", "idx message", RCSSendMessage);
@@ -37,6 +35,10 @@ void RegisterEngineCommands()
 	CommandRegister("rcJoin", "", "address:port", RCSJoin);
 	CommandRegister("rcHost", "", "port", RCSHost);
 	CommandRegister("rcEcho", "", "bool", RCSToggleEcho);
+
+	// test
+	CommandRegister("test_stop", "", "", StopUDPTest);
+	CommandRegister("send", "", "<address> <message>", SendMessageUDP);
 
 }
 
@@ -293,6 +295,39 @@ void RCSToggleEcho(Command & cb)
 		RemoteCommandService::GetInstance()->m_processingEchos = !RemoteCommandService::GetInstance()->m_processingEchos;
 	}
 }
+
+//===============================================================================================
+// delete these
+
+void StopUDPTest(Command & cb)
+{
+	UNUSED(cb);
+	UDPTest::GetInstance()->Stop();
+}
+
+void SendMessageUDP(Command & cb)
+{
+	NetAddress addr(cb.GetNextString().c_str());
+	//String str = cb.GetNextString().c_str();
+
+	//if( !NetAddress::GetBindableAddress(&addr, str))
+	//{
+	//	DevConsole::AddErrorMessage("Requires address");
+	//	return;
+	//}
+
+	String msg = cb.GetRestOfCommand();
+	if(StringIsNullOrEmpty(msg.c_str()))
+	{
+		DevConsole::AddErrorMessage("Requires a message");
+		return;
+	}
+
+	DevConsole::AddConsoleDialogue("Sending message");
+	UDPTest::GetInstance()->SendTo(addr, msg.data(), (uint) msg.length());
+}
+
+//===============================================================================================
 
 //-----------------------------------------------------------------------------------------------
 void TestHost(Command& cb)

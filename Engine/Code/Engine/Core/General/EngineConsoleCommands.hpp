@@ -34,6 +34,12 @@ void RCSJoin( Command& cb);
 void RCSHost( Command& cb);
 void RCSToggleEcho( Command& cb);
 
+
+//-----------------------------------------------------------------------------------------------
+// test
+void StopUDPTest(Command& cb);
+void SendMessageUDP(Command& cb);
+
 //====================================================================================
 // Written by Zachary Bracken : [8/20/2018]
 //====================================================================================

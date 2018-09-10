@@ -307,6 +307,12 @@
     <ClCompile Include="Renderer\Images\Sprites\SpriteAnimator.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\UDPSocket.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\Socket.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -428,6 +434,8 @@
     <ClInclude Include="Core\General\Tags.hpp" />
     <ClInclude Include="Core\General\Transform2D.hpp" />
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimator.hpp" />
+    <ClInclude Include="Net\UDPSocket.hpp" />
+    <ClInclude Include="Net\Socket.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />
