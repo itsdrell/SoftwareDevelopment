@@ -245,6 +245,10 @@ AudioClip* AudioSystem::GetAudioClipByName(std::string name)
 			return current;
 	}
 
+	// just in case it is deleted or not defined
+	if(name == "default")
+		return nullptr;
+
 	// Return the error sound
 	return GetAudioClipByName("default");
 }
@@ -486,6 +490,9 @@ void StopSound(std::string name)
 void PlayOneShot(std::string name, float volume, float balance, float speed, bool isPaused)
 {
 	AudioClip*	soundToPlay = g_theAudioSystem->GetAudioClipByName(name);
+
+	if(soundToPlay == nullptr)
+		return;
 
 	// We don't check to see if its already playing cause a one shot can be spammed? (think bullets)
 	soundToPlay->m_playbackID = g_theAudioSystem->PlaySound(soundToPlay->m_soundID, false, volume, balance, speed, isPaused);

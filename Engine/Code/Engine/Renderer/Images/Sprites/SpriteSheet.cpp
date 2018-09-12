@@ -1,6 +1,7 @@
 #include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/Utils/XmlUtilities.hpp"
 
 //===============================================================================================
 std::map<std::string, SpriteSheet*> SpriteSheet::s_spriteSheets;
@@ -14,6 +15,22 @@ SpriteSheet::SpriteSheet(Texture* texture, int tilesWide, int tilesHigh)
 	m_spriteSheetTexture = texture;
 	m_spriteLayout = IntVector2(tilesWide,tilesHigh);
 	m_dimension = m_spriteSheetTexture->GetDimensions();
+}
+
+//-----------------------------------------------------------------------------------------------
+SpriteSheet::SpriteSheet(tinyxml2::XMLElement& node)
+{
+
+	m_name = ParseXmlAttribute(node, "name", "ERROR");
+	m_path = ParseXmlAttribute(node, "src", "ERROR");
+	m_spriteLayout = ParseXmlAttribute(node, "layout", m_spriteLayout);
+	m_pixelsPerUnit = ParseXmlAttribute(node, "ppu", 16.f);
+
+	std::string fullpath = "Data/Images/" + m_path + ".png";
+
+	// Create or get texture
+	m_spriteSheetTexture = Renderer::GetInstance()->CreateOrGetTexture(fullpath);
+	s_spriteSheets[m_name] = this;
 }
 
 AABB2 SpriteSheet::GetTexCoordsForSpriteCoords(const IntVector2& spriteCoords) const

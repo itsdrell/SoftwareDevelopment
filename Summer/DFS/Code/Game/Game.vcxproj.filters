@@ -40,21 +40,6 @@
     <ClCompile Include="General\Tiles\TileDefinition.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="SystemsAndTools\SpriteRendering.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemsAndTools\GameObject2D.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemsAndTools\Scene2D.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemsAndTools\Renderable2D.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemsAndTools\Transform2D.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="GameStates\Loading.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -68,9 +53,6 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="General\GameObjects\Cursor.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
-    <ClCompile Include="SystemsAndTools\Tags.cpp">
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="General\UI\UIWidget.cpp">
@@ -92,6 +74,9 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="General\GameHeatMap.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\CombatLookUpTable.cpp">
       <Filter>General</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,17 +101,11 @@
     </ClInclude>
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
-    <ClInclude Include="SystemsAndTools\SpriteRendering.hpp" />
-    <ClInclude Include="SystemsAndTools\Transform2D.hpp" />
-    <ClInclude Include="SystemsAndTools\Renderable2D.hpp" />
-    <ClInclude Include="SystemsAndTools\Scene2D.hpp" />
-    <ClInclude Include="SystemsAndTools\GameObject2D.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\GameObjects\Building.hpp" />
     <ClInclude Include="General\GameObjects\Cursor.hpp" />
-    <ClInclude Include="SystemsAndTools\Tags.hpp" />
     <ClInclude Include="General\UI\UIWidget.hpp" />
     <ClInclude Include="General\UI\Container.hpp" />
     <ClInclude Include="General\ConsoleCommands.hpp" />
@@ -136,5 +115,6 @@
     <ClInclude Include="General\Player\PlayerController.hpp" />
     <ClInclude Include="General\UI\UnitWidget.hpp" />
     <ClInclude Include="General\GameHeatMap.hpp" />
+    <ClInclude Include="General\CombatLookUpTable.hpp" />
   </ItemGroup>
 </Project>

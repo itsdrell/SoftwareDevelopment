@@ -38,6 +38,7 @@ public:
 	void MakeSpritesFromFrames();
 
 	Sprite* Evaluate(float timeIntoAnimation);
+	uint	GetCurrentSpriteIndex(float timeIntoAnimation);
 
 	static SpriteAnimation* AcquireResource(const String& name);
 

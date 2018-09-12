@@ -439,6 +439,7 @@ void Map::PlaceUnit(Vector2 pos)
 	m_selectedUnit->m_tileIAmOn->m_unit = nullptr;
 	m_selectedUnit->m_tileIAmOn = selectedTile;
 	m_selectedUnit->m_beenMoved = true;
+	selectedTile->m_unit = m_selectedUnit;
 }
 
 void Map::PutSelectedUnitBack()
@@ -492,9 +493,18 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 
 	// right now, one shot
 	Unit* target = theTile->m_unit;
+
+	Unit::Attack(*m_selectedUnit, *target);
 	m_selectedUnit->m_usedAction = true;
-	target->m_isDead = true;
-	theTile->m_unit = nullptr; // important for ui
+	
+	//target->m_isDead = true;
+
+	if(m_selectedUnit->m_isDead == true)
+		m_selectedUnit->m_tileIAmOn->m_unit = nullptr;
+
+	if(target->m_isDead == true)
+		theTile->m_unit = nullptr;
+	
 }
 
 void Map::CreateMovementTiles(const Unit& theUnitToUse)

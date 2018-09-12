@@ -10,6 +10,7 @@
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
+#include "..\CombatLookUpTable.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -41,6 +42,7 @@ Unit::Unit(TeamName team)
 
 }
 
+//-----------------------------------------------------------------------------------------------
 Unit::Unit(TeamName team, UnitDefinition & def)
 	: GameObject2D("Unit")
 {
@@ -68,12 +70,14 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }
 
+//-----------------------------------------------------------------------------------------------
 Unit::~Unit()
 {
 	// definition gets cleaned up in loading
 	m_tileIAmOn = nullptr; // this is not allocated so just set it to null
 }
 
+//-----------------------------------------------------------------------------------------------
 STATIC SpriteSheet Unit::GetTeamTexture(TeamName name)
 {
 	switch (name)
@@ -123,11 +127,41 @@ STATIC String Unit::GetAnimatorName(const String& unitName, TeamName team)
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
+STATIC void Unit::Attack( Unit& attacker, Unit& defender )
+{
+	// Attack formula in advance wars http://awbw.wikia.com/wiki/Damage_Formula
+	
+	// attacker - damages.y, defender - damages.x
+	Vector2 damages = CombatLookUpTable::GetDamageDoneToBoth(attacker.m_definition->m_name, defender.m_definition->m_name);
+
+	// Do damage to the defender 
+	defender.m_health -= ((int)damages.x);
+	
+	// see if we killed the defender and exit if we did (no damage to attacker!)
+	if(defender.m_health <= 0)
+	{
+		defender.m_isDead = true;
+		return;
+	}
+	
+	// do damage to the attacker
+	attacker.m_health -= ((int)damages.y);
+
+	// check if we killed the attacker :( 
+	if(attacker.m_health <= 0)
+		attacker.m_isDead = true;
+
+
+}
+
+//-----------------------------------------------------------------------------------------------
 float Unit::GetCostForTileType(const String& tileType)
 {
 	return m_definition->GetMovementCost(tileType);
 }
 
+//-----------------------------------------------------------------------------------------------
 void Unit::Update()
 {
 	if(m_health <= 0)
@@ -158,12 +192,15 @@ void Unit::Update()
 	
 }
 
+//-----------------------------------------------------------------------------------------------
 float CalculateWinChance(const Unit& attacking, const Unit& defending)
 {
-	UNUSED(attacking);
-	UNUSED(defending);
+	// Attack formula in advance wars http://awbw.wikia.com/wiki/Damage_Formula
 
-	return 100.f;
+	
+	Vector2 damage = CombatLookUpTable::GetDamageDoneToBoth(attacking.m_definition->m_name, defending.m_definition->m_name);
+
+	return damage.x;
 }
 
 //====================================================================================
@@ -203,6 +240,7 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 	s_definitions.insert(std::pair<std::string,UnitDefinition*>(m_name,this));
 }
 
+//-----------------------------------------------------------------------------------------------
 UnitDefinition* UnitDefinition::GetUnitDefinition(std::string name)
 {
 	std::map<std::string,UnitDefinition*>::iterator unitIterator;
@@ -214,6 +252,7 @@ UnitDefinition* UnitDefinition::GetUnitDefinition(std::string name)
 	return GetUnitDefinition("grunt");
 }
 
+//-----------------------------------------------------------------------------------------------
 void UnitDefinition::GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<UnitDefinition*>* list)
 {
 	std::map<std::string,UnitDefinition*>::iterator unitIterator;
@@ -227,6 +266,7 @@ void UnitDefinition::GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<U
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
 Strings UnitDefinition::GetAllUnitNames()
 {
 	Strings result;

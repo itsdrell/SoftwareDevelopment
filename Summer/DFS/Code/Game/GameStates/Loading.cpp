@@ -12,6 +12,7 @@
 #include "..\General\GameObjects\Building.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimation.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimationSet.hpp"
+#include "..\General\CombatLookUpTable.hpp"
 
 Loading::Loading()
 {
@@ -53,6 +54,7 @@ void Loading::LoadDefinitions()
 	LoadWidgetDefinitions();
 	LoadUnitDefinitions();
 	LoadBuildingDefinitions();
+	LoadCombatRelationships();
 
 }
 
@@ -137,6 +139,23 @@ void Loading::LoadBuildingDefinitions()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Loading::LoadCombatRelationships()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/DamageRelationships.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Combat Relationships");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		CombatLookUpTable::AddRelationshipToTable(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void Loading::LoadAnimationDefinitions()
 {
 	// Animations first then sets
@@ -189,6 +208,26 @@ void Loading::LoadRedTeamAnimationSets()
 //-----------------------------------------------------------------------------------------------
 void Loading::LoadSpriteSheets()
 {
+	
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/SpriteSheets.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Sprite sheet xml");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		SpriteSheet* newDef = new SpriteSheet(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+	
+	
+	// Legacy stuff
 	// Create the global sprite sheet for all the textures to use
 	Texture* TileTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/tileSpriteSheet.png");
 	g_tileSpriteSheet = SpriteSheet(TileTexture,27,3);

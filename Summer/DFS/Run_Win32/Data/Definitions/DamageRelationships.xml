@@ -1,0 +1,23 @@
+<DamageInteractions>
+
+
+<!-- GRUNT -->
+    <Damage attacker="grunt" defender="grunt" damage="5"  />
+
+
+</DamageInteractions>
+
+
+
+<!--
+
+    The reason we are doing are not doing a counter damage is because the attacker
+    Gets to damage the defender first which decreases the health and makes their damage
+    shorter
+
+    <Damage attacker="" defender="" damage="" >
+
+
+
+
+-->

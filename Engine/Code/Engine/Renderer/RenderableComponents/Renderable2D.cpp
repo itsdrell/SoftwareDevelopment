@@ -13,8 +13,8 @@ Renderable2D::Renderable2D()
 
 Renderable2D::~Renderable2D()
 {
-	delete m_sprite;
-	m_sprite = nullptr;
+	//delete m_sprite;
+	//m_sprite = nullptr;
 
 	delete m_material;
 	m_material = nullptr;

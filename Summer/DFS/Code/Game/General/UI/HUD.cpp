@@ -17,6 +17,9 @@
 
 void HUD::Render() const
 {
+	
+	RenderAllUnitHP();
+	
 	//--------------------------------------------------------------------------
 	Renderer* r = Renderer::GetInstance();
 	
@@ -165,4 +168,36 @@ void HUD::RenderAttackChance() const
 	}
 
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void HUD::RenderAllUnitHP() const
+{
+	Renderer* r = Renderer::GetInstance();
+	
+	r->SetCamera(g_theGame->m_playingState->m_camera);
+	r->BindMaterial(Material::CreateOrGetMaterial("sprite"));
+
+	for(uint i = 0; i < g_theCurrentMap->m_units.size(); i++)
+	{
+		Unit& current = *g_theCurrentMap->m_units.at(i);
+
+		if(current.m_health != 10)
+		{
+			Vector2 pos = current.m_transform.GetWorldPosition().xy();
+			pos.x -= 8.f;
+			pos.y -= 10.f;
+
+			String health = std::to_string(current.m_health);
+			
+			// hacky outline hack 
+			r->DrawText2D(Vector2(pos.x, pos.y - 1.f), health, 8.f, Rgba::BLACK);
+			r->DrawText2D(Vector2(pos.x, pos.y + 1.f), health, 8.f, Rgba::BLACK);
+			r->DrawText2D(Vector2(pos.x - 1.f, pos.y), health, 8.f, Rgba::BLACK);
+			r->DrawText2D(Vector2(pos.x + 1.f, pos.y), health, 8.f, Rgba::BLACK);
+
+			r->DrawText2D(pos, health, 8.f);
+		}
+		
+	}
 }

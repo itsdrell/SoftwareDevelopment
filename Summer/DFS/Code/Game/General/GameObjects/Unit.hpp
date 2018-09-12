@@ -76,6 +76,7 @@ public:
 
 	static SpriteSheet GetTeamTexture(TeamName name);
 	static String GetAnimatorName(const String& unitName, TeamName team);
+	static void Attack( Unit& attacker, Unit& defender );
 
 	float GetCostForTileType(const String& tileType);
 	IntRange GetAttackRange() const { return m_definition->m_attackRange;}
@@ -91,7 +92,7 @@ public:
 	SpriteAnimator*		m_animator = nullptr;
 
 	TeamName			m_team;
-	uint				m_health;
+	int					m_health;
 
 	bool				m_beenMoved;
 	bool				m_usedAction;

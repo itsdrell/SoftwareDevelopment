@@ -31,12 +31,14 @@ public:
 	void LoadWidgetDefinitions();
 	void LoadUnitDefinitions();
 	void LoadBuildingDefinitions();
+	void LoadCombatRelationships();
 
+
+	void LoadSpriteSheets();
 	void LoadAnimationDefinitions();
 	void LoadRedTeamAnimations();
 	void LoadRedTeamAnimationSets();
 
-	void LoadSpriteSheets();
 
 
 	void DeleteAllDefinitions();

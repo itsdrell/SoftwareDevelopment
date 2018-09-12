@@ -1137,7 +1137,8 @@ void DevConsole::AddErrorMessage(std::string errorText)
 	ConsoleDialogue errorMessage = ConsoleDialogue(errorText,Rgba::RED);
 	AddConsoleDialogue(errorMessage);
 	
-	PlayOneShot("default");
+	if(AudioSystem::GetInstance() != nullptr)
+		PlayOneShot("default");
 }
 
 void DevConsole::ClearConsoleOutput()

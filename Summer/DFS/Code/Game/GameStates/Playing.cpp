@@ -148,7 +148,7 @@ void Playing::CheckKeyBoardInputs()
 	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(cmouse, 0.f);
 	//
 	//IntVector2 tileCoord = (cmouse * (1/ TILE_SIZE)).GetVector2AsInt();
-	//DebugRenderLog(3.f, "Mouse Pos: " + tileCoord.ToString());
+	//DebugRenderLog(3.f, "Mouse Pos: " + mousePos.ToString());
 
 	//--------------------------------------------------------------------------
 	// UI input (deosnt rely on if there is a tile there or not)

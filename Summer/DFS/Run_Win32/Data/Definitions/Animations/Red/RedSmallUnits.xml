@@ -2,15 +2,11 @@
 
     <Animation id= "grunt_idle_r" loop = "loop">
         
-        <spriteSheet
-        src = "Sprites/redUnits"
-        spriteLayout = "5,4"
-        ppu = "16"
-        />
+        <spriteSheet name="redUnits"/>
 
-        <frame idx = "0" time = "1.5" />
-        <frame idx = "1" time = "1.5" />
-        <frame idx = "2" time = "1.5" />
+        <frame idx = "0" time = "1" />
+        <frame idx = "1" time = "1" />
+        <frame idx = "2" time = "1" />
 
     </Animation>
 

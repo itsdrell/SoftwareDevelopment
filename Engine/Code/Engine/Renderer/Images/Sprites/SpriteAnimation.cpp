@@ -7,6 +7,8 @@
 #include "Engine/Renderer/Images/Textures/Texture.hpp"
 #include "Engine/Renderer/Images/Sprites/Sprite.hpp"
 #include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
+#include "../../Systems/DebugRenderSystem.hpp"
+#include "Engine/Math/MathUtils.hpp"
 
 //===============================================================================================
 
@@ -32,11 +34,11 @@ SpriteAnimation::SpriteAnimation(tinyxml2::XMLElement & definition)
 
 		if(currentName == "spriteSheet")
 		{
-			String spriteSheetName = ParseXmlAttribute(*indexElement, "src", "ERROR");
-			m_dimensions = ParseXmlAttribute(*indexElement, "spriteLayout", m_dimensions);
-			m_pixelsPerUnit = ParseXmlAttribute(*indexElement, "ppu", 16.f);
+			String spriteSheetName = ParseXmlAttribute(*indexElement, "name", "ERROR");
 			
 			m_spriteSheet = SpriteSheet::CreateOrGet(spriteSheetName, m_dimensions);
+			m_dimensions = m_spriteSheet->m_spriteSheetTexture->GetDimensions();
+			m_pixelsPerUnit = m_spriteSheet->GetPPU();
 		}
 
 		if(currentName == "frame")
@@ -74,20 +76,18 @@ void SpriteAnimation::MakeSpritesFromFrames()
 }
 
 //-----------------------------------------------------------------------------------------------
-Sprite * SpriteAnimation::Evaluate(float timeIntoAnimation)
+Sprite* SpriteAnimation::Evaluate(float timeIntoAnimation)
 {
-	for(uint i = (uint)m_frameLengths.size(); i > 0; i--)
-	{
-		float length = m_frameLengths.at(i -1) - timeIntoAnimation;
+	uint current = GetCurrentSpriteIndex(timeIntoAnimation);
+	return m_spriteFrames.at(current);
+}
 
-		if(length <= 0)
-		{
-			return m_spriteFrames.at(i -1);
-		}
-	}
-
-	// we are on the first one
-	return m_spriteFrames.at(0);
+//-----------------------------------------------------------------------------------------------
+uint SpriteAnimation::GetCurrentSpriteIndex(float timeIntoAnimation)
+{
+	float range = RangeMapFloat(timeIntoAnimation, 0, m_totalLength, 0, (float) m_frameLengths.size());
+	float clampedfloat = ClampFloat(range, 0, (float) m_frameLengths.size() - 1.f);
+	return (uint) floorf(clampedfloat);
 }
 
 //-----------------------------------------------------------------------------------------------

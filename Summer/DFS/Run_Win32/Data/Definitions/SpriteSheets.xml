@@ -1,0 +1,6 @@
+<Spritesheets>
+
+    <SpriteSheet name="redUnits" src="Sprites/redUnits" layout="5,4" ppu=".25"/>
+
+
+</Spritesheets>
