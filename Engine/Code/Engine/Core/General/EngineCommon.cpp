@@ -8,6 +8,7 @@
 #include "../Tools/LogSystem.hpp"
 #include "Engine/Async/Threading.hpp"
 #include "Engine/Net/Net.hpp"
+#include "../Tools/RemoteCommandService.hpp"
 
 
 //====================================================================================
@@ -27,6 +28,7 @@ void EngineStartUp()
 	LogSystemStartUp();
 	renderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
 
+	RemoteCommandService::GetInstance(); // create
 
 	audio = nullptr;
 	input = nullptr;

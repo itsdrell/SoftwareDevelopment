@@ -36,14 +36,21 @@ SpriteAnimation::SpriteAnimation(tinyxml2::XMLElement & definition)
 		{
 			String spriteSheetName = ParseXmlAttribute(*indexElement, "name", "ERROR");
 			
-			m_spriteSheet = SpriteSheet::CreateOrGet(spriteSheetName, m_dimensions);
-			m_dimensions = m_spriteSheet->m_spriteSheetTexture->GetDimensions();
+			m_spriteSheet = SpriteSheet::CreateOrGet(spriteSheetName);
+			m_individualSpriteSize = m_spriteSheet->GetIndividualSpriteSize();
 			m_pixelsPerUnit = m_spriteSheet->GetPPU();
 		}
 
 		if(currentName == "frame")
 		{
-			int currentFrame = ParseXmlAttribute(*indexElement, "idx", 0);
+			int currentFrame = ParseXmlAttribute(*indexElement, "idx", -1);
+			
+			if(currentFrame == -1)
+			{
+				IntVector2 coords = ParseXmlAttribute(*indexElement, "coords", IntVector2());
+				currentFrame = m_spriteSheet->GetIndexFromSpriteCoords(coords);
+			}
+			
 			m_frames.push_back(currentFrame);
 
 			float length = ParseXmlAttribute(*indexElement, "time", -1.f);
@@ -69,7 +76,7 @@ void SpriteAnimation::MakeSpritesFromFrames()
 	{
 		AABB2 uvs = m_spriteSheet->GetTexCoordsForSpriteIndex(m_frames.at(i));
 
-		Sprite* newSprite = new Sprite(*m_spriteSheet->m_spriteSheetTexture, m_dimensions.GetAsVector2(), m_pixelsPerUnit, Vector2(.5f,.5f), uvs);
+		Sprite* newSprite = new Sprite(*m_spriteSheet->m_spriteSheetTexture, m_individualSpriteSize.GetAsVector2(), m_pixelsPerUnit, Vector2(.5f,.5f), uvs);
 
 		m_spriteFrames.push_back(newSprite);
 	}

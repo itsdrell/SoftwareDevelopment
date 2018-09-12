@@ -30,6 +30,8 @@ SpriteSheet::SpriteSheet(tinyxml2::XMLElement& node)
 
 	// Create or get texture
 	m_spriteSheetTexture = Renderer::GetInstance()->CreateOrGetTexture(fullpath);
+	m_dimension = m_spriteSheetTexture->GetDimensions();
+	
 	s_spriteSheets[m_name] = this;
 }
 
@@ -64,13 +66,13 @@ AABB2 SpriteSheet::GetTexCoordsForSpriteCoords(const IntVector2& spriteCoords) c
 
 AABB2 SpriteSheet::GetTexCoordsForSpriteIndex(int spriteIndex) const
 {
-	TODO("Fix this so it works with UVs being bottom left so we dont have to use the moved font :l");
 	int indexX = spriteIndex % m_spriteLayout.x;
 	int indexY = (int)(spriteIndex / m_spriteLayout.x);
 
 	return GetTexCoordsForSpriteCoords(IntVector2(indexX,indexY));
 }
 
+//-----------------------------------------------------------------------------------------------
 int SpriteSheet::GetNumSprites() const
 {
 
@@ -79,7 +81,18 @@ int SpriteSheet::GetNumSprites() const
 }
 
 //-----------------------------------------------------------------------------------------------
-SpriteSheet* SpriteSheet::CreateOrGet(const std::string& filePath, const IntVector2& dimensions)
+IntVector2 SpriteSheet::GetIndividualSpriteSize() const
+{
+	// This is so you can tell the sprite how big it is going to be
+
+	float x =((float)m_dimension.x / (float)m_spriteLayout.x);
+	float y =((float)m_dimension.y / (float)m_spriteLayout.y);
+
+	return Vector2(x,y).GetVector2AsInt();
+}
+
+//-----------------------------------------------------------------------------------------------
+SpriteSheet* SpriteSheet::CreateOrGet(const std::string& filePath, IntVector2 dimensions)
 {
 	std::map<std::string, SpriteSheet*>::iterator it;
 
@@ -105,5 +118,20 @@ SpriteSheet* SpriteSheet::CreateOrGet(const std::string& filePath, const IntVect
 
 		return newSheet;
 	}
+}
+
+int SpriteSheet::GetIndexFromSpriteCoords(const IntVector2 & spriteCoords)
+{
+	// y * width + x
+	int result = (spriteCoords.y * m_spriteLayout.x) + spriteCoords.x;
+	return result;
+}
+
+IntVector2 SpriteSheet::GetCoordsFromSpriteIndex(int index)
+{
+	int indexX = index % m_spriteLayout.x;
+	int indexY = (int)(index / m_spriteLayout.x);
+
+	return IntVector2(indexX,indexY);
 }
 

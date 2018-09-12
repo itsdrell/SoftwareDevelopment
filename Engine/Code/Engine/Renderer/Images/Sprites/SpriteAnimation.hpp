@@ -54,7 +54,7 @@ public:
 
 	// These are more sprite specific data, but since we are making the sprites here,
 	// We need to know this data
-	IntVector2				m_dimensions;
+	IntVector2				m_individualSpriteSize;
 	float					m_pixelsPerUnit = 16.f;
 
 	// we don't need actual sprites made if we know the sprite sheet and index

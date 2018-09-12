@@ -2,11 +2,13 @@
 
     <Animation id= "grunt_idle_r" loop = "loop">
         
-        <spriteSheet name="redUnits"/>
+        <spriteSheet name="Units"/>
 
-        <frame idx = "0" time = "1" />
-        <frame idx = "1" time = "1" />
-        <frame idx = "2" time = "1" />
+        <frame coords = "1,1" time = "1" />
+        <frame coords = "2,1" time = "1" />
+        <frame coords = "3,1" time = "1" />
+        <frame coords = "4,1" time = "1" />
+
 
     </Animation>
 
@@ -17,18 +19,11 @@
 <!--
 
 <Animation id="name" loop = "loop,clamp,pingpong">
-        <Spritesheet
-        src = "filePathNoExtensions"
-        spriteLayout = "x,y"
-        ppu = "16" def to 16
 
-        We could also do something with pivot but meh
-
-        />
 
 
         Make sure these are in order
-        <frame idx="int" time="float" />
+        <frame idx="int" <or> coords="x,y" time="float" />
 
     </Animation>
 

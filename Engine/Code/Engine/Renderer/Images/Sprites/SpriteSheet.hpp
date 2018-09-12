@@ -15,8 +15,13 @@ public:
 	AABB2 GetTexCoordsForSpriteIndex( int spriteIndex ) const; // for sprite animations
 	int GetNumSprites() const;
 	float GetPPU() const { return m_pixelsPerUnit; }
+	IntVector2 GetSpriteLayout() const { return m_spriteLayout; }
+	IntVector2 GetIndividualSpriteSize() const;
 
-	static SpriteSheet* CreateOrGet(const std::string& filePath, const IntVector2& dimensions);
+	static SpriteSheet* CreateOrGet(const std::string& filePath, IntVector2 dimensions = IntVector2());
+	
+	int GetIndexFromSpriteCoords( const IntVector2& spriteCoords );
+	IntVector2 GetCoordsFromSpriteIndex( int index );
 
 public:
 	Texture*	m_spriteSheetTexture; 	// Texture w/grid-based layout of sprites

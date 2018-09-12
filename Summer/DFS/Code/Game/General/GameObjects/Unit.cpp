@@ -56,15 +56,12 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 
 	//--------------------------------------------------------------------------
 	Material* newMaterial = Material::CreateOrGetMaterial("sprite");
-	SpriteSheet spriteSheet = GetTeamTexture(m_team);
-	Texture* testSprite = spriteSheet.m_spriteSheetTexture;
+	SpriteSheet* spriteSheet = SpriteSheet::CreateOrGet("Units");
+	Texture* testSprite = spriteSheet->m_spriteSheetTexture;
 	newMaterial->SetTexture(0, testSprite);
 
-	Sprite* newSprite = new Sprite(*testSprite, Vector2::ONE, 16.f, Vector2(.5f, 0.5f), m_definition->m_uvCoords);
-	newSprite->m_pixelsPerUnit = 16.f;
-
 	m_renderable->SetMaterial(newMaterial);
-	m_renderable->SetSprite(newSprite);
+	m_renderable->SetSprite(m_animator->GetCurrentSprite());
 	m_renderable->SetLayer(UNITS);
 
 	g_theGame->m_playingState->AddRenderable(m_renderable);
