@@ -38,6 +38,8 @@ public:
 	void LoadAnimationDefinitions();
 	void LoadRedTeamAnimations();
 	void LoadRedTeamAnimationSets();
+	void LoadBlueTeamAnimations();
+	void LoadBlueTeamAnimationSets();
 
 
 

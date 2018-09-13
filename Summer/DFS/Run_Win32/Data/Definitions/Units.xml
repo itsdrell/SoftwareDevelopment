@@ -1,7 +1,7 @@
 <Units>
 
 
-<!-- GROUND UNITS --->
+<!-- GROUND UNITS -->
     <Unit
     name = "grunt"
     displayName = "Grunt"
@@ -194,7 +194,7 @@
 
     </Unit>
 
-<!-- NAVAL UNITS --->
+<!-- NAVAL UNITS -->
     <Unit
     name = "sub"
     displayName = "Sub"
@@ -260,7 +260,7 @@
 
 
 
-<!-- AIR UNITS --->
+<!-- AIR UNITS -->
     <Unit
     name = "jet"
     displayName = "Jet"

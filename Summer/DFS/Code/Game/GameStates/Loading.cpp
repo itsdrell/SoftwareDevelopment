@@ -161,6 +161,9 @@ void Loading::LoadAnimationDefinitions()
 	// Animations first then sets
 	LoadRedTeamAnimations();
 	LoadRedTeamAnimationSets();
+	
+	LoadBlueTeamAnimations();
+	LoadBlueTeamAnimationSets();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -192,6 +195,46 @@ void Loading::LoadRedTeamAnimationSets()
 
 	tinyxml2::XMLElement* rootElement = doc.RootElement();
 	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Red Team AnimationSet Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		SpriteAnimationSet* newDef = new SpriteAnimationSet(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+void Loading::LoadBlueTeamAnimations()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Animations/Blue/BlueSmallUnits.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Blue Team Animation Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		SpriteAnimation* newDef = new SpriteAnimation(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+void Loading::LoadBlueTeamAnimationSets()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Animations/Blue/BlueSmallUnitSets.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Blue Team AnimationSet Definitions");
 
 	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
 	while( indexElement )

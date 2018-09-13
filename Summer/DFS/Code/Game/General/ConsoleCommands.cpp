@@ -25,6 +25,7 @@ void RegisterGameCommands()
 	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
 	CommandRegister("closeMenu", "", "Close current Open Menu", CloseOpenMenu);
 	CommandRegister("purchase", "", "Purchase Unit in Store", PurchaseUnit);
+	CommandRegister("addAllUnits", "", "", AddAllUnitTypesToMap);
 }
 
 void EndTurn(Command & theCommand)
@@ -199,4 +200,28 @@ void PurchaseUnit(Command& theCommand)
 	newUnit->m_usedAction = true;
 	newUnit->m_beenMoved = true;
 	newUnit->m_renderable->GetMaterial()->SetTint(Rgba(150,150,150,220));
+}
+
+//-----------------------------------------------------------------------------------------------
+void AddAllUnitTypesToMap(Command& theCommand)
+{
+	UNUSED(theCommand);
+
+	IntVector2 dim = g_theCurrentMap->m_dimensions;
+
+	std::vector<UnitDefinition*> defList;
+	UnitDefinition::GetAllUnitDefinitions( &defList );
+	
+	uint amountOfUnits = defList.size();
+	
+	IntVector2 currentPos = IntVector2(0,0);
+	for(uint i = 0; i < amountOfUnits; i++)
+	{
+		g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos, 10);
+		g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_BLUE, currentPos + IntVector2(1,0), 10);
+		//g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(2,0), 10);
+		//g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(3,0), 10);
+
+		currentPos.y += 1;
+	}
 }

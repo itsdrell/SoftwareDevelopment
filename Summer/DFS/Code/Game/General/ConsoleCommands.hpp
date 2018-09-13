@@ -39,6 +39,7 @@ void AddUnit(Command& theCommand);
 void AddBuilding(Command& theCommand);
 void CloseOpenMenu(Command& theCommand);
 void PurchaseUnit(Command& theCommand);
+void AddAllUnitTypesToMap(Command& theCommand);
 
 //====================================================================================
 // Externs

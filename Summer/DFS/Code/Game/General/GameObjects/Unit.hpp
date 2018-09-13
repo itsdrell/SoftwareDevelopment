@@ -35,6 +35,7 @@ public:
 
 	static UnitDefinition* GetUnitDefinition(std::string name);
 	static void GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<UnitDefinition*>* list);
+	static void GetAllUnitDefinitions(std::vector<UnitDefinition*>* list);
 	static Strings GetAllUnitNames();
 	static void DeleteAllDefinitions();
 

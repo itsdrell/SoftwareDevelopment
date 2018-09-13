@@ -181,11 +181,8 @@ void Unit::Update()
 			m_renderable->GetMaterial()->SetTint(Rgba(150,150,150,220));
 	}
 
-	if(m_team != TEAM_BLUE)
-	{
-		m_animator->Update();
-		m_renderable->SetSprite(m_animator->GetCurrentSprite());
-	}
+	m_animator->Update();
+	m_renderable->SetSprite(m_animator->GetCurrentSprite());
 	
 }
 
@@ -260,6 +257,18 @@ void UnitDefinition::GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<U
 
 		if(current->m_factoryTag == tag)
 			list->push_back(current);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void UnitDefinition::GetAllUnitDefinitions(std::vector<UnitDefinition*>* list)
+{
+	std::map<std::string,UnitDefinition*>::iterator unitIterator;
+
+	for(unitIterator = s_definitions.begin(); unitIterator != s_definitions.end(); unitIterator++)
+	{
+		UnitDefinition* current = unitIterator->second;
+		list->push_back(current);
 	}
 }
 
