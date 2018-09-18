@@ -22,7 +22,6 @@ std::map<std::string, UnitDefinition*> UnitDefinition::s_definitions;
 Unit::Unit(TeamName team)
 	: GameObject2D("Test")
 {
-	m_health = 10;
 	m_team = team;
 
 	//--------------------------------------------------------------------------
@@ -46,7 +45,6 @@ Unit::Unit(TeamName team)
 Unit::Unit(TeamName team, UnitDefinition & def)
 	: GameObject2D("Unit")
 {
-	m_health = 10;
 	m_team = team;
 	m_definition = &def;
 	m_name = m_definition->m_name;

@@ -16,6 +16,7 @@
 #include "Engine/Core/Platform/File.hpp"
 #include "Engine/Core/General/BytePacker.hpp"
 #include "Engine/Core/Tools/RemoteCommandService.hpp"
+#include "Game/Main/Playground.hpp"
 
 
 //  For testing blackboard
@@ -67,16 +68,8 @@ void App::StartUp()
 {
 	g_theGame->StartUp();
 
-	BytePacker test;
-	//test.WriteSize(8675309);
-	//size_t testR;
-	//test.ReadSize(&testR);
-	test.WriteString("Emily is cute");
-	
-	const uint sizeIAmExpecting = 15;
-	char text[sizeIAmExpecting];
-	test.ReadString(text, sizeIAmExpecting);
-	
+	// place for testing
+	Playground::RunTestOnce();	
 
 }
 
@@ -111,10 +104,11 @@ void App::Render() const
 
 void App::Update()
 {
-	
-	//float deltaSeconds = GetDeltaTime();
 
 	g_theGame->Update();
+
+	// for testing
+	Playground::RunTestOnUpdate();
 
 	//////////////////////////////////////////////////////////////////////////
 	// HotKeys

@@ -23,7 +23,8 @@
 //====================================================================================
 struct CombatRelationship
 {
-	CombatRelationship() {} // for returning if we don't find something
+	CombatRelationship()
+	: m_damage(0.f) {} // for returning if we don't find something and giving it 0 damage
 	
 	CombatRelationship(const String& attacker, const String& def, float damage)
 		: m_attacker(attacker)

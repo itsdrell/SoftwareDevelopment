@@ -62,7 +62,7 @@ void CaptureBuilding(Command& theCommand)
 		return;
 	}
 
-	g_theCurrentMap->m_buildingToCapture->Captured(g_theCurrentMap->m_selectedUnit->m_team); 
+	g_theCurrentMap->m_buildingToCapture->Capture(*g_theCurrentMap->m_selectedUnit); 
 
 	// reset state
 	g_theCurrentMap->m_selectedUnit->m_usedAction = true;

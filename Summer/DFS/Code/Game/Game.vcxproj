@@ -307,6 +307,7 @@
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
     <ClCompile Include="Main\Main_Win32.cpp" />
+    <ClCompile Include="Main\Playground.cpp" />
     <ClCompile Include="Main\TheApp.cpp" />
     <ClCompile Include="GameStates\Playing.cpp" />
   </ItemGroup>
@@ -337,6 +338,7 @@
     <ClInclude Include="Main\EngineBuildPreferences.hpp" />
     <ClInclude Include="Main\Game.hpp" />
     <ClInclude Include="Main\GameCommon.hpp" />
+    <ClInclude Include="Main\Playground.hpp" />
     <ClInclude Include="Main\TheApp.hpp" />
     <ClInclude Include="GameStates\Playing.hpp" />
   </ItemGroup>

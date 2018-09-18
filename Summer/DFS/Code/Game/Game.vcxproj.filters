@@ -79,6 +79,9 @@
     <ClCompile Include="General\CombatLookUpTable.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Main\Playground.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -116,5 +119,6 @@
     <ClInclude Include="General\UI\UnitWidget.hpp" />
     <ClInclude Include="General\GameHeatMap.hpp" />
     <ClInclude Include="General\CombatLookUpTable.hpp" />
+    <ClInclude Include="Main\Playground.hpp" />
   </ItemGroup>
 </Project>

@@ -102,7 +102,6 @@ Building::Building(TeamName theTeam)
 Building::Building(const TeamName& theTeam, BuildingDefinition& def)
 	: GameObject2D("Building")
 {
-	m_health = 10;
 	m_team = theTeam;
 	m_definition = &def;
 	m_name = m_definition->m_name;
@@ -144,10 +143,19 @@ void Building::Update()
 	
 }
 
-void Building::Captured(const TeamName& theTeam)
+void Building::Capture(const Unit& unitTryingToCapture)
 {
-	m_team = theTeam;
+	m_health -= unitTryingToCapture.m_health;
 	
-	SetSpriteFromTeam(theTeam);
+	// we captured!
+	if(m_health <= 0)
+	{
+		m_team = unitTryingToCapture.m_team;
+		m_health = MAX_BUILDING_HEALTH;
+
+		SetSpriteFromTeam(unitTryingToCapture.m_team);
+	}
+	
+	
 }
 

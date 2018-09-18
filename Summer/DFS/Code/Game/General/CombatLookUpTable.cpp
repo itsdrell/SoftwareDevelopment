@@ -41,7 +41,8 @@ CombatRelationship CombatLookUpTable::GetRelationship(const String & attacker, c
 		}
 	}
 	
-	ERROR_RECOVERABLE("Could not find a relationship for: " + attacker + " vs " + defender);
+	// If we didn't find something then return and empty relationship which 
+	// has a damage of 0. It shouldn't matter but just in case
 
 	return CombatRelationship();
 }

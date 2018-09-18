@@ -2,6 +2,7 @@
 #include "Engine/Core/General/GameObject2D.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Engine\Core\General\EngineCommon.hpp"
+#include "Game\General\GameObjects\Unit.hpp"
 
 
 //=============================================================
@@ -9,6 +10,8 @@
 //=============================================================
 class TileDefinition;
 class Tile;
+
+#define MAX_BUILDING_HEALTH (MAX_UNIT_HEALTH * 2)
 
 //=============================================================
 // ENUMS
@@ -64,12 +67,12 @@ public:
 	String GetDisplayName() const { return m_definition->m_displayName; }
 
 	void Update();
-	void Captured(const TeamName& theTeam);
+	void Capture(const Unit& unitTryingToCapture);
 
 public:
 	TeamName				m_team;
 
-	uint					m_health;
+	int						m_health = MAX_BUILDING_HEALTH;
 	Tile*					m_tileReference;
 
 	BuildingDefinition*		m_definition;

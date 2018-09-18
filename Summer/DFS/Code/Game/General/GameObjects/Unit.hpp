@@ -17,7 +17,7 @@ class SpriteAnimator;
 //=============================================================
 // ENUMS
 //=============================================================
-
+#define MAX_UNIT_HEALTH (100)
 
 //=============================================================
 // Structs
@@ -93,7 +93,7 @@ public:
 	SpriteAnimator*		m_animator = nullptr;
 
 	TeamName			m_team;
-	int					m_health;
+	int					m_health = MAX_UNIT_HEALTH;
 
 	bool				m_beenMoved;
 	bool				m_usedAction;
