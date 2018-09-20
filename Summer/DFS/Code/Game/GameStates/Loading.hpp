@@ -41,7 +41,7 @@ public:
 	void LoadBlueTeamAnimations();
 	void LoadBlueTeamAnimationSets();
 
-
+	void LoadAllCODefinitions();
 
 	void DeleteAllDefinitions();
 

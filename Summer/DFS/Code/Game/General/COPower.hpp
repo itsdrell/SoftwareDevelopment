@@ -1,15 +1,16 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "Engine\Core\General\EngineCommon.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+
 
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-
+typedef void (*COPower_Start_cb)(float amount);
+typedef void (*COPower_End_cb)(float amount); 
 
 //====================================================================================
 // ENUMS
@@ -24,30 +25,41 @@ class UnitDefinition;
 //====================================================================================
 // Classes
 //====================================================================================
+class COPower
+{
+public:
+	COPower(const String& nameOfPower, float amount);
+	~COPower();
 
+	void UsePower();
+
+	void AssignCallbacks();
+
+public:
+	
+	String					m_nameOfPower;
+	float					m_amount;
+
+	// We are using callbacks to make it easier since we plan
+	// to have multiple COs but they still do the same start and end 
+	// call functions. They could be vectors so that we could mix and match
+	// but just starting with one for now
+	COPower_Start_cb		m_start;
+	COPower_End_cb			m_end;
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
+void HealAllUnits(float amount);
+//NOP()
 
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [9/18/2018]
 //====================================================================================

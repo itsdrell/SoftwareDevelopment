@@ -26,6 +26,7 @@ void RegisterGameCommands()
 	CommandRegister("closeMenu", "", "Close current Open Menu", CloseOpenMenu);
 	CommandRegister("purchase", "", "Purchase Unit in Store", PurchaseUnit);
 	CommandRegister("addAllUnits", "", "", AddAllUnitTypesToMap);
+	CommandRegister("usePower", "", "", UseCOPower);
 }
 
 void EndTurn(Command & theCommand)
@@ -224,4 +225,12 @@ void AddAllUnitTypesToMap(Command& theCommand)
 
 		currentPos.y += 1;
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void UseCOPower(Command& theCommand)
+{
+	UNUSED(theCommand);
+
+	g_theCurrentMap->m_currentOfficer->m_definition->m_power->UsePower();
 }

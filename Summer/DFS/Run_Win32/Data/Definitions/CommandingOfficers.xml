@@ -1,0 +1,15 @@
+<CommandingOfficers>
+
+    <CO name="Andy">
+
+        <power name="heal" amount="30"/>
+        
+        <!-- what common attributes does this CO have? -->
+        <stats />
+
+         <!-- Probably has some animation / sprite stuff -->
+    
+    </CO>
+
+
+</CommandingOfficers>

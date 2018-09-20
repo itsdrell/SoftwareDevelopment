@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -24,30 +24,24 @@ class UnitDefinition;
 //====================================================================================
 // Classes
 //====================================================================================
+class CommandingOfficerStat
+{
+public:
+	CommandingOfficerStat(tinyxml2::XMLElement& node);
 
+public:
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
 
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [9/18/2018]
 //====================================================================================

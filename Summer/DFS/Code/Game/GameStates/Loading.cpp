@@ -13,6 +13,7 @@
 #include "Engine\Renderer\Images\Sprites\SpriteAnimation.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimationSet.hpp"
 #include "..\General\CombatLookUpTable.hpp"
+#include "..\General\Player\CommandingOfficer.hpp"
 
 Loading::Loading()
 {
@@ -53,6 +54,7 @@ void Loading::LoadDefinitions()
 	LoadAnimationDefinitions();
 	LoadWidgetDefinitions();
 	LoadUnitDefinitions();
+	LoadAllCODefinitions();
 	LoadBuildingDefinitions();
 	LoadCombatRelationships();
 
@@ -249,6 +251,27 @@ void Loading::LoadBlueTeamAnimationSets()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Loading::LoadAllCODefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/CommandingOfficers.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Commanding Officers Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		CommandingOfficerDefinition* newDef = new CommandingOfficerDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void Loading::LoadSpriteSheets()
 {
 	
@@ -293,6 +316,7 @@ void Loading::DeleteAllDefinitions()
 	UIWidgetDefinition::DeleteAllDefinitions();
 	UnitDefinition::DeleteAllDefinitions();
 	BuildingDefinition::DeleteAllDefinitions();
+	CommandingOfficerDefinition::DeleteAllDefinitions();
 
 	// TODO Delete Animation and SpriteSheets
 }

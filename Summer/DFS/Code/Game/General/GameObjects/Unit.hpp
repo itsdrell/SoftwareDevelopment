@@ -75,6 +75,8 @@ public:
 
 	void Update();
 
+	void AddHealth(int amount);
+
 	static SpriteSheet GetTeamTexture(TeamName name);
 	static String GetAnimatorName(const String& unitName, TeamName team);
 	static void Attack( Unit& attacker, Unit& defender );

@@ -185,6 +185,15 @@ void Unit::Update()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Unit::AddHealth(int amount)
+{
+	m_health += amount;
+
+	// make sure we don't over heal
+	m_health = ClampInt(m_health, 0, MAX_UNIT_HEALTH);
+}
+
+//-----------------------------------------------------------------------------------------------
 float CalculateWinChance(const Unit& attacking, const Unit& defending)
 {
 	// Attack formula in advance wars http://awbw.wikia.com/wiki/Damage_Formula

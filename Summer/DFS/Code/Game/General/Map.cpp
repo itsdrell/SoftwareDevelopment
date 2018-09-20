@@ -388,9 +388,9 @@ void Map::CreateMapRenderableFromImage()
 
 void Map::CreateCommandingOfficer(TeamName theTeam)
 {
-	String playerName = "Player " + std::to_string(m_officers.size() + 1U);
+	//String playerName = "Player " + std::to_string(m_officers.size() + 1U);
 	
-	CommandingOfficer* newOfficer = new CommandingOfficer(playerName, theTeam, PLAYER_CO);
+	CommandingOfficer* newOfficer = new CommandingOfficer("Andy", theTeam, PLAYER_CO);
 
 	m_officers.push_back(newOfficer);
 }
