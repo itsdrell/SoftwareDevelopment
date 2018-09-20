@@ -11,6 +11,7 @@
 #include "../../Net/TCPSocket.hpp"
 #include "../Tools/RemoteCommandService.hpp"
 #include "../../Net/UDPSocket.hpp"
+#include "../Platform/File.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -39,6 +40,9 @@ void RegisterEngineCommands()
 	// test
 	CommandRegister("test_stop", "", "", StopUDPTest);
 	CommandRegister("send", "", "<address> <message>", SendMessageUDP);
+
+	// tools
+	CommandRegister("warp", "", "", FormatLevelNames);
 
 }
 
@@ -325,6 +329,38 @@ void SendMessageUDP(Command & cb)
 
 	DevConsole::AddConsoleDialogue("Sending message");
 	UDPTest::GetInstance()->SendTo(addr, msg.data(), (uint) msg.length());
+}
+
+//-----------------------------------------------------------------------------------------------
+// This is for my capstone team. Formatting all the levels into one string for the batch file
+void FormatLevelNames(Command& cb)
+{
+	UNUSED(cb);
+
+	String prefix = "/Game/Levels/Production/";
+	String fullText = (prefix + "PLVL_MainMenu" + "+");
+
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Misc/LevelsApprovedForBuild - Levels.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Level approved doc");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		String levelName = indexElement->Name();
+		fullText += (prefix + levelName + "/PLVL_" + levelName);
+
+		if(indexElement->NextSiblingElement() != nullptr)
+			fullText += "+";
+
+		indexElement = indexElement->NextSiblingElement();
+	}
+
+
+	LogStringToFile("Data/Misc/AllLevels.txt", fullText.c_str(), true);
+
 }
 
 //===============================================================================================
