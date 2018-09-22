@@ -11,6 +11,7 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
 #include "..\CombatLookUpTable.hpp"
+#include "..\Map.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -136,7 +137,7 @@ STATIC void Unit::Attack( Unit& attacker, Unit& defender )
 	// see if we killed the defender and exit if we did (no damage to attacker!)
 	if(defender.m_health <= 0)
 	{
-		defender.m_isDead = true;
+		defender.Die();
 		return;
 	}
 	
@@ -145,7 +146,7 @@ STATIC void Unit::Attack( Unit& attacker, Unit& defender )
 
 	// check if we killed the attacker :( 
 	if(attacker.m_health <= 0)
-		attacker.m_isDead = true;
+		attacker.Die();
 
 
 }
@@ -191,6 +192,19 @@ void Unit::AddHealth(int amount)
 
 	// make sure we don't over heal
 	m_health = ClampInt(m_health, 0, MAX_UNIT_HEALTH);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Unit::Die()
+{
+	m_isDead = true;
+
+	PlayOneShot("default");
+
+	g_theGame->m_playingState->RemoveRenderable(m_renderable);
+
+	Vector2 pos = m_transform.GetLocalPosition() * (1 / TILE_SIZE);
+	g_theCurrentMap->CreateEffect("explosion", pos.GetVector2AsInt());
 }
 
 //-----------------------------------------------------------------------------------------------

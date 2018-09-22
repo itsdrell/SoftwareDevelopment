@@ -14,6 +14,7 @@
 #include "Engine\Renderer\Images\Sprites\SpriteAnimationSet.hpp"
 #include "..\General\CombatLookUpTable.hpp"
 #include "..\General\Player\CommandingOfficer.hpp"
+#include "..\General\GameObjects\Effect.hpp"
 
 Loading::Loading()
 {
@@ -57,6 +58,7 @@ void Loading::LoadDefinitions()
 	LoadAllCODefinitions();
 	LoadBuildingDefinitions();
 	LoadCombatRelationships();
+	LoadEffectsDefinitions();
 
 }
 
@@ -251,6 +253,27 @@ void Loading::LoadBlueTeamAnimationSets()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Loading::LoadEffectsDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Effects.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: Effects Definitions");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		EffectDefinition* newDef = new EffectDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void Loading::LoadAllCODefinitions()
 {
 	tinyxml2::XMLDocument doc;
@@ -317,6 +340,7 @@ void Loading::DeleteAllDefinitions()
 	UnitDefinition::DeleteAllDefinitions();
 	BuildingDefinition::DeleteAllDefinitions();
 	CommandingOfficerDefinition::DeleteAllDefinitions();
+	EffectDefinition::DeleteAllDefinitions();
 
 	// TODO Delete Animation and SpriteSheets
 }

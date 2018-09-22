@@ -99,8 +99,8 @@ void RemoveFast( uint& idx, std::vector<T*>& theVector )
 	}
 
 	theVector.at(theVector.size() - 1) = theVector.at(idx);
-	theVector.pop_back();
 	theVector.at(idx) = endThing;
+	theVector.pop_back();
 	idx--; // so we don't have to do it outside of the function
 }
 

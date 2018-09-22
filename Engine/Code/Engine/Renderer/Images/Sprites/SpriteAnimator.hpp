@@ -36,6 +36,7 @@ SpritePlayMode GetPlayModeFromString(String mode);
 class SpriteAnimator
 {
 public:
+	SpriteAnimator() {}
 	SpriteAnimator(const String& idNameOfAnimationSet); // ex "Grunt" is an ID of an Animation Set
 
 	void Update();
@@ -52,7 +53,7 @@ public:
 	SpriteAnimationSet*				m_animationSet = nullptr;
 	SpriteAnimation*				m_currentAnimation = nullptr;
 	
-	SpritePlayMode					m_currentPlayMode;
+	SpritePlayMode					m_currentPlayMode = SPRITE_PLAY_ONCE;
 	bool							m_isPaused = false;
 	float							m_timeIntoAnimation = 0.f;
 

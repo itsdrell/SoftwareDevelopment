@@ -88,6 +88,9 @@
     <ClCompile Include="General\CommandingOfficerStats.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\GameObjects\Effect.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -128,5 +131,6 @@
     <ClInclude Include="Main\Playground.hpp" />
     <ClInclude Include="General\CommandingOfficerStats.hpp" />
     <ClInclude Include="General\COPower.hpp" />
+    <ClInclude Include="General\GameObjects\Effect.hpp" />
   </ItemGroup>
 </Project>

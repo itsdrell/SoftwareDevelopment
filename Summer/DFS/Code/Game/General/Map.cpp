@@ -24,81 +24,11 @@
 #include "UI\UIWidget.hpp"
 #include "UI\UnitWidget.hpp"
 #include "Game\General\GameHeatMap.hpp"
+#include "GameObjects\Effect.hpp"
 
 //====================================================================================
 // Externs
 Map* g_theCurrentMap = nullptr;
-
-
-//====================================================================================
-// Console commands
-void DebugGrid(Command& theCommand)
-{
-	std::string input;
-	
-	if(theCommand.m_commandArguements.size() == 1)
-		input = "true";
-	else
-		input = theCommand.m_commandArguements.at(1);
-	
-	bool check = ParseString(input, false);
-
-
-	if(check)
-	{
-		// Make sure there are only one of them
-		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
-		g_theGame->m_playingState->AddRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
-		g_theGame->m_playingState->m_showHeatmap = true;
-	}
-	else
-	{
-		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
-		g_theGame->m_playingState->m_showHeatmap = false;
-
-	}
-}
-
-void KillAllUnitsOfTeam(Command& theCommand)
-{
-	std::string input;
-	DevConsole* dc; 
-
-	if(theCommand.m_commandArguements.size() == 1)
-		input = "help";
-	else
-		input = theCommand.m_commandArguements.at(1);
-
-	if(input == "help")
-	{
-		dc->AddConsoleDialogue(ConsoleDialogue("Teams to kill >:D ", Rgba::WHITE));
-
-		TurnOrder t = g_theGame->m_playingState->m_currentMap->m_turnOrder;
-		dc->AddSpace(1);
-
-		for(uint i = 0; i < t.m_order.size(); i++)
-		{
-			std::string teamName = TeamNameToString(t.m_order.at(i));
-
-			dc->AddConsoleDialogue(ConsoleDialogue(teamName, GetRainbowColor(i, (uint)t.m_order.size())));
-		}
-
-		dc->AddSpace(1);
-	}
-	else
-	{
-		TeamName tm = StringFromTeamName(input);
-
-		for(uint i = 0; i < g_theGame->m_playingState->m_currentMap->m_units.size(); i++)
-		{
-			Unit*& currentUnit = g_theGame->m_playingState->m_currentMap->m_units.at(i);
-
-			if(currentUnit->m_team == tm)
-				currentUnit->m_isDead = true;
-		}
-	}
-	
-}
 
 //====================================================================================
 // TURN ORDER
@@ -148,8 +78,6 @@ Map::Map(std::string name, const IntVector2 & dimensions)
 
 	CreateMapRenderable();
 	CreateMapRenderable(true);
-
-	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 }
 
 Map::Map(std::string name, Image& mapImage)
@@ -168,9 +96,6 @@ Map::Map(std::string name, Image& mapImage)
 	CreateMapRenderableFromImage();
 	CreateMapRenderable(true);
 	
-	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
-	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
-
 }
 
 Map::~Map()
@@ -702,24 +627,17 @@ void Map::ClearAttackTiles()
 
 void Map::RemoveDeadGameObjects()
 {
-	std::vector<uint> deadindices;
 	
 	for(uint i = 0; i < m_gameObjects.size(); i++)
 	{
 		GameObject2D* current = m_gameObjects.at(i);
 
 		if(current->m_isDead)
-			deadindices.push_back(i);
+		{
+			g_theGame->m_playingState->RemoveRenderable(m_gameObjects.at(i)->m_renderable);
+			RemoveFast(i,m_gameObjects);
+		}
 	}
-
-	for(uint j = 0; j < deadindices.size(); j++)
-	{
-		uint idx = deadindices.at(j);
-		g_theGame->m_playingState->RemoveRenderable(m_gameObjects.at(idx)->m_renderable);
-		m_gameObjects.erase(m_gameObjects.begin() + deadindices.at(j));
-	}
-
-	deadindices.clear();
 
 	// Units as well
 	for(uint i = 0; i < m_units.size(); i++)
@@ -727,15 +645,11 @@ void Map::RemoveDeadGameObjects()
 		Unit* current = m_units.at(i);
 
 		if(current->m_isDead)
-			deadindices.push_back(i);
+		{
+			RemoveFast(i, m_units);
+		}
 	}
 
-	for(uint j = 0; j < deadindices.size(); j++)
-	{
-		uint idx = deadindices.at(j);
-		g_theGame->m_playingState->RemoveRenderable(m_units.at(idx)->m_renderable);
-		m_units.erase(m_units.begin() + deadindices.at(j));
-	}
 }
 
 void Map::GoToNextTurn()
@@ -847,5 +761,16 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 
 	AddGameObject(*newBuilding);
 	AddBuilding(*newBuilding);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::CreateEffect(const String& name, const IntVector2& pos)
+{
+	Effect* newEffect = new Effect(name);
+	Vector2 position = (pos.GetAsVector2() * TILE_SIZE);
+	position.y += (TILE_SIZE * .5f);
+	newEffect->SetLocalPosition(position);
+
+	AddGameObject(*newEffect);
 }
 

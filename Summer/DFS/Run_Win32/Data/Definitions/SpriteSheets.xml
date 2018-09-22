@@ -2,6 +2,8 @@
 
     <SpriteSheet name="redUnits" src="Sprites/redUnits" layout="5,4" ppu=".25"/>
     <SpriteSheet name="Units" src="Sprites/UnitSpriteSheet" layout="11,81" ppu="1" />
+    <SpriteSheet name="explosion" src="Sprites/explosion" layout="5,2" ppu="1" />
+
 
 
 </Spritesheets>

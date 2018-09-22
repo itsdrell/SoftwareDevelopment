@@ -41,7 +41,7 @@ void SpriteAnimator::Update()
 		else
 		{
 			// could also just stop playing. This is assuming there is an idle :(
-			Play("idle", SPRITE_PLAY_LOOP);
+			//Play("idle", SPRITE_PLAY_LOOP);
 		}
 	}
 	else

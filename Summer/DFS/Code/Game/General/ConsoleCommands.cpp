@@ -11,6 +11,7 @@
 #include "Game/General/Player/CommandingOfficer.hpp"
 #include "Engine\Core\General\GameObject2D.hpp"
 #include "Engine/Renderer/RenderableComponents/Material.hpp"
+#include "GameObjects/Effect.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -27,6 +28,9 @@ void RegisterGameCommands()
 	CommandRegister("purchase", "", "Purchase Unit in Store", PurchaseUnit);
 	CommandRegister("addAllUnits", "", "", AddAllUnitTypesToMap);
 	CommandRegister("usePower", "", "", UseCOPower);
+	CommandRegister("addEffect", "","", AddEffect);
+	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
+	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 }
 
 void EndTurn(Command & theCommand)
@@ -169,6 +173,41 @@ void AddBuilding(Command& theCommand)
 
 }
 
+//-----------------------------------------------------------------------------------------------
+void AddEffect(Command& theCommand)
+{
+	DevConsole* dc = DevConsole::GetInstance();
+
+	// addUnit name team pos health 
+	std::string effectName = "explosion";
+	IntVector2 pos = IntVector2(0,0);
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		effectName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		pos = ParseString(theCommand.m_commandArguements.at(2), pos);
+	
+
+	if(effectName == "help")
+	{
+		dc->AddHeader("Params: effectName pos", Rgba::WHITE, 2);
+		dc->AddHeader("Possible Effects to spawn", Rgba::WHITE);
+
+		Strings nameOfEffects = EffectDefinition::GetAllEffectDefinitionNames();
+		for(uint i = 0; i < nameOfEffects.size(); i++)
+		{
+			dc->AddConsoleDialogue(nameOfEffects.at(i), GetRainbowColor((int) i , (int) nameOfEffects.size()));
+		}
+
+		dc->AddFooter();
+
+	}
+	else
+	{
+		g_theCurrentMap->CreateEffect(effectName, pos);
+	}
+}
+
 void CloseOpenMenu(Command& theCommand)
 {
 	UNUSED(theCommand);
@@ -233,4 +272,75 @@ void UseCOPower(Command& theCommand)
 	UNUSED(theCommand);
 
 	g_theCurrentMap->m_currentOfficer->m_definition->m_power->UsePower();
+}
+
+
+//-----------------------------------------------------------------------------------------------
+void KillAllUnitsOfTeam(Command& theCommand)
+{
+	std::string input;
+	DevConsole* dc; 
+
+	if(theCommand.m_commandArguements.size() == 1)
+		input = "help";
+	else
+		input = theCommand.m_commandArguements.at(1);
+
+	if(input == "help")
+	{
+		dc->AddConsoleDialogue(ConsoleDialogue("Teams to kill >:D ", Rgba::WHITE));
+
+		TurnOrder t = g_theGame->m_playingState->m_currentMap->m_turnOrder;
+		dc->AddSpace(1);
+
+		for(uint i = 0; i < t.m_order.size(); i++)
+		{
+			std::string teamName = TeamNameToString(t.m_order.at(i));
+
+			dc->AddConsoleDialogue(ConsoleDialogue(teamName, GetRainbowColor(i, (uint)t.m_order.size())));
+		}
+
+		dc->AddSpace(1);
+	}
+	else
+	{
+		TeamName tm = StringFromTeamName(input);
+
+		for(uint i = 0; i < g_theGame->m_playingState->m_currentMap->m_units.size(); i++)
+		{
+			Unit*& currentUnit = g_theGame->m_playingState->m_currentMap->m_units.at(i);
+
+			if(currentUnit->m_team == tm)
+				currentUnit->Die();
+		}
+	}
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void DebugGrid(Command& theCommand)
+{
+	std::string input;
+
+	if(theCommand.m_commandArguements.size() == 1)
+		input = "true";
+	else
+		input = theCommand.m_commandArguements.at(1);
+
+	bool check = ParseString(input, false);
+
+
+	if(check)
+	{
+		// Make sure there are only one of them
+		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
+		g_theGame->m_playingState->AddRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
+		g_theGame->m_playingState->m_showHeatmap = true;
+	}
+	else
+	{
+		g_theGame->m_playingState->RemoveRenderable(g_theGame->m_playingState->m_currentMap->m_debugRenderable);
+		g_theGame->m_playingState->m_showHeatmap = false;
+
+	}
 }

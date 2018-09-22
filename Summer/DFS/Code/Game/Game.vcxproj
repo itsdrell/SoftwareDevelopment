@@ -297,6 +297,7 @@
     <ClCompile Include="General\GameHeatMap.cpp" />
     <ClCompile Include="General\GameObjects\Building.cpp" />
     <ClCompile Include="General\GameObjects\Cursor.cpp" />
+    <ClCompile Include="General\GameObjects\Effect.cpp" />
     <ClCompile Include="General\GameObjects\Unit.cpp" />
     <ClCompile Include="General\Map.cpp" />
     <ClCompile Include="General\Player\CommandingOfficer.cpp" />
@@ -328,6 +329,7 @@
     <ClInclude Include="General\GameHeatMap.hpp" />
     <ClInclude Include="General\GameObjects\Building.hpp" />
     <ClInclude Include="General\GameObjects\Cursor.hpp" />
+    <ClInclude Include="General\GameObjects\Effect.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\Player\CommandingOfficer.hpp" />
