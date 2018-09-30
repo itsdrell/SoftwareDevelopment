@@ -1,15 +1,17 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "NetAddress.hpp"
+
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+class NetMessage;
+class NetSession;
 
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-
+#define INVALID_CONNECTION_INDEX 0
 
 //====================================================================================
 // ENUMS
@@ -24,38 +26,49 @@ class UnitDefinition;
 //====================================================================================
 // Classes
 //====================================================================================
+class NetConnection
+{
+	// the connection's index (luid - Local Unique IDentifier)
+	// meaning once a connection is in the sessions array - do not move it
+
+public:
+
+	NetConnection() {}
+	NetConnection(uint8_t idx, const NetAddress& theAddress, NetSession* owningSession);
+
+	~NetConnection();
+
+	// If we have unreliables, send as many packets as we need
+	// to send all of them (conditions for sending a packet may change later, 
+	// so may want to split the internals to "should_send_packet() and "send_packet"
+	// aka flush
+	void ProcessOutgoing(); 
+
+	void Send(NetMessage& messageToSend);
+
+public:
+	// list of all unreliables sent to this connection
+	// that will be packed into a connection;
+	std::vector<NetMessage*>	m_outboundUnreliables; 
+
+	NetAddress					m_address; // address associtaed with this connectin; 
+
+	// how this relates to the session; 
+	NetSession*					m_owningSession; 
+	uint8_t						m_indexInSession;
+};
 
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
 
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void AddEffect(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
-void DebugGrid(Command& theCommand);
-void KillAllUnitsOfTeam(Command& theCommand);
-
-// net session stuff
-void AddConnection( Command& theCommand );
-void SendPing( Command& theCommand );
-void SendAdd( Command& theCommand );
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [9/22/2018]
 //====================================================================================

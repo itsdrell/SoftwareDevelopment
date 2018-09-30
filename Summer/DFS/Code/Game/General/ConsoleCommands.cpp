@@ -12,6 +12,10 @@
 #include "Engine\Core\General\GameObject2D.hpp"
 #include "Engine/Renderer/RenderableComponents/Material.hpp"
 #include "GameObjects/Effect.hpp"
+#include "Engine/Net/NetConnection.hpp"
+#include "Engine/Net/NetSession.hpp"
+#include "Engine/Net/NetAddress.hpp"
+#include <string>
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -31,6 +35,11 @@ void RegisterGameCommands()
 	CommandRegister("addEffect", "","", AddEffect);
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
+
+	// NetSession stuff
+	CommandRegister("addConnect", "", "", AddConnection);
+	CommandRegister("ping", "", "", SendPing);
+	CommandRegister("sendAdd", "", "", SendAdd);
 }
 
 void EndTurn(Command & theCommand)
@@ -343,4 +352,80 @@ void DebugGrid(Command& theCommand)
 		g_theGame->m_playingState->m_showHeatmap = false;
 
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void AddConnection(Command & theCommand)
+{
+	uint8_t idx = 0U;
+	NetAddress addr;
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		idx = (uint8_t) stoi(theCommand.m_commandArguements.at(1));
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		addr = NetAddress(theCommand.m_commandArguements.at(2).c_str());
+
+	// notice this can't fail - we do no validation that that
+	// address is reachable.   UDP can't tell; 
+	NetSession *session = Game::GetNetSession(); 
+	NetConnection *cp = session->AddConnection( idx, addr ); 
+	if (cp == nullptr) 
+	{
+		DevConsole::AddErrorMessage( "Failed to add connection." ); 
+	} 
+	else 
+	{
+		DevConsole::AddErrorMessage( Stringf("Connection added at index [%u]", idx )); 
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void SendPing(Command & theCommand)
+{
+	uint8_t idx = 0U; 
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		idx = (uint8_t) stoi(theCommand.m_commandArguements.at(1));
+
+	NetSession *session = Game::GetNetSession(); 
+	NetConnection *cp = session->GetConnection( idx ); 
+	if (nullptr == cp) 
+	{
+		DevConsole::AddErrorMessage( Stringf("No connection at index %u", idx )); 
+		return; 
+	}
+
+	NetMessage msg("ping"); 
+	String str = theCommand.m_commandArguements.at(2); 
+	msg.WriteString( str.c_str() ); 
+
+	// messages are sent to connections (not sessions)
+	cp->Send( msg ); 
+}
+
+//-----------------------------------------------------------------------------------------------
+void SendAdd(Command & theCommand)
+{
+	uint8_t idx = 0U; 
+	float val0 = 0.f;
+	float val1 = 0.f;
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		idx = (uint8_t) stoi(theCommand.m_commandArguements.at(1));
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		val0 = stof(theCommand.m_commandArguements.at(2));
+	if(IsIndexValid(3, theCommand.m_commandArguements))
+		val1 = stof(theCommand.m_commandArguements.at(3));
+
+	NetSession *sp = Game::GetNetSession(); 
+	NetConnection *cp = sp->GetConnection( idx ); 
+	if (cp == nullptr) 
+	{
+		DevConsole::AddErrorMessage( Stringf("Unknown connection: %u", idx )); 
+		return; 
+	}
+
+	NetMessage msg("add"); 
+	msg.WriteBytes( sizeof(float), &val0 ); 
+	msg.WriteBytes( sizeof(float), &val1 ); 
+	cp->Send( msg );
 }

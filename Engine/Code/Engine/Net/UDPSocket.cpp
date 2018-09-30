@@ -6,7 +6,7 @@
 
 UDPTest* UDPTest::s_instance = nullptr;
 //===============================================================================================
-bool UDPSocket::bind( NetAddress const &addr, uint16_t port_range /*= 0U*/ )
+bool UDPSocket::Bind( NetAddress &addr, uint16_t port_range /*= 0U*/ )
 {
 	// create the socket 
 	SOCKET my_socket = socket( AF_INET,	// IPv4 to send...
@@ -15,24 +15,31 @@ bool UDPSocket::bind( NetAddress const &addr, uint16_t port_range /*= 0U*/ )
 
 	GUARANTEE_OR_DIE( my_socket != INVALID_SOCKET, false ); 
 
-	// TODO, try to bind all ports within the range. 
-	// so for range, you start at an indx and increase by the range (so 10 with range 4 is 10, 11, 12, 13)
-	// and do thaat till you connect
+	// so for range, you start at an index and increase by the range (so 10 with range 4 is 10, 11, 12, 13)
+	// and do that till you connect
 	// Shown - just trying one; 
-	sockaddr_storage sock_addr;
-	size_t sock_addr_len;
-	
-	//NetAddressToSocketAddress( (sockaddr*)&sock_addr, &sock_addr_len, addr );
-	addr.ToSocketAddress( (sockaddr*)&sock_addr, &sock_addr_len );
 
-	// try to bind - if it succeeds - great.  If not, try the next port in the range.
-	int result = ::bind( my_socket, (sockaddr*)&sock_addr, (int)sock_addr_len );
-	if (0 == result) 
+	for(uint i = 0; i < port_range; i++)
 	{
-		m_handle = (Socket_t)my_socket; 
-		m_address = addr; 
-		return true; 
-	} 
+		sockaddr_storage sock_addr;
+		size_t sock_addr_len;
+		
+		//NetAddressToSocketAddress( (sockaddr*)&sock_addr, &sock_addr_len, addr );
+		addr.ToSocketAddress( (sockaddr*)&sock_addr, &sock_addr_len );
+
+		// try to bind - if it succeeds - great.  If not, try the next port in the range.
+		int result = ::bind( my_socket, (sockaddr*)&sock_addr, (int)sock_addr_len );
+		if (0 == result) 
+		{
+			m_handle = (Socket_t)my_socket; 
+			m_address = addr; 
+			return true; 
+		} 
+		else
+		{
+			addr.m_port++;
+		}
+	}
 
 	return false; 
 }
@@ -129,7 +136,7 @@ bool UDPTest::Start()
 		return false;
 	}
 	
-	if (!m_socket.bind( addr, 10 )) 
+	if (!m_socket.Bind( addr, 10 )) 
 	{
 		DevConsole::AddConsoleDialogue( "Failed to bind." );
 		return false;  

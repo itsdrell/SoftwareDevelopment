@@ -16,6 +16,7 @@ class DevConsole;
 class Attract;
 class Playing;
 class Loading;
+class NetSession;
 
 //=============================================================
 // ENUMS
@@ -42,8 +43,12 @@ public:
 	Game();
 	~Game();
 
+	static Game* GetInstance() { return s_theGame;}
+	static NetSession* GetNetSession() { return GetInstance()->m_theNetSession; }
+
 	void		StartUp();
 	void		RegisterCommands();
+	void		RegisterNetCallbacks();
 
 	void		Update();
 
@@ -67,6 +72,10 @@ public:
 
 	Timer*			m_loadingScreenTimer = nullptr;
 
+	NetSession*		m_theNetSession = nullptr;
+
+
+	static Game*	s_theGame;
 
 };
 //=============================================================

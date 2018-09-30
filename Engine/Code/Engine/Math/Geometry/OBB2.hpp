@@ -1,10 +1,10 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "..\Vectors\Vector2.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -25,37 +25,42 @@ class UnitDefinition;
 // Classes
 //====================================================================================
 
+// 
+class OBB2
+{
+public:
+	OBB2();
+	OBB2(const Vector2& theCenter, const Vector2& normalizedRight, const Vector2& halfDimensions);
+
+	Vector2 GetUP() const;
+	Vector2 GetNormalizedUp() const;
+	Vector2 GetRight() const;
+
+	// When dealing with OBB2s it's good to think about them in their own space
+	// so we needs these 
+	Vector2 GetLocalPositionFromWorld(const Vector2& worldPos) const;
+	Vector2 GetWorldPositionFromLocal(const Vector2& localPos) const;
+
+	Vector2 GetClosestPoint(const Vector2& worldPos) const;
+	bool IsPointInBox(const Vector2& worldPos);
+
+public:
+	Vector2			m_center;
+	Vector2			m_normalizedRight;
+	Vector2			m_halfDimensions;
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void AddEffect(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
-void DebugGrid(Command& theCommand);
-void KillAllUnitsOfTeam(Command& theCommand);
-
-// net session stuff
-void AddConnection( Command& theCommand );
-void SendPing( Command& theCommand );
-void SendAdd( Command& theCommand );
+void PushDiscOutOfOBB2( Vector2& center, float theRadius, const OBB2& theBox );
+bool DoesDiscOverlapOBB2( const Vector2& center, float theRadius, const OBB2& theBox);
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [9/28/2018]
 //====================================================================================

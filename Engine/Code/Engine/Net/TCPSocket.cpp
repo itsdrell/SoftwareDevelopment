@@ -207,7 +207,8 @@ size_t TCPSocket::Receive(void *buffer, size_t const maxByteSize)
 		0 );             // flags (unused)
 	
 	
-	if(HasFatalError())
+	// If you get nothing, it is called a graceful close that we need to be aware of
+	if(HasFatalError() || recvd == 0)
 		Close();
 
 	return recvd;

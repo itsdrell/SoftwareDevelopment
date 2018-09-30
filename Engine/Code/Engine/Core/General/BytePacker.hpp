@@ -93,6 +93,7 @@ public:
 
 
 	void* GetBuffer() { return m_buffer; }
+	void* GetConstBuffer() const { return m_buffer; }
 
 private:
 

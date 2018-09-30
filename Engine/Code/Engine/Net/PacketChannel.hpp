@@ -1,10 +1,13 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "Engine/Net/NetAddress.hpp"
+#include "Engine/Net/NetPacket.hpp"
+#include "Engine/Net/UDPSocket.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -24,38 +27,40 @@ class UnitDefinition;
 //====================================================================================
 // Classes
 //====================================================================================
+// collection of UDP sockets to communicate on
+// can allocate and free packets
+class PacketChannel 
+{
+public:
 
+	PacketChannel();
+	~PacketChannel();
+
+	// tries to bind to an additional UDP Socket
+	// returns the index assigned to this socket.  
+	// returns -1 if it failed to bind; 
+	int Bind( NetAddress &addr , uint range_to_try); 
+	void Send( NetAddress const &to, const NetPacket& packet ); 
+
+	// Returns whether 
+	bool Receive( NetAddress const &from, NetPacket const &packet ); 
+
+public:
+	// probably at least one UDPSocket
+	UDPSocket*				m_socket;
+
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
 
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void AddEffect(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
-void DebugGrid(Command& theCommand);
-void KillAllUnitsOfTeam(Command& theCommand);
-
-// net session stuff
-void AddConnection( Command& theCommand );
-void SendPing( Command& theCommand );
-void SendAdd( Command& theCommand );
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [9/22/2018]
 //====================================================================================

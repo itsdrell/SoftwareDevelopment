@@ -15,7 +15,7 @@ public:
 
 	UDPSocket() {}
 
-	bool bind( NetAddress const &addr, // address I want to listen for traffic on
+	bool Bind( NetAddress &addr, // address I want to listen for traffic on
 		uint16_t port_range = 0U );		  // how many additional ports to bind on (so you bind from [addr.port,addr.port + port_range])
 
 										  // return 0 on failure, otherwise how large is the next datagram

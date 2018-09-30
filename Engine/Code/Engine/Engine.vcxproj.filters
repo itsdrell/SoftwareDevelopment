@@ -313,6 +313,24 @@
     <ClCompile Include="Net\Socket.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\NetSession.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetConnection.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetMessage.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\NetPacket.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Net\PacketChannel.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Geometry\OBB2.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -436,6 +454,12 @@
     <ClInclude Include="Renderer\Images\Sprites\SpriteAnimator.hpp" />
     <ClInclude Include="Net\UDPSocket.hpp" />
     <ClInclude Include="Net\Socket.hpp" />
+    <ClInclude Include="Net\NetPacket.hpp" />
+    <ClInclude Include="Net\NetMessage.hpp" />
+    <ClInclude Include="Net\NetSession.hpp" />
+    <ClInclude Include="Net\NetConnection.hpp" />
+    <ClInclude Include="Net\PacketChannel.hpp" />
+    <ClInclude Include="Math\Geometry\OBB2.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

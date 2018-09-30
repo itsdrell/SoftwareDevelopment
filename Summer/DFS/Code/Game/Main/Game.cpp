@@ -29,11 +29,14 @@
 #include "../GameStates/Loading.hpp"
 #include "Game/General/ConsoleCommands.hpp"
 #include "Engine/Net/UDPSocket.hpp"
+#include "Engine/Net/NetSession.hpp"
+#include "Game/Main/Playground.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
 
 Game* g_theGame = nullptr;
+Game* Game::s_theGame = nullptr;
 
 //////////////////////////////////////////////////////////////////////////
 // Command Tests (no console)
@@ -52,13 +55,14 @@ Game::Game()
 
 	RegisterCommands();
 
-
 	// Create all the states
 	m_currentState = LOADING;
 	m_attractState = new Attract();
 	m_playingState = new Playing();
 	m_loadingState = new Loading();
 	
+
+	s_theGame = this;
 }
 
 //--------------------------------------------------------------------------
@@ -91,6 +95,10 @@ void Game::StartUp()
 
 	m_console->StartUp();
 
+	m_theNetSession = new NetSession();
+	RegisterNetCallbacks();
+	m_theNetSession->Bind( GAME_PORT, 16U);
+
 	bool check = UDPTest::GetInstance()->Start();
 }
 
@@ -101,9 +109,17 @@ void Game::RegisterCommands()
 	RegisterGameCommands();
 }
 
+void Game::RegisterNetCallbacks()
+{
+	m_theNetSession->RegisterMessageDefinition("ping", OnPing);
+	m_theNetSession->RegisterMessageDefinition("pong",OnPong);
+	m_theNetSession->RegisterMessageDefinition("add", OnAdd);
+}
+
 void Game::Update()
 {
 	UDPTest::GetInstance()->Update();
+	m_theNetSession->ProcessIncoming();
 
 	switch (m_currentState)
 	{
@@ -125,9 +141,8 @@ void Game::Update()
 	}
 
 
-
-	
 	CheckKeyBoardInputs();
+	m_theNetSession->ProcessOutgoing();
 	m_console->Update(); // using engine clock?
 }
 
