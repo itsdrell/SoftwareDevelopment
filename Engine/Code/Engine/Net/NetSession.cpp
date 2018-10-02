@@ -87,12 +87,10 @@ NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx)
 				return current;
 		}
 	}
-	else
-	{
-		ERROR_RECOVERABLE("Could not find a NetMessage at index: " + std::to_string(idx));
-		return nullptr;
-	}
 	
+	ERROR_RECOVERABLE("Could not find a NetMessage at index: " + std::to_string(idx));
+	return nullptr;
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -163,7 +161,7 @@ void NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 //-----------------------------------------------------------------------------------------------
 NetConnection* NetSession::AddConnection(uint idx, NetAddress const & addr)
 {
-	NetConnection* newConnection = new NetConnection(idx, addr, this);
+	NetConnection* newConnection = new NetConnection((uint8_t) idx, addr, this);
 	
 	// make sure we use a valid idx
 	if(idx > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS || idx < 0)
@@ -325,6 +323,9 @@ uint8_t NetSession::GetMyConnection() const
 //-----------------------------------------------------------------------------------------------
 uint8_t NetSession::GetConnectionForPacket(const PacketHeader& theHeader, const NetAddress& theAddressOfSender)
 {
+	UNUSED(theHeader);
+	UNUSED(theAddressOfSender);
+	
 	return INVALID_CONNECTION_INDEX;
 }
 

@@ -261,7 +261,7 @@ void AddAllUnitTypesToMap(Command& theCommand)
 	std::vector<UnitDefinition*> defList;
 	UnitDefinition::GetAllUnitDefinitions( &defList );
 	
-	uint amountOfUnits = defList.size();
+	uint amountOfUnits = (uint) defList.size();
 	
 	IntVector2 currentPos = IntVector2(0,0);
 	for(uint i = 0; i < amountOfUnits; i++)

@@ -98,8 +98,6 @@ void Game::StartUp()
 	m_theNetSession = new NetSession();
 	RegisterNetCallbacks();
 	m_theNetSession->Bind( GAME_PORT, 16U);
-
-	bool check = UDPTest::GetInstance()->Start();
 }
 
 

@@ -46,6 +46,8 @@ bool OnPong( NetMessage & msg, const NetSender & from)
 	//msg.ReadString( str , 20U);  
 	//msg.ReadBytes(str, msg.GetWrittenByteCount());
 
+	UNUSED(msg);
+
 	DevConsole::AddConsoleDialogue( Stringf( "Received Pong from %s", 
 		from.m_connection->m_address.ToString().c_str())); 
 

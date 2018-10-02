@@ -59,7 +59,7 @@ size_t UDPSocket::SendTo(NetAddress const & addr, void const * data, size_t cons
 		(int) byte_count, 
 		0, 
 		(sockaddr*) &saddr, 
-		addr_len);
+		(int) addr_len);
 
 	if(sent > 0)
 	{
@@ -121,8 +121,8 @@ UDPTest* UDPTest::GetInstance()
 {
 	if(s_instance == nullptr)
 		s_instance = new UDPTest();
-	else
-		return s_instance;
+
+	return s_instance;
 }
 
 bool UDPTest::Start()

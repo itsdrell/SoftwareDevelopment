@@ -80,7 +80,7 @@ void NetConnection::Send( NetMessage& messageToSend )
 	// the Session we have stored off
 
 	NetMessageDefinition* theDef = m_owningSession->GetMessageDefinitionByName(messageToSend.m_definitionName);
-	messageToSend.m_header.m_messageCallbackDefinitionIndex = theDef->m_callbackID;
+	messageToSend.m_header.m_messageCallbackDefinitionIndex = (uint8_t) theDef->m_callbackID;
 
 	// add to outgoing queue
 	m_outboundUnreliables.push_back(&messageToSend);

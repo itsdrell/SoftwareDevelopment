@@ -48,7 +48,7 @@ void HealAllUnits(float amount)
 
 		if(currentUnit.m_team == currentOfficer.m_team)
 		{
-			currentUnit.AddHealth(amount);
+			currentUnit.AddHealth( (int) amount);
 		}
 	}
 }

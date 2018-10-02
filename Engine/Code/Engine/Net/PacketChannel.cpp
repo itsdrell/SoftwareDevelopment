@@ -18,7 +18,7 @@ PacketChannel::~PacketChannel()
 //-----------------------------------------------------------------------------------------------
 int PacketChannel::Bind(NetAddress& addr, uint range_to_try)
 {
-	bool result = m_socket->Bind(addr, range_to_try);
+	bool result = m_socket->Bind(addr, (uint16_t) range_to_try);
 
 	if(result == false)
 		return -1;
@@ -36,5 +36,8 @@ void PacketChannel::Send(NetAddress const & to, NetPacket const & packet)
 //-----------------------------------------------------------------------------------------------
 bool PacketChannel::Receive(NetAddress const & from, NetPacket const & packet)
 {
+	UNUSED(from);
+	UNUSED(packet);
+
 	return false;
 }
