@@ -60,7 +60,7 @@ struct NetMessageDefinition
 class NetMessage : public BytePacker
 {
 public:
-	NetMessage() {} // for receiving
+	NetMessage(); // for receiving
 	NetMessage( const char* name );  // for sending
 
 	//===============================================================================================

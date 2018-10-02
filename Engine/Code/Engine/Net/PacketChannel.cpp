@@ -22,6 +22,8 @@ int PacketChannel::Bind(NetAddress& addr, uint range_to_try)
 
 	if(result == false)
 		return -1;
+	
+	m_socket->SetBlocking(false);
 	return 1;
 }
 

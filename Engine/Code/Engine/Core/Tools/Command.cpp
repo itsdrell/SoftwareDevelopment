@@ -135,6 +135,18 @@ std::string Command::GetRestOfCommand()
 	return theText;
 }
 
+//-----------------------------------------------------------------------------------------------
+std::string Command::GetCommandParameters()
+{
+	std::string result;
+
+	for(uint i = 1; i < m_commandArguements.size(); i++)
+	{
+		result += (m_commandArguements.at(i) + " ");
+	}
+
+	return result;
+}
 
 // void Command::ClearCommands()
 // {

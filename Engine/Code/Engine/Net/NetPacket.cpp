@@ -1,11 +1,22 @@
 #include "Engine/Net/NetPacket.hpp"
 #include "Engine/Net/UDPSocket.hpp"
+#include "NetSession.hpp"
+#include "NetConnection.hpp"
 
 NetPacket::NetPacket()
 	: BytePacker(PACKET_MTU, LITTLE_ENDIAN) // Set to max size you can send over LAN
 {
 	// move the write head over two bytes because we wont write the header till the end
 	AdvanceWriteHead(2U);
+}
+
+//-----------------------------------------------------------------------------------------------
+NetPacket::NetPacket(bool advanceWriteHeadForHeader)
+	: BytePacker(PACKET_MTU, LITTLE_ENDIAN) // Set to max size you can send over LAN
+{
+	if(advanceWriteHeadForHeader)
+		AdvanceWriteHead(2U);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -41,11 +52,12 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 
 	// get the size of the message
 	size_t sizeOfMsg = msg.GetWrittenByteCount();
-	size_t totalSize = sizeOfMsg + (2U) + sizeof(NetMessageHeader);
+	size_t sizeOfMessageAndHeader = sizeOfMsg + sizeof(NetMessageHeader);
+	size_t totalLength = sizeOfMessageAndHeader + 2U;
 	
 	// make sure the size of the Packet fits into this buffer
 	// if it can't just exit 
-	if(GetWritableByteCount() < totalSize)
+	if(GetWritableByteCount() < (totalLength))
 	{
 		// Don't add to packet
 		return false;
@@ -54,7 +66,7 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	// we have room! add to this packet
 
 	// write the size of the message
-	tempPacket.WriteBytes(2, &sizeOfMsg);
+	tempPacket.WriteBytes(2U, &sizeOfMessageAndHeader);
 	
 	// write the header of the message
 	tempPacket.WriteBytes(sizeof(NetMessageHeader), &msg.m_header);
@@ -63,10 +75,12 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	tempPacket.WriteBytes(sizeOfMsg, msg.GetConstBuffer(), false);
 	
 	// Add to packet
-	WriteBytes(totalSize, tempPacket.GetBuffer(), false);
+	WriteBytes(totalLength, tempPacket.GetBuffer(), false);
 
 	// keep track of how many messages are in this
 	m_header.m_unreliableCount++;
+
+	return true;
 
 }
 
@@ -81,28 +95,38 @@ bool NetPacket::ReadMessage(NetMessage* out_msg)
 
 	// Read the size of msg
 	uint16_t size;
-	size_t howMuchRead = ReadBytes(&size, 2);
-	if(howMuchRead < (2U)) { return false; }
+	size_t howMuchRead = ReadBytes(&size, 2U);
+	if(howMuchRead != 2U) { return false; }
 	
 	// Read the header
-	howMuchRead = ReadBytes(&out_msg->m_header, sizeof(NetMessageHeader), false);
-	if(howMuchRead < sizeof(NetMessageHeader)) { return false; }
+	NetMessageHeader theHeader;
+	size_t amountToRead = sizeof(NetMessageHeader); // this should be 1 atm
+	size_t howMuchReadForHeader = ReadBytes(&theHeader, amountToRead);
+	if(howMuchReadForHeader != amountToRead) { return false; }
+	out_msg->m_header = theHeader;
 
 	// Read the message
-	void* messageBuffer = out_msg->GetBuffer();
-	howMuchRead = ReadBytes(&messageBuffer, size, false);
-	out_msg->SetTotalWrittenByteCount(howMuchRead);
-	if(howMuchRead < size) { return false; }
+	void* messageBuffer = out_msg->GetBuffer();   // IF ANYTHING IS WRONG IT'S PROBABLY THE -1
+	size_t bufferRead = ReadBytes(messageBuffer, (size - 1));
+	out_msg->SetTotalWrittenByteCount(bufferRead);
+	if(bufferRead != (size - 1)) { return false; }
 
 	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
-bool NetPacket::IsValid()
+bool NetPacket::IsValid(const NetSession& theSession)
 {
 	// Get the packet header
 	PacketHeader theHeader;
 	size_t amountRead = ReadBytes(&theHeader, sizeof(PacketHeader));
+
+	// see if the packet is lying about who they are 
+	//(since we already check to see if the connection is valid)
+	if(theSession.GetConnection(theHeader.m_senderConnectionIndex) == nullptr 
+		&& theHeader.m_senderConnectionIndex != INVALID_CONNECTION_INDEX)
+		return false;
+
 
 	// packet is empty == garbage
 	if(amountRead == 0U)
@@ -129,7 +153,7 @@ bool NetPacket::IsValid()
 	}
 	
 	// make sure we stopped at the buffers writable head
-	if(!(GetReadableHead() == (GetWritableHead() - 1U)))
+	if(!(GetReadableHead() == (GetWritableHead() /*- 1U*/)))
 	{
 		// something went wrong
 		return false;

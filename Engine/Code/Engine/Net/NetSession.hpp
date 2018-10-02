@@ -24,11 +24,13 @@ class NetConnection;
 //====================================================================================
 struct NetSender
 {
+	NetSender() {}
+	
 	// just a connection for now but later will change
 	NetSender(NetConnection& theConnection)
 		: m_connection(&theConnection) {}
 	
-	NetConnection*	m_connection;
+	NetConnection*	m_connection = nullptr;
 };
 
 //====================================================================================
@@ -64,7 +66,7 @@ public:
 
 	// updates
 	void ProcessIncoming();
-	void ProcessPacket( NetPacket& packet );
+	void ProcessPacket( NetPacket& packet , const NetAddress& sender);
 
 
 	void ProcessOutgoing();
@@ -72,7 +74,8 @@ public:
 
 	uint8_t GetMyConnection() const;
 	uint8_t GetConnectionForPacket(const PacketHeader& theHeader, const NetAddress& theAddressOfSender);
-	NetConnection* GetConnection(int idx);
+	NetConnection* GetConnection(int idx) const;
+	NetConnection* GetConnectionFromAddress(const NetAddress& sender) const;
 
 
 public:

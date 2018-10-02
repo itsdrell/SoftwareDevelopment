@@ -44,7 +44,7 @@ public:
 	static const Rgba CYAN;
 	static const Rgba MAGENTA;
 	
-	// rainbow ;D
+	
 	static const Rgba RED;
 	static const Rgba ORANGE;
 	static const Rgba YELLOW;
@@ -52,6 +52,15 @@ public:
 	static const Rgba BLUE;
 	static const Rgba INDIGO;
 	static const Rgba VIOLET;
+
+	// rainbow ;D
+	static const Rgba RAINBOW_RED;
+	static const Rgba RAINBOW_ORANGE;
+	static const Rgba RAINBOW_YELLOW;
+	static const Rgba RAINBOW_GREEN;
+	static const Rgba RAINBOW_BLUE;
+	static const Rgba RAINBOW_INDIGO;
+	static const Rgba RAINBOW_VIOLET;
 
 
 };

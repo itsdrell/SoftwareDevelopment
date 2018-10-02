@@ -36,11 +36,14 @@ public:
 	bool ToSocketAddress( sockaddr* addr, size_t* out_size) const;
 
 	String ToString() const; 
+	String GetPortAsString() const;
 
 	static NetAddress GetLocalAddress(const char* port);
 	static std::string GetLocalAddressAsString(const char* port);
 
 	static bool GetBindableAddress( NetAddress* outAddress, String port);
+
+	bool operator==( const NetAddress& compare ) const;	
 
 public:
 	uint		m_address = 0U;

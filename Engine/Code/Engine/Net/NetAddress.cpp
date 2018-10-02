@@ -84,6 +84,14 @@ String NetAddress::ToString() const
 }
 
 //-----------------------------------------------------------------------------------------------
+String NetAddress::GetPortAsString() const
+{
+	String port = Stringf( "%u", m_port ); 
+
+	return port;
+}
+
+//-----------------------------------------------------------------------------------------------
 NetAddress NetAddress::GetLocalAddress(const char* port)
 {
 	char my_name[256];
@@ -279,6 +287,12 @@ bool NetAddress::GetBindableAddress(NetAddress* outAddress, String port)
 	// freeing up
 	::freeaddrinfo( result );
 	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetAddress::operator==(const NetAddress& compare) const
+{
+	return ((m_address == compare.m_address) && (m_port == compare.m_port));
 }
 
 //====================================================================================

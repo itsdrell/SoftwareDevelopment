@@ -5,9 +5,9 @@
 //////////////////////////////////////////////////////////////////////////
 // STATIC COLORS
 const Rgba Rgba::WHITE = Rgba(255,255,255,255);
-const Rgba  Rgba::BLACK = Rgba(0,0,0,255);
-const Rgba  Rgba::CYAN = Rgba(0, 255, 255,255);
-const Rgba  Rgba::MAGENTA = Rgba(255,0,255);
+const Rgba Rgba::BLACK = Rgba(0,0,0,255);
+const Rgba Rgba::CYAN = Rgba(0, 255, 255,255);
+const Rgba Rgba::MAGENTA = Rgba(255,0,255);
 const Rgba Rgba::RED = Rgba(255,0,0,255);
 const Rgba Rgba::YELLOW = Rgba(255,255,0,255);
 const Rgba Rgba::GREEN = Rgba(0,255,0,255);
@@ -16,6 +16,15 @@ const Rgba Rgba::BLUE = Rgba(0,0,255,255);
 const Rgba Rgba::ORANGE = Rgba(255,165,0,255);
 const Rgba Rgba::INDIGO = Rgba(75,0,130,255);
 const Rgba Rgba::VIOLET = Rgba(138,43,226,255);
+
+// rainbow ;D
+const Rgba Rgba::RAINBOW_RED = Rgba(250,165,178,179);
+const Rgba Rgba::RAINBOW_ORANGE = Rgba(255,206,161,255);
+const Rgba Rgba::RAINBOW_YELLOW = Rgba(252,252,188,255);
+const Rgba Rgba::RAINBOW_GREEN = Rgba(185,250,207,255);
+const Rgba Rgba::RAINBOW_BLUE = Rgba(179,210,255,255);
+const Rgba Rgba::RAINBOW_INDIGO = Rgba(214,174,247,255);
+const Rgba Rgba::RAINBOW_VIOLET = Rgba(250,193,248,255);
 //////////////////////////////////////////////////////////////////////////
 
 Rgba::Rgba()
@@ -218,19 +227,19 @@ Rgba GetRainbowColor(int idx, int total /*= 7*/)
 	float percent = (float) idx / (float) total;
 
 	if(percent < (1.f/7.f))
-		return Rgba::RED;
+		return Rgba::RAINBOW_RED;
 	if(percent >= (1.f/7.f) && percent < (2.f/7.f))
-		return Rgba::ORANGE;
+		return Rgba::RAINBOW_ORANGE;
 	if(percent >= (2.f/7.f) && percent < (3.f/7.f))
-		return Rgba::YELLOW;
+		return Rgba::RAINBOW_YELLOW;
 	if(percent >= (3.f/7.f) && percent < (4.f/7.f))
-		return Rgba::GREEN;
+		return Rgba::RAINBOW_GREEN;
 	if(percent >= (4.f/7.f) && percent < (5.f/7.f))
-		return Rgba::BLUE;
+		return Rgba::RAINBOW_BLUE;
 	if(percent >= (5.f/7.f) && percent < (6.f/7.f))
-		return Rgba::INDIGO;
+		return Rgba::RAINBOW_INDIGO;
 	if(percent >= (6.f/7.f))
-		return Rgba::VIOLET;
+		return Rgba::RAINBOW_VIOLET;
 
 	return Rgba::WHITE;
 }
@@ -238,20 +247,20 @@ Rgba GetRainbowColor(int idx, int total /*= 7*/)
 Rgba GetNextColorInRainbow(Rgba & currentColor)
 {
 
-	if(currentColor == Rgba::RED)
-		return Rgba::ORANGE;
-	if(currentColor == Rgba::VIOLET)
-		return Rgba::RED;
-	if(currentColor == Rgba::INDIGO)
-		return Rgba::VIOLET;
-	if(currentColor == Rgba::BLUE)
-		return Rgba::INDIGO;
-	if(currentColor == Rgba::GREEN)
-		return Rgba::BLUE;
-	if(currentColor == Rgba::YELLOW)
-		return Rgba::GREEN;
-	if(currentColor == Rgba::ORANGE)
-		return Rgba::YELLOW;
+	if(currentColor == Rgba::RAINBOW_RED)
+		return Rgba::RAINBOW_ORANGE;
+	if(currentColor == Rgba::RAINBOW_VIOLET)
+		return Rgba::RAINBOW_RED;
+	if(currentColor == Rgba::RAINBOW_INDIGO)
+		return Rgba::RAINBOW_VIOLET;
+	if(currentColor == Rgba::RAINBOW_BLUE)
+		return Rgba::RAINBOW_INDIGO;
+	if(currentColor == Rgba::RAINBOW_GREEN)
+		return Rgba::RAINBOW_BLUE;
+	if(currentColor == Rgba::RAINBOW_YELLOW)
+		return Rgba::RAINBOW_GREEN;
+	if(currentColor == Rgba::RAINBOW_ORANGE)
+		return Rgba::RAINBOW_YELLOW;
 	
 	return Rgba::WHITE;
 }
@@ -262,19 +271,19 @@ Rgba GetRandomColorInRainbow()
 	int d = GetRandomIntRange(0,6);
 
 	if(d == 0)
-		return Rgba::RED;
+		return Rgba::RAINBOW_RED;
 	if(d == 1)
-		return Rgba::ORANGE;
+		return Rgba::RAINBOW_ORANGE;
 	if(d == 2)
-		return Rgba::YELLOW;
+		return Rgba::RAINBOW_YELLOW;
 	if(d == 3)
-		return Rgba::GREEN;
+		return Rgba::RAINBOW_GREEN;
 	if(d == 4)
-		return Rgba::BLUE;
+		return Rgba::RAINBOW_BLUE;
 	if(d == 5)
-		return Rgba::INDIGO;
+		return Rgba::RAINBOW_INDIGO;
 	if(d == 6)
-		return Rgba::VIOLET;
+		return Rgba::RAINBOW_VIOLET;
 	
 	return Rgba::WHITE;
 }

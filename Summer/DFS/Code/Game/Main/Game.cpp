@@ -111,9 +111,10 @@ void Game::RegisterCommands()
 
 void Game::RegisterNetCallbacks()
 {
-	m_theNetSession->RegisterMessageDefinition("ping", OnPing);
 	m_theNetSession->RegisterMessageDefinition("pong",OnPong);
 	m_theNetSession->RegisterMessageDefinition("add", OnAdd);
+	m_theNetSession->RegisterMessageDefinition("add_response", OnAddResponse);
+	m_theNetSession->RegisterMessageDefinition("ping", OnPing);
 }
 
 void Game::Update()

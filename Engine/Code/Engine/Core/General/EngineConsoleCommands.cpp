@@ -227,7 +227,7 @@ void RCSSendMessage(Command& cb)
 //-----------------------------------------------------------------------------------------------
 void RCSSendMessageToAll(Command & cb)
 {
-	std::string message = cb.GetRestOfCommand();
+	std::string message = cb.GetCommandParameters();
 
 	uint sizeOfConnesctions = (uint) RemoteCommandService::GetInstance()->m_connections.size();
 	for(uint i = 0; i < sizeOfConnesctions; i++)
@@ -242,7 +242,7 @@ void RCSSendMessageToAll(Command & cb)
 //-----------------------------------------------------------------------------------------------
 void RCSSendMessageToAllButMe(Command & cb)
 {
-	std::string message = cb.GetRestOfCommand();
+	std::string message = cb.GetCommandParameters();
 
 	uint sizeOfConnesctions = (uint) RemoteCommandService::GetInstance()->m_connections.size();
 	for(uint i = 0; i < sizeOfConnesctions; i++)

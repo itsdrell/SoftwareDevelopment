@@ -3,6 +3,7 @@
 #include "../Core/General/EngineCommon.hpp"
 #include "NetAddress.hpp"
 #include "NetMessage.hpp"
+#include "../Core/Tools/DevConsole.hpp"
 
 //-----------------------------------------------------------------------------------------------
 NetSession::NetSession()
@@ -39,6 +40,9 @@ bool NetSession::RegisterMessageDefinition(const String& id, NetMessage_cb cb)
 
 	int theID = (int) m_messageCallbacks.size();
 	NetMessageDefinition* newDefinition = new NetMessageDefinition(theID, id, cb);
+
+	m_messageCallbacks.push_back(newDefinition);
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -75,7 +79,13 @@ NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx)
 {
 	if(IsIndexValid((uint) idx, m_messageCallbacks))
 	{
-		return m_messageCallbacks.at(idx);
+		for(uint i = 0; i < m_messageCallbacks.size(); i++)
+		{
+			NetMessageDefinition* current = m_messageCallbacks.at(i);
+
+			if(current->m_callbackID == ((int)(idx)))
+				return current;
+		}
 	}
 	else
 	{
@@ -102,23 +112,26 @@ NetMessageDefinition* NetSession::GetMessageDefinitionByName(const String& name)
 
 //-----------------------------------------------------------------------------------------------
 void NetSession::SortDefinitions()
-{
-	// this is probs wrong. sorry future me
-	
-	for(uint i = 0; i < m_messageCallbacks.size(); i++)
+{	
+	for(uint i = 0; i < m_messageCallbacks.size() - 1; i++)
 	{
-		for(uint j = 0; j < m_messageCallbacks.size() - 1; i++)
+		for(uint j = i + 1; j < m_messageCallbacks.size(); j++)
 		{
-			NetMessageDefinition* a = m_messageCallbacks.at(i);
-			NetMessageDefinition* b = m_messageCallbacks.at(j);
+			NetMessageDefinition*& a = m_messageCallbacks.at(i);
+			NetMessageDefinition*& b = m_messageCallbacks.at(j);
 
 			if(a->m_callbackName > b->m_callbackName)
 			{
-				NetMessageDefinition* temp = a;
-				a = b;
-				b = temp;
+				std::swap( a, b );
 			}
 		}
+	}
+
+	// need to update the callback ID as well now that we have sorted
+	for(uint k = 0; k < m_messageCallbacks.size(); k++)
+	{
+		NetMessageDefinition*& current = m_messageCallbacks.at(k);
+		current->m_callbackID = (int) k;
 	}
 }
 
@@ -134,7 +147,11 @@ void NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 
 	if(idx == -1)
 	{
-		ERROR_RECOVERABLE("NetSession had an error binding the NetAddress to Packet");
+		DevConsole::AddErrorMessage("NetSession had an error binding the NetAddress");
+	}
+	else
+	{
+		DevConsole::AddConsoleDialogue("Bound to port: " + addressToTry.GetPortAsString(), Rgba::WHITE);
 	}
 
 
@@ -188,9 +205,11 @@ void NetSession::ProcessIncoming()
 	// and call process those packets until
 	// no more packets are available; 
 
-	NetPacket incomingPacket;
 	NetAddress theAddress;
-	m_channel.m_socket->ReceiveFrom(&theAddress, incomingPacket.GetBuffer(), PACKET_MTU);
+	BytePacker tempBuffer(LITTLE_ENDIAN);
+	size_t result = m_channel.m_socket->ReceiveFrom(&theAddress, tempBuffer.GetBuffer(), PACKET_MTU);
+	
+	//incomingPacket.AdvanceWriteHead(result);
 
 	// DON'T DO THIS THIS ASSIGNMENT, PROCESS EVERYTHING
 	// Check to see if the address is a valid connect (in our list)
@@ -201,29 +220,45 @@ void NetSession::ProcessIncoming()
 	//}
 
 	
-
-	// See if packet is valid
-	if(!incomingPacket.IsValid())
+	if(result != 0)
 	{
-		// throw the packet away
-		return;
+		// lets make a packet with the temp buffer!
+		NetPacket incomingPacket(false);
+		//incomingPacket.ResetWrite();
+		incomingPacket.WriteBytes(result, tempBuffer.GetBuffer());
+		
+		// See if packet is valid
+		if(!incomingPacket.IsValid(*this))
+		{
+			// throw the packet away
+			DevConsole::AddErrorMessage("Received a bad packet from:" + theAddress.ToString());
+			return;
+		}
+
+		ProcessPacket(incomingPacket, theAddress);
 	}
-
-	ProcessPacket(incomingPacket);
 	
-
 	// delete buffer at the end
 	//delete incomingPacket;
 }
 
 //-----------------------------------------------------------------------------------------------
-void NetSession::ProcessPacket( NetPacket& packet )
+void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 {
 	// Get Packet Header
 	packet.ReadHeader(&packet.m_header);
 
 	// See who sent it
-	NetSender theSender = NetSender(*GetConnection(packet.m_header.m_senderConnectionIndex));
+	NetSender theSender;
+	if(packet.m_header.m_senderConnectionIndex == INVALID_CONNECTION_INDEX)
+	{
+		// look up by connection (temp)
+		theSender = NetSender(*GetConnectionFromAddress(sender));
+	}
+	else
+	{
+		theSender = NetSender(*GetConnection(packet.m_header.m_senderConnectionIndex));
+	}
 
 	// Get How many messages are in the packet
 	uint8_t amount = packet.m_header.m_unreliableCount;
@@ -232,10 +267,16 @@ void NetSession::ProcessPacket( NetPacket& packet )
 	for(uint i = 0; i < amount; i++)
 	{
 		NetMessage currentMessage;
-		packet.ReadMessage(&currentMessage);
+		bool result = packet.ReadMessage(&currentMessage);
 
-		NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
-		theDef->m_callback(currentMessage, theSender);
+		// make sure we read the message properly
+		if(result == true)
+		{
+			NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
+
+			if(theDef != nullptr)
+				theDef->m_callback(currentMessage, theSender);
+		}
 	}
 }
 
@@ -245,7 +286,8 @@ void NetSession::ProcessOutgoing()
 	// foreach connection, process outgoing; 
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		m_connections[i]->ProcessOutgoing();
+		if(m_connections[i] != nullptr)
+			m_connections[i]->ProcessOutgoing();
 	}
 }
 
@@ -287,10 +329,28 @@ uint8_t NetSession::GetConnectionForPacket(const PacketHeader& theHeader, const 
 }
 
 //-----------------------------------------------------------------------------------------------
-NetConnection* NetSession::GetConnection(int idx)
+NetConnection* NetSession::GetConnection(int idx) const
 {
+	// check bounds
+	if(idx < 0 || idx > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS)
+		return nullptr;
+	
 	if(m_connections[idx] != nullptr)
 		return m_connections[idx];
+
+	return nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+NetConnection* NetSession::GetConnectionFromAddress(const NetAddress& sender) const
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_connections[i];
+
+		if(current->m_address == sender)
+			return current;
+	}
 
 	return nullptr;
 }

@@ -128,54 +128,54 @@ UDPTest* UDPTest::GetInstance()
 bool UDPTest::Start()
 {
 	// get an address to use; 
-	NetAddress addr;
-	bool check = NetAddress::GetBindableAddress( &addr, GAME_PORT );  
-	if (check == 0U) 
-	{
-		DevConsole::AddConsoleDialogue( "No addresses" ); 
-		return false;
-	}
-	
-	if (!m_socket.Bind( addr, 10 )) 
-	{
-		DevConsole::AddConsoleDialogue( "Failed to bind." );
-		return false;  
-	} else {
-		m_socket.SetBlocking(false); // if you have cached options, you could do this
-									  // in the constructor; 
-		DevConsole::AddConsoleDialogue( Stringf("Socket bound: %s", m_socket.GetAddress().ToString().c_str() ));
+	//NetAddress addr;
+	//bool check = NetAddress::GetBindableAddress( &addr, GAME_PORT );  
+	//if (check == 0U) 
+	//{
+	//	DevConsole::AddConsoleDialogue( "No addresses" ); 
+	//	return false;
+	//}
+	//
+	//if (!m_socket.Bind( addr, 10 )) 
+	//{
+	//	DevConsole::AddConsoleDialogue( "Failed to bind." );
+	//	return false;  
+	//} else {
+	//	m_socket.SetBlocking(false); // if you have cached options, you could do this
+	//								  // in the constructor; 
+	//	DevConsole::AddConsoleDialogue( Stringf("Socket bound: %s", m_socket.GetAddress().ToString().c_str() ));
 		return true; 
-	}
+	//}
 }
 
 void UDPTest::Update()
 {
 	
-	Byte buffer[PACKET_MTU]; 
-
-	NetAddress from_addr; 
-	size_t read = m_socket.ReceiveFrom( &from_addr, buffer, PACKET_MTU ); 
-
-	if (read > 0U) 
-	{
-
-		uint max_bytes = Min( (uint) read, 128U ); 
-		String output = "0x"; 
-		output.reserve(max_bytes * 2U + 3U);
-
-		char* iter = (char*) output.data(); 
-		iter += 2U; // skip the 0x
-		for (uint i = 0; i < read; ++i) 
-		{
-			sprintf_s( (char*) iter, 3U, "%02X", buffer[i] ); 
-			iter += 2U; 
-		}
-		
-		*iter = NULL; 
-		//output.(); 
-		
-		DevConsole::AddConsoleDialogue( Stringf("Received from %s;%s", 
-			from_addr.ToString().c_str(), 
-			output.c_str() )); 
-	}
+	//Byte buffer[PACKET_MTU]; 
+	//
+	//NetAddress from_addr; 
+	//size_t read = m_socket.ReceiveFrom( &from_addr, buffer, PACKET_MTU ); 
+	//
+	//if (read > 0U) 
+	//{
+	//
+	//	uint max_bytes = Min( (uint) read, 128U ); 
+	//	String output = "0x"; 
+	//	output.reserve(max_bytes * 2U + 3U);
+	//
+	//	char* iter = (char*) output.data(); 
+	//	iter += 2U; // skip the 0x
+	//	for (uint i = 0; i < read; ++i) 
+	//	{
+	//		sprintf_s( (char*) iter, 3U, "%02X", buffer[i] ); 
+	//		iter += 2U; 
+	//	}
+	//	
+	//	*iter = NULL; 
+	//	//output.(); 
+	//	
+	//	DevConsole::AddConsoleDialogue( Stringf("Received from %s;%s", 
+	//		from_addr.ToString().c_str(), 
+	//		output.c_str() )); 
+	//}
 }

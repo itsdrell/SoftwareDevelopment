@@ -30,14 +30,17 @@ NetConnection::~NetConnection()
 //-----------------------------------------------------------------------------------------------
 void NetConnection::ProcessOutgoing()
 {
+	if(m_outboundUnreliables.size() == 0U)
+		return;
+	
 	// Create a packet, fill it with as many messages as you can, send it, repeat.
 	NetPacket currentPacket;
 	currentPacket.m_indexToWhoWeAreSendingTo = m_indexInSession;
 	for(uint i = 0; i < m_outboundUnreliables.size(); i++)
 	{		
-		NetMessage* currentMessage = m_outboundUnreliables.at(i);
+		NetMessage& currentMessage = *m_outboundUnreliables.at(i);
 
-		if(!currentPacket.WriteMessage(*currentMessage))
+		if(!currentPacket.WriteMessage(currentMessage))
 		{
 			// we ran out of room! we didn't write to the packet
 			// but send it anyways 
@@ -53,6 +56,19 @@ void NetConnection::ProcessOutgoing()
 	
 	currentPacket.WriteHeader();
 	m_owningSession->SendPacket(currentPacket);
+	ClearOutgoingMessages();
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::ClearOutgoingMessages()
+{
+	for(uint i = 0; i < m_outboundUnreliables.size(); i++)
+	{
+		delete m_outboundUnreliables[i];
+		m_outboundUnreliables[i] = nullptr;
+	}
+
+	m_outboundUnreliables.clear();
 }
 
 //-----------------------------------------------------------------------------------------------

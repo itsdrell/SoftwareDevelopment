@@ -29,7 +29,8 @@ public:
 
 	// this is for when your last command is a full string and you want all of it including the spaces
 	std::string GetRestOfCommand();
-	
+
+	std::string GetCommandParameters();
 	
 	// [OPTIONAL] I like to add helpers for getting arguments
 	// and I just add them as I need them.

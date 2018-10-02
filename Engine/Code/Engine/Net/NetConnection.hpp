@@ -11,7 +11,7 @@ class NetSession;
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-#define INVALID_CONNECTION_INDEX 0
+#define INVALID_CONNECTION_INDEX 0xff
 
 //====================================================================================
 // ENUMS
@@ -43,6 +43,9 @@ public:
 	// so may want to split the internals to "should_send_packet() and "send_packet"
 	// aka flush
 	void ProcessOutgoing(); 
+
+	// clean up
+	void ClearOutgoingMessages();
 
 	void Send(NetMessage& messageToSend);
 

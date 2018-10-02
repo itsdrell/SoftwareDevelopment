@@ -37,9 +37,9 @@ void RegisterGameCommands()
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 
 	// NetSession stuff
-	CommandRegister("addConnect", "", "", AddConnection);
-	CommandRegister("ping", "", "", SendPing);
-	CommandRegister("sendAdd", "", "", SendAdd);
+	CommandRegister("add_connection", "", "", AddConnection);
+	CommandRegister("send_ping", "", "", SendPing);
+	CommandRegister("send_add", "", "", SendAdd);
 }
 
 void EndTurn(Command & theCommand)
@@ -394,12 +394,16 @@ void SendPing(Command & theCommand)
 		return; 
 	}
 
-	NetMessage msg("ping"); 
-	String str = theCommand.m_commandArguements.at(2); 
-	msg.WriteString( str.c_str() ); 
+	NetMessage* msg = new NetMessage("ping"); 
+
+	String str = "ping";
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		str = theCommand.m_commandArguements.at(2); 
+
+	msg->WriteString( str.c_str() ); 
 
 	// messages are sent to connections (not sessions)
-	cp->Send( msg ); 
+	cp->Send( *msg ); 
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -424,8 +428,8 @@ void SendAdd(Command & theCommand)
 		return; 
 	}
 
-	NetMessage msg("add"); 
-	msg.WriteBytes( sizeof(float), &val0 ); 
-	msg.WriteBytes( sizeof(float), &val1 ); 
-	cp->Send( msg );
+	NetMessage* msg = new NetMessage("add"); 
+	msg->WriteBytes( sizeof(float), &val0 ); 
+	msg->WriteBytes( sizeof(float), &val1 ); 
+	cp->Send( *msg );
 }

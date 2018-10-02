@@ -146,10 +146,12 @@ size_t BytePacker::ReadBytes(void * out_data, size_t max_byte_count, bool advanc
 		if(checkEndianess)
 			FromEndianness((m_writableHead - m_readableHead), out_data, m_endianness);
 		
+		size_t amountActuallyRead = m_writableHead - m_readableHead;
+
 		if(advanceReadHead)
 			m_readableHead = m_writableHead;
 		
-		return m_readableHead;
+		return amountActuallyRead;
 	}
 	
 }

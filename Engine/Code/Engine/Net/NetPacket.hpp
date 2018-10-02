@@ -6,7 +6,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class NetSession;
 
 //====================================================================================
 // Type Defs + Defines
@@ -50,6 +50,10 @@ public:
 
 	NetPacket();
 
+	// this is for when write a message, we auto make room for the header
+	// and when we read, it is not already moved!
+	NetPacket(bool advanceWriteHeadForHeader);
+
 	//void WriteHeader( const PacketHeader &header );
 	void WriteHeader(); // writes it own header
 	bool ReadHeader(  PacketHeader* header ); 
@@ -63,7 +67,7 @@ public:
 
 	void ResetMessageCount() { m_header.m_unreliableCount = 0U; }
 
-	bool IsValid();
+	bool IsValid(const NetSession& theSession);
 
 public:
 	// we will just allocate the buffer with the 
