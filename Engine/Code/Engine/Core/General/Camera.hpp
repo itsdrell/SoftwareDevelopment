@@ -51,6 +51,9 @@ public:
 	Frustrum GetFrustrum();
 
 
+	void RenderDebugOrtho() const;
+
+
 public:
 	Transform			transform;
 	
@@ -66,4 +69,7 @@ public:
 	bool				m_hasSkyBox;
 	TextureCube*		m_skyBoxTexture;
 	Mesh*				m_skyMesh;
+
+	// debug stuff
+	Vector2				m_orthoSize;
 }; 

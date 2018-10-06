@@ -4,6 +4,7 @@
 #include "Engine\Renderer\Systems/MeshBuilder.hpp"
 #include "../Platform/Window.hpp"
 #include "../../Renderer/Systems/DebugRenderSystem.hpp"
+#include "../../Renderer/RenderableComponents/Material.hpp"
 
 
 Camera::Camera(Matrix44 cameraMatrix /*= Matrix44()*/, Matrix44 view /*= Matrix44()*/, Matrix44 proj /*= Matrix44()*/)
@@ -86,6 +87,7 @@ void Camera::SetProjection(Matrix44 proj)
 void Camera::SetProjectionOrtho( float width, float height, float Near, float Far)
 {
 	//( -width / 2, +width / 2, -height / 2, +height / 2, near, far );
+	m_orthoSize = Vector2(width, height);
 	m_projMatrix = Matrix44::MakeOrtho3D(Vector3(-width *.5f,-height *.5f,Near),Vector3(width * .5f,height *.5f,Far));
 }
 
@@ -149,4 +151,51 @@ Frustrum Camera::GetFrustrum()
 	Matrix44 mat = m_projMatrix;
 	mat.Append(m_viewMatrix); // may need to be swapped
 	return Frustrum::FromMatrix( mat ); 
+}
+
+//-----------------------------------------------------------------------------------------------
+void Camera::RenderDebugOrtho() const
+{
+	// This makes grid lines based off power of 10s
+	
+	Renderer* r = Renderer::GetInstance();
+	r->SetCamera((Camera*) this);
+	r->BindMaterial(Material::CreateOrGetMaterial("default"));
+
+	// X Lines (so vertical)
+	float currentX = 0.f;
+	uint amountOfLines =  (uint) (m_orthoSize.x / 10.f);
+	bool shouldBeGray = false;
+	for(uint i = 0; i < amountOfLines; i++)
+	{
+		r->DrawLine2D(Vector2( currentX, -m_orthoSize.y), Vector2( currentX, m_orthoSize.y), shouldBeGray ? Rgba(125,125,125,200.f) : Rgba(255,255,255,200));
+		r->DrawLine2D(Vector2( -currentX, -m_orthoSize.y), Vector2( -currentX, m_orthoSize.y), shouldBeGray ? Rgba(125,125,125,200) : Rgba(255,255,255,200));
+
+		currentX += 10.f;
+		shouldBeGray = !shouldBeGray;
+	}
+
+	// Y Lines (so horizontal)
+	float currentY = 0.f;
+	shouldBeGray = false;
+	for(uint i = 0; i < amountOfLines; i++)
+	{
+		r->DrawLine2D(Vector2( -m_orthoSize.x, currentY), Vector2( m_orthoSize.x, currentY), shouldBeGray ? Rgba(125,125,125,200) : Rgba(255,255,255,200));
+		r->DrawLine2D(Vector2( -m_orthoSize.x, -currentY), Vector2( m_orthoSize.x, -currentY), shouldBeGray ? Rgba(125,125,125,200) : Rgba(255,255,255,200));
+
+		currentY += 10.f;
+		shouldBeGray = !shouldBeGray;
+	}
+
+	// Draw some text so we know pos
+	r->DrawText2D(Vector2(8.f, 10.f), "10,10", 1.f);
+
+	float width = (currentX * .5f);
+	float height = (currentY * .5f);
+	
+	r->DrawText2D(Vector2(-width + 1.f, 0.f), std::to_string((int) -width), 1.f);
+	r->DrawText2D(Vector2(width - 4.f, 0.f), std::to_string((int) width), 1.f);
+	r->DrawText2D(Vector2(0.f, height - 2.f), std::to_string((int) height), 1.f);
+	r->DrawText2D(Vector2(0.f, -height + 4.f), std::to_string((int) -height), 1.f);
+
 }
