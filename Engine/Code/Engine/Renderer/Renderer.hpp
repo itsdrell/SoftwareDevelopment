@@ -164,7 +164,7 @@ public:
 
 	// The god draw function
 	void DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, PrimitiveType primitiveType);
-	void DrawMesh(Mesh* mesh);
+	void DrawMesh(Mesh* mesh, bool deleteTempMesh = false);
 	void DrawMeshImmediate(PrimitiveType thePrimitive, uint vertexCount, Vertex3D_PCU* vertices, uint indicesCount = 0, uint* indices = nullptr);
 	Mesh* CreateOrGetMesh(std::string path);
 	void BindMeshToProgram( ShaderProgram* program, Mesh* mesh);
@@ -190,6 +190,7 @@ public:
 
 	// Materials
 	void BindMaterial( Material* material);
+	void BindMaterial( const String& name );
 
 	// LIGHTS
 	void BindLightUBOsToShader();
@@ -267,9 +268,15 @@ public:
 
 	bool					m_takeScreenshot;
 
+	Rgba					m_threadedColor;
+	bool					m_changeThreadedColor = true;
+
 };
 
 // Gl functions
 void GLShutdown();
 void BindNewWGLFunctions();
 void BindGLFunctions();
+
+
+void ChangeThreadedColor(void* data);

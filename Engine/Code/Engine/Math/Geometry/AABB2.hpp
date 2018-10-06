@@ -14,6 +14,7 @@ public:
 	explicit AABB2( const Vector2& mins, const Vector2& maxs );
 	explicit AABB2( const Vector2& center, float radiusX, float radiusY );
 	explicit AABB2( const float theMins, const float theMaxs);
+	explicit AABB2( const Vector2& minsAndMaxs);
 
 	// Mutators
 	void StretchToIncludePoint( float x, float y ); // note: stretch, not move…

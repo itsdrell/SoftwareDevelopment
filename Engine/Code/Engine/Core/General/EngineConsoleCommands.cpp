@@ -338,7 +338,7 @@ void FormatLevelNames(Command& cb)
 	UNUSED(cb);
 
 	String prefix = "/Game/Levels/Production/";
-	String fullText = (prefix + "PLVL_MainMenu" + "+");
+	String fullText = (prefix + "PLVL_MainMenu" + "+" + prefix + "PLVL_LevelSelect" + "+");
 
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile( "Data/Misc/LevelsApprovedForBuild - Levels.xml" );

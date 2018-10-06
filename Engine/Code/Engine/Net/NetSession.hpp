@@ -46,6 +46,8 @@ public:
 	
 public:
 
+	static NetSession* GetInstance() { return s_mainNetSession; }
+
 	// message definitions
 	bool RegisterMessageDefinition( const String& id, NetMessage_cb cb );
 	bool IsMessageAlreadyRegistered(const String& id);
@@ -68,9 +70,10 @@ public:
 	void ProcessIncoming();
 	void ProcessPacket( NetPacket& packet , const NetAddress& sender);
 
-
 	void ProcessOutgoing();
 	void SendPacket( const NetPacket& packet );
+
+	void Render() const;
 
 	uint8_t GetMyConnection() const;
 	uint8_t GetConnectionForPacket(const PacketHeader& theHeader, const NetAddress& theAddressOfSender);
@@ -85,6 +88,9 @@ public:
 	// gonna keep the list here, instead of in NetMessageDefinition so that
 	// multiple sessions can have different callbacks!
 	std::vector<NetMessageDefinition*>			m_messageCallbacks;
+
+
+	static NetSession* s_mainNetSession;
 };
 
 

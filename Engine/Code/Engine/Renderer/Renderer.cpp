@@ -78,6 +78,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
+	m_changeThreadedColor = false;
 	GLShutdown();
 }
 
@@ -207,6 +208,9 @@ void Renderer::PostStartup()
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);					GL_CHECK_ERROR();
 
+
+	ThreadCreateAndDetach(ChangeThreadedColor, nullptr);
+
 }
 
 void Renderer::SetCamera(Camera* camera)
@@ -284,7 +288,6 @@ void Renderer::EndFrame()
 	//DebugRenderUpdateAndRender();
 	
 	CheckToCreateScreenshot();
-	
 	CopyFrameBuffer( nullptr, &m_defaultCamera->m_output ); 
 	
 	HWND hWnd = GetActiveWindow();
@@ -979,39 +982,20 @@ BitmapFont * Renderer::CreateOrGetBitmapFont(const char * bitmapFontName)
 
 void Renderer::DrawText2D(const Vector2& drawMins, const std::string& asciiText, float cellHeight, const Rgba& tint, float aspectScale, const BitmapFont* font)
 {
-	int length =(int) asciiText.size();
-	Vector2 startPoint = drawMins;
-
 	// Use a default font
 	if(font == nullptr)
 	{
-// 		std::map<std::string, BitmapFont*>::iterator fontIterator = m_loadedFonts.begin();
-// 		font = fontIterator->second;
 		font = m_defaultFont;
 	}
 
-	// Set the texture as the current one
-	SetCurrentTexture(0,font->m_spriteSheet->m_spriteSheetTexture);
+	
 
-	// Draw
-	for(int i = 0; i < length; i++)
-	{
-		// Get Current Letter
-		char currentLetter = asciiText.at(i);
+	MeshBuilder mb;
+	BindMaterial("uiText");
+	mb.Add2DText(drawMins, asciiText, cellHeight, tint, aspectScale, (BitmapFont*) font);
+	DrawMesh(mb.CreateMesh<Vertex3D_PCU>(), true);
 
-		// calculate cell width
-		float cellWidth = font->GetGlyphAspect() * cellHeight * aspectScale;
-		
-
-		DrawTexturedAABB2(AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight)),*font->m_spriteSheet->m_spriteSheetTexture,
-			font->GetUVsForGlyph(currentLetter).mins, font->GetUVsForGlyph(currentLetter).maxs,tint);
-
-		startPoint.x += cellWidth;
-	}
-
-	// reset texture to default
-	SetCurrentTexture();
-
+	BindMaterial("default");
 }
 
 void Renderer::DrawWrappedTextInBox2D(std::string text, AABB2 boxSize, float cellHeight /*= 1.f*/, float aspectScale /*= 1.f*/, Rgba textColor /*= Rgba::WHITE*/, Rgba boxColor /*= Rgba::CYAN*/, BitmapFont* font /*= nullptr*/)
@@ -1555,10 +1539,13 @@ void Renderer::BindMeshToProgram(ShaderProgram* program, Mesh* mesh)
 	GL_CHECK_ERROR();
 }
 
-void Renderer::DrawMesh(Mesh* mesh)
+void Renderer::DrawMesh(Mesh* mesh, bool deleteTempMesh)
 {
 	GL_CHECK_ERROR();
-	
+
+	// this is incase you forgot to bind it (like for UI text)
+	SetUniform("MODEL", Matrix44());
+
 	SetShader(m_currentShader); // this might be redundant
 	BindRenderState(m_currentShader->m_state);
 	BindMeshToProgram(m_currentShader->m_program, mesh);
@@ -1579,6 +1566,10 @@ void Renderer::DrawMesh(Mesh* mesh)
 	}
 	else
 		glDrawArrays(glPrimitiveType, 0, mesh->m_drawInstruction.elemCount );			GL_CHECK_ERROR();
+
+	// just so I dont forget
+	if(deleteTempMesh)
+		delete mesh;
 }
 
 void Renderer::DrawMeshImmediate(PrimitiveType thePrimitive, uint vertexCount, Vertex3D_PCU* vertices, uint indicesCount, uint* indices)
@@ -1899,6 +1890,12 @@ void Renderer::BindMaterial(Material* material)
 	GL_CHECK_ERROR();
 }
 
+//-----------------------------------------------------------------------------------------------
+void Renderer::BindMaterial(const String& name)
+{
+	Material::BindAlreadyCreatedMaterial(name);
+}
+
 void Renderer::BindLightUBOsToShader()
 {
 	// not really sure where to call this atm (in game or renderer) so making a function so its easy to move and access!
@@ -2071,6 +2068,16 @@ void BindGLFunctions()
 
 }
 
+//-----------------------------------------------------------------------------------------------
+void ChangeThreadedColor(void* data)
+{
+	Renderer* r = Renderer::GetInstance();
+
+	while(r->m_changeThreadedColor)
+	{
+		r->m_threadedColor = GetRandomColor();
+	}
+}
 
 //------------------------------------------------------------------------
 // Creates a real context as a specific version (major.minor)

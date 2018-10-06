@@ -216,14 +216,17 @@ Material::Material(std::string path)
 
 Material::~Material()
 {
-	if(m_isResource)
+	for(uint i = 0; i < m_properties.size(); i++)
 	{
-
+		delete m_properties.at(i);
+		m_properties.at(i) = nullptr;
 	}
-	else
-	{
+	
+	m_properties.clear();
 
-	}
+	m_samplers.clear();
+	m_textures.clear();
+
 }
 
 void Material::SetShader(Shader * shader)
@@ -327,6 +330,14 @@ STATIC Material* Material::CreateOrGetMaterial(std::string path)
 	//////////////////////////////////////////////////////////////////////////
 	// Since we are doing copies, once we store the resource, we will clone and return that
 	return new Material(*newMaterial); 
+}
+
+//-----------------------------------------------------------------------------------------------
+void Material::BindAlreadyCreatedMaterial(const String& path)
+{
+	Material* copy = CreateOrGetMaterial(path);
+	Renderer::GetInstance()->BindMaterial(copy);
+	delete copy;
 }
 
 STATIC Sampler* Material::CreateSamplerFromString(std::string type)

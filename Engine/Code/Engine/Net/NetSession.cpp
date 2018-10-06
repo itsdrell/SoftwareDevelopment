@@ -4,10 +4,21 @@
 #include "NetAddress.hpp"
 #include "NetMessage.hpp"
 #include "../Core/Tools/DevConsole.hpp"
+#include "../Core/Platform/Window.hpp"
+#include "../Renderer/Renderer.hpp"
+#include "../Renderer/RenderableComponents/Material.hpp"
+#include "Engine/Core/General/Camera.hpp"
+#include "../Renderer/Systems/MeshBuilder.hpp"
 
-//-----------------------------------------------------------------------------------------------
+//===============================================================================================
+
+NetSession* NetSession::s_mainNetSession = nullptr;
+
+//===============================================================================================
 NetSession::NetSession()
 {
+	if(s_mainNetSession == nullptr)
+		s_mainNetSession = this;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -315,6 +326,75 @@ void NetSession::SendPacket(const NetPacket& packet)
 }
 
 //-----------------------------------------------------------------------------------------------
+void NetSession::Render() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	r->SetCamera(r->m_defaultUICamera);
+	r->m_currentCamera->RenderDebugOrtho();
+
+	// background
+	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba(0,0,0,200));
+	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba::WHITE, false);
+
+	Vector2 pivot;
+	pivot.x = -48.f;
+	pivot.y = 46.f;
+	float textSize = 1.2;
+
+	MeshBuilder mb;
+
+	// Draw the title + state
+	std::string title = "Netsession Info";
+	mb.Add2DText(pivot, title, 1.5f, r->m_threadedColor);
+
+	// Draw the info
+	String theInfo = Stringf("Rate: %i hz || sim lag: %i ms - %i ms || sim_loss: %d",
+		20, 0, 0, 0, 0.f);
+	mb.Add2DText(Vector2(pivot.x, pivot.y - 2.f), theInfo, textSize, r->m_threadedColor);
+
+	// Draw the socket bound to the session
+	mb.Add2DText(Vector2(pivot.x, pivot.y - 4.f), "Bound SockAddr:", textSize, r->m_threadedColor);
+	String boundSocketAddress = m_channel.m_socket->GetAddress().ToString();
+	mb.Add2DText( Vector2(pivot.x + 1.f, pivot.y - 6.f), boundSocketAddress, textSize, r->m_threadedColor);
+
+	// show all connections
+	mb.Add2DText(Vector2(pivot.x, pivot.y - 8.f), "Connections:", textSize, r->m_threadedColor);
+	String header = Stringf("-- %6s %-20s %-3s %-3s %-3s %-3s %-3s %-3s %-3s", 
+		"idx", "address", "rtt(ms)", "loss%", "lrcv(s)", "lsnt(s)", "sntack", "rcvack", "rcvbits");
+	mb.Add2DText(Vector2(pivot.x + 1.f, pivot.y - 10.f), header, .8f, r->m_threadedColor);
+	
+	Vector2 currentPos = Vector2(pivot.x + 1.f, pivot.y - 12.f);
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		if(m_connections[i] != nullptr)
+		{
+			String isLocal = "--";
+
+			if(m_connections[i]->m_address == m_channel.m_socket->m_address)
+				isLocal = "L";
+			
+			String connectionText = Stringf("%s %6i %-20s %-7d %-7d %-7d %-7d %-7d %-7d %-7d", 
+				isLocal.c_str(), i , m_connections[i]->m_address.ToString().c_str(),
+				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			
+			
+			mb.Add2DText(currentPos, connectionText, .8f, r->m_threadedColor);
+
+			currentPos.y -= 2.f;
+		}
+
+	}
+
+	// D R A W
+	r->BindMaterial("uiText");
+	r->DrawMesh(mb.CreateMesh<Vertex3D_PCU>(), true);
+
+	// reset
+	r->SetCamera();
+}
+
+//-----------------------------------------------------------------------------------------------
 uint8_t NetSession::GetMyConnection() const
 {
 	return INVALID_CONNECTION_INDEX;
@@ -349,8 +429,12 @@ NetConnection* NetSession::GetConnectionFromAddress(const NetAddress& sender) co
 	{
 		NetConnection* current = m_connections[i];
 
-		if(current->m_address == sender)
-			return current;
+		if(current != nullptr)
+		{
+			if((current->m_address == sender))
+				return current;
+		}
+
 	}
 
 	return nullptr;

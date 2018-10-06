@@ -26,6 +26,7 @@
 #include "Stopwatch.hpp"
 #include "../General/EngineConsoleCommands.hpp"
 #include "RemoteCommandService.hpp"
+#include "../../Net/NetSession.hpp"
 
 
 static DevConsole *g_devConsole = nullptr; // Instance Pointer; 
@@ -327,6 +328,8 @@ void DevConsole::Render()
 	// FPS
 	RenderFPS();
 	RemoteCommandService::GetInstance()->Render();
+	//NetSession::GetInstance()->Render();
+	m_theRenderer->SetCamera(m_uiCamera);
 
 	// Rainbow background haha
 	//Rgba theColor = InterpolateRainbow(m_defaultColor, (m_currentTimer / m_switchAtThisTime));
@@ -349,12 +352,12 @@ void DevConsole::Render()
 
 	if(m_textMesh != nullptr)
 	{
-		m_theRenderer->BindMaterial(Material::CreateOrGetMaterial("uiText"));
+		m_theRenderer->BindMaterial("uiText");
 		m_theRenderer->DrawMesh(m_textMesh);
 	}
 
 	
-	m_theRenderer->BindMaterial(Material::CreateOrGetMaterial("default"));
+	m_theRenderer->BindMaterial("default");
 	RenderScrollBar();
 	RenderAutoCorrect();
 	
@@ -506,7 +509,7 @@ void DevConsole::GenerateTextMesh()
 	// Rainbow version
 	Rgba theColor = InterpolateRainbow(m_defaultColor, (m_currentTimer / m_switchAtThisTime));
 	Vector2 pos = Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f);
-	mb.Add2DText(pos ,m_currentEntry,m_textSize, 1.f, theColor);
+	mb.Add2DText(pos ,m_currentEntry,m_textSize, theColor);
 	//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, theColor);
 	// random color version
 	//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + 10.f, (-m_windowHeight * .5f) + 10.f),m_currentEntry,m_textSize, GetRandomColor());
@@ -524,7 +527,7 @@ void DevConsole::GenerateTextMesh()
 			ConsoleDialogue currentDialogue = s_history.at(i);
 
 			Vector2 hPos = Vector2((-m_windowWidth * .5f) + m_startPosition.x, (-m_windowHeight * .5f) + currentY);
-			mb.Add2DText( hPos, currentDialogue.m_text,m_textSize, 1.f, currentDialogue.m_color);
+			mb.Add2DText( hPos, currentDialogue.m_text,m_textSize, currentDialogue.m_color);
 			//m_theRenderer->DrawText2D(Vector2((-m_windowWidth * .5f) + m_startPosition.x, (-m_windowHeight * .5f) + currentY),currentDialogue.m_text,m_textSize,currentDialogue.m_color);
 
 			currentYPadding += m_yheightToGrow;

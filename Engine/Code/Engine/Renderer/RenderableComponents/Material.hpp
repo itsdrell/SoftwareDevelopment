@@ -135,7 +135,9 @@ public:
 	// XML
 
 	// Only returns a copy (instance), no matter what
+	// DO NOT USE FOR TEMP BINDINGS, IT WILL LEAK
 	static Material* CreateOrGetMaterial(std::string path);
+	static void BindAlreadyCreatedMaterial(const String& path );
 
 	// These need to be static so the Shader can also use these functions
 	// Which is nice so if they get changed you don't have to do it twice

@@ -872,27 +872,32 @@ void MeshBuilder::Add2DPlane(AABB2 bounds, Rgba color /*= Rgba::WHITE*/)
 	End();
 }
 
-void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, Rgba color)
+void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, const Rgba& color)
 {
 	//////////////////////////////////////////////////////////////////////////
 
 	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
 
 									  // this is assuming all the sides are the same color
-	SetColor(color);
+	//SetColor(color);
 
 	//////////////////////////////////////////////////////////////////////////
 
 	SetUV(uvs.mins);
+	SetColor(color);
 	uint idx = PushVertex(Vector3(bounds.mins.x, bounds.mins.y, .01f));
 
 	SetUV(Vector2(uvs.maxs.x, uvs.mins.y));
+	SetColor(color);
 	PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, .01f));
 
 	SetUV(Vector2(uvs.mins.x, uvs.maxs.y));
+	SetColor(color);
+
 	PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, .01f));
 
 	SetUV(uvs.maxs);
+	SetColor(color);
 	PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, .01f));
 
 	AddFace(idx + 0, idx + 1, idx + 2);
@@ -904,7 +909,7 @@ void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, Rgba color)
 	End();
 }
 
-void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeight, float aspectScale, Rgba color, BitmapFont * font)
+void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeight, const Rgba& color, float aspectScale, BitmapFont * font)
 {
 	int length = (int) text.size();
 	Vector2 startPoint = startPos;

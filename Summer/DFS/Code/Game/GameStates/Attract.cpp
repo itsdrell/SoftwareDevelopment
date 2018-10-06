@@ -34,6 +34,7 @@ void Attract::Render() const
 	g_theRenderer->DrawTexturedAABB2(background, AABB2(-50.f, 50.f));
 	//g_theRenderer->DrawAABB2(AABB2(-200.f, -200.f, 200.f, 200.f), Rgba::BLUE);
 
+	//g_theRenderer->m_defaultUICamera->RenderDebugOrtho();
 	RenderHoverText();
 }
 

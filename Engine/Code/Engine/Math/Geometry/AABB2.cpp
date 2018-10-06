@@ -50,6 +50,16 @@ AABB2::AABB2(const float theMins, const float theMaxs)
 	maxs = Vector2(theMaxs, theMaxs);
 }
 
+//-----------------------------------------------------------------------------------------------
+AABB2::AABB2(const Vector2& minsAndMaxs)
+{
+	mins.x = -minsAndMaxs.x;
+	mins.y = -minsAndMaxs.y;
+
+	maxs.x = minsAndMaxs.x;
+	maxs.y = minsAndMaxs.y;
+}
+
 void AABB2::StretchToIncludePoint(float x, float y)
 {
 	if(IsPointInside(x,y) == false)
