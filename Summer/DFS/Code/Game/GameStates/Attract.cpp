@@ -17,6 +17,12 @@ Attract::Attract()
 void Attract::Update()
 {
 	KeyboardInput();
+
+	if(m_startedBackgroundMusic == false)
+	{
+		m_startedBackgroundMusic = true;
+		PlayLoopingSound("bg");
+	}
 }
 
 void Attract::Render() const

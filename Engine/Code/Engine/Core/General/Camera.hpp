@@ -25,6 +25,7 @@ public:
 	// Set + Get
 	void SetColorTarget( Texture *color_target ) { m_output.SetColorTarget(color_target); }
 	void SetDepthStencilTarget( Texture *depth_target ) { m_output.SetDepthStencilTarget(depth_target); }
+	Texture* GetColorTarget() const { return m_output.m_color_target; }
 	int GetFramebufferID() {return m_output.m_ID;}
 	Vector3 GetForward();
 	Vector3 GetRight();

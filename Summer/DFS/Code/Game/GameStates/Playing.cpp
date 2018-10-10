@@ -25,6 +25,7 @@
 #include "../General/UI/HUD.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
 #include "Game/General/GameHeatMap.hpp"
+#include "Game/General/BattleScene/BattleCutscene.hpp"
 
 //====================================================================================
 Tile* g_currentTile = nullptr;
@@ -122,11 +123,15 @@ void Playing::Render() const
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
+	m_currentMap->m_battleScene->Render();
 	
 	// #TODO make this a renderable once we figure out a clean way to maintain it
 	m_currentMap->m_actionMenu->Render();
 	m_currentMap->m_hud->Render();
 	m_currentMap->m_storeMenu->Render();
+
+	// draw the battle scene
+	g_theRenderer->DrawTexturedAABB2(m_currentMap->m_battleScene->GetRenderedTextureOfScene(), AABB2(-100.f, 100.f));
 
 	// Debug heat map
 	if(m_showHeatmap)

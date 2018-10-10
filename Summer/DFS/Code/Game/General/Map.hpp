@@ -16,6 +16,7 @@ class GameHeatMap;
 class CommandingOfficer;
 class Container;
 class HUD;
+class BattleCutscene;
 
 //====================================================================================
 // Typedefs
@@ -139,6 +140,8 @@ public:
 	Container*							m_actionMenu = nullptr;
 	Container*							m_storeMenu = nullptr;
 	HUD*								m_hud = nullptr;
+
+	BattleCutscene*						m_battleScene = nullptr;
 };
 
 

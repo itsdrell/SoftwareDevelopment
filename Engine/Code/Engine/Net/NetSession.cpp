@@ -331,7 +331,7 @@ void NetSession::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	r->SetCamera(r->m_defaultUICamera);
-	r->m_currentCamera->RenderDebugOrtho();
+	//r->m_currentCamera->RenderDebugOrtho();
 
 	// background
 	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba(0,0,0,200));

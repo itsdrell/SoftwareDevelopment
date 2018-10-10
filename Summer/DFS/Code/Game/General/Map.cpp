@@ -25,6 +25,7 @@
 #include "UI\UnitWidget.hpp"
 #include "Game\General\GameHeatMap.hpp"
 #include "GameObjects\Effect.hpp"
+#include "Game\General\BattleScene\BattleCutscene.hpp"
 
 //====================================================================================
 // Externs
@@ -95,6 +96,8 @@ Map::Map(std::string name, Image& mapImage)
 
 	CreateMapRenderableFromImage();
 	CreateMapRenderable(true);
+
+	m_battleScene = new BattleCutscene();
 	
 }
 

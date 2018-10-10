@@ -2,7 +2,7 @@
 
    <!-- <Audio name = "default" path="error.wav" />  this needs to be loaded on app startup-->
     <Audio name = "iAmHere" path="iAmHere.mp3" />
-    
+    <Audio name = "bg" path="bg.wav" />
 
 </AudioClips>
 

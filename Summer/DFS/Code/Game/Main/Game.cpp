@@ -208,7 +208,7 @@ void Game::Render() const
 
 	//////////////////////////////////////////////////////////////////////////
 	// Show the console, we return instantly if its not open
-	NetSession::GetInstance()->Render();
+	//NetSession::GetInstance()->Render();
 	m_console->Render();
 }
 

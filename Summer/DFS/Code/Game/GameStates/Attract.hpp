@@ -38,6 +38,8 @@ public:
 public:
 
 	MenuItems		m_currentMenuItem;
+
+	bool			m_startedBackgroundMusic = false;
 };
 
 //=============================================================

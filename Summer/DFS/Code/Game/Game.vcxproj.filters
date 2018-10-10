@@ -91,6 +91,9 @@
     <ClCompile Include="General\GameObjects\Effect.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\BattleScene\BattleCutscene.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -132,5 +135,6 @@
     <ClInclude Include="General\CommandingOfficerStats.hpp" />
     <ClInclude Include="General\COPower.hpp" />
     <ClInclude Include="General\GameObjects\Effect.hpp" />
+    <ClInclude Include="General\BattleScene\BattleCutscene.hpp" />
   </ItemGroup>
 </Project>
