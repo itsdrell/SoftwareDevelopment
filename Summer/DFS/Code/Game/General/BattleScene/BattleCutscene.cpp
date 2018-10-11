@@ -81,32 +81,32 @@ void BattleCutscene::Render() const
 	g_theRenderer->SetCamera(m_camera);
 	g_theRenderer->ClearScreen(Rgba(0,0,0,0));
 	g_theRenderer->SetCurrentTexture();
-	g_theRenderer->DrawAABB2(AABB2(-1000.f, 1000.f), g_theRenderer->m_threadedColor);
+	//g_theRenderer->DrawAABB2(AABB2(-1000.f, 1000.f), g_theRenderer->m_threadedColor);
 	
 
 	//-----------------------------------------------------------------------------------------------
 	// random units bs
-	std::vector<UnitDefinition*> defs;
-	UnitDefinition::GetAllUnitDefinitions(&defs);
-
-	int range = GetRandomIntRange(0, defs.size() -1 );
-
-	TeamName theName;
-	if(CheckRandomChance(50.f))
-		theName = TEAM_BLUE;
-	else
-		theName = TEAM_RED;
-
-	SpriteAnimator* test = new SpriteAnimator(Unit::GetAnimatorName(defs.at(range)->m_name, theName));
-	std::map<std::string,String>::iterator animIterator;
-	animIterator = test->m_animationSet->m_sets.begin();
-	test->m_currentAnimation = SpriteAnimation::AcquireResource(animIterator->second);
-
-	SpriteSheet* theSpriteSheet = SpriteSheet::CreateOrGet("Units");
-	m_testRenderable->GetMaterial()->SetTexture(0, theSpriteSheet->m_spriteSheetTexture);
-
-	Sprite* current = test->m_currentAnimation->m_spriteFrames.at(0);
-	m_testRenderable->SetSprite(current);
+	//std::vector<UnitDefinition*> defs;
+	//UnitDefinition::GetAllUnitDefinitions(&defs);
+	//
+	//int range = GetRandomIntRange(0, defs.size() -1 );
+	//
+	//TeamName theName;
+	//if(CheckRandomChance(50.f))
+	//	theName = TEAM_BLUE;
+	//else
+	//	theName = TEAM_RED;
+	//
+	//SpriteAnimator* test = new SpriteAnimator(Unit::GetAnimatorName(defs.at(range)->m_name, theName));
+	//std::map<std::string,String>::iterator animIterator;
+	//animIterator = test->m_animationSet->m_sets.begin();
+	//test->m_currentAnimation = SpriteAnimation::AcquireResource(animIterator->second);
+	//
+	//SpriteSheet* theSpriteSheet = SpriteSheet::CreateOrGet("Units");
+	//m_testRenderable->GetMaterial()->SetTexture(0, theSpriteSheet->m_spriteSheetTexture);
+	//
+	//Sprite* current = test->m_currentAnimation->m_spriteFrames.at(0);
+	//m_testRenderable->SetSprite(current);
 
 
 	//-----------------------------------------------------------------------------------------------

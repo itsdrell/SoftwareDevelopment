@@ -104,6 +104,24 @@ void RemoveFast( uint& idx, std::vector<T*>& theVector )
 	idx--; // so we don't have to do it outside of the function
 }
 
+template< typename T>
+void RemoveFast( uint& idx, std::vector<T>& theVector )
+{
+	T endThing = theVector.at(theVector.size() - 1);
+
+	if(theVector.size() == 1)
+	{
+		theVector.pop_back();
+		idx--;
+		return;
+	}
+
+	theVector.at(theVector.size() - 1) = theVector.at(idx);
+	theVector.at(idx) = endThing;
+	theVector.pop_back();
+	idx--; // so we don't have to do it outside of the function
+}
+
 //====================================================================================
 // Externs
 //====================================================================================

@@ -9,16 +9,33 @@
 #include "../Renderer/RenderableComponents/Material.hpp"
 #include "Engine/Core/General/Camera.hpp"
 #include "../Renderer/Systems/MeshBuilder.hpp"
+#include "../Core/Platform/Time.hpp"
+
+#include <algorithm>
 
 //===============================================================================================
 
 NetSession* NetSession::s_mainNetSession = nullptr;
 
 //===============================================================================================
+TimeStampedPacket::TimeStampedPacket(int delay, NetPacket* thePacket, const NetAddress& theAddress )
+{
+	m_delay = delay;
+	m_packetToBeProcessed = thePacket;
+	m_whoSentThePacket = theAddress;
+	double delayInDecimal = (double) (((float)(delay)) * .001f);
+	m_timeToBeProcessed = GetCurrentTimeSeconds() + delayInDecimal;
+
+	DevConsole::AddConsoleDialogue(Stringf("Giving this message a delay of %f", delayInDecimal));
+}
+
+//===============================================================================================
 NetSession::NetSession()
 {
 	if(s_mainNetSession == nullptr)
 		s_mainNetSession = this;
+
+	m_latencyRange = IntRange();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -231,24 +248,32 @@ void NetSession::ProcessIncoming()
 	
 	if(result != 0)
 	{
-		// lets make a packet with the temp buffer!
-		NetPacket incomingPacket(false);
-		//incomingPacket.ResetWrite();
-		incomingPacket.WriteBytes(result, tempBuffer.GetBuffer());
 		
-		// See if packet is valid
-		if(!incomingPacket.IsValid(*this))
+		if(!CheckRandomChance(m_lossAmount))
 		{
-			// throw the packet away
-			DevConsole::AddErrorMessage("Received a bad packet from:" + theAddress.ToString());
-			return;
-		}
+			// lets make a packet with the temp buffer!
+			NetPacket* incomingPacket = new NetPacket(false);
+			//incomingPacket.ResetWrite();
+			incomingPacket->WriteBytes(result, tempBuffer.GetBuffer());
+			
+			// See if packet is valid
+			if(!incomingPacket->IsValid(*this))
+			{
+				// throw the packet away
+				DevConsole::AddErrorMessage("Received a bad packet from:" + theAddress.ToString());
+				return;
+			}
 
-		ProcessPacket(incomingPacket, theAddress);
+			AddPacketToQueue(*incomingPacket, theAddress);
+			//ProcessPacket(incomingPacket, theAddress);
+		}
+		else
+		{
+			DevConsole::AddErrorMessage("Threw away a packet!");
+		}
 	}
 	
-	// delete buffer at the end
-	//delete incomingPacket;
+	ProcessTimeStampedPackets();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -285,6 +310,34 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 
 			if(theDef != nullptr)
 				theDef->m_callback(currentMessage, theSender);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::AddPacketToQueue(NetPacket & packet, const NetAddress & sender)
+{
+	TimeStampedPacket newPacket = TimeStampedPacket(m_latencyRange.GetRandomInRange(), &packet, sender);
+	m_timeStampedPacketQueue.push_back(newPacket);
+
+	// always sort once we add them
+	std::sort(m_timeStampedPacketQueue.begin(), m_timeStampedPacketQueue.end(), CompareTimeStampedPacket);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::ProcessTimeStampedPackets()
+{
+	for(uint i = 0; i < m_timeStampedPacketQueue.size(); i++)
+	{
+		TimeStampedPacket current = m_timeStampedPacketQueue.at(i);
+
+		double currentTime = GetCurrentTimeSeconds();
+		if(current.m_timeToBeProcessed < currentTime)
+		{
+			ProcessPacket(*current.m_packetToBeProcessed, current.m_whoSentThePacket);
+			delete current.m_packetToBeProcessed;
+
+			RemoveFast(i, m_timeStampedPacketQueue);
 		}
 	}
 }
@@ -331,7 +384,7 @@ void NetSession::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	r->SetCamera(r->m_defaultUICamera);
-	//r->m_currentCamera->RenderDebugOrtho();
+	r->m_currentCamera->RenderDebugOrtho();
 
 	// background
 	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba(0,0,0,200));
@@ -438,4 +491,20 @@ NetConnection* NetSession::GetConnectionFromAddress(const NetAddress& sender) co
 	}
 
 	return nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SetSimulatedLatency(int minAddedLatencyMS, int maxAddedLatencyMS /*= 0*/)
+{
+	m_latencyRange.min = minAddedLatencyMS;
+	m_latencyRange.max = Max(minAddedLatencyMS, maxAddedLatencyMS);
+}
+
+
+//===============================================================================================
+bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)
+{
+	if(a.m_timeToBeProcessed < b.m_timeToBeProcessed)
+		return true;
+	return false;
 }

@@ -12,6 +12,8 @@
 #include "../Tools/RemoteCommandService.hpp"
 #include "../../Net/UDPSocket.hpp"
 #include "../Platform/File.hpp"
+#include "../../Net/NetSession.hpp"
+#include "../../Math/MathUtils.hpp"
 
 //====================================================================================
 void RegisterEngineCommands()
@@ -28,6 +30,8 @@ void RegisterEngineCommands()
 	
 	// Network
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
+	CommandRegister("net_sim_loss", "", "Loss range 0-100", AddSimulatedLoss);
+	CommandRegister("net_sim_lag", "", "Set min and max lag", AddSimulateLag);
 	
 	// remote command
 	CommandRegister("rc", "", "idx message", RCSSendMessage);
@@ -178,6 +182,39 @@ void TestConnect(Command& cb)
 
 
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void AddSimulateLag(Command & cb)
+{
+	int min = 0;
+	int max = 0;
+
+	if(IsIndexValid(1, cb.m_commandArguements))
+		min = atoi(cb.GetNextString().c_str());
+
+	if(IsIndexValid(2, cb.m_commandArguements))
+		max = atoi(cb.GetNextString().c_str());
+
+	NetSession::GetInstance()->SetSimulatedLatency(min,max);
+
+	DevConsole::AddConsoleDialogue(Stringf("Added a min %i and max %i latency to packet", min, max));
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void AddSimulatedLoss(Command & cb)
+{
+	float lossAmount = 0.f;
+
+	if(IsIndexValid(1, cb.m_commandArguements))
+		lossAmount = (float) atoi(cb.GetNextString().c_str());
+
+	lossAmount = ClampFloat(lossAmount, 0.f, 100.f);
+
+	NetSession::GetInstance()->SetSimulateLoss(lossAmount);
+
+	DevConsole::AddConsoleDialogue(Stringf("Added %f amount of loss (make sure it's 0-100)", lossAmount));
 }
 
 //-----------------------------------------------------------------------------------------------

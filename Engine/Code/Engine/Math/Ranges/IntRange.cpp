@@ -7,7 +7,8 @@ IntRange::~IntRange()
 
 IntRange::IntRange()
 {
-	
+	min = 0;
+	max = 0;
 }
 
 IntRange::IntRange(int initialMin, int initialMax)

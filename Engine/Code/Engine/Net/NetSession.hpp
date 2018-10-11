@@ -3,6 +3,7 @@
 #include "PacketChannel.hpp"
 #include <map>
 #include "NetMessage.hpp"
+#include "..\Math\Ranges\IntRange.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -31,6 +32,18 @@ struct NetSender
 		: m_connection(&theConnection) {}
 	
 	NetConnection*	m_connection = nullptr;
+};
+
+
+//-----------------------------------------------------------------------------------------------
+struct TimeStampedPacket
+{
+	TimeStampedPacket(int delay, NetPacket* thePacket, const NetAddress& theAddress );
+
+	int					m_delay;
+	double				m_timeToBeProcessed;
+	NetAddress			m_whoSentThePacket;
+	NetPacket*			m_packetToBeProcessed;
 };
 
 //====================================================================================
@@ -69,6 +82,8 @@ public:
 	// updates
 	void ProcessIncoming();
 	void ProcessPacket( NetPacket& packet , const NetAddress& sender);
+	void AddPacketToQueue( NetPacket& packet, const NetAddress& sender);
+	void ProcessTimeStampedPackets();
 
 	void ProcessOutgoing();
 	void SendPacket( const NetPacket& packet );
@@ -80,16 +95,27 @@ public:
 	NetConnection* GetConnection(int idx) const;
 	NetConnection* GetConnectionFromAddress(const NetAddress& sender) const;
 
+	void SetSimulateLoss( float lossAmount) { m_lossAmount = lossAmount; }
+	void SetSimulatedLatency( int minAddedLatencyMS, int maxAddedLatencyMS = 0);
+
 
 public:
 	NetConnection*								m_connections[NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS]; // all connections I know about; 
 	PacketChannel								m_channel; // what we send/receive packets on;
 
+private:
+	// Sim Loss and latency
+	float										m_lossAmount = 0.f; // 0 means you lose none, 100.f you lose all
+	IntRange									m_latencyRange;
+
+	// time stamped packets
+	std::vector<TimeStampedPacket>				m_timeStampedPacketQueue;
+
 	// gonna keep the list here, instead of in NetMessageDefinition so that
 	// multiple sessions can have different callbacks!
 	std::vector<NetMessageDefinition*>			m_messageCallbacks;
 
-
+public:
 	static NetSession* s_mainNetSession;
 };
 
@@ -97,7 +123,7 @@ public:
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
+bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b);
 
 //====================================================================================
 // Externs
