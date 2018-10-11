@@ -26,7 +26,7 @@ TimeStampedPacket::TimeStampedPacket(int delay, NetPacket* thePacket, const NetA
 	double delayInDecimal = (double) (((float)(delay)) * .001f);
 	m_timeToBeProcessed = GetCurrentTimeSeconds() + delayInDecimal;
 
-	DevConsole::AddConsoleDialogue(Stringf("Giving this message a delay of %f", delayInDecimal));
+	//DevConsole::AddConsoleDialogue(Stringf("Giving this message a delay of %f", delayInDecimal));
 }
 
 //===============================================================================================
@@ -201,6 +201,9 @@ NetConnection* NetSession::AddConnection(uint idx, NetAddress const & addr)
 	if(m_connections[idx] == nullptr)
 	{
 		m_connections[idx] = newConnection;
+
+		// gonna set the heart beat timer when we get it
+		newConnection->SetHeartbeatTimer(m_heartbeatRate);
 		return newConnection;
 	}
 	else
@@ -500,6 +503,22 @@ void NetSession::SetSimulatedLatency(int minAddedLatencyMS, int maxAddedLatencyM
 	m_latencyRange.max = Max(minAddedLatencyMS, maxAddedLatencyMS);
 }
 
+//-----------------------------------------------------------------------------------------------
+void NetSession::SetHeartbeat(float hz)
+{
+	m_heartbeatRate = hz;
+
+	// update all connections
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_connections[i];
+
+		if(current != nullptr)
+		{
+			current->SetHeartbeatTimer(hz);
+		}
+	}
+}
 
 //===============================================================================================
 bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)

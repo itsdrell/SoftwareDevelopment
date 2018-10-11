@@ -31,6 +31,7 @@
 #include "Engine/Net/UDPSocket.hpp"
 #include "Engine/Net/NetSession.hpp"
 #include "Game/Main/Playground.hpp"
+#include "Engine/Net/EngineRegisteredNetMessages.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,6 +114,12 @@ void Game::RegisterNetCallbacks()
 	m_theNetSession->RegisterMessageDefinition("add", OnAdd);
 	m_theNetSession->RegisterMessageDefinition("add_response", OnAddResponse);
 	m_theNetSession->RegisterMessageDefinition("ping", OnPing);
+
+	// this has all the important engine ones. Hopefully later we will only have this function
+	// and a game one
+	RegisterEngineNetMessages(*m_theNetSession);
+
+	// TODO game register messages
 }
 
 void Game::Update()

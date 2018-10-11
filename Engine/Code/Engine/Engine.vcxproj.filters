@@ -331,6 +331,9 @@
     <ClCompile Include="Math\Geometry\OBB2.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\EngineRegisteredNetMessages.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -460,6 +463,7 @@
     <ClInclude Include="Net\NetConnection.hpp" />
     <ClInclude Include="Net\PacketChannel.hpp" />
     <ClInclude Include="Math\Geometry\OBB2.hpp" />
+    <ClInclude Include="Net\EngineRegisteredNetMessages.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

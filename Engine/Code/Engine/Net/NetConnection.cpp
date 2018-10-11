@@ -9,6 +9,8 @@ NetConnection::NetConnection(uint8_t idx, const NetAddress& theAddress, NetSessi
 	m_owningSession = owningSession;
 	m_indexInSession = idx;
 	m_address = theAddress;
+
+	m_heartbeatTimer = new Timer();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -25,11 +27,17 @@ NetConnection::~NetConnection()
 	m_outboundUnreliables.clear();
 
 	m_owningSession = nullptr;
+
+	delete m_heartbeatTimer;
+	m_heartbeatTimer = nullptr;
 }
 
 //-----------------------------------------------------------------------------------------------
 void NetConnection::ProcessOutgoing()
 {
+	// see if we want to add a heartbeat message
+	CheckHeartbeatTimer();
+	
 	if(m_outboundUnreliables.size() == 0U)
 		return;
 	
@@ -84,4 +92,25 @@ void NetConnection::Send( NetMessage& messageToSend )
 
 	// add to outgoing queue
 	m_outboundUnreliables.push_back(&messageToSend);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::CheckHeartbeatTimer()
+{
+	if(m_heartbeatTimer->CheckAndReset())
+	{
+		NetMessage* hb = new NetMessage( "heartbeat" ); 
+		Send( *hb ); 
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::SetHeartbeatTimer(float hz)
+{
+	// make sure we dont divide by 0
+	if(hz == 0.f)
+		hz = 1.f;
+	
+	// we do the conversion to seconds here
+	m_heartbeatTimer->SetTimer((1.f / hz));
 }

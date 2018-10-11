@@ -5,6 +5,16 @@
 #include "NetMessage.hpp"
 #include "..\Math\Ranges\IntRange.hpp"
 
+
+//====================================================================================
+//									NOTES:
+//____________________________________________________________________________________
+// 
+// hz = 1 / seconds
+// seconds = 1 / hz
+//
+//====================================================================================
+
 //====================================================================================
 // Forward Declare
 //====================================================================================
@@ -97,6 +107,7 @@ public:
 
 	void SetSimulateLoss( float lossAmount) { m_lossAmount = lossAmount; }
 	void SetSimulatedLatency( int minAddedLatencyMS, int maxAddedLatencyMS = 0);
+	void SetHeartbeat( float hz );
 
 
 public:
@@ -107,6 +118,9 @@ private:
 	// Sim Loss and latency
 	float										m_lossAmount = 0.f; // 0 means you lose none, 100.f you lose all
 	IntRange									m_latencyRange;
+
+	// heartbeat rate
+	float										m_heartbeatRate = .2f; // this is in hz
 
 	// time stamped packets
 	std::vector<TimeStampedPacket>				m_timeStampedPacketQueue;

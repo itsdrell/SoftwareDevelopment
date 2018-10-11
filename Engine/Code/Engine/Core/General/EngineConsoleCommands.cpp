@@ -32,6 +32,7 @@ void RegisterEngineCommands()
 	CommandRegister("getAddresName", "", "Get IP Address", GetAddressName);
 	CommandRegister("net_sim_loss", "", "Loss range 0-100", AddSimulatedLoss);
 	CommandRegister("net_sim_lag", "", "Set min and max lag", AddSimulateLag);
+	CommandRegister("net_set_heart_rate", "", "Set heartbeat", SetHeartbeatRate);
 	
 	// remote command
 	CommandRegister("rc", "", "idx message", RCSSendMessage);
@@ -215,6 +216,21 @@ void AddSimulatedLoss(Command & cb)
 	NetSession::GetInstance()->SetSimulateLoss(lossAmount);
 
 	DevConsole::AddConsoleDialogue(Stringf("Added %f amount of loss (make sure it's 0-100)", lossAmount));
+}
+
+//-----------------------------------------------------------------------------------------------
+void SetHeartbeatRate(Command& cb)
+{
+	float heartbeatRate = 1.f; // in hz
+
+	if(IsIndexValid(1, cb.m_commandArguements))
+		heartbeatRate = (float) atoi(cb.GetNextString().c_str());
+
+	heartbeatRate = ClampFloat(heartbeatRate, 0.f, 100000.f);
+
+	NetSession::GetInstance()->SetHeartbeat(heartbeatRate);
+
+	DevConsole::AddConsoleDialogue(Stringf("Set heartbeat to: %f ", heartbeatRate));
 }
 
 //-----------------------------------------------------------------------------------------------

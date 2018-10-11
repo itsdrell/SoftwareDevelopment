@@ -313,6 +313,7 @@
     <ClCompile Include="Math\Vectors\Vector2.cpp" />
     <ClCompile Include="Math\Vectors\Vector3.cpp" />
     <ClCompile Include="Math\Vectors\Vector4.cpp" />
+    <ClCompile Include="Net\EngineRegisteredNetMessages.cpp" />
     <ClCompile Include="Net\Net.cpp" />
     <ClCompile Include="Net\NetAddress.cpp" />
     <ClCompile Include="Net\NetConnection.cpp" />
@@ -421,6 +422,7 @@
     <ClInclude Include="Math\Vectors\Vector2.hpp" />
     <ClInclude Include="Math\Vectors\Vector3.hpp" />
     <ClInclude Include="Math\Vectors\Vector4.hpp" />
+    <ClInclude Include="Net\EngineRegisteredNetMessages.hpp" />
     <ClInclude Include="Net\Net.hpp" />
     <ClInclude Include="Net\NetAddress.hpp" />
     <ClInclude Include="Net\NetConnection.hpp" />
