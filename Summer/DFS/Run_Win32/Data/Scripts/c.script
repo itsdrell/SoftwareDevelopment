@@ -1,2 +1,2 @@
-rca add_connection 0 10.8.134.107:10084 
-rca add_connection 1 10.8.134.107:10085
+rca add_connection 0 192.168.0.197:10084 
+rca add_connection 1 192.168.0.197:10085

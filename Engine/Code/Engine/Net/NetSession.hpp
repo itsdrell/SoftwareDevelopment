@@ -108,6 +108,10 @@ public:
 	void SetSimulateLoss( float lossAmount) { m_lossAmount = lossAmount; }
 	void SetSimulatedLatency( int minAddedLatencyMS, int maxAddedLatencyMS = 0);
 	void SetHeartbeat( float hz );
+	void SetSessionFlushRate( float hz );
+	void SetConnectionFlushRate( uint idx, float hz );
+
+	float GetFlushRate() { return m_sessionFlushRate; }
 
 
 public:
@@ -121,6 +125,9 @@ private:
 
 	// heartbeat rate
 	float										m_heartbeatRate = .2f; // this is in hz
+
+	// send rate
+	float										m_sessionFlushRate = 20.f; // hz
 
 	// time stamped packets
 	std::vector<TimeStampedPacket>				m_timeStampedPacketQueue;

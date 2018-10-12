@@ -26,6 +26,8 @@ void Connect( Command& cb ); // better one
 void AddSimulateLag( Command& cb );
 void AddSimulatedLoss( Command& cb );
 void SetHeartbeatRate( Command& cb );
+void SetSessionSendRate( Command& cb );
+void SetConnectionSendRate( Command& cb );
 
 void SpawnProcess( Command& cb );
 

@@ -52,6 +52,8 @@ public:
 
 	void CheckHeartbeatTimer();
 	void SetHeartbeatTimer( float hz );
+	void SetFlushRate( float hz );
+	void CompareFlushRatesAndSet();
 
 public:
 	// list of all unreliables sent to this connection
@@ -63,6 +65,8 @@ public:
 
 	// Timers
 	Timer*						m_heartbeatTimer;
+	Timer*						m_flushRateTimer;
+	float						m_flushRateInHz = 0.f; // default value
 
 	// how this relates to the session; 
 	NetSession*					m_owningSession; 

@@ -33,7 +33,11 @@ void RegisterEngineCommands()
 	CommandRegister("net_sim_loss", "", "Loss range 0-100", AddSimulatedLoss);
 	CommandRegister("net_sim_lag", "", "Set min and max lag", AddSimulateLag);
 	CommandRegister("net_set_heart_rate", "", "Set heartbeat", SetHeartbeatRate);
-	
+	CommandRegister("net_set_session_send_rate", "", "Set Session send rate", SetSessionSendRate);
+	CommandRegister("net_set_connection_send_rate", "", "Set Connection send rate", SetConnectionSendRate);
+
+
+
 	// remote command
 	CommandRegister("rc", "", "idx message", RCSSendMessage);
 	CommandRegister("rca", "", "command", RCSSendMessageToAll);
@@ -224,13 +228,48 @@ void SetHeartbeatRate(Command& cb)
 	float heartbeatRate = 1.f; // in hz
 
 	if(IsIndexValid(1, cb.m_commandArguements))
-		heartbeatRate = (float) atoi(cb.GetNextString().c_str());
+		heartbeatRate = atof(cb.GetNextString().c_str());
 
 	heartbeatRate = ClampFloat(heartbeatRate, 0.f, 100000.f);
 
 	NetSession::GetInstance()->SetHeartbeat(heartbeatRate);
 
 	DevConsole::AddConsoleDialogue(Stringf("Set heartbeat to: %f ", heartbeatRate));
+}
+
+//-----------------------------------------------------------------------------------------------
+void SetSessionSendRate(Command & cb)
+{
+	float flushRate = 0.f; // in hz
+
+	if(IsIndexValid(1, cb.m_commandArguements))
+		flushRate = atof(cb.GetNextString().c_str());
+
+	flushRate = ClampFloat(flushRate, 0.f, 100000.f);
+
+	NetSession::GetInstance()->SetSessionFlushRate(flushRate);
+
+	DevConsole::AddConsoleDialogue(Stringf("Set Session flush rate to: %f ", flushRate));
+}
+
+//-----------------------------------------------------------------------------------------------
+void SetConnectionSendRate(Command & cb)
+{
+	int idx = 0;
+	float flushRate = 0.f; // in hz
+
+	if(IsIndexValid(1, cb.m_commandArguements))
+		idx = atoi(cb.GetNextString().c_str());
+
+	if(IsIndexValid(2, cb.m_commandArguements))
+		flushRate = atof(cb.GetNextString().c_str());
+
+	flushRate = ClampFloat(flushRate, 0.f, 100000.f);
+	idx = ClampInt(idx, 0, NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS);
+
+	NetSession::GetInstance()->SetSessionFlushRate(flushRate);
+
+	DevConsole::AddConsoleDialogue(Stringf("Set Connection %i flush rate to: %f ", idx, flushRate));
 }
 
 //-----------------------------------------------------------------------------------------------

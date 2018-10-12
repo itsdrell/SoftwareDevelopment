@@ -520,6 +520,35 @@ void NetSession::SetHeartbeat(float hz)
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+void NetSession::SetSessionFlushRate(float hz)
+{
+	m_sessionFlushRate = hz;
+
+	// update all connections
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_connections[i];
+
+		if(current != nullptr)
+		{
+			current->SetFlushRate(hz);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SetConnectionFlushRate(uint idx, float hz)
+{
+	if(idx >= 0 && idx < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS)
+	{
+		if(m_connections[idx] != nullptr)
+		{
+			m_connections[idx]->SetFlushRate(hz);
+		}
+	}
+}
+
 //===============================================================================================
 bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)
 {
