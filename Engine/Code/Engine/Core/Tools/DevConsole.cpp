@@ -207,25 +207,31 @@ void DevConsole::StartUp()
 
 void DevConsole::LoadHistory()
 {
+	// remove anything that start up might have added!
+	m_commandHistory.clear();
+	
 	String path = HISTORY_FILE_PATH;
 	Strings lines = GetAllLinesFromFile(path.c_str());
+	RemoveWhiteSpaceLines(lines);
 
 	for(uint i = 0; i < lines.size(); i++)
 	{
 		m_currentEntry = lines.at(i);
-		AddACommandToHistory();
+		m_commandHistory.push_back(m_currentEntry);
+		//AddACommandToHistory();
 	}
 }
 
 void DevConsole::SaveHistoryToFile()
 {
+	RemoveWhiteSpaceLines(m_commandHistory);
 	int historySize = (int) m_commandHistory.size();
 	String path = HISTORY_FILE_PATH;
 
 	// If size is less than max amount just print in order
 	if(historySize < MAX_HISTORY_SIZE)
 	{
-		LogStringsToFile(path.c_str(), m_commandHistory);
+		LogStringsToFile(path.c_str(), m_commandHistory, true);
 	}
 	// if size if bigger, subtract size - maxAmount and that's the starting index and print
 	else 
@@ -1058,9 +1064,13 @@ void DevConsole::TrackHighlightSelection()
 }
 
 void DevConsole::AddACommandToHistory()
-{
-	// first see if it exists
+{	
+	// white space check
+	if(m_currentEntry == "")
+		return;
 
+	// idk why we are doing this..? Forseths app does it but meh
+	// first see if it exists
 	for(uint i = 0; i < m_commandHistory.size(); i++)
 	{
 		if(m_currentEntry == m_commandHistory.at(i))

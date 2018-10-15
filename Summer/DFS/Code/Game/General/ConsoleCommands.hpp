@@ -44,6 +44,7 @@ void AddAllUnitTypesToMap(Command& theCommand);
 void UseCOPower(Command& theCommand);
 void DebugGrid(Command& theCommand);
 void KillAllUnitsOfTeam(Command& theCommand);
+void CreateBattleScene( Command& theCommand );
 
 // net session stuff
 void AddConnection( Command& theCommand );

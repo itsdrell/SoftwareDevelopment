@@ -24,7 +24,7 @@
 // 
 
 constexpr float CLIENT_ASPECT = 1.77f; // We are requesting a 1:1 aspect (square) window area
-const char* WINDOW_NAME = " P R O T O  G A M E";
+const char* WINDOW_NAME = " Pre - Advanced Wars >:D ";
 
 //////////////////////////////////////////////////////////////////////////
 // Registers inputs

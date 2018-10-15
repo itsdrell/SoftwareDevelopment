@@ -37,6 +37,7 @@ public:
 	static void GetAllUnitDefinitionsWithStoreTag(String tag, std::vector<UnitDefinition*>* list);
 	static void GetAllUnitDefinitions(std::vector<UnitDefinition*>* list);
 	static Strings GetAllUnitNames();
+	static String GetRandomUnitName();
 	static void DeleteAllDefinitions();
 
 	static std::map<std::string, UnitDefinition*>	s_definitions;
@@ -68,8 +69,12 @@ public:
 class Unit : public GameObject2D
 {
 public:
+
+	Unit() {};
+
 	Unit(TeamName team);
 	Unit(TeamName team, UnitDefinition& def);
+	Unit(const String& name, const TeamName team, int hp); // used for created a battle scene (mostly just passing data)
 	
 	virtual ~Unit();
 
@@ -101,7 +106,7 @@ public:
 	bool				m_beenMoved;
 	bool				m_usedAction;
 
-	Tile*				m_tileIAmOn;
+	Tile*				m_tileIAmOn = nullptr;
 };
 
 //=============================================================

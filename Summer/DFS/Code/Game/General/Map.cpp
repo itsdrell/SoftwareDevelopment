@@ -417,15 +417,23 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 {
 	Tile* theTile = GetTile(tileCoords);
 
-	PlayOneShot("default");
-
-	// right now, one shot
 	Unit* target = theTile->m_unit;
 
-	Unit::Attack(*m_selectedUnit, *target);
-	m_selectedUnit->m_usedAction = true;
+	// store off the start health
+	int aStartHealth = m_selectedUnit->m_health;
+	int dStartHealth = target->m_health;
 	
-	//target->m_isDead = true;
+	// do the attack
+	Unit::Attack(*m_selectedUnit, *target);
+
+	// Create the battle result
+	BattleResults results = BattleResults( *m_selectedUnit, *target, aStartHealth, dStartHealth );
+
+	// give the battle scene the results
+	m_battleScene->SetBattleResults(results);
+
+	// clean up
+	m_selectedUnit->m_usedAction = true;
 
 	if(m_selectedUnit->m_isDead == true)
 		m_selectedUnit->m_tileIAmOn->m_unit = nullptr;

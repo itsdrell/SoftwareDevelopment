@@ -14,6 +14,18 @@
 #include "Engine/Renderer/Images/Sprites/SpriteAnimator.hpp"
 #include "Engine/Renderer/Images/Sprites/SpriteAnimation.hpp"
 
+
+//===============================================================================================
+void BattleResults::operator=(const BattleResults& copyFrom)
+{
+	// you could set the specific values you want from the unit into our unit so
+	// if the reference is bad we just save the values we want..?
+	m_attacker = copyFrom.m_attacker;
+	m_defender = copyFrom.m_defender;
+	m_attackerStartHP = copyFrom.m_attackerStartHP;
+	m_defenderStartHP = copyFrom.m_defenderStartHP;
+}
+
 //===============================================================================================
 BattleCutscene::BattleCutscene()
 {
@@ -71,6 +83,12 @@ BattleCutscene::~BattleCutscene()
 }
 
 //-----------------------------------------------------------------------------------------------
+void BattleCutscene::Start()
+{
+
+}
+
+//-----------------------------------------------------------------------------------------------
 void BattleCutscene::Update()
 {
 }
@@ -83,6 +101,7 @@ void BattleCutscene::Render() const
 	g_theRenderer->SetCurrentTexture();
 	//g_theRenderer->DrawAABB2(AABB2(-1000.f, 1000.f), g_theRenderer->m_threadedColor);
 	
+	// make sure to check if tile is null cause the battle scene command could break it :o 
 
 	//-----------------------------------------------------------------------------------------------
 	// random units bs
@@ -114,7 +133,18 @@ void BattleCutscene::Render() const
 }
 
 //-----------------------------------------------------------------------------------------------
+void BattleCutscene::SetBattleResults(const BattleResults& results)
+{
+	m_resultsToShow = results;
+
+	// once we have results, start the scene!
+	Start();
+}
+
+//-----------------------------------------------------------------------------------------------
 Texture* BattleCutscene::GetRenderedTextureOfScene() const
 {
 	return m_battleSceneColorTarget;
 }
+
+

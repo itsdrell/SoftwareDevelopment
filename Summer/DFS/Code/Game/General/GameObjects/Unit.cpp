@@ -67,6 +67,14 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 }
 
 //-----------------------------------------------------------------------------------------------
+Unit::Unit(const String& name, const TeamName team, int hp)
+{
+	m_definition = UnitDefinition::GetUnitDefinition(name);
+	m_team = team;
+	m_health = hp;
+}
+
+//-----------------------------------------------------------------------------------------------
 Unit::~Unit()
 {
 	// definition gets cleaned up in loading
@@ -307,6 +315,16 @@ Strings UnitDefinition::GetAllUnitNames()
 	}
 
 	return result;
+}
+
+//-----------------------------------------------------------------------------------------------
+String UnitDefinition::GetRandomUnitName()
+{
+	Strings names = GetAllUnitNames();
+
+	int index = GetRandomIntRange(0, (int)(names.size() - 1U));
+
+	return names.at(index);
 }
 
 //--------------------------------------------------------------------------

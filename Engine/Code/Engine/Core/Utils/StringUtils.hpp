@@ -26,6 +26,8 @@ std::string RemoveCharacterFromString(std::string stringToChange, const char* th
 // Counts the /n is a string
 uint CountHowManyLinesAreInAString(std::string stringToCount);
 
+// Remove white space lines from Strings
+void RemoveWhiteSpaceLines( Strings& theStrings );
 
 uint GetLargestLengthInStrings(Strings listToCheck);
 std::string GetLargestStringInStrings(Strings listToCheck);

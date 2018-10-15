@@ -138,6 +138,16 @@ uint CountHowManyLinesAreInAString(std::string stringToCount)
 }
 
 //-----------------------------------------------------------------------------------------------
+void RemoveWhiteSpaceLines(Strings& theStrings)
+{	
+	for(uint i = 0; i < theStrings.size(); i++)
+	{
+		if(theStrings.at(i) == "")
+			RemoveFast(i, theStrings);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 int ParseString(std::string text, int defaultValue)
 {
 	int result;

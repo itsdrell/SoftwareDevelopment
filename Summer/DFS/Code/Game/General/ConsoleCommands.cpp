@@ -15,6 +15,7 @@
 #include "Engine/Net/NetConnection.hpp"
 #include "Engine/Net/NetSession.hpp"
 #include "Engine/Net/NetAddress.hpp"
+#include "Game/General/BattleScene/BattleCutscene.hpp"
 #include <string>
 
 //====================================================================================
@@ -35,6 +36,7 @@ void RegisterGameCommands()
 	CommandRegister("addEffect", "","", AddEffect);
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
+	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 
 	// NetSession stuff
 	CommandRegister("add_connection", "", "", AddConnection);
@@ -93,7 +95,7 @@ void AddUnit(Command& theCommand)
 	std::string unitName = "grunt";
 	TeamName teamName = TEAM_RED;
 	IntVector2 pos = IntVector2(0,0);
-	int hp = 10;
+	int hp = 100;
 
 	if(IsIndexValid(1, theCommand.m_commandArguements))
 		unitName = theCommand.m_commandArguements.at(1);
@@ -324,6 +326,76 @@ void KillAllUnitsOfTeam(Command& theCommand)
 		}
 	}
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void CreateBattleScene(Command& theCommand)
+{
+	// battle attackUnitName team startHP endHP defUnitName team startHP endHP 
+	// battle help
+	// battle (gives random battle)
+	DevConsole* dc = DevConsole::GetInstance();
+
+	// attacker
+	std::string attackerUnitName = UnitDefinition::GetRandomUnitName();
+	TeamName attackerTeamName = TEAM_RED;
+	int attackerStartHP = GetRandomIntRange(10, 100);
+	int attackerendHP = GetRandomIntRange(0, attackerStartHP);
+
+	// defender
+	std::string defUnitName = UnitDefinition::GetRandomUnitName();
+	TeamName defTeamName = TEAM_BLUE;
+	int defStartHP = GetRandomIntRange(10, 100);
+	int defEndHP = GetRandomIntRange(0, defStartHP);;
+
+	// checks and sets
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		attackerUnitName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		attackerTeamName = StringFromTeamName(theCommand.m_commandArguements.at(2));
+	if(IsIndexValid(3, theCommand.m_commandArguements))
+		attackerStartHP = ParseString(theCommand.m_commandArguements.at(3), attackerStartHP);
+	if(IsIndexValid(4, theCommand.m_commandArguements))
+		attackerendHP = ParseString(theCommand.m_commandArguements.at(4), attackerendHP);
+
+	if(IsIndexValid(5, theCommand.m_commandArguements))
+		defUnitName = theCommand.m_commandArguements.at(5);
+	if(IsIndexValid(6, theCommand.m_commandArguements))
+		defTeamName = StringFromTeamName(theCommand.m_commandArguements.at(6));
+	if(IsIndexValid(7, theCommand.m_commandArguements))
+		defStartHP = ParseString(theCommand.m_commandArguements.at(7), defStartHP);
+	if(IsIndexValid(8, theCommand.m_commandArguements))
+		defEndHP = ParseString(theCommand.m_commandArguements.at(8), defEndHP);
+
+
+	if(attackerUnitName == "help")
+	{
+		dc->AddHeader("Params: attackUnitName team startHP endHP defUnitName team startHP endHP", Rgba::WHITE, 2);
+		dc->AddFooter();
+
+	}
+	else
+	{
+		// create attacker unit
+		Unit attacker = Unit(attackerUnitName, attackerTeamName, attackerendHP);
+
+		// create defender unit
+		Unit defender = Unit(defUnitName, defTeamName, defEndHP);
+
+		// create battle result
+		BattleResults br = BattleResults(attacker, defender, attackerStartHP, defStartHP);
+
+		// set it on the battle scene
+		g_theCurrentMap->m_battleScene->SetBattleResults(br);
+
+		// this is just to make sure we got what we wanted, or if we do random make sure what we see is what we put in
+		dc->AddConsoleDialogue(Stringf("Created a battle between %s on team %s with start hp: %i endHp: %i",
+			attackerUnitName.c_str(), TeamNameToString(attackerTeamName).c_str(), attackerStartHP, attackerendHP), Rgba::WHITE);
+
+		dc->AddConsoleDialogue(Stringf("VS a %s on team %s with start hp: %i endHp: %i",
+			defUnitName.c_str(), TeamNameToString(defTeamName).c_str(), defStartHP, defEndHP), Rgba::WHITE);
+
+	}
 }
 
 //-----------------------------------------------------------------------------------------------

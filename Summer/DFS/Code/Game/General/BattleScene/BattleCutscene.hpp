@@ -1,4 +1,5 @@
 #pragma once
+#include "..\GameObjects\Unit.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -22,7 +23,25 @@ class Renderable2D;
 //====================================================================================
 // Structs
 //====================================================================================
+// This is what we pass the battle cutscene to create the scene
+struct BattleResults
+{	
+	BattleResults() {}
+	
+	BattleResults(const Unit& attacker, const Unit& defender, int attackersStartHP, int defendersStartHP)
+		: m_attacker(attacker)
+		, m_defender(defender)
+		, m_attackerStartHP(attackersStartHP)
+		, m_defenderStartHP(defendersStartHP) {}
 
+	void operator=( const BattleResults& copyFrom );
+
+	// attacker unit, def unit, starting hp attacker, start hp defender
+	Unit	m_attacker;
+	Unit	m_defender;
+	int		m_attackerStartHP;
+	int		m_defenderStartHP;
+};
 
 //====================================================================================
 // Classes
@@ -33,10 +52,13 @@ public:
 	BattleCutscene();
 	~BattleCutscene();
 
+	void Start();
+
 	void Update();
 
 	void Render() const;
 
+	void SetBattleResults(const BattleResults& results);
 
 	Texture* GetRenderedTextureOfScene() const;
 
@@ -49,6 +71,7 @@ private:
 
 	Renderable2D*					m_testRenderable;
 
+	BattleResults					m_resultsToShow;
 
 	// these units might be a "battle unit"
 	// Attacking Unit
