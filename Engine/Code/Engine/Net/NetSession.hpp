@@ -100,7 +100,8 @@ public:
 
 	void Render() const;
 
-	uint8_t GetMyConnection() const;
+	NetConnection* GetMyConnection() const;
+	uint GetMySessionIndex() const { return m_connectionsIndexInSession; }
 	uint8_t GetConnectionForPacket(const PacketHeader& theHeader, const NetAddress& theAddressOfSender);
 	NetConnection* GetConnection(int idx) const;
 	NetConnection* GetConnectionFromAddress(const NetAddress& sender) const;
@@ -128,6 +129,9 @@ private:
 
 	// send rate
 	float										m_sessionFlushRate = 20.f; // hz
+
+	// My connections index in the session
+	uint										m_connectionsIndexInSession = 0U;
 
 	// time stamped packets
 	std::vector<TimeStampedPacket>				m_timeStampedPacketQueue;

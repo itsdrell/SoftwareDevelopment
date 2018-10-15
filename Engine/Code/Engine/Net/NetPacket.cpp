@@ -7,7 +7,7 @@ NetPacket::NetPacket()
 	: BytePacker(PACKET_MTU, LITTLE_ENDIAN) // Set to max size you can send over LAN
 {
 	// move the write head over two bytes because we wont write the header till the end
-	AdvanceWriteHead(2U);
+	AdvanceWriteHead(sizeof(PacketHeader));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ NetPacket::NetPacket(bool advanceWriteHeadForHeader)
 	: BytePacker(PACKET_MTU, LITTLE_ENDIAN) // Set to max size you can send over LAN
 {
 	if(advanceWriteHeadForHeader)
-		AdvanceWriteHead(2U);
+		AdvanceWriteHead(sizeof(PacketHeader));
 
 }
 

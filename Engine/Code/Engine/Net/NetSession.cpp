@@ -204,6 +204,11 @@ NetConnection* NetSession::AddConnection(uint idx, NetAddress const & addr)
 
 		// gonna set the heart beat timer when we get it
 		newConnection->SetHeartbeatTimer(m_heartbeatRate);
+
+		// see if we just added our own index, if so, store of the index for easy access!
+		if(addr == m_channel.m_socket->m_address)
+			m_connectionsIndexInSession = idx;
+
 		return newConnection;
 	}
 	else
@@ -451,9 +456,9 @@ void NetSession::Render() const
 }
 
 //-----------------------------------------------------------------------------------------------
-uint8_t NetSession::GetMyConnection() const
+NetConnection* NetSession::GetMyConnection() const
 {
-	return INVALID_CONNECTION_INDEX;
+	return m_connections[m_connectionsIndexInSession];
 }
 
 //-----------------------------------------------------------------------------------------------

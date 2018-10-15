@@ -45,36 +45,60 @@ void NetConnection::ProcessOutgoing()
 	// See if our flush timer is up
 	if( m_flushRateTimer->CheckAndReset())
 	{
-		
+		// if we have no messages, return
 		if(m_outboundUnreliables.size() == 0U)
 			return;
 
-		// Create a packet, fill it with as many messages as you can, send it, repeat.
-		NetPacket currentPacket;
-		currentPacket.m_indexToWhoWeAreSendingTo = m_indexInSession;
-		for(uint i = 0; i < m_outboundUnreliables.size(); i++)
-		{		
-			NetMessage& currentMessage = *m_outboundUnreliables.at(i);
+		// send what we can fit in a packet
+		Flush();
 
-			if(!currentPacket.WriteMessage(currentMessage))
-			{
-				// we ran out of room! we didn't write to the packet
-				// but send it anyways 
-				currentPacket.WriteHeader();
-				m_owningSession->SendPacket(currentPacket);
-
-				// reset the head
-				currentPacket.ResetWrite();
-				currentPacket.ResetMessageCount();
-				i--; // go back since we didn;t have room
-			}
-		}
-
-		currentPacket.WriteHeader();
-		m_owningSession->SendPacket(currentPacket);
+		// clean up
 		ClearOutgoingMessages();
 	}
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::Flush()
+{
+	// Create a packet, fill it with as many messages as you can, send it, repeat.
+	NetPacket currentPacket;
+	currentPacket.m_indexToWhoWeAreSendingTo = m_indexInSession;
+
+	PacketHeader header;
+	header.m_senderConnectionIndex = m_owningSession->GetMySessionIndex();
+	header.m_ack = GetNextAckToSend();
+	header.m_lastRecievedAck = m_lastReceivedAck;
+	header.m_previousRecievedAckBitfield = m_previousReceivedAckBitfield;
+
+	currentPacket.m_header = header;
+	
+	for(uint i = 0; i < m_outboundUnreliables.size(); i++)
+	{		
+		NetMessage& currentMessage = *m_outboundUnreliables.at(i);
+
+		if(!currentPacket.WriteMessage(currentMessage))
+		{
+			// we ran out of room! we didn't write to the packet
+			// but send it anyways 
+			currentPacket.WriteHeader();
+			m_owningSession->SendPacket(currentPacket);
+
+			// reset the head
+			currentPacket.ResetWrite();
+			currentPacket.ResetMessageCount();
+			i--; // go back since we didn;t have room
+		}
+	}
+
+	currentPacket.WriteHeader();
+	m_owningSession->SendPacket(currentPacket);
+}
+
+//-----------------------------------------------------------------------------------------------
+uint16_t NetConnection::GetNextAckToSend()
+{
+	return m_nextSentAck;
 }
 
 //-----------------------------------------------------------------------------------------------

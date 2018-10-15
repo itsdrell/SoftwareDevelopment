@@ -11,7 +11,7 @@ class NetSession;
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-
+#define INVALID_PACKET_ACK (0Xffff)
 
 //====================================================================================
 // ENUMS
@@ -30,6 +30,11 @@ struct PacketHeader
 		, m_unreliableCount(unreliableCount) {}
 	
 	uint8_t m_senderConnectionIndex = 0U; // conn idx of the sender of this packer
+
+	uint16_t m_ack = INVALID_PACKET_ACK;
+	uint16_t m_lastRecievedAck = INVALID_PACKET_ACK;
+	uint16_t m_previousRecievedAckBitfield;
+
 	uint8_t m_unreliableCount = 0U; // number of unreliable messages in this container; 
 }; 
 

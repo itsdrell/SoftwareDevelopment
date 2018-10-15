@@ -1,6 +1,7 @@
 #pragma once
 #include "NetAddress.hpp"
 #include "..\Core\Tools\Stopwatch.hpp"
+#include "Engine\Net\NetPacket.hpp"
 
 
 //====================================================================================
@@ -44,6 +45,9 @@ public:
 	// so may want to split the internals to "should_send_packet() and "send_packet"
 	// aka flush
 	void ProcessOutgoing(); 
+	void Flush();
+
+	uint16_t GetNextAckToSend();
 
 	// clean up
 	void ClearOutgoingMessages();
@@ -62,7 +66,6 @@ public:
 
 	NetAddress					m_address; // address associtaed with this connectin; 
 
-
 	// Timers
 	Timer*						m_heartbeatTimer;
 	Timer*						m_flushRateTimer;
@@ -71,6 +74,27 @@ public:
 	// how this relates to the session; 
 	NetSession*					m_owningSession; 
 	uint8_t						m_indexInSession;
+
+private: 
+	
+	// ack related stuff
+	// sending - updated during a send/flush
+	uint16_t					m_nextSentAck                    = 0U; 
+
+	// receiving - updated during a process_packet
+	uint16_t					m_lastReceivedAck                = INVALID_PACKET_ACK; 
+	uint16_t					m_previousReceivedAckBitfield   = 0; 
+
+	// Analytics
+	uint						m_lastSendTimeMS;
+	uint						m_lastRecievedTimeMS;
+
+	// note these variables are unrelated to the debug sim on the session
+	// but will end up reflecting those numbers.
+	float						m_loss = 0.0f;       // loss rate we perceive to this connection
+	float						m_rtt  = 0.0f;        // latency perceived on this connection
+
+
 };
 
 
