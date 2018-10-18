@@ -82,6 +82,7 @@ public:
 	void DrawDottedCircle(Vector2 position, float radius, Rgba theColor = Rgba::WHITE);
 	void DrawDottedCircle(Disc2 theDisc, Rgba theColor = Rgba::WHITE);
 	void DrawAABB2(const AABB2& bounds,const Rgba& color, bool filled = true);
+	void DrawAABB2Blended( const AABB2& bounds );
 	void DrawBasis(const Matrix44& basis, float lengthOfLine);
 	
 	//void DrawAABB3(const AABB3& bounds, Rgba theColor = Rgba::WHITE, bool wireFramed = false);

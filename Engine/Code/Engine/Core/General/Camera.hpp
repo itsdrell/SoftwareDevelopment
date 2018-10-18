@@ -30,7 +30,7 @@ public:
 	Vector3 GetForward();
 	Vector3 GetRight();
 	Vector3 GetUp();
-
+	AABB2 GetOrthoBounds() const;
 
 	// model setters
 	void LookAt( Vector3 position, Vector3 target, Vector3 up = Vector3::UP);  // this is what he had..? Matrix44::UP ); 

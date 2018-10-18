@@ -70,6 +70,12 @@ Vector3 Camera::GetUp()
 	return m_cameraMatrix.GetUp();
 }
 
+//-----------------------------------------------------------------------------------------------
+AABB2 Camera::GetOrthoBounds() const
+{
+	return AABB2(-m_orthoSize.x * .5f, -m_orthoSize.y * .5f, m_orthoSize.x * .5f, m_orthoSize.y * .5f);
+}
+
 void Camera::LookAt(Vector3 position, Vector3 target, Vector3 up)
 {
 	// Look first creates the camera position

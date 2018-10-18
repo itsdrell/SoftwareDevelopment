@@ -859,6 +859,35 @@ void Renderer::DrawAABB2(const AABB2& bounds,const  Rgba& color, bool filled)
 	
 }
 
+//-----------------------------------------------------------------------------------------------
+void Renderer::DrawAABB2Blended(const AABB2& bounds)
+{
+	GL_CHECK_ERROR();
+
+	// THIS IS IMPORTANT
+	glEnable(GL_BLEND);											GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			GL_CHECK_ERROR();
+
+	m_currentTexture = m_defaultTexture;
+
+	Rgba bl = Rgba::RED;
+	Rgba br = Rgba::BLUE;
+	Rgba tl = Rgba::GREEN;
+	Rgba tr = Rgba::YELLOW;
+
+	Vertex3D_PCU vertices [6];
+
+	vertices[0] = Vertex3D_PCU(Vector2(bounds.mins.x,bounds.mins.y),bl,Vector2(0.f,0.f)); // bottom left
+	vertices[1] = Vertex3D_PCU(Vector2(bounds.maxs.x,bounds.mins.y),br,Vector2(1.f,0.f)); // bottom right
+	vertices[2] = Vertex3D_PCU(Vector2(bounds.maxs.x,bounds.maxs.y),tr,Vector2(1.f,1.f)); // top right
+
+	vertices[3] = Vertex3D_PCU(Vector2(bounds.mins.x,bounds.mins.y),bl,Vector2(0.f,0.f)); // bottom left
+	vertices[4] = Vertex3D_PCU(Vector2(bounds.maxs.x,bounds.maxs.y),tr,Vector2(1.f,1.f)); // top right
+	vertices[5] = Vertex3D_PCU(Vector2(bounds.mins.x,bounds.maxs.y),tl,Vector2(0.f,1.f)); // top left
+
+	DrawMeshImmediate(vertices,6,PRIMITIVE_TRIANGLES);
+
+}
 
 void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 {

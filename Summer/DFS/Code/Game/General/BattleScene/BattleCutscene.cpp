@@ -99,9 +99,8 @@ void BattleCutscene::Render() const
 	g_theRenderer->SetCamera(m_camera);
 	g_theRenderer->ClearScreen(Rgba(0,0,0,0));
 	g_theRenderer->SetCurrentTexture();
-	//g_theRenderer->DrawAABB2(AABB2(-1000.f, 1000.f), g_theRenderer->m_threadedColor);
 	
-	// make sure to check if tile is null cause the battle scene command could break it :o 
+	RenderBackgrounds();
 
 	//-----------------------------------------------------------------------------------------------
 	// random units bs
@@ -130,6 +129,28 @@ void BattleCutscene::Render() const
 
 	//-----------------------------------------------------------------------------------------------
 	m_spriteRenderer->Render(m_scene);
+}
+
+//-----------------------------------------------------------------------------------------------
+void BattleCutscene::RenderBackgrounds() const
+{
+	m_camera->SetProjectionOrtho(100 * 1.77f, 100, -10.0f, 100.0f);
+	
+	g_theRenderer->DrawAABB2(AABB2(-1000.f, 1000.f), Rgba::BLACK);
+	
+	// make sure to check if tile is null cause the battle scene command could break it :o 
+
+	SpriteSheet* combatBackgrounds = SpriteSheet::CreateOrGet("combatBackgrounds");
+
+	AABB2 leftUVS = combatBackgrounds->GetTexCoordsForSpriteCoords(IntVector2(1,1));
+	AABB2 bounds = GetBounds(m_camera->GetOrthoBounds(), Vector2(0.f, 0.f), Vector2(.5f, 1.f));
+	g_theRenderer->DrawTexturedAABB2(bounds, *combatBackgrounds->m_spriteSheetTexture, leftUVS.mins, leftUVS.maxs, Rgba::WHITE);
+	
+	
+	//g_theRenderer->SetCurrentTexture();
+	//g_theRenderer->DrawAABB2Blended(bounds);
+	m_camera->RenderDebugOrtho();
+
 }
 
 //-----------------------------------------------------------------------------------------------

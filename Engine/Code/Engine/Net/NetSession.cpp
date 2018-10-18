@@ -392,7 +392,7 @@ void NetSession::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	r->SetCamera(r->m_defaultUICamera);
-	r->m_currentCamera->RenderDebugOrtho();
+	//r->m_currentCamera->RenderDebugOrtho();
 
 	// background
 	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba(0,0,0,200));
@@ -407,7 +407,7 @@ void NetSession::Render() const
 
 	// Draw the title + state
 	std::string title = "Netsession Info";
-	mb.Add2DText(pivot, title, 1.5f, r->m_threadedColor);
+	mb.Add2DText(pivot, title, 1.77f, r->m_threadedColor, 1.77f);
 
 	// Draw the info
 	String theInfo = Stringf("Rate: %i hz || sim lag: %i ms - %i ms || sim_loss: %d",
@@ -435,7 +435,7 @@ void NetSession::Render() const
 			if(m_connections[i]->m_address == m_channel.m_socket->m_address)
 				isLocal = "L";
 			
-			String connectionText = Stringf("%s %6i %-20s %-7d %-7d %-7d %-7d %-7d %-7d %-7d", 
+			String connectionText = Stringf("%-2s %6i %-20s %-7d %-7d %-7d %-7d %-7d %-7d %-7d", 
 				isLocal.c_str(), i , m_connections[i]->m_address.ToString().c_str(),
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 			

@@ -57,6 +57,7 @@ public:
 	void Update();
 
 	void Render() const;
+	void RenderBackgrounds() const;
 
 	void SetBattleResults(const BattleResults& results);
 
