@@ -228,7 +228,7 @@ void SetHeartbeatRate(Command& cb)
 	float heartbeatRate = 1.f; // in hz
 
 	if(IsIndexValid(1, cb.m_commandArguements))
-		heartbeatRate = atof(cb.GetNextString().c_str());
+		heartbeatRate = (float) atof(cb.GetNextString().c_str());
 
 	heartbeatRate = ClampFloat(heartbeatRate, 0.f, 100000.f);
 
@@ -243,7 +243,7 @@ void SetSessionSendRate(Command & cb)
 	float flushRate = 0.f; // in hz
 
 	if(IsIndexValid(1, cb.m_commandArguements))
-		flushRate = atof(cb.GetNextString().c_str());
+		flushRate = (float) atof(cb.GetNextString().c_str());
 
 	flushRate = ClampFloat(flushRate, 0.f, 100000.f);
 
@@ -262,7 +262,7 @@ void SetConnectionSendRate(Command & cb)
 		idx = atoi(cb.GetNextString().c_str());
 
 	if(IsIndexValid(2, cb.m_commandArguements))
-		flushRate = atof(cb.GetNextString().c_str());
+		flushRate = (float) atof(cb.GetNextString().c_str());
 
 	flushRate = ClampFloat(flushRate, 0.f, 100000.f);
 	idx = ClampInt(idx, 0, NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS);

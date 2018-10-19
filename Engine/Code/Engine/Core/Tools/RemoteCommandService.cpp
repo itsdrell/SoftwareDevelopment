@@ -449,6 +449,9 @@ void RemoteCommandServiceUpdate()
 	{
 		RemoteCommandService::GetInstance()->Update();
 	}
+
+	// once we are done, lets just delete it here
+	delete RemoteCommandService::GetInstance();
 }
 
 //-----------------------------------------------------------------------------------------------

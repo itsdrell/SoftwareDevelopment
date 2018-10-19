@@ -2100,6 +2100,8 @@ void BindGLFunctions()
 //-----------------------------------------------------------------------------------------------
 void ChangeThreadedColor(void* data)
 {
+	UNUSED(data);
+	
 	Renderer* r = Renderer::GetInstance();
 
 	while(r->m_changeThreadedColor)

@@ -165,7 +165,7 @@ void Clock::Advance(uint64_t elapsed)
 	frame.seconds = (float) elapsedSeconds;
 	deltaTime = frame.seconds; // storing it off for easier access
 	frame.hpc = elapsed;
-	frame.ms = (uint)frame.hpcSeconds * 1000;
+	frame.ms = (uint)(frame.hpcSeconds * 1000.f);
 
 	total.hpcSeconds += frame.hpcSeconds;
 	total.seconds += frame.seconds;
@@ -259,5 +259,11 @@ float GetDeltaTime()
 float GetFPS()
 {
 	return ( 1.f / g_theMasterClock->deltaTime);
+}
+
+//-----------------------------------------------------------------------------------------------
+uint GetTimeInMilliseconds()
+{
+	return g_theMasterClock->total.ms;
 }
 

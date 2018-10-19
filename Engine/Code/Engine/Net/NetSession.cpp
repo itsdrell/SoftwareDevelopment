@@ -12,6 +12,7 @@
 #include "../Core/Platform/Time.hpp"
 
 #include <algorithm>
+#include "../Core/Tools/Clock.hpp"
 
 //===============================================================================================
 
@@ -302,6 +303,9 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 		theSender = NetSender(*GetConnection(packet.m_header.m_senderConnectionIndex));
 	}
 
+	// Do the on receive packet stuff
+	theSender.m_connection->OnReceivePacket(packet.m_header, &packet);
+
 	// Get How many messages are in the packet
 	uint8_t amount = packet.m_header.m_unreliableCount;
 	
@@ -401,7 +405,7 @@ void NetSession::Render() const
 	Vector2 pivot;
 	pivot.x = -48.f;
 	pivot.y = 46.f;
-	float textSize = 1.2;
+	float textSize = 1.2f;
 
 	MeshBuilder mb;
 
@@ -428,16 +432,29 @@ void NetSession::Render() const
 	Vector2 currentPos = Vector2(pivot.x + 1.f, pivot.y - 12.f);
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		if(m_connections[i] != nullptr)
+		NetConnection* currentConnection = m_connections[i];
+		
+		if(currentConnection != nullptr)
 		{
 			String isLocal = "--";
 
-			if(m_connections[i]->m_address == m_channel.m_socket->m_address)
+			if(currentConnection->m_address == m_channel.m_socket->m_address)
 				isLocal = "L";
 			
-			String connectionText = Stringf("%-2s %6i %-20s %-7d %-7d %-7d %-7d %-7d %-7d %-7d", 
-				isLocal.c_str(), i , m_connections[i]->m_address.ToString().c_str(),
-				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+			float lastReceivedTime = (float)((GetTimeInMilliseconds() - currentConnection->GetLastReceivedTimeInMS())) / 1000.f;
+			float lastSentTime = (float)((GetTimeInMilliseconds() - currentConnection->m_lastSendTimeMS)) / 1000.f;
+
+			String connectionText = Stringf("%-2s %6i %-20s %-7.3f %-7.3f %-7.3f %-7.3f %-7d %-7d %-7d", 
+				isLocal.c_str(), 
+				i , 
+				currentConnection->m_address.ToString().c_str(),
+				currentConnection->GetRTT(), // RTT 
+				currentConnection->GetLoss(), // LOSS
+				lastReceivedTime, // LRCV
+				lastSentTime, // LSNT
+				currentConnection->m_lastSentAck, // Sntack
+				currentConnection->m_lastReceivedAck, // Rcvack
+				0.0); // Rcvbits
 			
 			
 			mb.Add2DText(currentPos, connectionText, .8f, r->m_threadedColor);

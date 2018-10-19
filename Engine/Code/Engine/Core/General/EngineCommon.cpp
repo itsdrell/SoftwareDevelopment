@@ -51,6 +51,9 @@ void EngineShutDown()
 	if(Profiler::GetInstance() != nullptr)
 		delete Profiler::GetInstance();
 
+	// stop the thread and the function the thread is in will delete itself once it exits!
+	RemoteCommandService::GetInstance()->m_isRunning = false;
+
 	LogSystemShutDown();
 
 	Thread::Shutdown();

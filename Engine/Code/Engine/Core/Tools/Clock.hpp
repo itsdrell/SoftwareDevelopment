@@ -108,7 +108,7 @@ float GetDeltaTime();
 
 float GetFPS();
 
-
+uint GetTimeInMilliseconds();
 
 // Declaring all main clocks here
 extern Clock* g_theMasterClock;

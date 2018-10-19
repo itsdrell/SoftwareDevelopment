@@ -18,6 +18,7 @@ EffectDefinition::EffectDefinition(tinyxml2::XMLElement & node)
 	tinyxml2::XMLElement& animationNode = *node.FirstChildElement();
 
 	SpriteAnimation* m_animation = new SpriteAnimation(animationNode);
+	UNUSED(m_animation);
 
 	s_definitions.insert(std::pair<String, EffectDefinition*>(m_name,this));
 }

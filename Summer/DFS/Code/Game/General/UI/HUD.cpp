@@ -97,7 +97,7 @@ void HUD::RenderTileDisplay() const
 		nameText = theBuilding->GetDisplayName();
 		teamName = TeamNameToString(theBuilding->m_team);
 
-		int healthToDisplay = floor(theBuilding->m_health / 10);
+		int healthToDisplay = (int) floor(theBuilding->m_health / 10);
 		health = "HP: " + std::to_string(healthToDisplay);
 		//health = "HP: " + theBuilding->m_health;
 	}
@@ -128,7 +128,7 @@ void HUD::RenderUnitDisplay() const
 
 	Sprite currentSprite = *currentUnit.m_renderable->GetSprite();
 
-	int healthToDisplay = floor(currentUnit.m_health / 10);
+	int healthToDisplay = (int) floor(currentUnit.m_health / 10);
 
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(currentUnit.m_team));
 	r->DrawTexturedAABB2(unitImageBounds, *currentSprite.m_image, currentSprite.m_uv.mins, currentSprite.m_uv.maxs, Rgba::WHITE);

@@ -174,7 +174,7 @@ void Camera::RenderDebugOrtho() const
 	bool shouldBeGray = false;
 	for(uint i = 0; i < amountOfLines; i++)
 	{
-		r->DrawLine2D(Vector2( currentX, -m_orthoSize.y), Vector2( currentX, m_orthoSize.y), shouldBeGray ? Rgba(125,125,125,200.f) : Rgba(255,255,255,200));
+		r->DrawLine2D(Vector2( currentX, -m_orthoSize.y), Vector2( currentX, m_orthoSize.y), shouldBeGray ? Rgba(125,125,125,200) : Rgba(255,255,255,200));
 		r->DrawLine2D(Vector2( -currentX, -m_orthoSize.y), Vector2( -currentX, m_orthoSize.y), shouldBeGray ? Rgba(125,125,125,200) : Rgba(255,255,255,200));
 
 		currentX += 10.f;
