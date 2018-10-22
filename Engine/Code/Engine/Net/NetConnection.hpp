@@ -16,6 +16,7 @@ class NetSession;
 #define INVALID_CONNECTION_INDEX 0xff
 
 #define TRACKED_PACKET_WINDOW_HISTORY (128)
+#define SIZE_OF_BIT_FIELD (8)
 
 //====================================================================================
 // ENUMS
@@ -56,6 +57,9 @@ public:
 
 	bool OnReceivePacket( const PacketHeader& header, NetPacket* packet);
 	void ConfirmPacketReceived( uint16_t ack );
+	void ConfirmPreviousReceivedPackets( uint16_t currentAck , uint distance ); // for bit field
+	void CreateBitFlagForNonHighestAck( uint16_t currentAck );
+	void CreateBitFlagForHightestAck( uint16_t currentAck , uint distance );
 
 	uint16_t GetNextAckToSend();
 	void IncrementSendAck();
@@ -73,10 +77,12 @@ public:
 	void SetHeartbeatTimer( float hz );
 	void SetFlushRate( float hz );
 	void CompareFlushRatesAndSet();
+
+	void TryToUpdateLoss( uint16_t packetACK );
 	void UpdateLoss();
 
 	// analytics 
-	uint16_t GetLastRecievedAck() { return m_lastReceivedAck; }
+	uint16_t GetLastRecievedAck() { return m_highestReceivedAck; }
 	uint GetLastReceivedTimeInMS() { return m_lastRecievedTimeMS; }
 	float GetLoss();
 	float GetRTT();
@@ -106,7 +112,7 @@ private:
 
 
 	// receiving - updated during a process_packet
-	uint16_t					m_lastReceivedAck                = INVALID_PACKET_ACK; 
+	uint16_t					m_highestReceivedAck                = INVALID_PACKET_ACK; 
 	uint16_t					m_previousReceivedAckBitfield   = 0; 
 
 	// Analytics
@@ -115,8 +121,9 @@ private:
 
 	// note these variables are unrelated to the debug sim on the session
 	// but will end up reflecting those numbers.
+	uint						m_lossTally = 0U;
 	float						m_loss = 0.0f;       // loss rate we perceive to this connection
-	float						m_rtt  = 0.0f;        // latency perceived on this connection
+	float						m_roundTripTime  = 0.0f;        // latency perceived on this connection
 
 
 	// our ring buffer

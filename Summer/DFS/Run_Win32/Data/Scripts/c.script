@@ -1,2 +1,5 @@
 rca add_connection 0 10.8.155.176:10084 
 rca add_connection 1 10.8.155.176:10085
+net_sim_loss 0
+net_set_heart_rate 1
+net_sim_lag 100 500

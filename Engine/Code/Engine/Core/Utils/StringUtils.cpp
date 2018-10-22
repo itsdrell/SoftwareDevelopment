@@ -277,6 +277,28 @@ IntVector2 ParseString(std::string& text, const IntVector2& defaultValue)
 }
 
 //-----------------------------------------------------------------------------------------------
+// String GetBytesAsString(uint16_t data)
+// {
+// 	// size of data is how many times we wanna shift
+// 	uint sizeOfData = sizeof(data) * 4;
+// 
+// 	String value;
+// 	uint16_t index = data;
+// 
+// 	for(uint i = 0; i < sizeOfData; i++)
+// 	{
+// 		if((index & 0b0000'0001) == 1)
+// 			value = "1" + value;
+// 		else
+// 			value = "0" + value;
+// 		
+// 		index >>= 1;
+// 	}
+// 
+// 	return value;
+// }
+
+//-----------------------------------------------------------------------------------------------
 uint GetLargestLengthInStrings(Strings listToCheck)
 {
 	uint result = 0;

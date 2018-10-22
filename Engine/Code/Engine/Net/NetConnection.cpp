@@ -73,7 +73,7 @@ void NetConnection::Flush()
 	header.m_senderConnectionIndex = (uint8_t) m_owningSession->GetMySessionIndex();
 	header.m_ack = GetNextAckToSend();
 	m_lastSentAck = header.m_ack;
-	header.m_lastRecievedAck = m_lastReceivedAck;
+	header.m_lastRecievedAck = m_highestReceivedAck;
 	header.m_previousRecievedAckBitfield = m_previousReceivedAckBitfield;
 
 	currentPacket.m_header = header;
@@ -112,11 +112,17 @@ void NetConnection::Flush()
 bool NetConnection::OnReceivePacket(const PacketHeader& header, NetPacket* packet)
 {
 	m_lastRecievedTimeMS = GetTimeInMilliseconds();
+	uint distanceOfCurrentAckAndHighest = 0U;
 
 	if( header.m_ack != INVALID_PACKET_ACK )
 	{
+		
 		// update my last received size
-		m_lastReceivedAck = header.m_ack;
+		if(header.m_ack > m_highestReceivedAck || m_highestReceivedAck == INVALID_PACKET_ACK)
+		{
+			distanceOfCurrentAckAndHighest = header.m_ack - m_highestReceivedAck;
+			m_highestReceivedAck = header.m_ack;
+		}
 
 	}
 
@@ -126,6 +132,7 @@ bool NetConnection::OnReceivePacket(const PacketHeader& header, NetPacket* packe
 		ConfirmPacketReceived( header.m_lastRecievedAck );
 
 		// confirm previous received acks as well
+		ConfirmPreviousReceivedPackets(header.m_ack, distanceOfCurrentAckAndHighest);
 	}
 
 	return true;
@@ -145,13 +152,57 @@ void NetConnection::ConfirmPacketReceived( uint16_t ack )
 	// but instead trend toward it (think on how you smoothly approach
 	// a point gameplay...)
 	// ...
-
+	// currentRTT = (.9 of currentRTT) + (.1 of newRTT)
+	uint newRTT = GetTimeInMilliseconds() - tracker->m_sentMS;
+	m_roundTripTime = (.9f * m_roundTripTime) + (.1f * (float) newRTT);
 
 	// More Coming Soon!
 
 	// it has been confirmed, so invalidate to prevent a double confirmation
 	// Invalid() the header
 	tracker->m_ackNumber = INVALID_PACKET_ACK; 
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::ConfirmPreviousReceivedPackets( uint16_t currentAck , uint distance)
+{
+	// doing two different ones because we might get an ack that needs to be placed
+	// in the middle
+	if(currentAck == m_highestReceivedAck)
+		CreateBitFlagForHightestAck(currentAck, distance);
+	else
+		CreateBitFlagForNonHighestAck( currentAck );
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::CreateBitFlagForHightestAck( uint16_t currentAck , uint distance )
+{
+	// what forseth does
+	m_previousReceivedAckBitfield <<= distance;
+	m_previousReceivedAckBitfield |= (1 << (distance - 1));
+
+	//uint16_t newField = 0b0000'0000;
+	//for(int i = SIZE_OF_BIT_FIELD - 1; i >= 0; i--)
+	//{
+	//	newField <<= 1;
+	//	PacketTracker current = *GetTracker(i);
+	//
+	//	if(current.m_ackNumber == INVALID_PACKET_ACK)
+	//	{
+	//		newField |= 0b0000'0001;
+	//	}
+	//
+	//}
+	//
+	//m_previousReceivedAckBitfield = newField;
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::CreateBitFlagForNonHighestAck( uint16_t currentAck )
+{
+	uint distance = m_highestReceivedAck - currentAck;
+	m_previousReceivedAckBitfield |= (1 << (distance - 1));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -181,8 +232,11 @@ PacketTracker* NetConnection::AddPacketTracker(uint16_t packetACK)
 	if (tracker->m_ackNumber != INVALID_PACKET_ACK) 
 	{
 		// this is a lost packet
-		UpdateLoss();
+		m_lossTally++;
 	} 
+
+	// check if we got to the end of the ring buffer, then calc loss
+	TryToUpdateLoss(packetACK);
 
 	//tracker->SetupForAck( packetACK ); 
 	tracker->m_ackNumber = packetACK;
@@ -194,6 +248,7 @@ PacketTracker* NetConnection::AddPacketTracker(uint16_t packetACK)
 PacketTracker* NetConnection::GetTracker(uint16_t ack)
 {
 	uint idxInRingBuffer = ack % TRACKED_PACKET_WINDOW_HISTORY; 
+
 	return  &(m_trackers[idxInRingBuffer]);
 }
 
@@ -263,7 +318,10 @@ void NetConnection::CompareFlushRatesAndSet()
 
 	// if either are 0, just set the timer to 0 cause we gonna send F A S T
 	if(m_owningSession->GetFlushRate() == 0.f || m_flushRateInHz == 0.f)
+	{
 		m_flushRateTimer->SetTimer(0.f); // send non stop
+		return;
+	}
 
 	// Here we take the better rate between the session and my flush rate
 	// The bigger the number, the faster because 1/1000 is small af compared to 1/.5 = 2
@@ -273,9 +331,22 @@ void NetConnection::CompareFlushRatesAndSet()
 }
 
 //-----------------------------------------------------------------------------------------------
+void NetConnection::TryToUpdateLoss( uint16_t packetACK )
+{
+	uint idxInRingBuffer = packetACK % TRACKED_PACKET_WINDOW_HISTORY; 
+
+	// we calculate loss whenever we reach the end of the ring buffer
+	if(idxInRingBuffer == (TRACKED_PACKET_WINDOW_HISTORY - 1))
+	{
+		UpdateLoss();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void NetConnection::UpdateLoss()
 {
-
+	m_loss = ((float) m_lossTally / (float) TRACKED_PACKET_WINDOW_HISTORY);
+	m_lossTally = 0U;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -287,5 +358,5 @@ float NetConnection::GetLoss()
 //-----------------------------------------------------------------------------------------------
 float NetConnection::GetRTT()
 {
-	return m_rtt;
+	return m_roundTripTime;
 }

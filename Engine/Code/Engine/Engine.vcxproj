@@ -295,6 +295,7 @@
     <ClCompile Include="Math\CubicSpline.cpp" />
     <ClCompile Include="Math\Geometry\AABB2.cpp" />
     <ClCompile Include="Math\Geometry\AABB3.cpp" />
+    <ClCompile Include="Math\Geometry\ConvexPoly2D.cpp" />
     <ClCompile Include="Math\Geometry\Disc2.cpp" />
     <ClCompile Include="Math\Geometry\Frustrum.cpp" />
     <ClCompile Include="Math\Geometry\OBB2.cpp" />
@@ -404,6 +405,7 @@
     <ClInclude Include="Math\CubicSpline.hpp" />
     <ClInclude Include="Math\Geometry\AABB2.hpp" />
     <ClInclude Include="Math\Geometry\AABB3.hpp" />
+    <ClInclude Include="Math\Geometry\ConvexPoly2D.hpp" />
     <ClInclude Include="Math\Geometry\Disc2.hpp" />
     <ClInclude Include="Math\Geometry\Frustrum.hpp" />
     <ClInclude Include="Math\Geometry\OBB2.hpp" />

@@ -399,8 +399,8 @@ void NetSession::Render() const
 	//r->m_currentCamera->RenderDebugOrtho();
 
 	// background
-	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba(0,0,0,200));
-	r->DrawAABB2(AABB2(-49.f, 49.f, 20.f, 20.f), Rgba::WHITE, false);
+	r->DrawAABB2(AABB2(-49.f, 49.f, 25.f, 20.f), Rgba(0,0,0,200));
+	r->DrawAABB2(AABB2(-49.f, 49.f, 25.f, 20.f), Rgba::WHITE, false);
 
 	Vector2 pivot;
 	pivot.x = -48.f;
@@ -414,8 +414,11 @@ void NetSession::Render() const
 	mb.Add2DText(pivot, title, 1.77f, r->m_threadedColor, 1.77f);
 
 	// Draw the info
-	String theInfo = Stringf("Rate: %i hz || sim lag: %i ms - %i ms || sim_loss: %d",
-		20, 0, 0, 0, 0.f);
+	String theInfo = Stringf("Rate: %d hz || sim lag: %d ms - %d ms || sim_loss: %d",
+		(int) m_sessionFlushRate,	// Flush rate
+		m_latencyRange.min,			// Latency min
+		m_latencyRange.max,			// Latency max
+		(int) m_lossAmount);		// loss amount
 	mb.Add2DText(Vector2(pivot.x, pivot.y - 2.f), theInfo, textSize, r->m_threadedColor);
 
 	// Draw the socket bound to the session
@@ -425,7 +428,7 @@ void NetSession::Render() const
 
 	// show all connections
 	mb.Add2DText(Vector2(pivot.x, pivot.y - 8.f), "Connections:", textSize, r->m_threadedColor);
-	String header = Stringf("-- %6s %-20s %-3s %-3s %-3s %-3s %-3s %-3s %-3s", 
+	String header = Stringf("-- %6s %-20s %-8s %-7s %-7s %-7s %-7s %-7s %-7s", 
 		"idx", "address", "rtt(ms)", "loss%", "lrcv(s)", "lsnt(s)", "sntack", "rcvack", "rcvbits");
 	mb.Add2DText(Vector2(pivot.x + 1.f, pivot.y - 10.f), header, .8f, r->m_threadedColor);
 	
@@ -444,7 +447,7 @@ void NetSession::Render() const
 			float lastReceivedTime = (float)((GetTimeInMilliseconds() - currentConnection->GetLastReceivedTimeInMS())) / 1000.f;
 			float lastSentTime = (float)((GetTimeInMilliseconds() - currentConnection->m_lastSendTimeMS)) / 1000.f;
 
-			String connectionText = Stringf("%-2s %6i %-20s %-7.3f %-7.3f %-7.3f %-7.3f %-7d %-7d %-7d", 
+			String connectionText = Stringf("%-2s %6i %-20s %-8.3f %-7.3f %-7.3f %-7.3f %-7d %-7d %-7s", 
 				isLocal.c_str(), 
 				i , 
 				currentConnection->m_address.ToString().c_str(),
@@ -453,11 +456,10 @@ void NetSession::Render() const
 				lastReceivedTime, // LRCV
 				lastSentTime, // LSNT
 				currentConnection->m_lastSentAck, // Sntack
-				currentConnection->m_lastReceivedAck, // Rcvack
-				0.0); // Rcvbits
+				currentConnection->m_highestReceivedAck, // Rcvack
+				GetBytesAsString(currentConnection->m_previousReceivedAckBitfield).c_str()); // Rcvbits
 			
-			
-			mb.Add2DText(currentPos, connectionText, .8f, r->m_threadedColor);
+			mb.Add2DText(currentPos, connectionText, .8f, Rgba::WHITE);
 
 			currentPos.y -= 2.f;
 		}
