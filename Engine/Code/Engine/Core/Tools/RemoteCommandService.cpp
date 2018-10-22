@@ -145,15 +145,15 @@ void RemoteCommandService::Render() const
 
 	// Draw the title + state
 	std::string title = "Remote Command Service [" + RemoteCommandStateToString(m_currentState) + "]";
-	r->DrawText2D(pivot, title, 16.f, m_currentColor);
+	r->DrawRandomColoredText2D(pivot, title, 16.f);
 
 	// Draw the joinable IP (port + LocalNetAddress)
 	std::string address = "Join Address: " + NetAddress::GetLocalAddressAsString(m_portUsing.c_str());
-	r->DrawText2D(pivot - Vector2(0.f, 20.f), address, 16.f, m_currentColor);
+	r->DrawRandomColoredText2D(pivot - Vector2(0.f, 20.f), address, 16.f);
 	
 	// Draw number of connections
 	std::string numberOfConnections = std::to_string(m_connections.size());
-	r->DrawText2D(pivot - Vector2(-40.f, 40.f), numberOfConnections + " Connection(s)", 16.f, m_currentColor);
+	r->DrawRandomColoredText2D(pivot - Vector2(-40.f, 40.f), numberOfConnections + " Connection(s)", 16.f);
 
 	// draw all connections
 	if(m_connections.size() > 0)
@@ -166,7 +166,7 @@ void RemoteCommandService::Render() const
 			if(m_connections.at(i) != nullptr)	
 				addresssString = "[" + std::to_string(i) + "] " + m_connections.at(i)->m_address.ToString();
 			
-			r->DrawText2D(Vector2(pivot.x + 320.f, startY), addresssString, 12.f, m_currentColor);
+			r->DrawRandomColoredText2D(Vector2(pivot.x + 320.f, startY), addresssString, 12.f);
 
 			startY -= 14.f;
 		}
@@ -448,6 +448,7 @@ void RemoteCommandServiceUpdate()
 	while(RemoteCommandService::GetInstance()->m_isRunning)
 	{
 		RemoteCommandService::GetInstance()->Update();
+		ThreadSleep(1);
 	}
 
 	// once we are done, lets just delete it here

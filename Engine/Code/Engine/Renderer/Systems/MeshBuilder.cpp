@@ -909,6 +909,43 @@ void MeshBuilder::Add2DPlane(AABB2 & bounds, AABB2 & uvs, const Rgba& color)
 	End();
 }
 
+//-----------------------------------------------------------------------------------------------
+void MeshBuilder::Add2DRandomColoredPlane(const AABB2& bounds, const AABB2& uvs)
+{
+	//////////////////////////////////////////////////////////////////////////
+
+	Begin(PRIMITIVE_TRIANGLES, true); // true means you also need to push indices
+
+	 // this is assuming all the sides are the same color
+	 //SetColor(color);
+
+	 //////////////////////////////////////////////////////////////////////////
+
+	SetUV(uvs.mins);
+	SetColor(GetRandomColor());
+	uint idx = PushVertex(Vector3(bounds.mins.x, bounds.mins.y, .01f));
+
+	SetUV(Vector2(uvs.maxs.x, uvs.mins.y));
+	SetColor(GetRandomColor());
+	PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, .01f));
+
+	SetUV(Vector2(uvs.mins.x, uvs.maxs.y));
+	SetColor(GetRandomColor());
+	PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, .01f));
+
+	SetUV(uvs.maxs);
+	SetColor(GetRandomColor());
+	PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, .01f));
+
+	AddFace(idx + 0, idx + 1, idx + 2);
+	AddFace(idx + 2, idx + 1, idx + 3);
+
+
+	//////////////////////////////////////////////////////////////////////////
+
+	End();
+}
+
 void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeight, const Rgba& color, float aspectScale, BitmapFont * font)
 {
 	int length = (int) text.size();
@@ -931,6 +968,34 @@ void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeigh
 		AABB2 uvBox = AABB2(font->GetUVsForGlyph(currentLetter));
 
 		Add2DPlane(posBox, uvBox , color);
+
+		startPoint.x += cellWidth;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void MeshBuilder::Add2DRandomColoredText(Vector2 startPos, std::string text, float cellHeight, float aspectScale /*= 1.f*/, BitmapFont* font /*= nullptr*/)
+{
+	int length = (int) text.size();
+	Vector2 startPoint = startPos;
+
+	// Use a default font
+	if(font == nullptr)
+		font = g_theRenderer->m_defaultFont;
+
+	// Draw
+	for(int i = 0; i < length; i++)
+	{
+		// Get Current Letter
+		char currentLetter = text.at(i);
+
+		// calculate cell width
+		float cellWidth = font->GetGlyphAspect() * cellHeight * aspectScale;
+
+		AABB2 posBox = AABB2(startPoint,Vector2(startPoint.x + cellWidth,startPoint.y + cellHeight));
+		AABB2 uvBox = AABB2(font->GetUVsForGlyph(currentLetter));
+
+		Add2DRandomColoredPlane(posBox, uvBox );
 
 		startPoint.x += cellWidth;
 	}

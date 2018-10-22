@@ -65,8 +65,10 @@ public:
 
 	void Add2DPlane(AABB2 bounds, Rgba color = Rgba::WHITE);
 	void Add2DPlane(AABB2& bounds, AABB2& uvs, const Rgba& color);
+	void Add2DRandomColoredPlane( const AABB2& bounds, const AABB2& uvs);
 
 	void Add2DText(Vector2 startPos, std::string text, float cellHeight, const Rgba& color, float aspectScale = 1.f, BitmapFont* font = nullptr);
+	void Add2DRandomColoredText(Vector2 startPos, std::string text, float cellHeight, float aspectScale = 1.f, BitmapFont* font = nullptr);
 
 
 	void AddFlatPlane(const Vector3& position, const AABB2& bounds, Rgba theColor = Rgba::WHITE, const AABB2& theUvs = AABB2(0.f, 1.f));

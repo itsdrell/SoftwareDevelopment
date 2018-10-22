@@ -123,6 +123,9 @@ public:
 	void Renderer::DrawText2D( const Vector2& drawMins, const std::string& asciiText,
 		float cellHeight,const Rgba& tint = Rgba::WHITE, float aspectScale = 1.f, // multiplied by the font’s inherent m_baseAspect
 		const BitmapFont* font = nullptr );
+
+	void Renderer::DrawRandomColoredText2D( const Vector2& drawMins, const std::string& asciiText,
+		float cellHeight, float aspectScale = 1.f, const BitmapFont* font = nullptr );
 	
 	void DrawWrappedTextInBox2D(std::string text, AABB2 boxSize, float cellHeight = 1.f, float aspectScale = 1.f, 
 		Rgba textColor = Rgba::WHITE, Rgba boxColor = Rgba::CYAN, BitmapFont* font = nullptr);
@@ -269,7 +272,6 @@ public:
 
 	bool					m_takeScreenshot;
 
-	Rgba					m_threadedColor;
 	bool					m_changeThreadedColor = true;
 
 };
@@ -279,5 +281,3 @@ void GLShutdown();
 void BindNewWGLFunctions();
 void BindGLFunctions();
 
-
-void ChangeThreadedColor(void* data);

@@ -29,6 +29,7 @@
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
 #include "Images/Image.hpp"
 #include "../Async/Threading.hpp"
+#include "../Core/Tools/Clock.hpp"
 
 
 
@@ -207,9 +208,6 @@ void Renderer::PostStartup()
 	SetCamera(nullptr); 
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);					GL_CHECK_ERROR();
-
-
-	ThreadCreateAndDetach(ChangeThreadedColor, nullptr);
 
 }
 
@@ -1022,6 +1020,23 @@ void Renderer::DrawText2D(const Vector2& drawMins, const std::string& asciiText,
 	MeshBuilder mb;
 	BindMaterial("uiText");
 	mb.Add2DText(drawMins, asciiText, cellHeight, tint, aspectScale, (BitmapFont*) font);
+	DrawMesh(mb.CreateMesh<Vertex3D_PCU>(), true);
+
+	BindMaterial("default");
+}
+
+//-----------------------------------------------------------------------------------------------
+void Renderer::DrawRandomColoredText2D(const Vector2& drawMins, const std::string& asciiText, float cellHeight, float aspectScale /*= 1.f*/, const BitmapFont* font /*= nullptr */)
+{
+	// Use a default font
+	if(font == nullptr)
+	{
+		font = m_defaultFont;
+	}
+
+	MeshBuilder mb;
+	BindMaterial("uiText");
+	mb.Add2DRandomColoredText(drawMins, asciiText, cellHeight, aspectScale, (BitmapFont*) font);
 	DrawMesh(mb.CreateMesh<Vertex3D_PCU>(), true);
 
 	BindMaterial("default");
@@ -2097,18 +2112,6 @@ void BindGLFunctions()
 
 }
 
-//-----------------------------------------------------------------------------------------------
-void ChangeThreadedColor(void* data)
-{
-	UNUSED(data);
-	
-	Renderer* r = Renderer::GetInstance();
-
-	while(r->m_changeThreadedColor)
-	{
-		r->m_threadedColor = GetRandomColor();
-	}
-}
 
 //------------------------------------------------------------------------
 // Creates a real context as a specific version (major.minor)

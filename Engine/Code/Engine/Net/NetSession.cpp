@@ -411,7 +411,7 @@ void NetSession::Render() const
 
 	// Draw the title + state
 	std::string title = "Netsession Info";
-	mb.Add2DText(pivot, title, 1.77f, r->m_threadedColor, 1.77f);
+	mb.Add2DRandomColoredText(pivot, title, 1.77f, 1.77f);
 
 	// Draw the info
 	String theInfo = Stringf("Rate: %d hz || sim lag: %d ms - %d ms || sim_loss: %d",
@@ -419,18 +419,18 @@ void NetSession::Render() const
 		m_latencyRange.min,			// Latency min
 		m_latencyRange.max,			// Latency max
 		(int) m_lossAmount);		// loss amount
-	mb.Add2DText(Vector2(pivot.x, pivot.y - 2.f), theInfo, textSize, r->m_threadedColor);
+	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 2.f), theInfo, textSize);
 
 	// Draw the socket bound to the session
-	mb.Add2DText(Vector2(pivot.x, pivot.y - 4.f), "Bound SockAddr:", textSize, r->m_threadedColor);
+	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 4.f), "Bound SockAddr:", textSize);
 	String boundSocketAddress = m_channel.m_socket->GetAddress().ToString();
-	mb.Add2DText( Vector2(pivot.x + 1.f, pivot.y - 6.f), boundSocketAddress, textSize, r->m_threadedColor);
+	mb.Add2DRandomColoredText( Vector2(pivot.x + 1.f, pivot.y - 6.f), boundSocketAddress, textSize);
 
 	// show all connections
-	mb.Add2DText(Vector2(pivot.x, pivot.y - 8.f), "Connections:", textSize, r->m_threadedColor);
+	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 8.f), "Connections:", textSize);
 	String header = Stringf("-- %6s %-20s %-8s %-7s %-7s %-7s %-7s %-7s %-7s", 
 		"idx", "address", "rtt(ms)", "loss%", "lrcv(s)", "lsnt(s)", "sntack", "rcvack", "rcvbits");
-	mb.Add2DText(Vector2(pivot.x + 1.f, pivot.y - 10.f), header, .8f, r->m_threadedColor);
+	mb.Add2DRandomColoredText(Vector2(pivot.x + 1.f, pivot.y - 10.f), header, .8f);
 	
 	Vector2 currentPos = Vector2(pivot.x + 1.f, pivot.y - 12.f);
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
@@ -459,7 +459,7 @@ void NetSession::Render() const
 				currentConnection->m_highestReceivedAck, // Rcvack
 				GetBytesAsString(currentConnection->m_previousReceivedAckBitfield).c_str()); // Rcvbits
 			
-			mb.Add2DText(currentPos, connectionText, .8f, Rgba::WHITE);
+			mb.Add2DRandomColoredText(currentPos, connectionText, .8f);
 
 			currentPos.y -= 2.f;
 		}
