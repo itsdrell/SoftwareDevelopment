@@ -63,6 +63,8 @@ public:
 
 	Texture* GetRenderedTextureOfScene() const;
 
+	Camera* GetCamera() { return m_camera; }
+
 private:
 
 	Texture*						m_battleSceneColorTarget;

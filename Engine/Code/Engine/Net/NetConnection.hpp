@@ -113,7 +113,7 @@ private:
 
 	// receiving - updated during a process_packet
 	uint16_t					m_highestReceivedAck                = INVALID_PACKET_ACK; 
-	uint16_t					m_previousReceivedAckBitfield   = 0; 
+	uint						m_previousReceivedAckBitfield   = 0; 
 
 	// Analytics
 	uint						m_lastSendTimeMS;

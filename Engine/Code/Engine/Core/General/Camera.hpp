@@ -38,6 +38,7 @@ public:
 	// projection settings
 	void SetProjection( Matrix44 proj ); 
 	void SetProjectionOrtho( float width, float height, float Near, float Far ); 
+	void SetProjectionOrthoByAspect(float size, float Near = -10.f, float Far = 100.f);
 	void SetPerspective(float degrees, float aspect, float nearZ, float farZ);
 
 

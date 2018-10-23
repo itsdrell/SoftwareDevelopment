@@ -97,6 +97,18 @@ void Camera::SetProjectionOrtho( float width, float height, float Near, float Fa
 	m_projMatrix = Matrix44::MakeOrtho3D(Vector3(-width *.5f,-height *.5f,Near),Vector3(width * .5f,height *.5f,Far));
 }
 
+//-----------------------------------------------------------------------------------------------
+void Camera::SetProjectionOrthoByAspect(float size, float Near /*= -10.f*/, float Far /*= 100.f*/)
+{
+	float ar = Window::GetInstance()->GetAspect();
+	m_orthoSize = Vector2(ar * size, size);
+
+	m_projMatrix = Matrix44::MakeOrtho3D(
+		Vector3(-m_orthoSize.x *.5f , -m_orthoSize.y *.5f,Near),
+		Vector3(m_orthoSize.x * .5f , m_orthoSize.y *.5f, Far));
+
+}
+
 void Camera::SetPerspective(float degrees, float aspect, float nearZ, float farZ)
 {
 	m_projMatrix = Matrix44::PerspectiveProjection(degrees,aspect,nearZ,farZ);

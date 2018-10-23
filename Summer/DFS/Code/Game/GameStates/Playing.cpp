@@ -26,6 +26,7 @@
 #include "Game/General/Player/CommandingOfficer.hpp"
 #include "Game/General/GameHeatMap.hpp"
 #include "Game/General/BattleScene/BattleCutscene.hpp"
+#include "Engine/Core/Platform/Window.hpp"
 
 //====================================================================================
 Tile* g_currentTile = nullptr;
@@ -113,7 +114,8 @@ void Playing::Render() const
 	Renderer::GetInstance()->DrawAABB2(AABB2(-1000,1000), Rgba(51, 102, 255));
 
 
-	m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
+	//m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
+	m_camera->SetProjectionOrthoByAspect(Window::GetInstance()->GetHeight());
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
 	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
 	//Matrix44 view = Matrix44::MakeView(Vector3(0.f, 0.f, -10.f), Vector3::ZERO );
@@ -131,7 +133,12 @@ void Playing::Render() const
 	m_currentMap->m_storeMenu->Render();
 
 	// draw the battle scene
-	g_theRenderer->DrawTexturedAABB2(m_currentMap->m_battleScene->GetRenderedTextureOfScene(), AABB2(-100.f, 100.f));
+	//g_theRenderer->SetCamera(m_currentMap->m_battleScene->GetCamera());
+	//g_theRenderer->DrawTexturedAABB2(m_currentMap->m_battleScene->GetRenderedTextureOfScene(), m_currentMap->m_battleScene->GetCamera()->GetOrthoBounds());
+	m_camera->m_viewMatrix = Matrix44();
+	g_theRenderer->SetCamera(m_camera);
+	g_theRenderer->DrawTexturedAABB2(m_camera->GetOrthoBounds(), 
+		*m_currentMap->m_battleScene->GetRenderedTextureOfScene(), Vector2(0.f, 0.f), Vector2(1.f, 1.f), Rgba::WHITE);
 
 	// Debug heat map
 	if(m_showHeatmap)
