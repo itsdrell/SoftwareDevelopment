@@ -81,7 +81,7 @@ template< typename T >
 bool IsIndexValid(uint idx, std::vector<T>& theVector);
 
 template< typename T >
-bool IsIndexValid(uint idx, std::vector<T>& theVector)
+bool IsIndexValid(uint idx, std::vector<T>& theVector) 
 {
 	return (idx >= 0 && idx < (theVector.size()));
 }

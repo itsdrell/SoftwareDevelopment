@@ -50,6 +50,8 @@ void CreateBattleScene( Command& theCommand );
 void AddConnection( Command& theCommand );
 void SendPing( Command& theCommand );
 void SendAdd( Command& theCommand );
+void UnreliableTest( Command& theCommand );
+
 
 //====================================================================================
 // Externs

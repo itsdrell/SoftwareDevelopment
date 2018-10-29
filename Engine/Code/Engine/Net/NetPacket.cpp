@@ -121,11 +121,13 @@ bool NetPacket::IsValid(const NetSession& theSession)
 	PacketHeader theHeader;
 	size_t amountRead = ReadBytes(&theHeader, sizeof(PacketHeader));
 
+
+	// WE DO THIS NOW PER MESSAGE
 	// see if the packet is lying about who they are 
 	//(since we already check to see if the connection is valid)
-	if(theSession.GetConnection(theHeader.m_senderConnectionIndex) == nullptr 
-		&& theHeader.m_senderConnectionIndex != INVALID_CONNECTION_INDEX)
-		return false;
+	//if(theSession.GetConnection(theHeader.m_senderConnectionIndex) == nullptr 
+	//	&& theHeader.m_senderConnectionIndex != INVALID_CONNECTION_INDEX)
+	//	return false;
 
 
 	// packet is empty == garbage

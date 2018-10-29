@@ -17,6 +17,7 @@
 #include "Engine/Net/NetAddress.hpp"
 #include "Game/General/BattleScene/BattleCutscene.hpp"
 #include <string>
+#include "Engine/Async/Threading.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -42,6 +43,7 @@ void RegisterGameCommands()
 	CommandRegister("add_connection", "", "", AddConnection);
 	CommandRegister("send_ping", "", "", SendPing);
 	CommandRegister("send_add", "", "", SendAdd);
+	CommandRegister("testUnreliable", "","a14", UnreliableTest);
 }
 
 void EndTurn(Command & theCommand)
@@ -505,3 +507,22 @@ void SendAdd(Command & theCommand)
 	msg->WriteBytes( sizeof(float), &val1 ); 
 	cp->Send( *msg );
 }
+
+//-----------------------------------------------------------------------------------------------
+void UnreliableTest(Command& theCommand)
+{
+	uint idx = 0U; 
+	uint count = 1U;
+
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		idx = (uint) stoi(theCommand.m_commandArguements.at(1));
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		count = (uint) stoi(theCommand.m_commandArguements.at(2));
+
+	NetSession *sp = Game::GetNetSession(); 
+	sp->m_idx = idx;
+	sp->m_totalAmount = count;
+	sp->m_currentAmount = count;
+}
+

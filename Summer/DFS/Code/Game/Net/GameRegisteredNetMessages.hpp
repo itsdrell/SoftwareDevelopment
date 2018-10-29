@@ -1,6 +1,5 @@
 #pragma once
-#include "NetMessage.hpp"
-#include "Engine/Net/NetSession.hpp"
+#include "Engine/Net/EngineRegisteredNetMessages.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -15,29 +14,25 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
+enum eNetGameMessage : uint8_t
+{
+	NETMSG_TEST_GAME_MESSAGE = NETMSG_CORE_COUNT, // allow us to resume count from where we left off in core
+												  // ...
 
-
-//====================================================================================
-// Structs
-//====================================================================================
-
-
-//====================================================================================
-// Classes
-//====================================================================================
-
+	// This is the test used for grading - it is fixed as 128 so that if you add
+	// other messages, it won't interfer with our tests;
+	NETMSG_UNRELIABLE_TEST = 128, 
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-void RegisterCoreEngineNetMessages( NetSession& theSession );
+void RegisterGameNetMessages( NetSession& theSession );
 
 
 //-----------------------------------------------------------------------------------------------
 // Messages
-bool OnHeartbeat( NetMessage& msg, const NetSender& from);
-bool OnPing( NetMessage& msg, const NetSender& from);
-bool OnPong( NetMessage& msg, const NetSender& from);
+bool OnUnreliableTest( NetMessage& msg, const NetSender& from);
 
 //====================================================================================
 // Externs
@@ -45,5 +40,5 @@ bool OnPong( NetMessage& msg, const NetSender& from);
 
 
 //====================================================================================
-// Written by Zachary Bracken : [10/11/2018]
+// Written by Zachary Bracken : [10/25/2018]
 //====================================================================================

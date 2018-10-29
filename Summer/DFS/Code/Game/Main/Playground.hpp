@@ -23,8 +23,7 @@ namespace Playground // just doing a name space to learn about em could just be 
 //===============================================================================================
 // Throw away C functions
 //===============================================================================================
-bool OnPing( NetMessage& msg, const NetSender& from);
-bool OnPong( NetMessage& msg, const NetSender& from);
+
 bool OnAdd( NetMessage& msg, const NetSender& from);
 bool OnAddResponse(NetMessage& msg, const NetSender& from);
 

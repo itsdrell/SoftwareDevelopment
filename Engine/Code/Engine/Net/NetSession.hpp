@@ -4,6 +4,7 @@
 #include <map>
 #include "NetMessage.hpp"
 #include "..\Math\Ranges\IntRange.hpp"
+#include "..\Core\Tools\Stopwatch.hpp"
 
 
 //====================================================================================
@@ -23,12 +24,33 @@ class NetConnection;
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
+#define NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS 16
+#define GAME_PORT ("10084")
 
 //====================================================================================
 // ENUMS
 //====================================================================================
-#define NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS 16
-#define GAME_PORT ("10084")
+enum eNetCoreMessage : uint8_t
+{
+	NETMSG_PING = 0,    // unreliable, connectionless
+	NETMSG_PONG, 		// unreliable, connectionless
+	NETMSG_HEARTBEAT,	// unreliable
+
+	NETMSG_CORE_COUNT,
+};
+
+//-----------------------------------------------------------------------------------------------
+enum eNetMessageOption : uint 
+{
+	NETMESSAGE_OPTION_CONNECTIONLESS	= BIT_FLAG(0), // task14
+	NETMESSAGE_OPTION_RELIABLE			= BIT_FLAG(1), // task15
+	NETMESSAGE_OPTION_IN_ORDER			= BIT_FLAG(2), // task16
+
+	// convenience
+	NETMSSAGE_OPTION_RELIALBE_IN_ORDER	= NETMESSAGE_OPTION_RELIABLE | NETMESSAGE_OPTION_IN_ORDER, 
+};
+// typedef uint eNetMessageOptions; defined in net message
+
 
 //====================================================================================
 // Structs
@@ -36,10 +58,15 @@ class NetConnection;
 struct NetSender
 {
 	NetSender() {}
+
+	~NetSender();
 	
 	// just a connection for now but later will change
 	NetSender(NetConnection& theConnection)
 		: m_connection(&theConnection) {}
+
+	NetSender(NetConnection* theConnection)
+		: m_connection(theConnection) {}
 	
 	NetConnection*	m_connection = nullptr;
 };
@@ -72,12 +99,12 @@ public:
 	static NetSession* GetInstance() { return s_mainNetSession; }
 
 	// message definitions
-	bool RegisterMessageDefinition( const String& id, NetMessage_cb cb );
+	bool RegisterMessageDefinition( uint8_t id, const String& name, NetMessage_cb cb, eNetMessageOptions option = 0 );
 	bool IsMessageAlreadyRegistered(const String& id);
 	
 	NetMessageDefinition* GetMessageDefinition( int const &id );
-	NetMessageDefinition* GetMessageDefinitionByIndex( uint8_t const idx ) ; 
-	NetMessageDefinition* GetMessageDefinitionByName( const String& name );
+	NetMessageDefinition* GetMessageDefinitionByIndex( uint8_t const idx ) const ; 
+	NetMessageDefinition* GetMessageDefinitionByName( const String& name ) const;
 
 	void SortDefinitions();
 
@@ -114,6 +141,15 @@ public:
 
 	float GetFlushRate() { return m_sessionFlushRate; }
 
+	//===============================================================================================
+	// trash pls
+	void SendUnreliableTest();
+
+	uint m_idx = 0;
+	uint m_totalAmount = 0;
+	uint m_currentAmount = 0U;
+	Timer*	m_unreliableTimer = nullptr;
+	//===============================================================================================
 
 public:
 	NetConnection*								m_connections[NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS]; // all connections I know about; 

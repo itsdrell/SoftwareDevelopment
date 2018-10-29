@@ -62,13 +62,13 @@ NetSession::~NetSession()
 }
 
 //-----------------------------------------------------------------------------------------------
-bool NetSession::RegisterMessageDefinition(const String& id, NetMessage_cb cb)
+bool NetSession::RegisterMessageDefinition( uint8_t id, const String& name, NetMessage_cb cb, eNetMessageOptions option )
 {
-	if(IsMessageAlreadyRegistered(id))
+	if(IsMessageAlreadyRegistered(name))
 		return false;
 
-	int theID = (int) m_messageCallbacks.size();
-	NetMessageDefinition* newDefinition = new NetMessageDefinition(theID, id, cb);
+	//int theID = (int) m_messageCallbacks.size();
+	NetMessageDefinition* newDefinition = new NetMessageDefinition(id, name, cb, option);
 
 	m_messageCallbacks.push_back(newDefinition);
 	return true;
@@ -104,9 +104,9 @@ NetMessageDefinition* NetSession::GetMessageDefinition(int const & id)
 }
 
 //-----------------------------------------------------------------------------------------------
-NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx)
+NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx) const
 {
-	if(IsIndexValid((uint) idx, m_messageCallbacks))
+	if(IsIndexValid((uint) idx, (std::vector<NetMessageDefinition*>) m_messageCallbacks))
 	{
 		for(uint i = 0; i < m_messageCallbacks.size(); i++)
 		{
@@ -123,7 +123,7 @@ NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx)
 }
 
 //-----------------------------------------------------------------------------------------------
-NetMessageDefinition* NetSession::GetMessageDefinitionByName(const String& name)
+NetMessageDefinition* NetSession::GetMessageDefinitionByName(const String& name) const
 {
 	for(uint i = 0; i < m_messageCallbacks.size(); i++)
 	{
@@ -270,6 +270,7 @@ void NetSession::ProcessIncoming()
 			{
 				// throw the packet away
 				DevConsole::AddErrorMessage("Received a bad packet from:" + theAddress.ToString());
+				delete incomingPacket;
 				return;
 			}
 
@@ -291,20 +292,38 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 	// Get Packet Header
 	packet.ReadHeader(&packet.m_header);
 
-	// See who sent it
-	NetSender theSender;
+	// See who sent it OR MAKE A TEMP SENDER
+	NetSender* theSender;
 	if(packet.m_header.m_senderConnectionIndex == INVALID_CONNECTION_INDEX)
 	{
 		// look up by connection (temp)
-		theSender = NetSender(*GetConnectionFromAddress(sender));
+		NetConnection* theConnection = GetConnectionFromAddress(sender);
+		if(theConnection != nullptr)
+			theSender = new NetSender(theConnection);
+		else
+			theSender = nullptr;
 	}
 	else
 	{
-		theSender = NetSender(*GetConnection(packet.m_header.m_senderConnectionIndex));
+		NetConnection* theConnection = GetConnection(packet.m_header.m_senderConnectionIndex);
+		if(theConnection != nullptr)
+			theSender = new NetSender(theConnection);
+		else
+			theSender = nullptr;
 	}
 
-	// Do the on receive packet stuff
-	theSender.m_connection->OnReceivePacket(packet.m_header, &packet);
+	// Do the on receive packet stuff only for connections we know about
+	if(theSender != nullptr && theSender->m_connection != nullptr)
+		theSender->m_connection->OnReceivePacket(packet.m_header, &packet);
+
+
+	// if we do not know a sender, we are gonna make a temp one
+	NetConnection* theConnection = nullptr;
+	if(theSender == nullptr || theSender->m_connection == nullptr)
+	{
+		theConnection = new NetConnection(69, sender, this);
+		theSender = new NetSender(theConnection);		
+	}
 
 	// Get How many messages are in the packet
 	uint8_t amount = packet.m_header.m_unreliableCount;
@@ -318,12 +337,26 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 		// make sure we read the message properly
 		if(result == true)
 		{
-			NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
+			
+			if(currentMessage.RequiresConnection(*this) && theConnection != nullptr)
+			{
+				// skip message and log a warning
+				DevConsole::AddErrorMessage("Received a packet that requires a connection from:" + sender.ToString());
+			}
+			else
+			{
+				NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
 
-			if(theDef != nullptr)
-				theDef->m_callback(currentMessage, theSender);
+				if(theDef != nullptr)
+					theDef->m_callback(currentMessage, *theSender);
+			}
+
 		}
 	}
+
+	if(theConnection != nullptr)
+		delete theConnection;
+	delete theSender;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -357,6 +390,8 @@ void NetSession::ProcessTimeStampedPackets()
 //-----------------------------------------------------------------------------------------------
 void NetSession::ProcessOutgoing()
 {
+	SendUnreliableTest();
+	
 	// foreach connection, process outgoing; 
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
@@ -573,10 +608,49 @@ void NetSession::SetConnectionFlushRate(uint idx, float hz)
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+void NetSession::SendUnreliableTest()
+{
+	if(m_currentAmount == 0)
+		return;
+
+	if(m_unreliableTimer == nullptr)
+	{
+		m_unreliableTimer = new Timer();
+		m_unreliableTimer->SetTimer(2.f);
+	}
+
+
+	if(m_unreliableTimer->CheckAndReset())
+	{
+		NetConnection *cp = GetConnection( m_idx ); 
+		//if (cp == nullptr) 
+		//{
+		//	DevConsole::AddErrorMessage( Stringf("Unknown connection: %u", m_idx )); 
+		//	return; 
+		//}
+
+		NetMessage* msg = new NetMessage("unreliable_test"); 
+		msg->WriteBytes( sizeof(uint), &m_currentAmount ); 
+		msg->WriteBytes( sizeof(uint), &m_totalAmount ); 
+		cp->Send( *msg );
+		
+		m_currentAmount--;
+	}
+}
+
 //===============================================================================================
 bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)
 {
 	if(a.m_timeToBeProcessed < b.m_timeToBeProcessed)
 		return true;
 	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+NetSender::~NetSender()
+{
+	// shouldn't need to delete the connection because someone else (session)
+	// is in charge of that
+	m_connection = nullptr;
 }

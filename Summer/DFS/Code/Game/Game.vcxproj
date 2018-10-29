@@ -314,6 +314,7 @@
     <ClCompile Include="Main\Playground.cpp" />
     <ClCompile Include="Main\TheApp.cpp" />
     <ClCompile Include="GameStates\Playing.cpp" />
+    <ClCompile Include="Net\GameRegisteredNetMessages.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Engine\Code\Engine\Engine.vcxproj">
@@ -349,6 +350,7 @@
     <ClInclude Include="Main\Playground.hpp" />
     <ClInclude Include="Main\TheApp.hpp" />
     <ClInclude Include="GameStates\Playing.hpp" />
+    <ClInclude Include="Net\GameRegisteredNetMessages.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

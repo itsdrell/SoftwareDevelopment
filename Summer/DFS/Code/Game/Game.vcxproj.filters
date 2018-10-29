@@ -94,6 +94,9 @@
     <ClCompile Include="General\BattleScene\BattleCutscene.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\GameRegisteredNetMessages.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -136,5 +139,6 @@
     <ClInclude Include="General\COPower.hpp" />
     <ClInclude Include="General\GameObjects\Effect.hpp" />
     <ClInclude Include="General\BattleScene\BattleCutscene.hpp" />
+    <ClInclude Include="Net\GameRegisteredNetMessages.hpp" />
   </ItemGroup>
 </Project>

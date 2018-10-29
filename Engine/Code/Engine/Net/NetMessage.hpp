@@ -15,6 +15,7 @@ struct NetSender;
 typedef bool (*NetMessage_cb) ( NetMessage& theMessage, const NetSender& theSender );
 
 
+typedef uint eNetMessageOptions; 
 //====================================================================================
 // ENUMS
 //====================================================================================
@@ -37,14 +38,16 @@ struct NetMessageHeader
 // this is for server side!
 struct NetMessageDefinition
 {
-	NetMessageDefinition(int ID, const String& callbackName, NetMessage_cb callback)
+	NetMessageDefinition(int ID, const String& callbackName, NetMessage_cb callback, eNetMessageOptions option )
 		: m_callbackID(ID)
 		, m_callbackName(callbackName)
-		, m_callback(callback) {}
+		, m_callback(callback)
+		, m_option(option)	{}
 
 	int					m_callbackID;
 	String				m_callbackName;
 	NetMessage_cb		m_callback;
+	eNetMessageOptions	m_option;
 };
 
 
@@ -62,6 +65,8 @@ class NetMessage : public BytePacker
 public:
 	NetMessage(); // for receiving
 	NetMessage( const char* name );  // for sending
+
+	bool RequiresConnection( const NetSession& theSession );
 
 	//===============================================================================================
 	// ONLY PAYLOAD
