@@ -27,7 +27,7 @@ struct PacketHeader
 	
 	PacketHeader(uint8_t theSendersConnectionIndex, uint8_t unreliableCount)
 		: m_senderConnectionIndex(theSendersConnectionIndex)
-		, m_unreliableCount(unreliableCount) {}
+		, m_messageCount(unreliableCount) {}
 	
 	uint8_t m_senderConnectionIndex = 0U; // conn idx of the sender of this packer
 
@@ -35,7 +35,7 @@ struct PacketHeader
 	uint16_t m_lastRecievedAck = INVALID_PACKET_ACK;
 	uint16_t m_previousRecievedAckBitfield;
 
-	uint8_t m_unreliableCount = 0U; // number of unreliable messages in this container; 
+	uint8_t m_messageCount = 0U; // number of unreliable messages in this container; 
 }; 
 
 //====================================================================================
@@ -68,9 +68,9 @@ public:
 	// - header
 	//   - uint8_t msg_definition_index  
 	bool WriteMessage( const NetMessage& msg ); 
-	bool ReadMessage( NetMessage *out_msg ); 
+	bool ReadMessage( NetMessage *out_msg, const NetSession& theSession ); 
 
-	void ResetMessageCount() { m_header.m_unreliableCount = 0U; }
+	void ResetMessageCount() { m_header.m_messageCount = 0U; }
 
 	bool IsValid(const NetSession& theSession);
 

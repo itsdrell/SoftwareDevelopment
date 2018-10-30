@@ -21,7 +21,8 @@ enum eNetGameMessage : uint8_t
 
 	// This is the test used for grading - it is fixed as 128 so that if you add
 	// other messages, it won't interfer with our tests;
-	NETMSG_UNRELIABLE_TEST = 128, 
+	NETMSG_UNRELIABLE_TEST = 128,
+	NETMSG_RELIABLE_TEST = 129,
 };
 
 //====================================================================================
@@ -33,6 +34,7 @@ void RegisterGameNetMessages( NetSession& theSession );
 //-----------------------------------------------------------------------------------------------
 // Messages
 bool OnUnreliableTest( NetMessage& msg, const NetSender& from);
+bool OnReliableTest( NetMessage& msg, const NetSender& from );
 
 //====================================================================================
 // Externs

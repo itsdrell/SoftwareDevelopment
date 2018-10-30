@@ -18,6 +18,9 @@ class NetSession;
 #define TRACKED_PACKET_WINDOW_HISTORY (128)
 #define SIZE_OF_BIT_FIELD (8)
 
+#define MAX_RELIBALES_PER_PACKET (32)
+#define TIME_TO_RESEND_RELIABLE_MS (100)
+
 //====================================================================================
 // ENUMS
 //====================================================================================
@@ -28,8 +31,13 @@ class NetSession;
 //====================================================================================
 struct PacketTracker
 {
+	void AddReliable(uint8_t idx, uint16_t ID);
+	
+	
 	uint16_t		m_ackNumber = INVALID_PACKET_ACK;
 	uint			m_sentMS = 0U;
+
+	uint16_t		m_sentReliables[MAX_RELIBALES_PER_PACKET];
 };
 
 //====================================================================================
@@ -64,6 +72,9 @@ public:
 	uint16_t GetNextAckToSend();
 	void IncrementSendAck();
 
+	uint16_t GetAndIncrementNextReliableID();
+	bool ShouldSendReliableMessage(const NetMessage& messageToCheck);
+
 	PacketTracker* AddPacketTracker( uint16_t packetACK );
 	PacketTracker* GetTracker( uint16_t ack );
 
@@ -91,6 +102,8 @@ public:
 	// list of all unreliables sent to this connection
 	// that will be packed into a connection;
 	std::vector<NetMessage*>	m_outboundUnreliables; 
+	std::vector<NetMessage*>	m_unsentReliables;
+	std::vector<NetMessage*>	m_sentAndUnconfirmedReliables;
 
 	NetAddress					m_address; // address associtaed with this connectin; 
 
@@ -110,6 +123,7 @@ private:
 	uint16_t					m_nextAckToSend                    = 0U; // this is zero because the next after invalid is 0
 	uint16_t					m_lastSentAck						= INVALID_PACKET_ACK; // this is for the UI
 
+	uint16_t					m_nextSentReliableID				= 0U;
 
 	// receiving - updated during a process_packet
 	uint16_t					m_highestReceivedAck                = INVALID_PACKET_ACK; 

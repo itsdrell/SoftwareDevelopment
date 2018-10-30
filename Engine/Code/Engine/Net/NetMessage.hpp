@@ -31,8 +31,13 @@ struct NetMessageHeader
 	
 	NetMessageHeader(uint8_t callbackDefinitionIndex)
 		: m_messageCallbackDefinitionIndex(callbackDefinitionIndex) {}
+
+	NetMessageHeader(uint8_t callbackDefinitionIndex, uint16_t reliableID)
+		: m_messageCallbackDefinitionIndex(callbackDefinitionIndex)
+		, m_reliableID(reliableID) {}
 	
 	uint8_t		m_messageCallbackDefinitionIndex = 0U;
+	uint16_t	m_reliableID = 0U;
 };
 
 // this is for server side!
@@ -68,25 +73,22 @@ public:
 
 	bool RequiresConnection( const NetSession& theSession );
 
-	//===============================================================================================
-	// ONLY PAYLOAD
-	//-----------------------------------------------------------------------------------------------
+	uint GetHeaderSize() const;
+	bool IsReliable() const;
+	void ResetAge();
+
 
 public:
-	// this is an optimization forseth said we don;t need atm
-	//byte_t m_local_buffer[MESSAGE_MTU]; // MESSAGE_MTU I use 1KB for, arbitrarily
-
-	// Ways to identity the definition
-	// when construction, you'll be passed a name.  On send
-	// you can look up the actual definition by name.
-	//
-	// On receive, you get an index, and can ask the 
-	// session for hte definition for that index; 
 	String								m_definitionName;
+	NetMessageDefinition*				m_definition; // this is set in NetConnection::Send();
 
 	//NetMessageDefinition*				m_theDefinition = nullptr;
 	NetMessageHeader					m_header;
 //    uint8_t							m_definitionIndex; 
+
+	uint16_t							m_reliable_id = 0;
+	uint								m_lastSentTimeMS = 0U;
+
 
 }; 
 

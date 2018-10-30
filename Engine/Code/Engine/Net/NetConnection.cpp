@@ -82,22 +82,66 @@ void NetConnection::Flush()
 	PacketTracker* tracker = AddPacketTracker( header.m_ack );
 	tracker; // unused for now - will track reliables soon;
 	
+	// reliables that are unconfirmed
+	for(uint i = 0; i < m_sentAndUnconfirmedReliables.size(); i++)
+	{
+		NetMessage& currentMessage = *m_sentAndUnconfirmedReliables.at(i);
+		
+		if(ShouldSendReliableMessage(currentMessage))
+		{
+			if(currentPacket.WriteMessage(currentMessage))
+			{
+				tracker->AddReliable( currentPacket.m_header.m_messageCount, currentMessage.m_reliable_id);
+				currentMessage.ResetAge();
+			}
+		}
+	}
+
+	// unsent reliables
+	for(uint i = 0; i < m_unsentReliables.size(); i++)
+	{
+		NetMessage& currentMessage = *m_unsentReliables.at(i);
+
+		uint sizeOfCurrentMessage = (uint)currentMessage.GetWrittenByteCount() + currentMessage.GetHeaderSize();
+
+		if(currentPacket.HasRoom(sizeOfCurrentMessage))
+		{
+			currentMessage.m_reliable_id = GetAndIncrementNextReliableID();
+
+			currentPacket.WriteMessage(currentMessage);
+			tracker->AddReliable( currentPacket.m_header.m_messageCount, currentMessage.m_reliable_id);
+
+			m_sentAndUnconfirmedReliables.push_back(&currentMessage);
+			RemoveFast(i, m_unsentReliables);
+
+			currentMessage.ResetAge();
+		}
+	}
+
+
+	// Unreliables
 	for(uint i = 0; i < m_outboundUnreliables.size(); i++)
 	{		
 		NetMessage& currentMessage = *m_outboundUnreliables.at(i);
+		uint sizeOfCurrentMessage = (uint)currentMessage.GetWrittenByteCount() + currentMessage.GetHeaderSize();
 
-		if(!currentPacket.WriteMessage(currentMessage))
+		if(currentPacket.HasRoom(sizeOfCurrentMessage))
 		{
-			// we ran out of room! we didn't write to the packet
-			// but send it anyways 
-			currentPacket.WriteHeader();
-			m_owningSession->SendPacket(currentPacket);
-
-			// reset the head
-			currentPacket.ResetWrite();
-			currentPacket.ResetMessageCount();
-			i--; // go back since we didn;t have room
+			currentPacket.WriteMessage(currentMessage);
 		}
+
+		//if(!currentPacket.WriteMessage(currentMessage))
+		//{
+		//	// we ran out of room! we didn't write to the packet
+		//	// but send it anyways 
+		//	currentPacket.WriteHeader();
+		//	m_owningSession->SendPacket(currentPacket);
+		//
+		//	// reset the head
+		//	currentPacket.ResetWrite();
+		//	currentPacket.ResetMessageCount();
+		//	i--; // go back since we didn;t have room
+		//}
 	}
 
 	currentPacket.WriteHeader();
@@ -223,6 +267,24 @@ void NetConnection::IncrementSendAck()
 	}
 }
 
+uint16_t NetConnection::GetAndIncrementNextReliableID()
+{
+	uint16_t current = m_nextSentReliableID;
+	m_nextSentReliableID++;
+	return current;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::ShouldSendReliableMessage(const NetMessage& messageToCheck)
+{
+	int difference = ((int) GetTimeInMilliseconds()) - ((int) messageToCheck.m_lastSentTimeMS);
+	
+	if(difference >= TIME_TO_RESEND_RELIABLE_MS)
+		return true;
+
+	return false;
+}
+
 //-----------------------------------------------------------------------------------------------
 PacketTracker* NetConnection::AddPacketTracker(uint16_t packetACK)
 {
@@ -274,9 +336,18 @@ void NetConnection::Send( NetMessage& messageToSend )
 
 	NetMessageDefinition* theDef = m_owningSession->GetMessageDefinitionByName(messageToSend.m_definitionName);
 	messageToSend.m_header.m_messageCallbackDefinitionIndex = (uint8_t) theDef->m_callbackID;
+	messageToSend.m_definition = theDef;
 
 	// add to outgoing queue
-	m_outboundUnreliables.push_back(&messageToSend);
+	if(messageToSend.IsReliable())
+	{
+		m_unsentReliables.push_back(&messageToSend);
+	}
+	else
+	{
+		m_outboundUnreliables.push_back(&messageToSend);
+
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -359,4 +430,12 @@ float NetConnection::GetLoss()
 float NetConnection::GetRTT()
 {
 	return m_roundTripTime;
+}
+
+void PacketTracker::AddReliable( uint8_t idx, uint16_t ID )
+{
+	if(!(idx >= MAX_RELIBALES_PER_PACKET))
+	{
+		m_sentReliables[idx] = ID;
+	}
 }

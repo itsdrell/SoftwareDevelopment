@@ -163,6 +163,15 @@ size_t BytePacker::Peek( void * out_data, size_t length)
 }
 
 //-----------------------------------------------------------------------------------------------
+bool BytePacker::HasRoom(uint size)
+{
+	if(GetWritableByteCount() > size)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
 size_t BytePacker::WriteSize(size_t size)
 {
 	size_t index = size;

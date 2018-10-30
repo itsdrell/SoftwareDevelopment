@@ -144,11 +144,19 @@ public:
 	//===============================================================================================
 	// trash pls
 	void SendUnreliableTest();
+	void SendReliableTest();
 
+	// unreliable vars
 	uint m_idx = 0;
 	uint m_totalAmount = 0;
 	uint m_currentAmount = 0U;
 	Timer*	m_unreliableTimer = nullptr;
+
+	// reliable vars
+	uint m_reliableIdx = 0;
+	uint m_reliableTotalAmount = 0;
+	uint m_reliableCurrentAmount = 0U;
+	Timer*	m_reliableTimer = nullptr;
 	//===============================================================================================
 
 public:

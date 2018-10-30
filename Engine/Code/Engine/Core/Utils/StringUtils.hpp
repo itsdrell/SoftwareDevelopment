@@ -54,7 +54,7 @@ String GetBytesAsString(T data)
 	uint sizeOfData = sizeof(data) * 4;
 
 	String value;
-	uint16_t index = data;
+	T index = data;
 
 	for(uint i = 0; i < sizeOfData; i++)
 	{

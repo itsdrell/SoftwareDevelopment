@@ -258,6 +258,7 @@ void NetSession::ProcessIncoming()
 	if(result != 0)
 	{
 		
+
 		if(!CheckRandomChance(m_lossAmount))
 		{
 			// lets make a packet with the temp buffer!
@@ -326,13 +327,13 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 	}
 
 	// Get How many messages are in the packet
-	uint8_t amount = packet.m_header.m_unreliableCount;
+	uint8_t amount = packet.m_header.m_messageCount;
 	
 	// For x amount of messages, 
 	for(uint i = 0; i < amount; i++)
 	{
 		NetMessage currentMessage;
-		bool result = packet.ReadMessage(&currentMessage);
+		bool result = packet.ReadMessage(&currentMessage, *this);
 
 		// make sure we read the message properly
 		if(result == true)
@@ -391,6 +392,7 @@ void NetSession::ProcessTimeStampedPackets()
 void NetSession::ProcessOutgoing()
 {
 	SendUnreliableTest();
+	SendReliableTest();
 	
 	// foreach connection, process outgoing; 
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
@@ -434,8 +436,8 @@ void NetSession::Render() const
 	//r->m_currentCamera->RenderDebugOrtho();
 
 	// background
-	r->DrawAABB2(AABB2(-49.f, 49.f, 25.f, 20.f), Rgba(0,0,0,200));
-	r->DrawAABB2(AABB2(-49.f, 49.f, 25.f, 20.f), Rgba::WHITE, false);
+	r->DrawAABB2(AABB2(-49.f, 49.f, 40.f, 20.f), Rgba(0,0,0,200));
+	r->DrawAABB2(AABB2(-49.f, 49.f, 40.f, 20.f), Rgba::WHITE, false);
 
 	Vector2 pivot;
 	pivot.x = -48.f;
@@ -463,8 +465,8 @@ void NetSession::Render() const
 
 	// show all connections
 	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 8.f), "Connections:", textSize);
-	String header = Stringf("-- %6s %-20s %-8s %-7s %-7s %-7s %-7s %-7s %-7s", 
-		"idx", "address", "rtt(ms)", "loss%", "lrcv(s)", "lsnt(s)", "sntack", "rcvack", "rcvbits");
+	String header = Stringf("-- %6s %-20s %-8s %-7s %-7s %-7s %-7s %-7s %-18s %-7s", 
+		"idx", "address", "rtt(ms)", "loss%", "lrcv(s)", "lsnt(s)", "sntack", "rcvack", "rcvbits", "RLC");
 	mb.Add2DRandomColoredText(Vector2(pivot.x + 1.f, pivot.y - 10.f), header, .8f);
 	
 	Vector2 currentPos = Vector2(pivot.x + 1.f, pivot.y - 12.f);
@@ -482,7 +484,7 @@ void NetSession::Render() const
 			float lastReceivedTime = (float)((GetTimeInMilliseconds() - currentConnection->GetLastReceivedTimeInMS())) / 1000.f;
 			float lastSentTime = (float)((GetTimeInMilliseconds() - currentConnection->m_lastSendTimeMS)) / 1000.f;
 
-			String connectionText = Stringf("%-2s %6i %-20s %-8.3f %-7.3f %-7.3f %-7.3f %-7d %-7d %-7s", 
+			String connectionText = Stringf("%-2s %6i %-20s %-8.3f %-7.3f %-7.3f %-7.3f %-7d %-7d %-18s %-7i", 
 				isLocal.c_str(), 
 				i , 
 				currentConnection->m_address.ToString().c_str(),
@@ -492,7 +494,8 @@ void NetSession::Render() const
 				lastSentTime, // LSNT
 				currentConnection->m_lastSentAck, // Sntack
 				currentConnection->m_highestReceivedAck, // Rcvack
-				GetBytesAsString(currentConnection->m_previousReceivedAckBitfield).c_str()); // Rcvbits
+				GetBytesAsString(currentConnection->m_previousReceivedAckBitfield).c_str(),// Rcvbits
+				currentConnection->m_sentAndUnconfirmedReliables.size()); 
 			
 			mb.Add2DRandomColoredText(currentPos, connectionText, .8f);
 
@@ -636,6 +639,32 @@ void NetSession::SendUnreliableTest()
 		cp->Send( *msg );
 		
 		m_currentAmount--;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SendReliableTest()
+{
+	if(m_reliableCurrentAmount == 0)
+		return;
+
+	if(m_reliableTimer == nullptr)
+	{
+		m_reliableTimer = new Timer();
+		m_reliableTimer->SetTimer(2.f);
+	}
+
+
+	if(m_reliableTimer->CheckAndReset())
+	{
+		NetConnection *cp = GetConnection( m_reliableIdx ); 
+
+		NetMessage* msg = new NetMessage("reliable_test"); 
+		msg->WriteBytes( sizeof(uint), &m_reliableCurrentAmount ); 
+		msg->WriteBytes( sizeof(uint), &m_totalAmount ); 
+		cp->Send( *msg );
+
+		m_reliableCurrentAmount--;
 	}
 }
 

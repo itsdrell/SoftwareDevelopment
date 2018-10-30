@@ -52,7 +52,7 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 
 	// get the size of the message
 	size_t sizeOfMsg = msg.GetWrittenByteCount();
-	size_t sizeOfMessageAndHeader = sizeOfMsg + sizeof(NetMessageHeader);
+	size_t sizeOfMessageAndHeader = sizeOfMsg + msg.GetHeaderSize();//sizeof(NetMessageHeader);
 	size_t totalLength = sizeOfMessageAndHeader + 2U;
 	
 	// make sure the size of the Packet fits into this buffer
@@ -69,7 +69,12 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	tempPacket.WriteBytes(2U, &sizeOfMessageAndHeader);
 	
 	// write the header of the message
-	tempPacket.WriteBytes(sizeof(NetMessageHeader), &msg.m_header);
+	//tempPacket.WriteBytes(msg.GetHeaderSize(), &msg.m_header);
+	tempPacket.WriteBytes(1U, &msg.m_header.m_messageCallbackDefinitionIndex);
+	if(msg.IsReliable())
+	{
+		tempPacket.WriteBytes(2U, &msg.m_header.m_reliableID);
+	}
 
 	// write the payload
 	tempPacket.WriteBytes(sizeOfMsg, msg.GetConstBuffer(), false);
@@ -78,14 +83,14 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	WriteBytes(totalLength, tempPacket.GetBuffer(), false);
 
 	// keep track of how many messages are in this
-	m_header.m_unreliableCount++;
+	m_header.m_messageCount++;
 
 	return true;
 
 }
 
 //-----------------------------------------------------------------------------------------------
-bool NetPacket::ReadMessage(NetMessage* out_msg)
+bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 {
 
 	// so theoretically, by the time you call this function,
@@ -100,9 +105,21 @@ bool NetPacket::ReadMessage(NetMessage* out_msg)
 	
 	// Read the header
 	NetMessageHeader theHeader;
-	size_t amountToRead = sizeof(NetMessageHeader); // this should be 1 atm
-	size_t howMuchReadForHeader = ReadBytes(&theHeader, amountToRead);
-	if(howMuchReadForHeader != amountToRead) { return false; }
+	//size_t amountToRead = sizeof(NetMessageHeader); // this should be 1 atm
+	
+	// read the first byte of the packet
+	size_t howMuchReadForHeader = ReadBytes(&theHeader.m_messageCallbackDefinitionIndex, 1U);
+	
+	// get the def so we know if it is reliable or not
+	NetMessageDefinition* theDefinition = theSession.GetMessageDefinitionByIndex(theHeader.m_messageCallbackDefinitionIndex);
+
+	// if reliable, read more
+	if(theDefinition->m_option == NETMESSAGE_OPTION_RELIABLE)
+	{
+		size_t reliableRead = ReadBytes(&theHeader.m_reliableID, 2U);
+	}
+	
+	//if(howMuchReadForHeader != amountToRead) { return false; }
 	out_msg->m_header = theHeader;
 
 	// Read the message
@@ -135,7 +152,7 @@ bool NetPacket::IsValid(const NetSession& theSession)
 		return false;
 
 	// get how many sizes
-	uint amounfOfMessagesToCheckFor = theHeader.m_unreliableCount;
+	uint amounfOfMessagesToCheckFor = theHeader.m_messageCount;
 
 	// for that many sizes
 	for(uint i = 0; i < amounfOfMessagesToCheckFor; i++)

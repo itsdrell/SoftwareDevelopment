@@ -1,6 +1,7 @@
 #include "NetMessage.hpp"
 #include "UDPSocket.hpp"
 #include "NetSession.hpp"
+#include "..\Core\Tools\Clock.hpp"
 
 //-----------------------------------------------------------------------------------------------
 NetMessage::NetMessage(const char * name)
@@ -24,5 +25,33 @@ bool NetMessage::RequiresConnection( const NetSession& theSession )
 		return false;
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+uint NetMessage::GetHeaderSize() const
+{
+	uint size = 1U;
+
+	if( IsReliable() )
+	{
+		size += sizeof(uint16_t); // reliable id
+	}
+
+	return size;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetMessage::IsReliable() const
+{
+	if(m_definition->m_option == NETMESSAGE_OPTION_RELIABLE)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetMessage::ResetAge()
+{
+	m_lastSentTimeMS = GetTimeInMilliseconds();
 }
 

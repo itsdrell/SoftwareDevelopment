@@ -67,6 +67,8 @@ public:
 	size_t ReadBytes( void *out_data, size_t max_byte_count , bool advanceReadHead = true, bool checkEndianess = true); 
 	size_t Peek(void * out_data, size_t max_byte_count );
 
+	bool HasRoom(uint size);
+
 	size_t WriteSize( size_t size ); // returns how many bytes used
 	size_t ReadSize( size_t *out_size ); // returns how many bytes read, fills out_size
 

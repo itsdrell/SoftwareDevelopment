@@ -51,6 +51,7 @@ void AddConnection( Command& theCommand );
 void SendPing( Command& theCommand );
 void SendAdd( Command& theCommand );
 void UnreliableTest( Command& theCommand );
+void ReliableTest( Command& theCommand );
 
 
 //====================================================================================

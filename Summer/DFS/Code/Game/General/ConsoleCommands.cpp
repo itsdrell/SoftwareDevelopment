@@ -44,6 +44,7 @@ void RegisterGameCommands()
 	CommandRegister("send_ping", "", "", SendPing);
 	CommandRegister("send_add", "", "", SendAdd);
 	CommandRegister("testUnreliable", "","a14", UnreliableTest);
+	CommandRegister("testReliable", "","a15", ReliableTest);
 }
 
 void EndTurn(Command & theCommand)
@@ -524,5 +525,23 @@ void UnreliableTest(Command& theCommand)
 	sp->m_idx = idx;
 	sp->m_totalAmount = count;
 	sp->m_currentAmount = count;
+}
+
+//-----------------------------------------------------------------------------------------------
+void ReliableTest(Command& theCommand)
+{
+	uint idx = 0U; 
+	uint count = 1U;
+
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		idx = (uint) stoi(theCommand.m_commandArguements.at(1));
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		count = (uint) stoi(theCommand.m_commandArguements.at(2));
+
+	NetSession *sp = Game::GetNetSession(); 
+	sp->m_reliableIdx = idx;
+	sp->m_reliableTotalAmount = count;
+	sp->m_reliableCurrentAmount = count;
 }
 
