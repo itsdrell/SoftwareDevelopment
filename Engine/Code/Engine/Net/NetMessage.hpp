@@ -37,7 +37,7 @@ struct NetMessageHeader
 		, m_reliableID(reliableID) {}
 	
 	uint8_t		m_messageCallbackDefinitionIndex = 0U;
-	uint16_t	m_reliableID = 0U;
+	uint16_t	m_reliableID = 255;
 };
 
 // this is for server side!

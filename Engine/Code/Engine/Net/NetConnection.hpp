@@ -21,6 +21,8 @@ class NetSession;
 #define MAX_RELIBALES_PER_PACKET (32)
 #define TIME_TO_RESEND_RELIABLE_MS (100)
 
+#define RELIABLE_WINDOW (32)
+
 //====================================================================================
 // ENUMS
 //====================================================================================
@@ -37,6 +39,7 @@ struct PacketTracker
 	uint16_t		m_ackNumber = INVALID_PACKET_ACK;
 	uint			m_sentMS = 0U;
 
+	uint			m_amountSent = 0U;
 	uint16_t		m_sentReliables[MAX_RELIBALES_PER_PACKET];
 };
 
@@ -65,6 +68,8 @@ public:
 
 	bool OnReceivePacket( const PacketHeader& header, NetPacket* packet);
 	void ConfirmPacketReceived( uint16_t ack );
+	void ConfirmReliables( const PacketTracker& theTracker );
+	void RemoveReliableIDFromList( uint16_t reliableID );
 	void ConfirmPreviousReceivedPackets( uint16_t currentAck , uint distance ); // for bit field
 	void CreateBitFlagForNonHighestAck( uint16_t currentAck );
 	void CreateBitFlagForHightestAck( uint16_t currentAck , uint distance );
@@ -74,10 +79,12 @@ public:
 
 	uint16_t GetAndIncrementNextReliableID();
 	bool ShouldSendReliableMessage(const NetMessage& messageToCheck);
+	bool IsOldestUnconfirmedReliableWithinWindow();
+	uint16_t GetOldestUncomfirmedReliableID();
+	void UpdateRecievedReliableList( uint16_t newID );
 
 	PacketTracker* AddPacketTracker( uint16_t packetACK );
 	PacketTracker* GetTracker( uint16_t ack );
-
 
 	// clean up
 	void ClearOutgoingMessages();
@@ -104,6 +111,7 @@ public:
 	std::vector<NetMessage*>	m_outboundUnreliables; 
 	std::vector<NetMessage*>	m_unsentReliables;
 	std::vector<NetMessage*>	m_sentAndUnconfirmedReliables;
+	std::vector<uint16_t>		m_receivedReliableIDs;
 
 	NetAddress					m_address; // address associtaed with this connectin; 
 
@@ -120,14 +128,16 @@ private:
 	
 	// ack related stuff
 	// sending - updated during a send/flush
-	uint16_t					m_nextAckToSend                    = 0U; // this is zero because the next after invalid is 0
+	uint16_t					m_nextAckToSend						= 0U; // this is zero because the next after invalid is 0
 	uint16_t					m_lastSentAck						= INVALID_PACKET_ACK; // this is for the UI
 
 	uint16_t					m_nextSentReliableID				= 0U;
 
 	// receiving - updated during a process_packet
 	uint16_t					m_highestReceivedAck                = INVALID_PACKET_ACK; 
-	uint						m_previousReceivedAckBitfield   = 0; 
+	uint						m_previousReceivedAckBitfield		= 0; 
+
+	uint16_t					m_hightestRecievedReliableID		= 0U;
 
 	// Analytics
 	uint						m_lastSendTimeMS;

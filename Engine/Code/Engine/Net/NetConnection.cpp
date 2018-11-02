@@ -5,6 +5,7 @@
 #include "../Math/MathUtils.hpp"
 #include "../Core/Tools/DevConsole.hpp"
 #include "../Core/Tools/Clock.hpp"
+#include "../Renderer/Systems/DebugRenderSystem.hpp"
 
 //-----------------------------------------------------------------------------------------------
 NetConnection::NetConnection(uint8_t idx, const NetAddress& theAddress, NetSession* owningSession)
@@ -74,7 +75,7 @@ void NetConnection::Flush()
 	header.m_ack = GetNextAckToSend();
 	m_lastSentAck = header.m_ack;
 	header.m_lastRecievedAck = m_highestReceivedAck;
-	header.m_previousRecievedAckBitfield = m_previousReceivedAckBitfield;
+	header.m_previousRecievedAckBitfield = (uint16_t) m_previousReceivedAckBitfield;
 
 	currentPacket.m_header = header;
 
@@ -155,6 +156,8 @@ void NetConnection::Flush()
 //-----------------------------------------------------------------------------------------------
 bool NetConnection::OnReceivePacket(const PacketHeader& header, NetPacket* packet)
 {
+	UNUSED(packet);
+	
 	m_lastRecievedTimeMS = GetTimeInMilliseconds();
 	uint distanceOfCurrentAckAndHighest = 0U;
 
@@ -201,10 +204,39 @@ void NetConnection::ConfirmPacketReceived( uint16_t ack )
 	m_roundTripTime = (.9f * m_roundTripTime) + (.1f * (float) newRTT);
 
 	// More Coming Soon!
+	ConfirmReliables(*tracker);
 
 	// it has been confirmed, so invalidate to prevent a double confirmation
 	// Invalid() the header
 	tracker->m_ackNumber = INVALID_PACKET_ACK; 
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::ConfirmReliables(const PacketTracker& theTracker)
+{
+	for(uint i = 0; i < theTracker.m_amountSent; i++)
+	{
+		uint16_t currentReliableID = theTracker.m_sentReliables[i];
+		RemoveReliableIDFromList(currentReliableID);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::RemoveReliableIDFromList(uint16_t reliableID)
+{
+	for(uint i = 0; i < m_sentAndUnconfirmedReliables.size(); i++)
+	{
+		NetMessage* current = m_sentAndUnconfirmedReliables.at(i);
+
+		if(current->m_reliable_id == reliableID)
+		{
+			delete current;
+			current = nullptr;
+
+			RemoveFast(i, m_sentAndUnconfirmedReliables);
+			return;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -221,6 +253,8 @@ void NetConnection::ConfirmPreviousReceivedPackets( uint16_t currentAck , uint d
 //-----------------------------------------------------------------------------------------------
 void NetConnection::CreateBitFlagForHightestAck( uint16_t currentAck , uint distance )
 {
+	UNUSED(currentAck);
+	
 	// what forseth does
 	m_previousReceivedAckBitfield <<= distance;
 	m_previousReceivedAckBitfield |= (1 << (distance - 1));
@@ -279,10 +313,53 @@ bool NetConnection::ShouldSendReliableMessage(const NetMessage& messageToCheck)
 {
 	int difference = ((int) GetTimeInMilliseconds()) - ((int) messageToCheck.m_lastSentTimeMS);
 	
-	if(difference >= TIME_TO_RESEND_RELIABLE_MS)
+	if((difference >= TIME_TO_RESEND_RELIABLE_MS) && IsOldestUnconfirmedReliableWithinWindow())
 		return true;
 
 	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::IsOldestUnconfirmedReliableWithinWindow()
+{
+	return (m_nextSentReliableID - GetOldestUncomfirmedReliableID()) < RELIABLE_WINDOW;
+}
+
+//-----------------------------------------------------------------------------------------------
+uint16_t NetConnection::GetOldestUncomfirmedReliableID()
+{
+	uint16_t currentHighest = 0;
+	for(uint i = 0; i < m_sentAndUnconfirmedReliables.size(); i++)
+	{
+		uint16_t current = m_sentAndUnconfirmedReliables.at(i)->m_reliable_id;
+		if(currentHighest < current)
+		{
+			currentHighest = current;
+		}
+	}
+
+	return currentHighest;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::UpdateRecievedReliableList(uint16_t newID)
+{
+	// store off the highest
+	if(newID > m_hightestRecievedReliableID)
+		m_hightestRecievedReliableID = newID;
+
+	// remove any that are smaller than highest - RELIABLE_WINDOW, but only if its greater than the window
+	if(m_hightestRecievedReliableID > RELIABLE_WINDOW)
+	{
+		uint16_t threshhold = m_hightestRecievedReliableID - RELIABLE_WINDOW;
+		for(uint i = 0; i < m_receivedReliableIDs.size(); i++)
+		{
+			uint16_t current = m_receivedReliableIDs.at(i);
+
+			if(current < threshhold)
+				RemoveFast( i, m_receivedReliableIDs );
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -437,5 +514,6 @@ void PacketTracker::AddReliable( uint8_t idx, uint16_t ID )
 	if(!(idx >= MAX_RELIBALES_PER_PACKET))
 	{
 		m_sentReliables[idx] = ID;
+		m_amountSent++;
 	}
 }

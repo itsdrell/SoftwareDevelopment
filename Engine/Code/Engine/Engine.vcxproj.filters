@@ -337,6 +337,9 @@
     <ClCompile Include="Math\Geometry\ConvexPoly2D.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Utils\MiscUtils.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -468,6 +471,7 @@
     <ClInclude Include="Math\Geometry\OBB2.hpp" />
     <ClInclude Include="Net\EngineRegisteredNetMessages.hpp" />
     <ClInclude Include="Math\Geometry\ConvexPoly2D.hpp" />
+    <ClInclude Include="Core\Utils\MiscUtils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

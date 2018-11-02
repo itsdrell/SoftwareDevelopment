@@ -287,6 +287,7 @@
     <ClCompile Include="Core\Tools\Profiling\ScopedProfile.cpp" />
     <ClCompile Include="Core\Tools\RemoteCommandService.cpp" />
     <ClCompile Include="Core\Tools\Stopwatch.cpp" />
+    <ClCompile Include="Core\Utils\MiscUtils.cpp" />
     <ClCompile Include="Core\Utils\StringUtils.cpp" />
     <ClCompile Include="Core\Utils\XmlUtilities.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="Core\Tools\Profiling\ScopedProfile.hpp" />
     <ClInclude Include="Core\Tools\RemoteCommandService.hpp" />
     <ClInclude Include="Core\Tools\Stopwatch.hpp" />
+    <ClInclude Include="Core\Utils\MiscUtils.hpp" />
     <ClInclude Include="Core\Utils\StringUtils.hpp" />
     <ClInclude Include="Core\Utils\XmlUtilities.hpp" />
     <ClInclude Include="Input\InputSystem.hpp" />

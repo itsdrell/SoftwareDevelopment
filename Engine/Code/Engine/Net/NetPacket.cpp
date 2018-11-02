@@ -73,7 +73,7 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	tempPacket.WriteBytes(1U, &msg.m_header.m_messageCallbackDefinitionIndex);
 	if(msg.IsReliable())
 	{
-		tempPacket.WriteBytes(2U, &msg.m_header.m_reliableID);
+		tempPacket.WriteBytes(2U, &msg.m_reliable_id);
 	}
 
 	// write the payload
@@ -108,7 +108,8 @@ bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 	//size_t amountToRead = sizeof(NetMessageHeader); // this should be 1 atm
 	
 	// read the first byte of the packet
-	size_t howMuchReadForHeader = ReadBytes(&theHeader.m_messageCallbackDefinitionIndex, 1U);
+	/*size_t howMuchReadForHeader = */
+	ReadBytes(&theHeader.m_messageCallbackDefinitionIndex, 1U);
 	
 	// get the def so we know if it is reliable or not
 	NetMessageDefinition* theDefinition = theSession.GetMessageDefinitionByIndex(theHeader.m_messageCallbackDefinitionIndex);
@@ -116,7 +117,8 @@ bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 	// if reliable, read more
 	if(theDefinition->m_option == NETMESSAGE_OPTION_RELIABLE)
 	{
-		size_t reliableRead = ReadBytes(&theHeader.m_reliableID, 2U);
+		/*size_t reliableRead = */
+		ReadBytes(&theHeader.m_reliableID, 2U);
 	}
 	
 	//if(howMuchReadForHeader != amountToRead) { return false; }
@@ -124,6 +126,9 @@ bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 
 	// Read the message
 	void* messageBuffer = out_msg->GetBuffer();   // IF ANYTHING IS WRONG IT'S PROBABLY THE -1
+	if(size == 0)
+		return true;
+
 	size_t bufferRead = ReadBytes(messageBuffer, (size - 1));
 	out_msg->SetTotalWrittenByteCount(bufferRead);
 	if(bufferRead != (size - 1)) { return false; }
@@ -134,6 +139,8 @@ bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 //-----------------------------------------------------------------------------------------------
 bool NetPacket::IsValid(const NetSession& theSession)
 {
+	UNUSED(theSession);
+	
 	// Get the packet header
 	PacketHeader theHeader;
 	size_t amountRead = ReadBytes(&theHeader, sizeof(PacketHeader));

@@ -17,7 +17,9 @@ void RegisterGameNetMessages( NetSession& theSession )
 //-----------------------------------------------------------------------------------------------
 bool OnUnreliableTest(NetMessage & msg, const NetSender & from)
 {
-	
+	UNUSED(msg);
+	UNUSED(from);
+
 	DevConsole::GetInstance()->AddConsoleDialogue("Got something unreliable");
 	
 	return false;
@@ -26,6 +28,9 @@ bool OnUnreliableTest(NetMessage & msg, const NetSender & from)
 //-----------------------------------------------------------------------------------------------
 bool OnReliableTest(NetMessage& msg, const NetSender& from)
 {
+	UNUSED(msg);
+	UNUSED(from);
+	
 	DevConsole::GetInstance()->AddConsoleDialogue("Got something reliable");
 	return false;
 }

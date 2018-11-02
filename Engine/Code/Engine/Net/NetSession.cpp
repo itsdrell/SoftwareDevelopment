@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include "../Core/Tools/Clock.hpp"
+#include "../Core/Utils/MiscUtils.hpp"
 
 //===============================================================================================
 
@@ -106,7 +107,7 @@ NetMessageDefinition* NetSession::GetMessageDefinition(int const & id)
 //-----------------------------------------------------------------------------------------------
 NetMessageDefinition* NetSession::GetMessageDefinitionByIndex(uint8_t idx) const
 {
-	if(IsIndexValid((uint) idx, (std::vector<NetMessageDefinition*>) m_messageCallbacks))
+	if(IsIndexValid((uint) idx, (std::vector<NetMessageDefinition*>&) m_messageCallbacks))
 	{
 		for(uint i = 0; i < m_messageCallbacks.size(); i++)
 		{
@@ -347,9 +348,29 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 			else
 			{
 				NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
-
 				if(theDef != nullptr)
-					theDef->m_callback(currentMessage, *theSender);
+				{
+					// see if we are reliable
+					if(theDef->m_option == NETMESSAGE_OPTION_RELIABLE)
+					{
+						if(!DoesContain(currentMessage.m_header.m_reliableID, theSender->m_connection->m_receivedReliableIDs))
+						{
+							theDef->m_callback(currentMessage, *theSender);
+
+							// we processed the message so add it to our list!
+							theSender->m_connection->m_receivedReliableIDs.push_back(currentMessage.m_header.m_reliableID);
+
+							// remove old ones and add highest received
+							theSender->m_connection->UpdateRecievedReliableList(currentMessage.m_header.m_reliableID);
+						}
+					}
+					else // if not, just process
+					{
+						theDef->m_callback(currentMessage, *theSender);
+					}
+					
+				}
+				
 			}
 
 		}
