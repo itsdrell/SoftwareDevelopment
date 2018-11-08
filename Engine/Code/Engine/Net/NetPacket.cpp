@@ -75,6 +75,11 @@ bool NetPacket::WriteMessage(const NetMessage & msg)
 	{
 		tempPacket.WriteBytes(2U, &msg.m_reliable_id);
 	}
+	else if(msg.IsReliableInOrder())
+	{
+		tempPacket.WriteBytes(2U, &msg.m_reliable_id);
+		tempPacket.WriteBytes(2U, &msg.m_header.m_sequenceID);
+	}
 
 	// write the payload
 	tempPacket.WriteBytes(sizeOfMsg, msg.GetConstBuffer(), false);
@@ -114,24 +119,34 @@ bool NetPacket::ReadMessage(NetMessage* out_msg, const NetSession& theSession )
 	// get the def so we know if it is reliable or not
 	NetMessageDefinition* theDefinition = theSession.GetMessageDefinitionByIndex(theHeader.m_messageCallbackDefinitionIndex);
 
-	// if reliable, read more
+	// if reliable or reliable in order, read more
 	if(theDefinition->m_option == NETMESSAGE_OPTION_RELIABLE)
 	{
 		/*size_t reliableRead = */
 		ReadBytes(&theHeader.m_reliableID, 2U);
 	}
+	else if(theDefinition->m_option == NETMSSAGE_OPTION_RELIALBE_IN_ORDER)
+	{
+		ReadBytes(&theHeader.m_reliableID, 2U);
+		ReadBytes(&theHeader.m_sequenceID, 2U);
+	}
 	
 	//if(howMuchReadForHeader != amountToRead) { return false; }
 	out_msg->m_header = theHeader;
+	out_msg->m_definition = theDefinition;
 
 	// Read the message
 	void* messageBuffer = out_msg->GetBuffer();   // IF ANYTHING IS WRONG IT'S PROBABLY THE -1
 	if(size == 0)
 		return true;
 
-	size_t bufferRead = ReadBytes(messageBuffer, (size - 1));
+	//size_t bufferRead = ReadBytes(messageBuffer, (size - 1));
+	uint headerSize = out_msg->GetHeaderSize();
+	size_t bufferRead = ReadBytes(messageBuffer, size - headerSize);
 	out_msg->SetTotalWrittenByteCount(bufferRead);
-	if(bufferRead != (size - 1)) { return false; }
+	if(bufferRead != (size - headerSize)) { 
+		return false; 
+	}
 
 	return true;
 }

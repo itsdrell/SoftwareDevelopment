@@ -54,6 +54,8 @@ public:
 	BytePacker( size_t buffer_size, void *buffer, eEndianness byte_order = LITTLE_ENDIAN ); // can't grow, and don't own
 	~BytePacker(); 
 
+	void SwapBuffer( const BytePacker& bufferToSwapTo );
+
 	// sets how much of the buffer is readable; 
 	void SetEndianness( eEndianness type );
 	bool SetTotalWrittenByteCount( size_t byte_count );

@@ -340,6 +340,9 @@
     <ClCompile Include="Core\Utils\MiscUtils.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Net\NetMessageChannel.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -472,6 +475,7 @@
     <ClInclude Include="Net\EngineRegisteredNetMessages.hpp" />
     <ClInclude Include="Math\Geometry\ConvexPoly2D.hpp" />
     <ClInclude Include="Core\Utils\MiscUtils.hpp" />
+    <ClInclude Include="Net\NetMessageChannel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

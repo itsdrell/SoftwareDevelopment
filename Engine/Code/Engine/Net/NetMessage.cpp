@@ -17,6 +17,20 @@ NetMessage::NetMessage()
 }
 
 //-----------------------------------------------------------------------------------------------
+NetMessage::NetMessage(const NetMessage& copyFrom)
+{
+	// set variables
+	m_definitionName = copyFrom.m_definitionName;
+	m_definition = copyFrom.m_definition;
+	m_header = copyFrom.m_header;
+	m_reliable_id = copyFrom.m_reliable_id;
+	m_lastSentTimeMS = copyFrom.m_lastSentTimeMS;
+
+	// change buffer
+	SwapBuffer(copyFrom);
+}
+
+//-----------------------------------------------------------------------------------------------
 bool NetMessage::RequiresConnection( const NetSession& theSession )
 {
 	NetMessageDefinition* theDef = theSession.GetMessageDefinitionByIndex(m_header.m_messageCallbackDefinitionIndex);
@@ -37,6 +51,11 @@ uint NetMessage::GetHeaderSize() const
 		size += sizeof(uint16_t); // reliable id
 	}
 
+	if( IsReliableInOrder() )
+	{
+		size += (sizeof(uint16_t) * 2); // reliable and sequence ID 
+	}
+
 	return size;
 }
 
@@ -44,6 +63,15 @@ uint NetMessage::GetHeaderSize() const
 bool NetMessage::IsReliable() const
 {
 	if(m_definition->m_option == NETMESSAGE_OPTION_RELIABLE)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetMessage::IsReliableInOrder() const
+{
+	if(m_definition->m_option == NETMSSAGE_OPTION_RELIALBE_IN_ORDER)
 		return true;
 
 	return false;

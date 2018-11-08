@@ -1,10 +1,12 @@
 #pragma once
-#include "Engine/Net/EngineRegisteredNetMessages.hpp"
+#include <stdint.h>
+#include <vector>
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class NetMessage;
+class NetConnection;
 
 //====================================================================================
 // Type Defs + Defines
@@ -14,29 +16,43 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-enum eNetGameMessage : uint8_t
-{
-	NETMSG_TEST_GAME_MESSAGE = NETMSG_CORE_COUNT, // allow us to resume count from where we left off in core
-												  // ...
 
-	// This is the test used for grading - it is fixed as 128 so that if you add
-	// other messages, it won't interfer with our tests;
-	NETMSG_UNRELIABLE_TEST = 128,
-	NETMSG_RELIABLE_TEST = 129,
-	NETMSG_SEQUENCE_TEST = 130,
+
+//====================================================================================
+// Structs
+//====================================================================================
+
+
+//====================================================================================
+// Classes
+//====================================================================================
+class NetMessageChannel
+{  
+public:
+	NetMessageChannel() {}
+	NetMessageChannel( NetConnection& owningConnection );
+	~NetMessageChannel();
+
+	void HandleMessage( NetMessage& messageToHandle );
+	void ProcessMessage( NetMessage& messageToHandle );
+	void CheckListForMessagesToProcess();
+
+	uint16_t GetAndIncrementSequenceID();
+
+public:
+	uint16_t								m_nextSentSequenceID = 0U;            // used for sending
+	
+	uint16_t								m_nextExpectedSequenceID = 0U;        // used for receiving
+	std::vector<NetMessage*>				m_outOfOrderMessages;				  // used for receiving
+
+private:
+	NetConnection*							m_owningConnection = nullptr;
 };
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-void RegisterGameNetMessages( NetSession& theSession );
 
-
-//-----------------------------------------------------------------------------------------------
-// Messages
-bool OnUnreliableTest( NetMessage& msg, const NetSender& from);
-bool OnReliableTest( NetMessage& msg, const NetSender& from );
-bool OnSequenceTest( NetMessage& msg, const NetSender& from );
 
 //====================================================================================
 // Externs
@@ -44,5 +60,5 @@ bool OnSequenceTest( NetMessage& msg, const NetSender& from );
 
 
 //====================================================================================
-// Written by Zachary Bracken : [10/25/2018]
+// Written by Zachary Bracken : [11/3/2018]
 //====================================================================================

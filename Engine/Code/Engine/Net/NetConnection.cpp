@@ -20,6 +20,17 @@ NetConnection::NetConnection(uint8_t idx, const NetAddress& theAddress, NetSessi
 	m_heartbeatTimer = new Timer();
 	m_flushRateTimer = new Timer();
 	CompareFlushRatesAndSet(); 
+
+	CreateMessageChannels();
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetConnection::CreateMessageChannels()
+{
+	for(uint i = 0; i < NUMBER_OF_NETMESSAGE_CHANNELS; i++)
+	{
+		m_messageChannels[i] = new NetMessageChannel(*this);
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -39,6 +50,12 @@ NetConnection::~NetConnection()
 
 	delete m_heartbeatTimer;
 	m_heartbeatTimer = nullptr;
+
+	for(uint i = 0; i < NUMBER_OF_NETMESSAGE_CHANNELS; i++)
+	{
+		delete m_messageChannels[i];
+		m_messageChannels[i] = nullptr;
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -51,7 +68,7 @@ void NetConnection::ProcessOutgoing()
 	if( m_flushRateTimer->CheckAndReset())
 	{
 		// if we have no messages, return
-		if(m_outboundUnreliables.size() == 0U)
+		if(!DoWeHaveAnyMessagesToSend())
 			return;
 
 		// send what we can fit in a packet
@@ -151,6 +168,17 @@ void NetConnection::Flush()
 	// increment ack and analytics
 	IncrementSendAck();
 	m_lastSendTimeMS = GetTimeInMilliseconds();
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::DoWeHaveAnyMessagesToSend()
+{
+	if(m_unsentReliables.size() == 0 && m_outboundUnreliables.size() == 0 && m_sentAndUnconfirmedReliables.size() == 0)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -301,6 +329,7 @@ void NetConnection::IncrementSendAck()
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
 uint16_t NetConnection::GetAndIncrementNextReliableID()
 {
 	uint16_t current = m_nextSentReliableID;
@@ -322,6 +351,7 @@ bool NetConnection::ShouldSendReliableMessage(const NetMessage& messageToCheck)
 //-----------------------------------------------------------------------------------------------
 bool NetConnection::IsOldestUnconfirmedReliableWithinWindow()
 {
+	// probably should use cycle less
 	return (m_nextSentReliableID - GetOldestUncomfirmedReliableID()) < RELIABLE_WINDOW;
 }
 
@@ -332,7 +362,7 @@ uint16_t NetConnection::GetOldestUncomfirmedReliableID()
 	for(uint i = 0; i < m_sentAndUnconfirmedReliables.size(); i++)
 	{
 		uint16_t current = m_sentAndUnconfirmedReliables.at(i)->m_reliable_id;
-		if(currentHighest < current)
+		if(currentHighest < current) // probably should use cycleLess()
 		{
 			currentHighest = current;
 		}
@@ -360,6 +390,12 @@ void NetConnection::UpdateRecievedReliableList(uint16_t newID)
 				RemoveFast( i, m_receivedReliableIDs );
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+uint16_t NetConnection::GetAndIncrementNextSequenceID( NetMessageChannelIndexName channelToUse )
+{
+	return m_messageChannels[channelToUse]->GetAndIncrementSequenceID();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -420,10 +456,14 @@ void NetConnection::Send( NetMessage& messageToSend )
 	{
 		m_unsentReliables.push_back(&messageToSend);
 	}
+	else if (messageToSend.IsReliableInOrder())
+	{
+		messageToSend.m_header.m_sequenceID = GetAndIncrementNextSequenceID(theDef->m_channelIndex);
+		m_unsentReliables.push_back(&messageToSend);
+	}
 	else
 	{
 		m_outboundUnreliables.push_back(&messageToSend);
-
 	}
 }
 

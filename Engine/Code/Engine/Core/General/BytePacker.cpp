@@ -58,6 +58,24 @@ BytePacker::~BytePacker()
 }
 
 //-----------------------------------------------------------------------------------------------
+void BytePacker::SwapBuffer( const BytePacker& bufferToSwapTo )
+{
+	// set variables
+	m_endianness = bufferToSwapTo.m_endianness;
+	m_mode = bufferToSwapTo.m_mode;
+	m_writableHead = bufferToSwapTo.m_writableHead;
+	m_readableHead = bufferToSwapTo.m_readableHead;
+	m_bufferSize = bufferToSwapTo.m_bufferSize;
+
+	// delete old buffer
+	delete m_buffer;
+
+	// swap buffers
+	m_buffer = malloc(m_bufferSize);
+	memcpy(m_buffer, bufferToSwapTo.GetConstBuffer(), m_bufferSize);
+}
+
+//-----------------------------------------------------------------------------------------------
 void BytePacker::SetEndianness(eEndianness type)
 {
 	m_endianness = type;

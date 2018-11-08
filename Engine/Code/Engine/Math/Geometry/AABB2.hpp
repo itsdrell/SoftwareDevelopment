@@ -43,6 +43,9 @@ public:
 
 	std::string ToString() const;
 
+	AABB2 AlignWithin( Vector2& alignment, AABB2& container ) const;
+	AABB2 AlignToPivot( Vector2& alignment, AABB2& container, Vector2& pivot );
+	AABB2 GetAllignedWithin( const AABB2& container, const Vector2& alignment, const Vector2& offset = Vector2::ZERO ) const;
 
 public:
 	Vector2 mins;

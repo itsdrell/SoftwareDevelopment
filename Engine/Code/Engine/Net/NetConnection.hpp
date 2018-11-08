@@ -2,6 +2,7 @@
 #include "NetAddress.hpp"
 #include "..\Core\Tools\Stopwatch.hpp"
 #include "Engine\Net\NetPacket.hpp"
+#include "NetMessageChannel.hpp"
 
 
 //====================================================================================
@@ -21,7 +22,9 @@ class NetSession;
 #define MAX_RELIBALES_PER_PACKET (32)
 #define TIME_TO_RESEND_RELIABLE_MS (100)
 
-#define RELIABLE_WINDOW (32)
+constexpr uint16_t RELIABLE_WINDOW = 32;
+
+#define MAX_MESSAGE_CHANNELS (8)
 
 //====================================================================================
 // ENUMS
@@ -56,6 +59,8 @@ public:
 
 	NetConnection() {}
 	NetConnection(uint8_t idx, const NetAddress& theAddress, NetSession* owningSession);
+	
+	void CreateMessageChannels();
 
 	~NetConnection();
 
@@ -65,6 +70,7 @@ public:
 	// aka flush
 	void ProcessOutgoing(); 
 	void Flush();
+	bool DoWeHaveAnyMessagesToSend();
 
 	bool OnReceivePacket( const PacketHeader& header, NetPacket* packet);
 	void ConfirmPacketReceived( uint16_t ack );
@@ -82,6 +88,8 @@ public:
 	bool IsOldestUnconfirmedReliableWithinWindow();
 	uint16_t GetOldestUncomfirmedReliableID();
 	void UpdateRecievedReliableList( uint16_t newID );
+
+	uint16_t GetAndIncrementNextSequenceID( NetMessageChannelIndexName channelToUse );
 
 	PacketTracker* AddPacketTracker( uint16_t packetACK );
 	PacketTracker* GetTracker( uint16_t ack );
@@ -120,9 +128,11 @@ public:
 	Timer*						m_flushRateTimer;
 	float						m_flushRateInHz = 0.f; // default value
 
-	// how this relates to the session; 
+	// how this relates to the session; s
 	NetSession*					m_owningSession; 
 	uint8_t						m_indexInSession;
+
+	NetMessageChannel*			m_messageChannels[MAX_MESSAGE_CHANNELS];
 
 private: 
 	

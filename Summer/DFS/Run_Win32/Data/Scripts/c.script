@@ -1,3 +1,4 @@
-rca add_connection 0 10.8.133.158:10084 
-rca add_connection 1 10.8.133.158:10085
+rca add_connection 0 10.8.152.66:10084 
+rca add_connection 1 10.8.152.66:10085
+rca net_sim_loss 50
 testReliable 0 100

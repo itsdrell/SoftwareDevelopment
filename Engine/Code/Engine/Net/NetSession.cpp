@@ -350,6 +350,8 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 				NetMessageDefinition* theDef = GetMessageDefinitionByIndex(currentMessage.m_header.m_messageCallbackDefinitionIndex);
 				if(theDef != nullptr)
 				{
+					currentMessage.m_definition = theDef;
+
 					// see if we are reliable
 					if(theDef->m_option == NETMESSAGE_OPTION_RELIABLE)
 					{
@@ -363,6 +365,17 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 							// remove old ones and add highest received
 							theSender->m_connection->UpdateRecievedReliableList(currentMessage.m_header.m_reliableID);
 						}
+					}
+					else if (theDef->m_option == NETMSSAGE_OPTION_RELIALBE_IN_ORDER)
+					{
+						// give it to the channel it belongs to and let it be in charge of it being processed
+						NetMessageChannelIndexName theChannel = theDef->m_channelIndex;
+
+						if(!DoesContain(currentMessage.m_header.m_reliableID, theSender->m_connection->m_receivedReliableIDs))
+						{
+							theSender->m_connection->m_messageChannels[theChannel]->HandleMessage( currentMessage );
+						}
+						
 					}
 					else // if not, just process
 					{
@@ -672,7 +685,7 @@ void NetSession::SendReliableTest()
 	if(m_reliableTimer == nullptr)
 	{
 		m_reliableTimer = new Timer();
-		m_reliableTimer->SetTimer(2.f);
+		m_reliableTimer->SetTimer(1.f);
 	}
 
 
@@ -680,10 +693,14 @@ void NetSession::SendReliableTest()
 	{
 		NetConnection *cp = GetConnection( m_reliableIdx ); 
 
-		NetMessage* msg = new NetMessage("reliable_test"); 
-		msg->WriteBytes( sizeof(uint), &m_reliableCurrentAmount ); 
-		msg->WriteBytes( sizeof(uint), &m_totalAmount ); 
+		uint currentTally = m_reliableTotalAmount - m_reliableCurrentAmount;
+
+		NetMessage* msg = new NetMessage("sequence_test"); 
+		msg->WriteBytes( sizeof(uint), &currentTally ); 
+		msg->WriteBytes( sizeof(uint), &m_reliableTotalAmount ); 
 		cp->Send( *msg );
+
+		DevConsole::AddConsoleDialogue(Stringf("Sent message: %u/%u", currentTally, m_reliableTotalAmount), Rgba::WHITE);
 
 		m_reliableCurrentAmount--;
 	}

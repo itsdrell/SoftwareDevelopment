@@ -238,6 +238,23 @@ std::string AABB2::ToString() const
 	return result;
 }
 
+//-----------------------------------------------------------------------------------------------
+AABB2 AABB2::AlignWithin( Vector2& alignment, AABB2& container) const
+{
+	// Find the local point to align
+	Vector2 localPoint = Vector2::RangeMap(alignment, Vector2::ZERO, Vector2::ONE, mins, maxs);
+
+	// Find the container point to align at
+	Vector2 containerPoint = Vector2::RangeMap(alignment, Vector2::ZERO, Vector2::ONE, container.mins, container.maxs);
+
+	Vector2 diff = containerPoint - localPoint;
+
+	AABB2 thisAABB2 = *this;
+	thisAABB2.Translate( diff ); 
+	
+	return thisAABB2;
+}
+
 bool AABB2::operator==(const AABB2& compare) const
 {
 	if(mins == compare.mins)
@@ -281,3 +298,4 @@ AABB2 GetBounds(const AABB2& theBounds, const Vector2& minPercentage, const Vect
 
 	return AABB2(theBounds.mins + newMins, theBounds.mins + newMaxs);
 }
+

@@ -19,7 +19,12 @@ typedef uint eNetMessageOptions;
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum NetMessageChannelIndexName
+{
+	MESSAGE_CHANNEL_DEFAULT = 0,
+	CORE,
+	NUMBER_OF_NETMESSAGE_CHANNELS
+};
 
 //====================================================================================
 // Structs
@@ -37,22 +42,25 @@ struct NetMessageHeader
 		, m_reliableID(reliableID) {}
 	
 	uint8_t		m_messageCallbackDefinitionIndex = 0U;
-	uint16_t	m_reliableID = 255;
+	uint16_t	m_reliableID = 0U;
+	uint16_t	m_sequenceID = 0U;
 };
 
 // this is for server side!
 struct NetMessageDefinition
 {
-	NetMessageDefinition(int ID, const String& callbackName, NetMessage_cb callback, eNetMessageOptions option )
+	NetMessageDefinition(int ID, const String& callbackName, NetMessage_cb callback, eNetMessageOptions option, NetMessageChannelIndexName channelIndex = MESSAGE_CHANNEL_DEFAULT )
 		: m_callbackID(ID)
 		, m_callbackName(callbackName)
 		, m_callback(callback)
-		, m_option(option)	{}
+		, m_option(option)
+		, m_channelIndex(channelIndex)	{}
 
-	int					m_callbackID;
-	String				m_callbackName;
-	NetMessage_cb		m_callback;
-	eNetMessageOptions	m_option;
+	int										m_callbackID;
+	String									m_callbackName;
+	NetMessage_cb							m_callback;
+	eNetMessageOptions						m_option;
+	NetMessageChannelIndexName				m_channelIndex;
 };
 
 
@@ -70,21 +78,21 @@ class NetMessage : public BytePacker
 public:
 	NetMessage(); // for receiving
 	NetMessage( const char* name );  // for sending
+	NetMessage( const NetMessage& copyFrom );
 
 	bool RequiresConnection( const NetSession& theSession );
 
 	uint GetHeaderSize() const;
 	bool IsReliable() const;
+	bool IsReliableInOrder() const;
 	void ResetAge();
 
 
 public:
 	String								m_definitionName;
-	NetMessageDefinition*				m_definition; // this is set in NetConnection::Send();
+	NetMessageDefinition*				m_definition = nullptr; // this is set in NetConnection::Send();
 
-	//NetMessageDefinition*				m_theDefinition = nullptr;
 	NetMessageHeader					m_header;
-//    uint8_t							m_definitionIndex; 
 
 	uint16_t							m_reliable_id = 0;
 	uint								m_lastSentTimeMS = 0U;
