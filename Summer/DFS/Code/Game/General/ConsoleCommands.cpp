@@ -40,11 +40,13 @@ void RegisterGameCommands()
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 
 	// NetSession stuff
-	CommandRegister("add_connection", "", "", AddConnection);
 	CommandRegister("send_ping", "", "", SendPing);
 	CommandRegister("send_add", "", "", SendAdd);
 	CommandRegister("testUnreliable", "","a14", UnreliableTest);
 	CommandRegister("testReliable", "","a15", ReliableTest);
+	
+	CommandRegister("net_host", "","name port", NetHost);
+	CommandRegister("net_join", "","name address:port", NetJoin);
 }
 
 void EndTurn(Command & theCommand)
@@ -430,29 +432,29 @@ void DebugGrid(Command& theCommand)
 }
 
 //-----------------------------------------------------------------------------------------------
-void AddConnection(Command & theCommand)
-{
-	uint8_t idx = 0U;
-	NetAddress addr;
-
-	if(IsIndexValid(1, theCommand.m_commandArguements))
-		idx = (uint8_t) stoi(theCommand.m_commandArguements.at(1));
-	if(IsIndexValid(2, theCommand.m_commandArguements))
-		addr = NetAddress(theCommand.m_commandArguements.at(2).c_str());
-
-	// notice this can't fail - we do no validation that that
-	// address is reachable.   UDP can't tell; 
-	NetSession *session = Game::GetNetSession(); 
-	NetConnection *cp = session->AddConnection( idx, addr ); 
-	if (cp == nullptr) 
-	{
-		DevConsole::AddErrorMessage( "Failed to add connection." ); 
-	} 
-	else 
-	{
-		DevConsole::AddErrorMessage( Stringf("Connection added at index [%u]", idx )); 
-	}
-}
+// void AddConnection(Command & theCommand)
+// {
+// 	uint8_t idx = 0U;
+// 	NetAddress addr;
+// 
+// 	if(IsIndexValid(1, theCommand.m_commandArguements))
+// 		idx = (uint8_t) stoi(theCommand.m_commandArguements.at(1));
+// 	if(IsIndexValid(2, theCommand.m_commandArguements))
+// 		addr = NetAddress(theCommand.m_commandArguements.at(2).c_str());
+// 
+// 	// notice this can't fail - we do no validation that that
+// 	// address is reachable.   UDP can't tell; 
+// 	NetSession *session = Game::GetNetSession(); 
+// 	NetConnection *cp = session->AddConnection( idx, addr ); 
+// 	if (cp == nullptr) 
+// 	{
+// 		DevConsole::AddErrorMessage( "Failed to add connection." ); 
+// 	} 
+// 	else 
+// 	{
+// 		DevConsole::AddErrorMessage( Stringf("Connection added at index [%u]", idx )); 
+// 	}
+// }
 
 //-----------------------------------------------------------------------------------------------
 void SendPing(Command & theCommand)
@@ -543,5 +545,51 @@ void ReliableTest(Command& theCommand)
 	sp->m_reliableIdx = idx;
 	sp->m_reliableTotalAmount = count;
 	sp->m_reliableCurrentAmount = count;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetHost(Command & theCommand)
+{
+	NetSession* theSession = Game::GetNetSession();
+
+	if(theSession->IsRunning())
+	{
+		// error
+		DevConsole::AddErrorMessage("Could not Host because already running!");
+	}
+
+	String myName = "default host";
+	const char* port = GAME_PORT;
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		myName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		port = theCommand.m_commandArguements.at(2).c_str();
+
+	theSession->Host(myName.c_str(), port);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetJoin(Command & theCommand)
+{
+	NetSession* theSession = Game::GetNetSession();
+
+	if(theSession->IsRunning())
+	{
+		// error
+		DevConsole::AddErrorMessage("Could not Join because already running!");
+	}
+
+	String hostName = "idk man"; // host ???
+	String AddressAsString = "";
+	
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		hostName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		AddressAsString = theCommand.m_commandArguements.at(2);
+
+	NetAddress hostAddress = NetAddress(AddressAsString.c_str());
+
+	theSession->Join(hostName.c_str(), hostAddress);
 }
 

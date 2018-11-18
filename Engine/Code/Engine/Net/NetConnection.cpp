@@ -25,6 +25,24 @@ NetConnection::NetConnection(uint8_t idx, const NetAddress& theAddress, NetSessi
 }
 
 //-----------------------------------------------------------------------------------------------
+NetConnection::NetConnection(const NetConnectionInfo theInfo, NetSession* owningSession)
+{
+	m_info = theInfo;
+	m_owningSession = owningSession;
+	m_indexInSession = theInfo.m_sessionIndex;
+	m_address = theInfo.m_address;
+
+	m_lastSendTimeMS = GetTimeInMilliseconds();
+	m_lastRecievedTimeMS = GetTimeInMilliseconds();
+
+	m_heartbeatTimer = new Timer();
+	m_flushRateTimer = new Timer();
+	CompareFlushRatesAndSet(); 
+
+	CreateMessageChannels();
+}
+
+//-----------------------------------------------------------------------------------------------
 void NetConnection::CreateMessageChannels()
 {
 	for(uint i = 0; i < NUMBER_OF_NETMESSAGE_CHANNELS; i++)
@@ -56,6 +74,33 @@ NetConnection::~NetConnection()
 		delete m_messageChannels[i];
 		m_messageChannels[i] = nullptr;
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::IsMe() const
+{
+	if(m_owningSession->m_myConnection == this)
+		return true;
+	
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::IsHost() const
+{
+	if(m_owningSession->m_hostConnection == this)
+		return true;
+	
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::IsClient() const
+{
+	if(m_owningSession->m_hostConnection != this)
+		return true;
+	
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------

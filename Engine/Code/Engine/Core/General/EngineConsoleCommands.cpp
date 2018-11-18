@@ -36,8 +36,6 @@ void RegisterEngineCommands()
 	CommandRegister("net_set_session_send_rate", "", "Set Session send rate", SetSessionSendRate);
 	CommandRegister("net_set_connection_send_rate", "", "Set Connection send rate", SetConnectionSendRate);
 
-
-
 	// remote command
 	CommandRegister("rc", "", "idx message", RCSSendMessage);
 	CommandRegister("rca", "", "command", RCSSendMessageToAll);

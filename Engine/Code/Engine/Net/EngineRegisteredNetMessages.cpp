@@ -3,19 +3,29 @@
 #include "Engine\Net\NetConnection.hpp"
 #include "Engine\Net\NetAddress.hpp"
 #include "..\Core\Utils\StringUtils.hpp"
+#include "Engine\Net\NetSession.hpp"
 
 
 
 //===============================================================================================
 void RegisterCoreEngineNetMessages( NetSession& theSession )
 {
-	theSession.RegisterMessageDefinition(	NETMSG_HEARTBEAT,	"heartbeat",	OnHeartbeat);
-	theSession.RegisterMessageDefinition(	NETMSG_PING,		"ping",			OnPing,		NETMESSAGE_OPTION_CONNECTIONLESS ); 
-	theSession.RegisterMessageDefinition(	NETMSG_PONG,		"pong",			OnPong,		NETMESSAGE_OPTION_CONNECTIONLESS );
+	theSession.RegisterMessageDefinition(	NETMSG_HEARTBEAT,			"heartbeat",			OnHeartbeat);
+	theSession.RegisterMessageDefinition(	NETMSG_PING,				"ping",					OnPing,				NETMESSAGE_OPTION_CONNECTIONLESS ); 
+	theSession.RegisterMessageDefinition(	NETMSG_PONG,				"pong",					OnPong,				NETMESSAGE_OPTION_CONNECTIONLESS );
+
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_REQUEST,		"joinRequest",			OnJoinRequest,		NETMESSAGE_OPTION_CONNECTIONLESS );
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_DENY,			"joinDeny",				OnJoinDeny,			NETMESSAGE_OPTION_CONNECTIONLESS );
+	
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_ACCEPT,			"joinAccept",			OnJoinAccept,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_NEW_CONNECTION,		"newConnection",		OnNewConnection,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnHeartbeat(NetMessage& msg, const NetSender& from)
+bool OnHeartbeat(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
 {
 	UNUSED(msg);
 	
@@ -24,7 +34,7 @@ bool OnHeartbeat(NetMessage& msg, const NetSender& from)
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnPing( NetMessage & msg, const NetSender & from)
+bool OnPing( NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
 {
 	char str[20];  
 	msg.ReadBytes(str, msg.GetWrittenByteCount());
@@ -45,7 +55,7 @@ bool OnPing( NetMessage & msg, const NetSender & from)
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnPong( NetMessage & msg, const NetSender & from)
+bool OnPong( NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
 {
 
 	//char str[20]; 
@@ -58,4 +68,55 @@ bool OnPong( NetMessage & msg, const NetSender & from)
 		from.m_connection->m_address.ToString().c_str())); 
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnJoinRequest(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{	
+	NetConnectionInfo newConnection;
+	newConnection.m_address = from.m_connection->m_address;
+
+	// read the char name from packet
+	char* name = nullptr;
+	msg.ReadString(name,16U);
+	strcpy_s(newConnection.m_id, name);
+	
+	return sessionToUse->ProcessJoinRequest(newConnection);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnJoinDeny(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnJoinAccept(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnNewConnection(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{
+	
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnJoinFinished(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnUpdateConnState(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+{
+	
+	uint8_t connectionStateToChangeTo;
+	msg.ReadBytes(&connectionStateToChangeTo, 1U);
+
+	sessionToUse->UpdateConnectionState(connectionStateToChangeTo, *from.m_connection);
+	
+	return false;
 }

@@ -5,7 +5,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class NetSession;
 
 //====================================================================================
 // Type Defs + Defines
@@ -35,9 +35,17 @@ void RegisterCoreEngineNetMessages( NetSession& theSession );
 
 //-----------------------------------------------------------------------------------------------
 // Messages
-bool OnHeartbeat( NetMessage& msg, const NetSender& from);
-bool OnPing( NetMessage& msg, const NetSender& from);
-bool OnPong( NetMessage& msg, const NetSender& from);
+bool OnHeartbeat( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnPing( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnPong( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+
+bool OnJoinRequest( NetMessage& msg, const NetSender& from, NetSession* sessionToUse  );
+bool OnJoinDeny( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnJoinAccept( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnNewConnection( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnJoinFinished( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+bool OnUpdateConnState( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
+
 
 //====================================================================================
 // Externs

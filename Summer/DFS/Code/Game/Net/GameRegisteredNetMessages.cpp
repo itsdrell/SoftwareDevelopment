@@ -1,6 +1,7 @@
 #include "GameRegisteredNetMessages.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
+#include "Engine\Net\NetSession.hpp"
 
 
 //===============================================================================================
@@ -18,7 +19,7 @@ void RegisterGameNetMessages( NetSession& theSession )
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnUnreliableTest(NetMessage & msg, const NetSender & from)
+bool OnUnreliableTest(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
 {
 	UNUSED(msg);
 	UNUSED(from);
@@ -29,7 +30,7 @@ bool OnUnreliableTest(NetMessage & msg, const NetSender & from)
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnReliableTest(NetMessage& msg, const NetSender& from)
+bool OnReliableTest(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
 {
 	UNUSED(msg);
 	UNUSED(from);
@@ -39,7 +40,7 @@ bool OnReliableTest(NetMessage& msg, const NetSender& from)
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnSequenceTest(NetMessage& msg, const NetSender& from)
+bool OnSequenceTest(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
 {
 	uint val0 = 0U;
 	uint val1 = 0U; 

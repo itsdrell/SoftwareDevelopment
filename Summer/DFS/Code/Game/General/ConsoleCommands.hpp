@@ -47,12 +47,14 @@ void KillAllUnitsOfTeam(Command& theCommand);
 void CreateBattleScene( Command& theCommand );
 
 // net session stuff
-void AddConnection( Command& theCommand );
+//void AddConnection( Command& theCommand );
 void SendPing( Command& theCommand );
 void SendAdd( Command& theCommand );
 void UnreliableTest( Command& theCommand );
 void ReliableTest( Command& theCommand );
 
+void NetHost( Command& theCommand );
+void NetJoin( Command& theCommand );
 
 //====================================================================================
 // Externs

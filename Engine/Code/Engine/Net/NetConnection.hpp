@@ -26,10 +26,17 @@ constexpr uint16_t RELIABLE_WINDOW = 32;
 
 #define MAX_MESSAGE_CHANNELS (8)
 
+#define MAX_CONNECTION_ID_LENGTH (16)
+
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum eNetConnectionState : uint8_t
+{
+	NET_CONNECTION_STATUS_DISCONNECTED, // HAVE THIS BELOW
+	NET_CONNECTION_STATUS_CONNECTED,
+	NET_CONNECTION_STATUS_READY
+};
 
 //====================================================================================
 // Structs
@@ -46,6 +53,14 @@ struct PacketTracker
 	uint16_t		m_sentReliables[MAX_RELIBALES_PER_PACKET];
 };
 
+//-----------------------------------------------------------------------------------------------
+struct NetConnectionInfo
+{
+	NetAddress		m_address;
+	char			m_id[MAX_CONNECTION_ID_LENGTH]; // normally a username or GUI (like steam)
+	uint8_t			m_sessionIndex = INVALID_CONNECTION_INDEX;
+};
+
 //====================================================================================
 // Classes
 //====================================================================================
@@ -59,10 +74,20 @@ public:
 
 	NetConnection() {}
 	NetConnection(uint8_t idx, const NetAddress& theAddress, NetSession* owningSession);
+	NetConnection( const NetConnectionInfo theInfo, NetSession* owningSession );
 	
 	void CreateMessageChannels();
 
 	~NetConnection();
+
+	bool IsMe() const; 
+	bool IsHost() const; 
+	bool IsClient() const; 
+
+	// connected is can send traffic - ready means fully in the session
+	inline bool IsConnected() const          { return m_state >= NET_CONNECTION_STATUS_CONNECTED; }
+	inline bool IsDisconnected() const       { return m_state == NET_CONNECTION_STATUS_DISCONNECTED; }
+	inline bool IsReady() const              { return m_state == NET_CONNECTION_STATUS_READY; }
 
 	// If we have unreliables, send as many packets as we need
 	// to send all of them (conditions for sending a packet may change later, 
@@ -163,6 +188,9 @@ private:
 	// our ring buffer
 	PacketTracker				m_trackers[TRACKED_PACKET_WINDOW_HISTORY];
 
+
+	NetConnectionInfo			m_info; 
+	eNetConnectionState			m_state; 
 };
 
 

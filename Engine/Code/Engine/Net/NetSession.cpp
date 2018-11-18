@@ -32,6 +32,32 @@ TimeStampedPacket::TimeStampedPacket(int delay, NetPacket* thePacket, const NetA
 }
 
 //===============================================================================================
+String NetSessionStateToString(eSessionState theState)
+{
+	String result = "";
+	switch (theState)
+	{
+	case SESSION_DISCONNECTED:
+		result = "Disconnected";
+		break;
+	case SESSION_BOUND:
+		result = "Bound";
+		break;
+	case SESSION_CONNECTING:
+		result = "Connecting";
+		break;
+	case SESSION_JOINING:
+		result = "Joining";
+		break;
+	case SESSION_READY:
+		result = "Ready";
+		break;
+	}
+
+	return result;
+}
+
+//===============================================================================================
 NetSession::NetSession()
 {
 	if(s_mainNetSession == nullptr)
@@ -46,10 +72,10 @@ NetSession::~NetSession()
 	// delete all connections
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		if(m_connections[i] != nullptr)
+		if(m_boundConnections[i] != nullptr)
 		{
-			delete m_connections[i];
-			m_connections[i] = nullptr;
+			delete m_boundConnections[i];
+			m_boundConnections[i] = nullptr;
 		}
 	}
 
@@ -60,6 +86,143 @@ NetSession::~NetSession()
 		m_messageCallbacks.at(j) = nullptr;
 	}
 	m_messageCallbacks.clear();
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::Host(char const * my_id, const char * port, uint16_t port_range)
+{
+	// can only host in this state so warning and early out
+	if(m_state != SESSION_DISCONNECTED)
+	{
+		DevConsole::AddErrorMessage("Could not host because I am not disconnected");
+		return;
+	}
+
+	// Bind so we can host 
+	bool result = Bind(port, port_range);
+
+	// check for errors
+	if(result == false)
+	{
+		SetError(SESSION_ERROR_INTERNAL, "NetSession had an error binding the NetAddress");
+		return;
+	}
+
+	// create the host
+	NetConnectionInfo hostInfo;
+	strcpy_s(hostInfo.m_id, my_id);
+	hostInfo.m_sessionIndex = 0;
+	hostInfo.m_address = m_channel.m_socket->GetAddress();
+
+	// assign to the convenience pointers
+	m_hostConnection = CreateConnection(hostInfo);
+	m_myConnection = m_hostConnection;
+
+	// mark both as ready
+	m_myConnection->m_state = NET_CONNECTION_STATUS_READY;
+	m_state = SESSION_READY;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::Join(char const * my_id, const NetAddress & hostAddress)
+{
+
+}
+
+//-----------------------------------------------------------------------------------------------
+NetConnection* NetSession::CreateConnection(const NetConnectionInfo& info)
+{
+	NetConnection* newConnection = new NetConnection(info, this);
+
+	// always put in here
+	m_AllConnections.push_back(newConnection);
+
+	// if we have the slot open, bind it
+	if(IsConnectionIndexValid(info.m_sessionIndex))
+	{
+		newConnection->m_indexInSession = BindConnection(info.m_sessionIndex, newConnection);
+	}
+
+	return newConnection;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::DestroyConnection(NetConnection *cp)
+{
+	if(m_hostConnection == cp)
+	{
+		m_hostConnection = nullptr;
+		// I don't think we delete?
+	}
+
+	if(m_myConnection == cp)
+	{
+		m_myConnection = nullptr;
+		// I don't think we delete here?
+	}
+
+	// look up table
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current == cp)
+		{
+			m_boundConnections[i] = nullptr;
+		}
+	}
+
+	// all connections
+	for(uint i = 0; i < m_AllConnections.size(); i++)
+	{
+		NetConnection* current = m_AllConnections.at(i);
+
+		if(current == cp)
+		{
+			m_AllConnections.at(i) = nullptr;
+
+			RemoveFast(i, m_AllConnections);
+		}
+	}
+
+	// free
+	delete cp;
+	cp = nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+uint8_t NetSession::BindConnection(uint8_t idx, NetConnection *cp)
+{
+	// if it's invalid, just find one and return it
+	if(idx == INVALID_CONNECTION_INDEX)
+	{
+		for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+		{
+			if(m_boundConnections[i] == nullptr)
+				return (uint8_t) i;
+		}
+
+		// error check?
+		return idx;
+	}
+	else
+	{
+		m_boundConnections[idx] = cp;
+		return idx;
+	}
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetSession::IsConnectionIndexValid(const uint8_t m_sessionIndex)
+{
+	if(m_boundConnections[m_sessionIndex] != nullptr)
+		return false;
+
+	if(m_sessionIndex < 0 || m_sessionIndex > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS)
+		return false;
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -164,7 +327,7 @@ void NetSession::SortDefinitions()
 }
 
 //-----------------------------------------------------------------------------------------------
-void NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
+bool NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 {
 	// the PacketChannel has a UDPSocket and that is in charge of
 	// handling the ranges and created the NetAddress, so just 
@@ -176,6 +339,7 @@ void NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 	if(idx == -1)
 	{
 		DevConsole::AddErrorMessage("NetSession had an error binding the NetAddress");
+		return false;
 	}
 	else
 	{
@@ -185,51 +349,66 @@ void NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 
 	// sort the definitions alphabetically
 	SortDefinitions();
-
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
-NetConnection* NetSession::AddConnection(uint idx, NetAddress const & addr)
+void NetSession::SendDirectMessageTo(NetMessage &messageToSend, const NetAddress& address)
 {
-	NetConnection* newConnection = new NetConnection((uint8_t) idx, addr, this);
-	
-	// make sure we use a valid idx
-	if(idx > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS || idx < 0)
-	{
-		ERROR_RECOVERABLE("Invalid Index when trying to add a new index: " + std::to_string(idx));
-	}
+	// Update the index of this messageToSend
+	NetMessageDefinition* msgDef = GetMessageDefinitionByName( messageToSend.m_definitionName );
+	messageToSend.m_definition = msgDef;
 
-	// see if it is ok to add to index
-	if(m_connections[idx] == nullptr)
-	{
-		m_connections[idx] = newConnection;
+	// Send the Packet
+	NetPacket packetToSend;
+	packetToSend.WriteMessage( messageToSend );
 
-		// gonna set the heart beat timer when we get it
-		newConnection->SetHeartbeatTimer(m_heartbeatRate);
-
-		// see if we just added our own index, if so, store of the index for easy access!
-		if(addr == m_channel.m_socket->m_address)
-			m_connectionsIndexInSession = idx;
-
-		return newConnection;
-	}
-	else
-	{
-		ERROR_RECOVERABLE("There is already a connection at idx: " + std::to_string(idx));
-	}
-	
-	return nullptr;
+	m_channel.m_socket->SendTo( address, packetToSend.GetBuffer(), packetToSend.GetWrittenByteCount() );
 }
+
+//-----------------------------------------------------------------------------------------------
+// Deprecated
+// NetConnection* NetSession::AddConnection(uint idx, NetAddress const & addr)
+// {
+// 	NetConnection* newConnection = new NetConnection((uint8_t) idx, addr, this);
+// 	
+// 	// make sure we use a valid idx
+// 	if(idx > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS || idx < 0)
+// 	{
+// 		ERROR_RECOVERABLE("Invalid Index when trying to add a new index: " + std::to_string(idx));
+// 	}
+// 
+// 	// see if it is ok to add to index
+// 	if(m_connections[idx] == nullptr)
+// 	{
+// 		m_connections[idx] = newConnection;
+// 
+// 		// gonna set the heart beat timer when we get it
+// 		newConnection->SetHeartbeatTimer(m_heartbeatRate);
+// 
+// 		// see if we just added our own index, if so, store of the index for easy access!
+// 		if(addr == m_channel.m_socket->m_address)
+// 			m_connectionsIndexInSession = idx;
+// 
+// 		return newConnection;
+// 	}
+// 	else
+// 	{
+// 		ERROR_RECOVERABLE("There is already a connection at idx: " + std::to_string(idx));
+// 	}
+// 	
+// 	return nullptr;
+// }
 
 //-----------------------------------------------------------------------------------------------
 void NetSession::CloseAllConnections()
 {
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		if(m_connections[i] != nullptr)
+		if(m_boundConnections[i] != nullptr)
 		{
-			delete m_connections[i];
-			m_connections[i] = nullptr;
+			delete m_boundConnections[i];
+			m_boundConnections[i] = nullptr;
 		}
 	}
 }
@@ -357,7 +536,7 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 					{
 						if(!DoesContain(currentMessage.m_header.m_reliableID, theSender->m_connection->m_receivedReliableIDs))
 						{
-							theDef->m_callback(currentMessage, *theSender);
+							theDef->m_callback(currentMessage, *theSender, this);
 
 							// we processed the message so add it to our list!
 							theSender->m_connection->m_receivedReliableIDs.push_back(currentMessage.m_header.m_reliableID);
@@ -379,7 +558,7 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 					}
 					else // if not, just process
 					{
-						theDef->m_callback(currentMessage, *theSender);
+						theDef->m_callback(currentMessage, *theSender, this);
 					}
 					
 				}
@@ -431,8 +610,8 @@ void NetSession::ProcessOutgoing()
 	// foreach connection, process outgoing; 
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		if(m_connections[i] != nullptr)
-			m_connections[i]->ProcessOutgoing();
+		if(m_boundConnections[i] != nullptr)
+			m_boundConnections[i]->ProcessOutgoing();
 	}
 }
 
@@ -482,7 +661,8 @@ void NetSession::Render() const
 
 	// Draw the title + state
 	std::string title = "Netsession Info";
-	mb.Add2DRandomColoredText(pivot, title, 1.77f, 1.77f);
+	title += "  (State: " + NetSessionStateToString(m_state) + ")";
+	mb.Add2DRandomColoredText(pivot, title, 2.f);
 
 	// Draw the info
 	String theInfo = Stringf("Rate: %d hz || sim lag: %d ms - %d ms || sim_loss: %d",
@@ -506,14 +686,17 @@ void NetSession::Render() const
 	Vector2 currentPos = Vector2(pivot.x + 1.f, pivot.y - 12.f);
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		NetConnection* currentConnection = m_connections[i];
+		NetConnection* currentConnection = m_boundConnections[i];
 		
 		if(currentConnection != nullptr)
 		{
-			String isLocal = "--";
+			String isLocal = "";
 
 			if(currentConnection->m_address == m_channel.m_socket->m_address)
-				isLocal = "L";
+				isLocal += "L";
+
+			if(currentConnection == m_hostConnection)
+				isLocal += "H";
 			
 			float lastReceivedTime = (float)((GetTimeInMilliseconds() - currentConnection->GetLastReceivedTimeInMS())) / 1000.f;
 			float lastSentTime = (float)((GetTimeInMilliseconds() - currentConnection->m_lastSendTimeMS)) / 1000.f;
@@ -549,7 +732,7 @@ void NetSession::Render() const
 //-----------------------------------------------------------------------------------------------
 NetConnection* NetSession::GetMyConnection() const
 {
-	return m_connections[m_connectionsIndexInSession];
+	return m_boundConnections[m_connectionsIndexInSession];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -568,8 +751,8 @@ NetConnection* NetSession::GetConnection(int idx) const
 	if(idx < 0 || idx > NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS)
 		return nullptr;
 	
-	if(m_connections[idx] != nullptr)
-		return m_connections[idx];
+	if(m_boundConnections[idx] != nullptr)
+		return m_boundConnections[idx];
 
 	return nullptr;
 }
@@ -579,7 +762,7 @@ NetConnection* NetSession::GetConnectionFromAddress(const NetAddress& sender) co
 {
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		NetConnection* current = m_connections[i];
+		NetConnection* current = m_boundConnections[i];
 
 		if(current != nullptr)
 		{
@@ -607,7 +790,7 @@ void NetSession::SetHeartbeat(float hz)
 	// update all connections
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		NetConnection* current = m_connections[i];
+		NetConnection* current = m_boundConnections[i];
 
 		if(current != nullptr)
 		{
@@ -624,7 +807,7 @@ void NetSession::SetSessionFlushRate(float hz)
 	// update all connections
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
-		NetConnection* current = m_connections[i];
+		NetConnection* current = m_boundConnections[i];
 
 		if(current != nullptr)
 		{
@@ -638,9 +821,9 @@ void NetSession::SetConnectionFlushRate(uint idx, float hz)
 {
 	if(idx >= 0 && idx < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS)
 	{
-		if(m_connections[idx] != nullptr)
+		if(m_boundConnections[idx] != nullptr)
 		{
-			m_connections[idx]->SetFlushRate(hz);
+			m_boundConnections[idx]->SetFlushRate(hz);
 		}
 	}
 }
@@ -720,4 +903,121 @@ NetSender::~NetSender()
 	// shouldn't need to delete the connection because someone else (session)
 	// is in charge of that
 	m_connection = nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetSession::ProcessJoinRequest(const NetConnectionInfo& connectionWantingToJoin)
+{
+	if(!CanWeAcceptTheConnection(connectionWantingToJoin))
+	{
+		// send deny
+		SendJoinDeny(connectionWantingToJoin);
+		return false;
+	}
+	else
+	{
+		// Accept and
+		// Create and add connection (Create also binds)
+		NetConnection* newConnection = CreateConnection(connectionWantingToJoin);
+
+		// if cant create a connection send a fail
+		if(newConnection->m_indexInSession == INVALID_CONNECTION_INDEX)
+		{
+			SendJoinDeny(connectionWantingToJoin);
+		}
+
+		// let em know its gucci
+		SendJoinAccept(*newConnection);
+
+		return true;
+	}	
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetSession::CanWeAcceptTheConnection(const NetConnectionInfo& connectionWantingToJoin)
+{
+	// not host
+	if(m_myConnection->IsHost() == false)
+		return false;
+
+	// ignore if already exists and check if we have an empty slot
+	bool hasRoom = false;
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current->m_address == connectionWantingToJoin.m_address)
+			return false;
+
+		if(current == nullptr)
+			hasRoom = true;
+	}
+
+	// if we didn;t have room for another, return false
+	if(hasRoom == false)
+		return false;
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SendJoinDeny(const NetConnectionInfo& connectionWantingToJoin)
+{
+	NetMessage denyMessage = NetMessage("joinDeny");
+
+	DevConsole::AddConsoleDialogue("Just sent a deny to: " + connectionWantingToJoin.m_address.ToString());
+
+	SendDirectMessageTo(denyMessage, connectionWantingToJoin.m_address);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SendJoinAccept( NetConnection& connectionWantingToJoin )
+{
+	// send a join accept packet
+	NetMessage joinAcceptMessage;
+	joinAcceptMessage.WriteBytes(1U, &connectionWantingToJoin.m_indexInSession);
+	connectionWantingToJoin.Send(joinAcceptMessage);
+
+	// send a join finished message
+	NetMessage joinFinishMessage;
+	connectionWantingToJoin.Send(joinFinishMessage);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::UpdateConnectionState(uint8_t stateToChangeTo, const NetConnection& theConnection)
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current->m_address == theConnection.m_address)
+		{
+			current->m_state = (eNetConnectionState) stateToChangeTo;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SetError(eSessionError error, char const * str)
+{
+	m_errorCode = error;
+	m_errorString = str;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::ClearError()
+{
+	m_errorCode = SESSION_OK;
+	m_errorString = "No error :)";
+}
+
+//-----------------------------------------------------------------------------------------------
+eSessionError NetSession::GetLastError(std::string * out_str)
+{
+	eSessionError currentError = m_errorCode;
+	*out_str = m_errorString;
+	
+	ClearError();
+
+	return currentError;
 }

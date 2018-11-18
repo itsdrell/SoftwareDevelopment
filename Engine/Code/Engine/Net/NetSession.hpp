@@ -5,6 +5,7 @@
 #include "NetMessage.hpp"
 #include "..\Math\Ranges\IntRange.hpp"
 #include "..\Core\Tools\Stopwatch.hpp"
+#include "Engine\Net\NetConnection.hpp"
 
 
 //====================================================================================
@@ -19,7 +20,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class NetConnection;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -32,11 +33,42 @@ class NetConnection;
 //====================================================================================
 enum eNetCoreMessage : uint8_t
 {
-	NETMSG_PING = 0,    // unreliable, connectionless
-	NETMSG_PONG, 		// unreliable, connectionless
-	NETMSG_HEARTBEAT,	// unreliable
+	NETMSG_PING = 0,				// unreliable, connectionless
+	NETMSG_PONG, 					// unreliable, connectionless
+	NETMSG_HEARTBEAT,				// unreliable
+	NETMSG_JOIN_REQUEST,			// unreliable
+	NETMSG_JOIN_DENY,				// unreliable
+	NETMSG_JOIN_ACCEPT,				// reliable in order
+	NETMSG_NEW_CONNECTION,			// reliable in order
+	NETMSG_JOIN_FINISHED,			// reliable in order
+	NETMSG_UPDATE_CONN_STATE,		// reliable in order
+
 
 	NETMSG_CORE_COUNT,
+};
+
+//-----------------------------------------------------------------------------------------------
+enum eSessionState
+{
+	SESSION_DISCONNECTED = 0,  // Session can be modified     
+	SESSION_BOUND,             // Bound to a socket - can send and receive connectionless messages.  No connections exist
+	SESSION_CONNECTING,        // Attempting to connecting - waiting for response from the host
+	SESSION_JOINING,           // Has established a connection, waiting final setup information/join completion
+	SESSION_READY,             // We are fully in the session
+};
+String NetSessionStateToString( eSessionState theState );
+
+//-----------------------------------------------------------------------------------------------
+enum eSessionError
+{
+	SESSION_OK,
+	SESSION_ERROR_USER,                 // user disconnected
+	SESSION_ERROR_INTERNAL,             // socket error; 
+
+	SESSION_ERROR_JOIN_DENIED,          // generic deny error (release)
+	SESSION_ERROR_JOIN_DENIED_NOT_HOST, // debug - tried to join someone who isn't hosting
+	SESSION_ERROR_JOIN_DENIED_CLOSED,   // debug - not in a listen state
+	SESSION_ERROR_JOIN_DENIED_FULL,     // debug - session was full 
 };
 
 //-----------------------------------------------------------------------------------------------
@@ -95,8 +127,31 @@ public:
 	~NetSession();
 	
 public:
-
 	static NetSession* GetInstance() { return s_mainNetSession; }
+
+	void Host( char const *my_id, const char* port, uint16_t port_range = 16U ); 
+	void Join( char const *my_id, const NetAddress& hostAddress );
+	void Disconnect(); 
+	bool IsRunning() { return m_state != SESSION_DISCONNECTED; };
+
+	bool ProcessJoinRequest( const NetConnectionInfo& connectionWantingToJoin );
+	bool CanWeAcceptTheConnection( const NetConnectionInfo& connectionWantingToJoin );
+	void SendJoinDeny( const NetConnectionInfo& connectionWantingToJoin );
+	void SendJoinAccept( NetConnection& connectionWantingToJoin );
+	void UpdateConnectionState( uint8_t stateToChangeTo, const NetConnection& theConnection);
+
+	void SetError( eSessionError error, char const *str = nullptr ); 
+	void ClearError(); 
+	eSessionError GetLastError( std::string *out_str = nullptr ); // get last error has an implicit clear in it
+
+	void Update(); 
+
+	// should be private, but for ease we'll keep public
+	// connection management
+	NetConnection* CreateConnection( const NetConnectionInfo& info ); 
+	void DestroyConnection( NetConnection *cp );
+	uint8_t BindConnection( uint8_t idx, NetConnection *cp ); 
+	bool IsConnectionIndexValid(const uint8_t m_sessionIndex);
 
 	// message definitions
 	bool RegisterMessageDefinition( uint8_t id, const String& name, NetMessage_cb cb, eNetMessageOptions option = 0 );
@@ -108,12 +163,9 @@ public:
 
 	void SortDefinitions();
 
-	// Starting a session (finalizes definitions - can't add more once
-	// the session is running)
-	void Bind( const char* port, uint range_to_try = 0U );
-
 	// Connection management
-	NetConnection* AddConnection( uint idx, NetAddress const &addr );  
+	// deprecated
+	//NetConnection* AddConnection( uint idx, NetAddress const &addr );  
 	void CloseAllConnections(); 
 
 	// updates
@@ -141,6 +193,14 @@ public:
 
 	float GetFlushRate() { return m_sessionFlushRate; }
 
+	// Starting a session (finalizes definitions - can't add more once
+	// the session is running)
+private:
+	bool Bind( const char* port, uint range_to_try = 0U );
+
+	void SendDirectMessageTo( NetMessage &messageToSend, const NetAddress& address );
+
+public:
 	//===============================================================================================
 	// trash pls
 	void SendUnreliableTest();
@@ -160,8 +220,21 @@ public:
 	//===============================================================================================
 
 public:
-	NetConnection*								m_connections[NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS]; // all connections I know about; 
 	PacketChannel								m_channel; // what we send/receive packets on;
+
+	// state management
+	eSessionState								m_state = SESSION_DISCONNECTED; 
+
+	// error handling
+	eSessionError								m_errorCode; 
+	String										m_errorString; 
+
+	// Changes to how we store connections;
+	std::vector<NetConnection*>					m_AllConnections;
+	NetConnection*								m_boundConnections[NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS]; // all connections I know about; 
+
+	NetConnection*								m_myConnection   = nullptr;     // convenience pointer
+	NetConnection*								m_hostConnection = nullptr;   // convenience pointer; 
 
 private:
 	// Sim Loss and latency

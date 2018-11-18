@@ -12,7 +12,7 @@ struct NetSender;
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-typedef bool (*NetMessage_cb) ( NetMessage& theMessage, const NetSender& theSender );
+typedef bool (*NetMessage_cb) ( NetMessage& theMessage, const NetSender& theSender, NetSession* sessionToUse );
 
 
 typedef uint eNetMessageOptions; 
