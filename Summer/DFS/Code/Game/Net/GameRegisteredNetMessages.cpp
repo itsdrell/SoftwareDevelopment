@@ -19,7 +19,7 @@ void RegisterGameNetMessages( NetSession& theSession )
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnUnreliableTest(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnUnreliableTest(NetMessage & msg, const NetSender & from )
 {
 	UNUSED(msg);
 	UNUSED(from);
@@ -30,7 +30,7 @@ bool OnUnreliableTest(NetMessage & msg, const NetSender & from, NetSession* sess
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnReliableTest(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
+bool OnReliableTest(NetMessage& msg, const NetSender& from )
 {
 	UNUSED(msg);
 	UNUSED(from);
@@ -40,7 +40,7 @@ bool OnReliableTest(NetMessage& msg, const NetSender& from, NetSession* sessionT
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnSequenceTest(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
+bool OnSequenceTest(NetMessage& msg, const NetSender& from )
 {
 	uint val0 = 0U;
 	uint val1 = 0U; 

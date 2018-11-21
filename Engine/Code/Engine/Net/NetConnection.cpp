@@ -22,6 +22,8 @@ NetConnection::NetConnection(uint8_t idx, const NetAddress& theAddress, NetSessi
 	CompareFlushRatesAndSet(); 
 
 	CreateMessageChannels();
+
+	SetHeartbeatTimer(HEARTBEAT_RATE);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -40,6 +42,9 @@ NetConnection::NetConnection(const NetConnectionInfo theInfo, NetSession* owning
 	CompareFlushRatesAndSet(); 
 
 	CreateMessageChannels();
+
+	SetHeartbeatTimer(HEARTBEAT_RATE);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -224,6 +229,18 @@ bool NetConnection::DoWeHaveAnyMessagesToSend()
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::HasStateChanged()
+{
+	if(m_previousState != m_state)
+	{
+		m_previousState = m_state;
+		return true;
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------

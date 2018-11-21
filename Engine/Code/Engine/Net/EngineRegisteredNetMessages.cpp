@@ -25,7 +25,7 @@ void RegisterCoreEngineNetMessages( NetSession& theSession )
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnHeartbeat(NetMessage& msg, const NetSender& from, NetSession* sessionToUse )
+bool OnHeartbeat(NetMessage& msg, const NetSender& from )
 {
 	UNUSED(msg);
 	
@@ -34,7 +34,7 @@ bool OnHeartbeat(NetMessage& msg, const NetSender& from, NetSession* sessionToUs
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnPing( NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnPing( NetMessage & msg, const NetSender & from )
 {
 	char str[20];  
 	msg.ReadBytes(str, msg.GetWrittenByteCount());
@@ -55,7 +55,7 @@ bool OnPing( NetMessage & msg, const NetSender & from, NetSession* sessionToUse 
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnPong( NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnPong( NetMessage & msg, const NetSender & from )
 {
 
 	//char str[20]; 
@@ -71,52 +71,62 @@ bool OnPong( NetMessage & msg, const NetSender & from, NetSession* sessionToUse 
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnJoinRequest(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnJoinRequest(NetMessage & msg, const NetSender & from )
 {	
 	NetConnectionInfo newConnection;
 	newConnection.m_address = from.m_connection->m_address;
 
 	// read the char name from packet
 	char* name = nullptr;
-	msg.ReadString(name,16U);
-	strcpy_s(newConnection.m_id, name);
+//	msg.ReadString(name,16U);
+	strcpy_s(newConnection.m_id, "idk");
 	
-	return sessionToUse->ProcessJoinRequest(newConnection);
+	return from.GetSession()->ProcessJoinRequest(newConnection);
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnJoinDeny(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
-{
-	return false;
+bool OnJoinDeny(NetMessage & msg, const NetSender & from )
+{	
+	UNUSED(msg);
+	
+	from.GetSession()->m_state = SESSION_DISCONNECTED;
+	from.m_connection->m_state = NET_CONNECTION_STATUS_DISCONNECTED;
+	
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnJoinAccept(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnJoinAccept(NetMessage & msg, const NetSender & from )
 {
-	return false;
-}
+	uint idx;
+	msg.ReadBytes(&idx, 1U);
 
-//-----------------------------------------------------------------------------------------------
-bool OnNewConnection(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
-{
+	NetSession* theSession = from.GetSession();
+	theSession->BindConnection(idx, theSession->m_myConnection);
 	
 	return false;
 }
 
 //-----------------------------------------------------------------------------------------------
-bool OnJoinFinished(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
-{
-	return false;
-}
-
-//-----------------------------------------------------------------------------------------------
-bool OnUpdateConnState(NetMessage & msg, const NetSender & from, NetSession* sessionToUse )
+bool OnNewConnection(NetMessage & msg, const NetSender & from )
 {
 	
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnJoinFinished(NetMessage & msg, const NetSender & from )
+{
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnUpdateConnState(NetMessage & msg, const NetSender & from )
+{
 	uint8_t connectionStateToChangeTo;
 	msg.ReadBytes(&connectionStateToChangeTo, 1U);
 
-	sessionToUse->UpdateConnectionState(connectionStateToChangeTo, *from.m_connection);
+	from.GetSession()->UpdateConnectionState(connectionStateToChangeTo, *from.m_connection);
 	
 	return false;
 }

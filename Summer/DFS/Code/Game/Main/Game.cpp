@@ -118,7 +118,7 @@ void Game::RegisterNetCallbacks()
 void Game::Update()
 {
 	UDPTest::GetInstance()->Update();
-	m_theNetSession->ProcessIncoming();
+	m_theNetSession->Update();
 
 	switch (m_currentState)
 	{

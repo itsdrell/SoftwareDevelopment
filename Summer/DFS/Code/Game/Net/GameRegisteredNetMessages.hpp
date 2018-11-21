@@ -34,9 +34,9 @@ void RegisterGameNetMessages( NetSession& theSession );
 
 //-----------------------------------------------------------------------------------------------
 // Messages
-bool OnUnreliableTest( NetMessage& msg, const NetSender& from, NetSession* sessionToUse );
-bool OnReliableTest( NetMessage& msg, const NetSender& from, NetSession* sessionToUse  );
-bool OnSequenceTest( NetMessage& msg, const NetSender& from, NetSession* sessionToUse  );
+bool OnUnreliableTest( NetMessage& msg, const NetSender& from );
+bool OnReliableTest( NetMessage& msg, const NetSender& from );
+bool OnSequenceTest( NetMessage& msg, const NetSender& from  );
 
 //====================================================================================
 // Externs

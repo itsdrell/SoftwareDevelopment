@@ -20,13 +20,16 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class NetSession;
 
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
 #define NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS 16
 #define GAME_PORT ("10084")
+
+#define SESSION_SEND_JOIN_RATE (.1f)
+#define SESSION_TIMEOUT_RATE (10.f)
 
 //====================================================================================
 // ENUMS
@@ -99,6 +102,8 @@ struct NetSender
 
 	NetSender(NetConnection* theConnection)
 		: m_connection(theConnection) {}
+
+	NetSession* GetSession() const { return m_connection->m_owningSession; }
 	
 	NetConnection*	m_connection = nullptr;
 };
@@ -145,11 +150,16 @@ public:
 	eSessionError GetLastError( std::string *out_str = nullptr ); // get last error has an implicit clear in it
 
 	void Update(); 
+	void SessionConnectingUpdate();
+	void SessionJoiningUpdate();
+	void SessionReadyUpdate();
+	void CheckForDisconnects();
 
 	// should be private, but for ease we'll keep public
 	// connection management
 	NetConnection* CreateConnection( const NetConnectionInfo& info ); 
 	void DestroyConnection( NetConnection *cp );
+	void DestroyAllConnections();
 	uint8_t BindConnection( uint8_t idx, NetConnection *cp ); 
 	bool IsConnectionIndexValid(const uint8_t m_sessionIndex);
 
@@ -220,7 +230,7 @@ public:
 	//===============================================================================================
 
 public:
-	PacketChannel								m_channel; // what we send/receive packets on;
+	PacketChannel*								m_channel = nullptr; // what we send/receive packets on;
 
 	// state management
 	eSessionState								m_state = SESSION_DISCONNECTED; 
@@ -249,6 +259,10 @@ private:
 
 	// My connections index in the session
 	uint										m_connectionsIndexInSession = 0U;
+
+	// Timers for joining and Timing out
+	Timer*										m_sendJoinRequestTimer = nullptr;
+	Timer*										m_timeOutTimer = nullptr;
 
 	// time stamped packets
 	std::vector<TimeStampedPacket>				m_timeStampedPacketQueue;

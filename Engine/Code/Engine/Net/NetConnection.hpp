@@ -28,6 +28,8 @@ constexpr uint16_t RELIABLE_WINDOW = 32;
 
 #define MAX_CONNECTION_ID_LENGTH (16)
 
+#define HEARTBEAT_RATE (.2f)
+
 //====================================================================================
 // ENUMS
 //====================================================================================
@@ -96,6 +98,7 @@ public:
 	void ProcessOutgoing(); 
 	void Flush();
 	bool DoWeHaveAnyMessagesToSend();
+	bool HasStateChanged();
 
 	bool OnReceivePacket( const PacketHeader& header, NetPacket* packet);
 	void ConfirmPacketReceived( uint16_t ack );
@@ -188,9 +191,10 @@ private:
 	// our ring buffer
 	PacketTracker				m_trackers[TRACKED_PACKET_WINDOW_HISTORY];
 
-
+public:
 	NetConnectionInfo			m_info; 
 	eNetConnectionState			m_state; 
+	eNetConnectionState			m_previousState = NET_CONNECTION_STATUS_DISCONNECTED;
 };
 
 

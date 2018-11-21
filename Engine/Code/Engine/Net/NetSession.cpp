@@ -64,6 +64,7 @@ NetSession::NetSession()
 		s_mainNetSession = this;
 
 	m_latencyRange = IntRange();
+	m_channel = new PacketChannel();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -86,11 +87,16 @@ NetSession::~NetSession()
 		m_messageCallbacks.at(j) = nullptr;
 	}
 	m_messageCallbacks.clear();
+
+	delete m_channel;
+	m_channel = nullptr;
 }
 
 //-----------------------------------------------------------------------------------------------
 void NetSession::Host(char const * my_id, const char * port, uint16_t port_range)
 {
+	//m_channel = PacketChannel();
+	
 	// can only host in this state so warning and early out
 	if(m_state != SESSION_DISCONNECTED)
 	{
@@ -112,7 +118,7 @@ void NetSession::Host(char const * my_id, const char * port, uint16_t port_range
 	NetConnectionInfo hostInfo;
 	strcpy_s(hostInfo.m_id, my_id);
 	hostInfo.m_sessionIndex = 0;
-	hostInfo.m_address = m_channel.m_socket->GetAddress();
+	hostInfo.m_address = m_channel->m_socket->GetAddress();
 
 	// assign to the convenience pointers
 	m_hostConnection = CreateConnection(hostInfo);
@@ -126,7 +132,34 @@ void NetSession::Host(char const * my_id, const char * port, uint16_t port_range
 //-----------------------------------------------------------------------------------------------
 void NetSession::Join(char const * my_id, const NetAddress & hostAddress)
 {
+	//m_channel = PacketChannel();
+	
+	// bind socket
+	bool result = Bind(GAME_PORT, NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS);
 
+	// Create a connection for the host, bind it, and mark it as CONNECTED. 
+	NetConnectionInfo hostInfo;
+	hostInfo.m_address = hostAddress;
+	hostInfo.m_sessionIndex = 0U;
+	m_hostConnection = CreateConnection(hostInfo);
+	m_hostConnection->m_state = NET_CONNECTION_STATUS_CONNECTED;
+
+	//	Create a connection for yourself, and set it to `m_my_connection` (currently has an invalid index) 
+	NetConnectionInfo myInfo;
+	myInfo.m_address = m_channel->m_socket->m_address;
+	strcpy_s(myInfo.m_id, my_id);
+	
+	m_myConnection = CreateConnection(myInfo);
+
+	//	Set session state to `SESSION_CONNECTING`
+	m_state = SESSION_CONNECTING;
+
+	// Create the timers for joining
+	m_sendJoinRequestTimer = new Timer();
+	m_sendJoinRequestTimer->SetTimer(SESSION_SEND_JOIN_RATE);
+	
+	m_timeOutTimer = new Timer();
+	m_timeOutTimer->SetTimer(SESSION_TIMEOUT_RATE);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -138,12 +171,133 @@ NetConnection* NetSession::CreateConnection(const NetConnectionInfo& info)
 	m_AllConnections.push_back(newConnection);
 
 	// if we have the slot open, bind it
-	if(IsConnectionIndexValid(info.m_sessionIndex))
+	if(info.m_sessionIndex != INVALID_CONNECTION_INDEX && IsConnectionIndexValid(info.m_sessionIndex))
 	{
 		newConnection->m_indexInSession = BindConnection(info.m_sessionIndex, newConnection);
 	}
 
 	return newConnection;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::Update()
+{
+	ProcessIncoming();
+
+	switch (m_state)
+	{
+	case SESSION_DISCONNECTED:
+		break;
+	case SESSION_BOUND:
+		break;
+	case SESSION_CONNECTING:
+		SessionConnectingUpdate();
+		break;
+	case SESSION_JOINING:
+		SessionJoiningUpdate();
+		break;
+	case SESSION_READY:
+		SessionReadyUpdate();
+		break;
+	default:
+		break;
+	}
+
+	CheckForDisconnects();
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SessionConnectingUpdate()
+{
+	//	If you have been in this state for `JOIN_TIMEOUT` (roughly 10s), error and disconnect with a "Timed out" error.
+	if(m_timeOutTimer->HasElapsed())
+	{
+		m_state = SESSION_DISCONNECTED;
+		return;
+	}
+	
+	//If you connection `is_connected`, move to the session state `SESSION_JOINING`
+	if(m_myConnection->m_state == NET_CONNECTION_STATUS_CONNECTED)
+	{
+		m_state = SESSION_JOINING;
+	}
+	
+	//	Otherwise, every 0.1 seconds, send a `JOIN_REQUEST` message to the host
+	if(m_sendJoinRequestTimer->CheckAndReset())
+	{
+		NetMessage joinMessage("joinRequest");
+		joinMessage.WriteString(m_myConnection->m_info.m_id);
+
+		SendDirectMessageTo(joinMessage, m_hostConnection->m_address);
+	}
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SessionJoiningUpdate()
+{
+	//State does nothing, but waits until your connection is marked as ready (happens in clalback for a `JOIN_FINISHED` message)
+	if(m_myConnection->m_state == NET_CONNECTION_STATUS_READY)
+	{
+		m_state = SESSION_READY;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::SessionReadyUpdate()
+{
+	// changes the state in -v
+	if(m_myConnection->HasStateChanged())
+	{
+		// let everyone know my status changed
+		for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+		{
+			NetConnection* current = m_boundConnections[i];
+
+			if(current != nullptr)
+			{
+				NetMessage newMessage("updateConState");
+				newMessage.WriteBytes(1U, &m_myConnection->m_state);
+
+				current->Send(newMessage);
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::CheckForDisconnects()
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current != nullptr)
+		{
+			if(current->m_state == NET_CONNECTION_STATUS_DISCONNECTED)
+			{
+				// should have already sent a state change message by now (in update switch statement ready)
+				if(current->IsHost())
+				{
+					if(current == m_myConnection)
+					{
+						// delete all connections 
+						DestroyAllConnections();
+					}
+					else
+					{
+						// just remove the one connection
+						DestroyConnection(current);
+					}
+				}
+				else // if client
+				{
+					// Delete all connections
+					DestroyAllConnections();
+				}
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -188,6 +342,23 @@ void NetSession::DestroyConnection(NetConnection *cp)
 	// free
 	delete cp;
 	cp = nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::DestroyAllConnections()
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current != nullptr)
+		{
+			DestroyConnection(current);
+		}
+	}
+
+	// we have no connections so we are disconnected
+	m_state = SESSION_DISCONNECTED;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -333,8 +504,13 @@ bool NetSession::Bind(const char* port, uint range_to_try /*= 0U */)
 	// handling the ranges and created the NetAddress, so just 
 	// pass it down to the socket
 	
+	if(m_channel != nullptr)
+		delete m_channel;
+
+	m_channel = new PacketChannel();
+
 	NetAddress addressToTry = NetAddress::GetLocalAddress(port);
-	int idx = m_channel.Bind(addressToTry, range_to_try);
+	int idx = m_channel->Bind(addressToTry, range_to_try);
 
 	if(idx == -1)
 	{
@@ -358,12 +534,15 @@ void NetSession::SendDirectMessageTo(NetMessage &messageToSend, const NetAddress
 	// Update the index of this messageToSend
 	NetMessageDefinition* msgDef = GetMessageDefinitionByName( messageToSend.m_definitionName );
 	messageToSend.m_definition = msgDef;
+	messageToSend.m_header.m_messageCallbackDefinitionIndex = msgDef->m_callbackID;
 
 	// Send the Packet
 	NetPacket packetToSend;
+	packetToSend.m_header.m_messageCount = 1U;
+	packetToSend.WriteHeader();
 	packetToSend.WriteMessage( messageToSend );
 
-	m_channel.m_socket->SendTo( address, packetToSend.GetBuffer(), packetToSend.GetWrittenByteCount() );
+	m_channel->m_socket->SendTo( address, packetToSend.GetBuffer(), packetToSend.GetWrittenByteCount() );
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -387,7 +566,7 @@ void NetSession::SendDirectMessageTo(NetMessage &messageToSend, const NetAddress
 // 		newConnection->SetHeartbeatTimer(m_heartbeatRate);
 // 
 // 		// see if we just added our own index, if so, store of the index for easy access!
-// 		if(addr == m_channel.m_socket->m_address)
+// 		if(addr == m_channel->m_socket->m_address)
 // 			m_connectionsIndexInSession = idx;
 // 
 // 		return newConnection;
@@ -422,7 +601,7 @@ void NetSession::ProcessIncoming()
 
 	NetAddress theAddress;
 	BytePacker tempBuffer(LITTLE_ENDIAN);
-	size_t result = m_channel.m_socket->ReceiveFrom(&theAddress, tempBuffer.GetBuffer(), PACKET_MTU);
+	size_t result = m_channel->m_socket->ReceiveFrom(&theAddress, tempBuffer.GetBuffer(), PACKET_MTU);
 	
 	//incomingPacket.AdvanceWriteHead(result);
 
@@ -536,7 +715,7 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 					{
 						if(!DoesContain(currentMessage.m_header.m_reliableID, theSender->m_connection->m_receivedReliableIDs))
 						{
-							theDef->m_callback(currentMessage, *theSender, this);
+							theDef->m_callback(currentMessage, *theSender);
 
 							// we processed the message so add it to our list!
 							theSender->m_connection->m_receivedReliableIDs.push_back(currentMessage.m_header.m_reliableID);
@@ -558,7 +737,7 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 					}
 					else // if not, just process
 					{
-						theDef->m_callback(currentMessage, *theSender, this);
+						theDef->m_callback(currentMessage, *theSender);
 					}
 					
 				}
@@ -629,7 +808,7 @@ void NetSession::SendPacket(const NetPacket& packet)
 	}
 
 	// send
-	size_t result = m_channel.m_socket->SendTo(
+	size_t result = m_channel->m_socket->SendTo(
 		whoWeAreSendingTo->m_address, 
 		packet.GetConstBuffer(), 
 		packet.GetWrittenByteCount());
@@ -674,7 +853,7 @@ void NetSession::Render() const
 
 	// Draw the socket bound to the session
 	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 4.f), "Bound SockAddr:", textSize);
-	String boundSocketAddress = m_channel.m_socket->GetAddress().ToString();
+	String boundSocketAddress = m_channel->m_socket->GetAddress().ToString();
 	mb.Add2DRandomColoredText( Vector2(pivot.x + 1.f, pivot.y - 6.f), boundSocketAddress, textSize);
 
 	// show all connections
@@ -692,7 +871,7 @@ void NetSession::Render() const
 		{
 			String isLocal = "";
 
-			if(currentConnection->m_address == m_channel.m_socket->m_address)
+			if(currentConnection->m_address == m_channel->m_socket->m_address)
 				isLocal += "L";
 
 			if(currentConnection == m_hostConnection)
@@ -1021,3 +1200,4 @@ eSessionError NetSession::GetLastError(std::string * out_str)
 
 	return currentError;
 }
+

@@ -41,7 +41,7 @@ void NetMessageChannel::ProcessMessage(NetMessage& messageToHandle)
 	NetSender* theSender = new NetSender(m_owningConnection);
 	
 	// do the callback
-	messageToHandle.m_definition->m_callback(messageToHandle, *theSender, m_owningConnection->m_owningSession);
+	messageToHandle.m_definition->m_callback(messageToHandle, *theSender);
 
 	// we processed the message so add it to our list!
 	theSender->m_connection->m_receivedReliableIDs.push_back(messageToHandle.m_header.m_reliableID);
