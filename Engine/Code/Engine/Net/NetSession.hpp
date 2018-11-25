@@ -162,6 +162,7 @@ public:
 	void DestroyAllConnections();
 	uint8_t BindConnection( uint8_t idx, NetConnection *cp ); 
 	bool IsConnectionIndexValid(const uint8_t m_sessionIndex);
+	bool DoWeAlreadyHaveThisConnectionCreated( const NetConnectionInfo& theInfo );
 
 	// message definitions
 	bool RegisterMessageDefinition( uint8_t id, const String& name, NetMessage_cb cb, eNetMessageOptions option = 0 );

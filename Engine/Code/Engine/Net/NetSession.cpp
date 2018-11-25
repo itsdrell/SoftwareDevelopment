@@ -171,10 +171,28 @@ NetConnection* NetSession::CreateConnection(const NetConnectionInfo& info)
 	m_AllConnections.push_back(newConnection);
 
 	// if we have the slot open, bind it
-	if(info.m_sessionIndex != INVALID_CONNECTION_INDEX && IsConnectionIndexValid(info.m_sessionIndex))
+	newConnection->m_indexInSession = BindConnection(info.m_sessionIndex, newConnection);
+
+
+// 	if(info.m_sessionIndex != INVALID_CONNECTION_INDEX && IsConnectionIndexValid(info.m_sessionIndex))
+// 	{
+// 	}
+// 	else
+// 	{
+// 		// make a connection index!
+// 		uint8_t indexToBindTo = GetOpenConnectionIndex();
+// 
+// 
+// 	}
+
+	// given a bad index so error pls
+	if(newConnection->m_indexInSession == INVALID_CONNECTION_INDEX)
 	{
-		newConnection->m_indexInSession = BindConnection(info.m_sessionIndex, newConnection);
+		DevConsole::AddErrorMessage(Stringf("Failed Creating a connection with index %u", newConnection->m_indexInSession));
 	}
+
+	// mark as ready!
+	newConnection->m_state = NET_CONNECTION_STATUS_READY;
 
 	return newConnection;
 }
@@ -213,6 +231,7 @@ void NetSession::SessionConnectingUpdate()
 	if(m_timeOutTimer->HasElapsed())
 	{
 		m_state = SESSION_DISCONNECTED;
+		DevConsole::AddErrorMessage("The Session has Timed out!");
 		return;
 	}
 	
@@ -256,10 +275,10 @@ void NetSession::SessionReadyUpdate()
 
 			if(current != nullptr)
 			{
-				NetMessage newMessage("updateConState");
-				newMessage.WriteBytes(1U, &m_myConnection->m_state);
+				NetMessage* newMessage = new NetMessage("updateConState");
+				newMessage->WriteBytes(1U, &m_myConnection->m_state);
 
-				current->Send(newMessage);
+				current->Send(*newMessage);
 			}
 		}
 	}
@@ -370,7 +389,10 @@ uint8_t NetSession::BindConnection(uint8_t idx, NetConnection *cp)
 		for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 		{
 			if(m_boundConnections[i] == nullptr)
+			{
+				//m_boundConnections[i] = cp; This breaks things
 				return (uint8_t) i;
+			}
 		}
 
 		// error check?
@@ -378,8 +400,14 @@ uint8_t NetSession::BindConnection(uint8_t idx, NetConnection *cp)
 	}
 	else
 	{
-		m_boundConnections[idx] = cp;
-		return idx;
+		if(IsConnectionIndexValid(idx))
+		{
+			m_boundConnections[idx] = cp;
+			return idx;
+		}
+
+		// error
+		return INVALID_CONNECTION_INDEX;
 	}
 	
 }
@@ -394,6 +422,24 @@ bool NetSession::IsConnectionIndexValid(const uint8_t m_sessionIndex)
 		return false;
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetSession::DoWeAlreadyHaveThisConnectionCreated(const NetConnectionInfo& theInfo)
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current != nullptr)
+		{
+			if(current->m_address == theInfo.m_address)
+				return true;
+		}
+
+	}
+	
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -539,6 +585,7 @@ void NetSession::SendDirectMessageTo(NetMessage &messageToSend, const NetAddress
 	// Send the Packet
 	NetPacket packetToSend;
 	packetToSend.m_header.m_messageCount = 1U;
+	packetToSend.m_header.m_senderConnectionIndex = INVALID_CONNECTION_INDEX;
 	packetToSend.WriteHeader();
 	packetToSend.WriteMessage( messageToSend );
 
@@ -1068,14 +1115,6 @@ void NetSession::SendReliableTest()
 	}
 }
 
-//===============================================================================================
-bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)
-{
-	if(a.m_timeToBeProcessed < b.m_timeToBeProcessed)
-		return true;
-	return false;
-}
-
 //-----------------------------------------------------------------------------------------------
 NetSender::~NetSender()
 {
@@ -1095,21 +1134,31 @@ bool NetSession::ProcessJoinRequest(const NetConnectionInfo& connectionWantingTo
 	}
 	else
 	{
-		// Accept and
-		// Create and add connection (Create also binds)
-		NetConnection* newConnection = CreateConnection(connectionWantingToJoin);
-
-		// if cant create a connection send a fail
-		if(newConnection->m_indexInSession == INVALID_CONNECTION_INDEX)
+		// Make sure we haven't already bound that connection. We need to check this seperately
+		// so that we don't send a Join Deny
+		if(!DoWeAlreadyHaveThisConnectionCreated(connectionWantingToJoin))
 		{
-			SendJoinDeny(connectionWantingToJoin);
+			// Accept and
+			// Create and add connection (Create also binds)
+			NetConnection* newConnection = CreateConnection(connectionWantingToJoin);
+			newConnection->m_state = NET_CONNECTION_STATUS_CONNECTED;
+			m_boundConnections[newConnection->m_indexInSession] = newConnection;
+
+			// if cant create a connection send a fail
+			if(newConnection->m_indexInSession == INVALID_CONNECTION_INDEX)
+			{
+				SendJoinDeny(connectionWantingToJoin);
+			}
+
+			// let em know its gucci
+			SendJoinAccept(*newConnection);
+
+			return true;
 		}
-
-		// let em know its gucci
-		SendJoinAccept(*newConnection);
-
-		return true;
+		
 	}	
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -1120,23 +1169,15 @@ bool NetSession::CanWeAcceptTheConnection(const NetConnectionInfo& connectionWan
 		return false;
 
 	// ignore if already exists and check if we have an empty slot
-	bool hasRoom = false;
 	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
 	{
 		NetConnection* current = m_boundConnections[i];
 
-		if(current->m_address == connectionWantingToJoin.m_address)
-			return false;
-
 		if(current == nullptr)
-			hasRoom = true;
+			return true;
 	}
 
-	// if we didn;t have room for another, return false
-	if(hasRoom == false)
-		return false;
-
-	return true;
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -1153,13 +1194,16 @@ void NetSession::SendJoinDeny(const NetConnectionInfo& connectionWantingToJoin)
 void NetSession::SendJoinAccept( NetConnection& connectionWantingToJoin )
 {
 	// send a join accept packet
-	NetMessage joinAcceptMessage;
-	joinAcceptMessage.WriteBytes(1U, &connectionWantingToJoin.m_indexInSession);
-	connectionWantingToJoin.Send(joinAcceptMessage);
+	//NetMessage joinAcceptMessage("joinAccept");
+	NetMessage* joinAcceptMessage = new NetMessage("joinAccept");
+	
+	joinAcceptMessage->WriteBytes(1U, &connectionWantingToJoin.m_indexInSession);
+	connectionWantingToJoin.Send(*joinAcceptMessage);
 
 	// send a join finished message
-	NetMessage joinFinishMessage;
-	connectionWantingToJoin.Send(joinFinishMessage);
+	//NetMessage joinFinishMessage("joinFinished");
+	NetMessage* joinFinishedMessage = new NetMessage("joinFinished");
+	connectionWantingToJoin.Send(*joinFinishedMessage);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -1169,9 +1213,12 @@ void NetSession::UpdateConnectionState(uint8_t stateToChangeTo, const NetConnect
 	{
 		NetConnection* current = m_boundConnections[i];
 
-		if(current->m_address == theConnection.m_address)
+		if(current != nullptr)
 		{
-			current->m_state = (eNetConnectionState) stateToChangeTo;
+			if(current->m_address == theConnection.m_address)
+			{
+				current->m_state = (eNetConnectionState) stateToChangeTo;
+			}
 		}
 	}
 }
@@ -1201,3 +1248,10 @@ eSessionError NetSession::GetLastError(std::string * out_str)
 	return currentError;
 }
 
+//===============================================================================================
+bool CompareTimeStampedPacket(const TimeStampedPacket& a, const TimeStampedPacket& b)
+{
+	if(a.m_timeToBeProcessed < b.m_timeToBeProcessed)
+		return true;
+	return false;
+}

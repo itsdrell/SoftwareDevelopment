@@ -17,10 +17,10 @@ void RegisterCoreEngineNetMessages( NetSession& theSession )
 	theSession.RegisterMessageDefinition(	NETMSG_JOIN_REQUEST,		"joinRequest",			OnJoinRequest,		NETMESSAGE_OPTION_CONNECTIONLESS );
 	theSession.RegisterMessageDefinition(	NETMSG_JOIN_DENY,			"joinDeny",				OnJoinDeny,			NETMESSAGE_OPTION_CONNECTIONLESS );
 	
-	theSession.RegisterMessageDefinition(	NETMSG_JOIN_ACCEPT,			"joinAccept",			OnJoinAccept,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
-	theSession.RegisterMessageDefinition(	NETMSG_NEW_CONNECTION,		"newConnection",		OnNewConnection,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
-	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
-	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_ACCEPT,			"joinAccept",			OnJoinAccept,		NETMESSAGE_OPTION_RELIABLE);
+	theSession.RegisterMessageDefinition(	NETMSG_NEW_CONNECTION,		"newConnection",		OnNewConnection,	NETMESSAGE_OPTION_RELIABLE);
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMESSAGE_OPTION_RELIABLE);
+	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMESSAGE_OPTION_RELIABLE);
 	
 }
 
@@ -98,11 +98,14 @@ bool OnJoinDeny(NetMessage & msg, const NetSender & from )
 //-----------------------------------------------------------------------------------------------
 bool OnJoinAccept(NetMessage & msg, const NetSender & from )
 {
-	uint idx;
+	uint8_t idx;
 	msg.ReadBytes(&idx, 1U);
 
 	NetSession* theSession = from.GetSession();
-	theSession->BindConnection(idx, theSession->m_myConnection);
+	//theSession->BindConnection(idx, theSession->m_myConnection);
+	theSession->m_boundConnections[idx] = theSession->m_myConnection;
+
+	theSession->m_state = SESSION_READY;
 	
 	return false;
 }
@@ -110,13 +113,18 @@ bool OnJoinAccept(NetMessage & msg, const NetSender & from )
 //-----------------------------------------------------------------------------------------------
 bool OnNewConnection(NetMessage & msg, const NetSender & from )
 {
-	
+	// for peer to peer telling everyone about new connections
 	return false;
 }
 
 //-----------------------------------------------------------------------------------------------
 bool OnJoinFinished(NetMessage & msg, const NetSender & from )
 {
+	DevConsole::AddConsoleDialogue("Join is Finished!");
+
+	NetSession* theSession = from.GetSession();
+	theSession->m_myConnection->m_state = NET_CONNECTION_STATUS_CONNECTED;
+
 	return false;
 }
 
