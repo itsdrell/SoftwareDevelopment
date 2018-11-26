@@ -213,11 +213,15 @@ void NetConnection::Flush()
 	}
 
 	currentPacket.WriteHeader();
-	m_owningSession->SendPacket(currentPacket);
+	if(currentPacket.m_header.m_messageCount != 0)
+	{
+		m_owningSession->SendPacket(currentPacket);
 
-	// increment ack and analytics
-	IncrementSendAck();
-	m_lastSendTimeMS = GetTimeInMilliseconds();
+		// increment ack and analytics
+		IncrementSendAck();
+		m_lastSendTimeMS = GetTimeInMilliseconds();
+	}
+	
 }
 
 //-----------------------------------------------------------------------------------------------

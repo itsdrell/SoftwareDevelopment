@@ -17,10 +17,10 @@ void RegisterCoreEngineNetMessages( NetSession& theSession )
 	theSession.RegisterMessageDefinition(	NETMSG_JOIN_REQUEST,		"joinRequest",			OnJoinRequest,		NETMESSAGE_OPTION_CONNECTIONLESS );
 	theSession.RegisterMessageDefinition(	NETMSG_JOIN_DENY,			"joinDeny",				OnJoinDeny,			NETMESSAGE_OPTION_CONNECTIONLESS );
 	
-	theSession.RegisterMessageDefinition(	NETMSG_JOIN_ACCEPT,			"joinAccept",			OnJoinAccept,		NETMESSAGE_OPTION_RELIABLE);
-	theSession.RegisterMessageDefinition(	NETMSG_NEW_CONNECTION,		"newConnection",		OnNewConnection,	NETMESSAGE_OPTION_RELIABLE);
-	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMESSAGE_OPTION_RELIABLE);
-	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMESSAGE_OPTION_RELIABLE);
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_ACCEPT,			"joinAccept",			OnJoinAccept,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_NEW_CONNECTION,		"newConnection",		OnNewConnection,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
+	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
 	
 }
 
@@ -135,6 +135,13 @@ bool OnUpdateConnState(NetMessage & msg, const NetSender & from )
 	msg.ReadBytes(&connectionStateToChangeTo, 1U);
 
 	from.GetSession()->UpdateConnectionState(connectionStateToChangeTo, *from.m_connection);
+
+
+	// we may not have a connection yet so just send a message to em?
+	//NetMessage* newMessage = new NetMessage("updateConState");
+	//newMessage->WriteBytes(1U, &m_myConnection->m_state);
+	//
+	//current->Send(*newMessage);
 	
 	return false;
 }

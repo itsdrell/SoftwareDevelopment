@@ -958,7 +958,7 @@ void NetSession::Render() const
 //-----------------------------------------------------------------------------------------------
 NetConnection* NetSession::GetMyConnection() const
 {
-	return m_boundConnections[m_connectionsIndexInSession];
+	return m_myConnection;
 }
 
 //-----------------------------------------------------------------------------------------------

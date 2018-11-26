@@ -191,7 +191,7 @@ public:
 	void Render() const;
 
 	NetConnection* GetMyConnection() const;
-	uint GetMySessionIndex() const { return m_connectionsIndexInSession; }
+	uint GetMySessionIndex() const { return m_myConnection->m_indexInSession; }
 	uint8_t GetConnectionForPacket(const PacketHeader& theHeader, const NetAddress& theAddressOfSender);
 	NetConnection* GetConnection(int idx) const;
 	NetConnection* GetConnectionFromAddress(const NetAddress& sender) const;
@@ -257,9 +257,6 @@ private:
 
 	// send rate
 	float										m_sessionFlushRate = 20.f; // hz
-
-	// My connections index in the session
-	uint										m_connectionsIndexInSession = 0U;
 
 	// Timers for joining and Timing out
 	Timer*										m_sendJoinRequestTimer = nullptr;
