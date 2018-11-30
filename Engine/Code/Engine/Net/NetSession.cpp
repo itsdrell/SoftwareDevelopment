@@ -221,6 +221,7 @@ void NetSession::Update()
 		break;
 	}
 
+	CheckForTimeOuts();
 	CheckForDisconnects();
 }
 
@@ -294,25 +295,36 @@ void NetSession::CheckForDisconnects()
 		if(current != nullptr)
 		{
 			if(current->m_state == NET_CONNECTION_STATUS_DISCONNECTED)
-			{
+			{	
 				// should have already sent a state change message by now (in update switch statement ready)
 				if(current->IsHost())
 				{
-					if(current == m_myConnection)
-					{
-						// delete all connections 
-						DestroyAllConnections();
-					}
-					else
-					{
-						// just remove the one connection
-						DestroyConnection(current);
-					}
+					DestroyAllConnections();
 				}
 				else // if client
 				{
-					// Delete all connections
-					DestroyAllConnections();
+					DestroyConnection(current);
+				}
+			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::CheckForTimeOuts()
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current != nullptr)
+		{
+			// Time outs are only for people that aren't you
+			if(current->IsMe() == false)
+			{
+				if(current->HasConnectionTimedOut())
+				{
+					current->Disconnect();
 				}
 			}
 		}

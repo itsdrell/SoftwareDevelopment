@@ -20,6 +20,8 @@ float ConvertDegreesToRadians(float degrees);
 float CosDegrees(float degrees);
 float SinDegrees(float degrees);
 
+double GetMilliSecondsFromSeconds(double seconds);
+double GetSecondsFromMilliSeconds(double mili);
 
 // Polar
 Vector2 PolarToCartesian(float radius, float degrees);

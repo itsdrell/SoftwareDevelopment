@@ -150,6 +150,10 @@ void Clock::Advance(uint64_t elapsed)
 	{
 		elapsed = 0;
 	}
+	else if(m_timeScale == 1.0)
+	{
+		// do nothing so we lose no precision -- Thanks Abhishek :)
+	}
 	else
 	{
 		elapsed = (uint64_t)((double)elapsed * m_timeScale);

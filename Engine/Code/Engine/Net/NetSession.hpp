@@ -154,6 +154,7 @@ public:
 	void SessionJoiningUpdate();
 	void SessionReadyUpdate();
 	void CheckForDisconnects();
+	void CheckForTimeOuts();
 
 	// should be private, but for ease we'll keep public
 	// connection management

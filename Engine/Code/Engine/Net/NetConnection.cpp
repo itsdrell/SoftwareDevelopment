@@ -109,6 +109,16 @@ bool NetConnection::IsClient() const
 }
 
 //-----------------------------------------------------------------------------------------------
+void NetConnection::Disconnect()
+{
+	m_state = NET_CONNECTION_STATUS_DISCONNECTED;
+
+	DevConsole::AddConsoleDialogue(Stringf("%u Got Disconnected", m_indexInSession));
+
+	// don't do anything else cause the session will clean me up???
+}
+
+//-----------------------------------------------------------------------------------------------
 void NetConnection::ProcessOutgoing()
 {
 	// see if we want to add a heartbeat message
@@ -241,6 +251,20 @@ bool NetConnection::HasStateChanged()
 	if(m_previousState != m_state)
 	{
 		m_previousState = m_state;
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool NetConnection::HasConnectionTimedOut()
+{
+	uint timeoutTime = (uint)GetMilliSecondsFromSeconds(DEFAULT_CONNECTION_TIMEOUT);
+	int lengthSoFar = (int)timeoutTime - ((int)(GetTimeInMilliseconds() - m_lastRecievedTimeMS));
+
+	if(lengthSoFar <= 0)
+	{
 		return true;
 	}
 

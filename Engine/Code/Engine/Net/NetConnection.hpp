@@ -29,6 +29,7 @@ constexpr uint16_t RELIABLE_WINDOW = 32;
 #define MAX_CONNECTION_ID_LENGTH (16)
 
 #define HEARTBEAT_RATE (.2f)
+#define DEFAULT_CONNECTION_TIMEOUT (10)
 
 //====================================================================================
 // ENUMS
@@ -91,6 +92,8 @@ public:
 	inline bool IsDisconnected() const       { return m_state == NET_CONNECTION_STATUS_DISCONNECTED; }
 	inline bool IsReady() const              { return m_state == NET_CONNECTION_STATUS_READY; }
 
+	void Disconnect();
+
 	// If we have unreliables, send as many packets as we need
 	// to send all of them (conditions for sending a packet may change later, 
 	// so may want to split the internals to "should_send_packet() and "send_packet"
@@ -99,6 +102,7 @@ public:
 	void Flush();
 	bool DoWeHaveAnyMessagesToSend();
 	bool HasStateChanged();
+	bool HasConnectionTimedOut();
 
 	bool OnReceivePacket( const PacketHeader& header, NetPacket* packet);
 	void ConfirmPacketReceived( uint16_t ack );
