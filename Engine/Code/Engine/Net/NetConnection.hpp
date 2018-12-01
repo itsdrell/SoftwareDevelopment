@@ -93,6 +93,7 @@ public:
 	inline bool IsReady() const              { return m_state == NET_CONNECTION_STATUS_READY; }
 
 	void Disconnect();
+	void HangUp();
 
 	// If we have unreliables, send as many packets as we need
 	// to send all of them (conditions for sending a packet may change later, 

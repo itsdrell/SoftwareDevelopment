@@ -46,6 +46,8 @@ bool OnNewConnection( NetMessage& msg, const NetSender& from );
 bool OnJoinFinished( NetMessage& msg, const NetSender& from );
 bool OnUpdateConnState( NetMessage& msg, const NetSender& from );
 
+bool OnHangup( NetMessage& msg, const NetSender& from );
+
 
 //====================================================================================
 // Externs

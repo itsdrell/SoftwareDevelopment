@@ -22,6 +22,7 @@ void RegisterCoreEngineNetMessages( NetSession& theSession )
 	theSession.RegisterMessageDefinition(	NETMSG_JOIN_FINISHED,		"joinFinished",			OnJoinFinished,		NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
 	theSession.RegisterMessageDefinition(	NETMSG_UPDATE_CONN_STATE,	"updateConState",		OnUpdateConnState,	NETMSSAGE_OPTION_RELIALBE_IN_ORDER);
 	
+	theSession.RegisterMessageDefinition(	NETMESG_HANGUP,				"hangup",				OnHangup);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -144,4 +145,18 @@ bool OnUpdateConnState(NetMessage & msg, const NetSender & from )
 	//current->Send(*newMessage);
 	
 	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool OnHangup(NetMessage& msg, const NetSender& from)
+{
+	NetSession* theSession = from.GetSession();
+
+	DevConsole::AddConsoleDialogue(Stringf("Connection at index %u hung up and was disconnected", from.m_connection->m_indexInSession));
+
+	NetConnection* conenctioToDisconect = theSession->GetConnection(from.m_connection->m_indexInSession);
+	conenctioToDisconect->Disconnect();
+	//theSession->DestroyConnection(from.m_connection);
+
+	return true;
 }

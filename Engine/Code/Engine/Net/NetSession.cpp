@@ -163,6 +163,20 @@ void NetSession::Join(char const * my_id, const NetAddress & hostAddress)
 }
 
 //-----------------------------------------------------------------------------------------------
+void NetSession::Disconnect()
+{
+	for(uint i = 0; i < NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS; i++)
+	{
+		NetConnection* current = m_boundConnections[i];
+
+		if(current != nullptr)
+		{
+			current->HangUp();
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 NetConnection* NetSession::CreateConnection(const NetConnectionInfo& info)
 {
 	NetConnection* newConnection = new NetConnection(info, this);

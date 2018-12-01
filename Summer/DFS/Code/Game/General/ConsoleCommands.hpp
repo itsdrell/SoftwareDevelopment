@@ -55,6 +55,7 @@ void ReliableTest( Command& theCommand );
 
 void NetHost( Command& theCommand );
 void NetJoin( Command& theCommand );
+void NetLeave( Command& theCommand);
 
 //====================================================================================
 // Externs

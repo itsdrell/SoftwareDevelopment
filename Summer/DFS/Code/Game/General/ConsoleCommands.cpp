@@ -47,6 +47,7 @@ void RegisterGameCommands()
 	
 	CommandRegister("net_host", "","name port", NetHost);
 	CommandRegister("net_join", "","name address:port", NetJoin);
+	CommandRegister("net_leave","","", NetLeave);
 }
 
 void EndTurn(Command & theCommand)
@@ -591,5 +592,13 @@ void NetJoin(Command & theCommand)
 	NetAddress hostAddress = NetAddress(AddressAsString.c_str());
 
 	theSession->Join(hostName.c_str(), hostAddress);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetLeave(Command& theCommand)
+{
+	NetSession* theSession = Game::GetNetSession();
+
+	theSession->Disconnect();
 }
 

@@ -45,6 +45,7 @@ enum eNetCoreMessage : uint8_t
 	NETMSG_NEW_CONNECTION,			// reliable in order
 	NETMSG_JOIN_FINISHED,			// reliable in order
 	NETMSG_UPDATE_CONN_STATE,		// reliable in order
+	NETMESG_HANGUP,					// unreliable, requires connection (?)
 
 
 	NETMSG_CORE_COUNT,

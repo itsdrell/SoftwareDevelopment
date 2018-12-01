@@ -119,6 +119,20 @@ void NetConnection::Disconnect()
 }
 
 //-----------------------------------------------------------------------------------------------
+void NetConnection::HangUp()
+{
+	// Send a Message
+	NetMessage* hangUp = new NetMessage( "hangup" ); 
+	Send( *hangUp ); 
+
+	// Flush
+	Flush();
+
+	// Disconnect
+	Disconnect();
+}
+
+//-----------------------------------------------------------------------------------------------
 void NetConnection::ProcessOutgoing()
 {
 	// see if we want to add a heartbeat message
