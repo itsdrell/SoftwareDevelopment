@@ -21,6 +21,7 @@
 // Forward Declare
 //====================================================================================
 class NetSession;
+class Clock;
 
 //====================================================================================
 // Type Defs + Defines
@@ -30,6 +31,8 @@ class NetSession;
 
 #define SESSION_SEND_JOIN_RATE (.1f)
 #define SESSION_TIMEOUT_RATE (10.f)
+
+#define MAX_NET_TIME_DILATION (.1f) // this controls how much the clock is allowed to speed up/slow down to match a snapshot
 
 //====================================================================================
 // ENUMS
@@ -151,11 +154,17 @@ public:
 	eSessionError GetLastError( std::string *out_str = nullptr ); // get last error has an implicit clear in it
 
 	void Update(); 
+	void UpdateClock();
 	void SessionConnectingUpdate();
 	void SessionJoiningUpdate();
 	void SessionReadyUpdate();
 	void CheckForDisconnects();
 	void CheckForTimeOuts();
+
+	uint GetNetTimeMS() const;
+	void ProcessHeartbeatTime( uint theTime );
+	void ProcessHeartbeatForHost( uint theTime );
+	void ProcessHeartbeatForClient( uint theTime );
 
 	// should be private, but for ease we'll keep public
 	// connection management
@@ -248,6 +257,11 @@ public:
 
 	NetConnection*								m_myConnection   = nullptr;     // convenience pointer
 	NetConnection*								m_hostConnection = nullptr;   // convenience pointer; 
+
+	// for clock
+	uint										m_lastRecievedHostTimeMS = 0U;	// this is the time we received from the host + (RTT / 2)
+	uint										m_desiredClientTimeMS = 0U;		// Time we want the the client to eventually be
+	uint										m_currentClientTimeMS = 0U;		// what the client will actually report return
 
 private:
 	// Sim Loss and latency

@@ -65,6 +65,8 @@ NetSession::NetSession()
 
 	m_latencyRange = IntRange();
 	m_channel = new PacketChannel();
+
+	//g_theNetworkClock = new Clock();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -280,6 +282,8 @@ void NetSession::SessionJoiningUpdate()
 //-----------------------------------------------------------------------------------------------
 void NetSession::SessionReadyUpdate()
 {
+	UpdateClock();
+	
 	// changes the state in -v
 	if(m_myConnection->HasStateChanged())
 	{
@@ -298,6 +302,35 @@ void NetSession::SessionReadyUpdate()
 		}
 	}
 }
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::UpdateClock()
+{
+	float dms = (float) g_theMasterClock->frame.ms;
+	
+	m_desiredClientTimeMS += (uint)dms;
+
+	float deltaTimeForCurrentClientTime;
+
+	if((m_currentClientTimeMS + dms) > m_desiredClientTimeMS)
+	{
+		deltaTimeForCurrentClientTime = dms * (1.0f - MAX_NET_TIME_DILATION);
+		m_currentClientTimeMS += (uint) deltaTimeForCurrentClientTime;
+	}
+	else if((m_currentClientTimeMS + dms) < m_desiredClientTimeMS)
+	{
+		deltaTimeForCurrentClientTime = dms * (1.0f + MAX_NET_TIME_DILATION);
+		m_currentClientTimeMS += (uint) deltaTimeForCurrentClientTime;
+	}
+	else
+	{
+		m_currentClientTimeMS = m_desiredClientTimeMS;
+	}
+
+
+	//g_theNetworkClock->total.ms = m_currentClientTimeMS;
+}
+
 
 //-----------------------------------------------------------------------------------------------
 void NetSession::CheckForDisconnects()
@@ -343,6 +376,57 @@ void NetSession::CheckForTimeOuts()
 			}
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+uint NetSession::GetNetTimeMS() const
+{
+	if(m_myConnection == nullptr || m_hostConnection == nullptr)
+		return 0U;
+	
+	if(m_myConnection->IsHost())
+		return g_theMasterClock->total.ms;
+	else
+		return m_currentClientTimeMS;
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::ProcessHeartbeatTime(uint theTime)
+{
+	if(m_myConnection->IsHost())
+	{
+		ProcessHeartbeatForHost(theTime);
+	}
+	else
+	{
+		ProcessHeartbeatForClient(theTime);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::ProcessHeartbeatForHost(uint theTime)
+{
+	// update render variables probs
+	// or do any debugging
+	UNUSED(theTime);
+}
+
+//-----------------------------------------------------------------------------------------------
+void NetSession::ProcessHeartbeatForClient(uint theTime)
+{
+	// if it is not the most recent, early out
+	if(theTime <= m_lastRecievedHostTimeMS)
+		return;
+
+	m_lastRecievedHostTimeMS = theTime + (uint)(m_hostConnection->m_roundTripTime * .5f);
+	//m_lastRecievedHostTimeMS = theTime + (uint)(m_hostConnection->m_roundTripTime);
+
+	m_desiredClientTimeMS = theTime;
+
+	// the first time we got a time
+	if(m_currentClientTimeMS == 0U)
+		m_currentClientTimeMS = m_desiredClientTimeMS;
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -916,12 +1000,14 @@ void NetSession::Render() const
 	title += "  (State: " + NetSessionStateToString(m_state) + ")";
 	mb.Add2DRandomColoredText(pivot, title, 2.f);
 
+	float theTime = ((float)GetNetTimeMS()) * .001f;
 	// Draw the info
-	String theInfo = Stringf("Rate: %d hz || sim lag: %d ms - %d ms || sim_loss: %d",
+	String theInfo = Stringf("Rate: %d hz || sim lag: %d ms - %d ms || sim_loss: %d || NetClock: %.2f",
 		(int) m_sessionFlushRate,	// Flush rate
 		m_latencyRange.min,			// Latency min
 		m_latencyRange.max,			// Latency max
-		(int) m_lossAmount);		// loss amount
+		(int) m_lossAmount,			// loss amount
+		theTime);					// Time
 	mb.Add2DRandomColoredText(Vector2(pivot.x, pivot.y - 2.f), theInfo, textSize);
 
 	// Draw the socket bound to the session
@@ -1230,6 +1316,12 @@ void NetSession::SendJoinAccept( NetConnection& connectionWantingToJoin )
 	//NetMessage joinFinishMessage("joinFinished");
 	NetMessage* joinFinishedMessage = new NetMessage("joinFinished");
 	connectionWantingToJoin.Send(*joinFinishedMessage);
+
+	// send a heart beat with my time
+	uint sessionTime = GetNetTimeMS();
+	NetMessage* heartbeatWithTimeMessage = new NetMessage("heartbeat");
+	heartbeatWithTimeMessage->WriteBytes(sizeof(uint), &sessionTime);
+	connectionWantingToJoin.Send(*heartbeatWithTimeMessage);
 }
 
 //-----------------------------------------------------------------------------------------------

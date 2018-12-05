@@ -28,9 +28,15 @@ void RegisterCoreEngineNetMessages( NetSession& theSession )
 //-----------------------------------------------------------------------------------------------
 bool OnHeartbeat(NetMessage& msg, const NetSender& from )
 {
-	UNUSED(msg);
+	uint sendersTime;
+	msg.ReadBytes(&sendersTime, sizeof(uint));
+
+	float seconds = (float)sendersTime * .001f;
+
+	from.GetSession()->ProcessHeartbeatTime(sendersTime);
 	
-	DevConsole::AddConsoleDialogue("Received a heartbeat from: " + from.m_connection->m_address.ToString());
+	DevConsole::AddConsoleDialogue("Received a heartbeat from: " + from.m_connection->m_address.ToString() + " and their time is: " + std::to_string(seconds));
+	
 	return true;
 }
 

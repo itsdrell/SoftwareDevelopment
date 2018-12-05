@@ -577,6 +577,11 @@ void NetConnection::CheckHeartbeatTimer()
 	if(m_heartbeatTimer->CheckAndReset())
 	{
 		NetMessage* hb = new NetMessage( "heartbeat" ); 
+
+		// I am always gonna send my time even if client. 
+		uint localSystemTime = g_theMasterClock->total.ms;
+		hb->WriteBytes(sizeof(uint), &localSystemTime);
+
 		Send( *hb ); 
 	}
 }
