@@ -265,6 +265,7 @@ void NetSession::SessionConnectingUpdate()
 		joinMessage.WriteString(m_myConnection->m_info.m_id);
 
 		SendDirectMessageTo(joinMessage, m_hostConnection->m_address);
+		DevConsole::AddConsoleDialogue("Sending another join request");
 	}
 	
 }
@@ -796,7 +797,7 @@ void NetSession::ProcessIncoming()
 		}
 		else
 		{
-			DevConsole::AddErrorMessage("Threw away a packet!");
+			//DevConsole::AddErrorMessage("Threw away a packet!");
 		}
 	}
 	
@@ -858,7 +859,7 @@ void NetSession::ProcessPacket( NetPacket& packet, const NetAddress& sender)
 			if(currentMessage.RequiresConnection(*this) && theConnection != nullptr)
 			{
 				// skip message and log a warning
-				DevConsole::AddErrorMessage("Received a packet that requires a connection from:" + sender.ToString());
+				//DevConsole::AddErrorMessage("Received a packet that requires a connection from:" + sender.ToString());
 			}
 			else
 			{
@@ -961,7 +962,8 @@ void NetSession::SendPacket(const NetPacket& packet)
 	// make sure we have a connection
 	if(whoWeAreSendingTo == nullptr)
 	{
-		ERROR_RECOVERABLE("Connection does not exist! Message trashed");
+		//ERROR_RECOVERABLE("Connection does not exist! Message trashed");
+		DevConsole::AddErrorMessage("Tried sending to a conenction that does exist");
 	}
 
 	// send
@@ -985,8 +987,8 @@ void NetSession::Render() const
 	//r->m_currentCamera->RenderDebugOrtho();
 
 	// background
-	r->DrawAABB2(AABB2(-49.f, 49.f, 40.f, 20.f), Rgba(0,0,0,200));
-	r->DrawAABB2(AABB2(-49.f, 49.f, 40.f, 20.f), Rgba::WHITE, false);
+	r->DrawAABB2(AABB2(-49.f, 49.f, 45.f, 20.f), Rgba(0,0,0,200));
+	r->DrawAABB2(AABB2(-49.f, 49.f, 45.f, 20.f), Rgba::WHITE, false);
 
 	Vector2 pivot;
 	pivot.x = -48.f;
@@ -1206,7 +1208,7 @@ void NetSession::SendReliableTest()
 	if(m_reliableTimer == nullptr)
 	{
 		m_reliableTimer = new Timer();
-		m_reliableTimer->SetTimer(1.f);
+		m_reliableTimer->SetTimer(0.01f);
 	}
 
 

@@ -591,8 +591,12 @@ void NetConnection::SetHeartbeatTimer(float hz)
 {
 	// make sure we dont divide by 0
 	if(hz == 0.f)
-		hz = 1.f;
-	
+	{
+		//hz = 1.f;
+		m_heartbeatTimer->SetTimer(0.0f);
+		return;
+	}
+
 	// we do the conversion to seconds here
 	m_heartbeatTimer->SetTimer((1.f / hz));
 }

@@ -13,7 +13,7 @@ static Window *gWindow = nullptr; // Instance Pointer;
 // I believe in App you will have a windows procedure you use that looks similar to the following; 
 // This will be moved to Windows.cpp (here), with a slight tweak; 
 LRESULT CALLBACK GameWndProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
+{	
 	// NEW:  Give the custom handlers a chance to run first; 
 	Window *window = Window::GetInstance(); 
 	if (nullptr != window) {
@@ -22,6 +22,15 @@ LRESULT CALLBACK GameWndProc( HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam 
 		}
 	}
 
+	// this is so the the app still renders and doesnt freeze when it doesnt have focus
+	switch(msg)
+	{
+		case WM_NCACTIVATE:
+			return 0;
+	}
+
+	//WM_CLOSE
+	//DebuggerPrintf("This is the msg thing: %08x \n", msg);
 
 	// do default windows behavior (return before this if you don't want default windows behaviour for certain messages)
 	return ::DefWindowProc( hwnd, msg, wparam, lparam );

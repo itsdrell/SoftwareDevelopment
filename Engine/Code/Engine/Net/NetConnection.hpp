@@ -28,7 +28,7 @@ constexpr uint16_t RELIABLE_WINDOW = 32;
 
 #define MAX_CONNECTION_ID_LENGTH (16)
 
-#define HEARTBEAT_RATE (2.0f) // default should be .2 (5 seconds)
+#define HEARTBEAT_RATE (20.0f) // default should be .2 (5 seconds)
 #define DEFAULT_CONNECTION_TIMEOUT (10)
 
 //====================================================================================

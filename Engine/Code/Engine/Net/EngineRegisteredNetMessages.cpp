@@ -35,7 +35,7 @@ bool OnHeartbeat(NetMessage& msg, const NetSender& from )
 
 	from.GetSession()->ProcessHeartbeatTime(sendersTime);
 	
-	DevConsole::AddConsoleDialogue("Received a heartbeat from: " + from.m_connection->m_address.ToString() + " and their time is: " + std::to_string(seconds));
+	//DevConsole::AddConsoleDialogue("Received a heartbeat from: " + from.m_connection->m_address.ToString() + " and their time is: " + std::to_string(seconds));
 	
 	return true;
 }
@@ -110,6 +110,7 @@ bool OnJoinAccept(NetMessage & msg, const NetSender & from )
 
 	NetSession* theSession = from.GetSession();
 	//theSession->BindConnection(idx, theSession->m_myConnection);
+	theSession->m_myConnection->m_indexInSession = idx;
 	theSession->m_boundConnections[idx] = theSession->m_myConnection;
 
 	theSession->m_state = SESSION_READY;

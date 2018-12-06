@@ -70,7 +70,7 @@ void DebuggerPrintf( const char* messageFormat, ... )
 	}
 #endif
 
-	LogTaggedPrintf( "debug", messageLiteral);
+	//LogTaggedPrintf( "debug", messageLiteral);
 
 	std::cout << messageLiteral;
 }
