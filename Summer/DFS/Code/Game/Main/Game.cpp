@@ -33,6 +33,7 @@
 #include "Game/Main/Playground.hpp"
 #include "Engine/Net/EngineRegisteredNetMessages.hpp"
 #include "../Net/GameRegisteredNetMessages.hpp"
+#include "Engine/Core/General/EngineLuaFunctionBindings.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -63,6 +64,9 @@ Game::Game()
 	m_playingState = new Playing();
 	m_loadingState = new Loading();
 	
+	m_luaMain = new LuaScript("Main");
+	BindLuaFunctionsToScript(m_luaMain);
+	float posX = m_luaMain->get<float>("player.position.x");
 
 	s_theGame = this;
 }
@@ -84,6 +88,9 @@ Game::~Game()
 
 	delete m_console;
 	m_console = nullptr;
+
+	delete m_luaMain;
+	m_luaMain = nullptr;
 
 	//delete g_theGameClock; // the master clock will delete this
 	//g_theGameClock = nullptr;
@@ -143,6 +150,8 @@ void Game::Update()
 	CheckKeyBoardInputs();
 	m_theNetSession->ProcessOutgoing();
 	m_console->Update(); // using engine clock?
+
+	LuaUpdate(*m_luaMain, g_theGameClock->deltaTime);
 }
 
 void Game::ClockDebug()
@@ -182,8 +191,6 @@ void Game::ClockDebug()
 
 }
 
-
-
 void Game::Render() const
 {
 	
@@ -206,10 +213,15 @@ void Game::Render() const
 		break;
 	}
 
+	
+	LuaRender(*m_luaMain);
+
 	//////////////////////////////////////////////////////////////////////////
 	// Show the console, we return instantly if its not open
 	NetSession::GetInstance()->Render();
 	m_console->Render();
+
+
 }
 
 void Game::CheckKeyBoardInputs()

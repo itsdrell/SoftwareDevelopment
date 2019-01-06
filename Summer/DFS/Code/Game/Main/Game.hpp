@@ -7,6 +7,7 @@
 #include "Engine/Renderer/Systems/Scene.hpp"
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Core/Tools/Stopwatch.hpp"
+#include "Engine/ThirdParty/Lua/LuaScript.h"
 
 //=============================================================
 // Forward Declare
@@ -74,6 +75,7 @@ public:
 
 	NetSession*		m_theNetSession = nullptr;
 
+	LuaScript*		m_luaMain;
 
 	static Game*	s_theGame;
 

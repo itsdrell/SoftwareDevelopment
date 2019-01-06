@@ -343,6 +343,117 @@
     <ClCompile Include="Net\NetMessageChannel.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lapi.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lauxlib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lbaselib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lbitlib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lcode.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lcorolib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lctype.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ldblib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ldebug.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ldo.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ldump.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lfunc.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lgc.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\linit.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\liolib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\llex.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lmathlib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lmem.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\loadlib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lobject.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lopcodes.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\loslib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lparser.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lstate.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lstring.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lstrlib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ltable.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ltablib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\ltm.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lua.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\luac.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lundump.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lutf8lib.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lvm.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaSource\lzio.c">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\Lua\LuaScript.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\General\EngineLuaFunctionBindings.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -476,6 +587,34 @@
     <ClInclude Include="Math\Geometry\ConvexPoly2D.hpp" />
     <ClInclude Include="Core\Utils\MiscUtils.hpp" />
     <ClInclude Include="Net\NetMessageChannel.hpp" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lapi.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lauxlib.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lcode.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lctype.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\ldebug.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\ldo.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lfunc.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lgc.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\llex.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\llimits.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lmem.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lobject.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lopcodes.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lparser.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lprefix.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lstate.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lstring.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\ltable.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\ltm.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lua.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lua.hpp" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\luaconf.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lualib.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lundump.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lvm.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaSource\lzio.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaScript.h" />
+    <ClInclude Include="Core\General\EngineLuaFunctionBindings.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

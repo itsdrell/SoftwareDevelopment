@@ -5,11 +5,13 @@
 #include "Engine\Core\Utils\StringUtils.hpp"
 #include "Engine\Core\Platform\Time.hpp"
 
+
+
 //-----------------------------------------------------------------------------------------------
-// Put stuff in here if you just wanna test it once and itll happen in startup
+// Put stuff in here if you just wanna test it once and it'll happen in startup
 void Playground::RunTestOnce()
 {
-
+	
 }
 
 //-----------------------------------------------------------------------------------------------
