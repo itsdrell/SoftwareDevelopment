@@ -615,6 +615,8 @@
     <ClInclude Include="ThirdParty\Lua\LuaSource\lzio.h" />
     <ClInclude Include="ThirdParty\Lua\LuaScript.h" />
     <ClInclude Include="Core\General\EngineLuaFunctionBindings.hpp" />
+    <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapper.hpp" />
+    <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapperutil.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

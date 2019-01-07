@@ -9,6 +9,7 @@ class Rgba
 public:
 
 	Rgba(); // Default-constructs to opaque white (255,255,255,255)
+	~Rgba() {}
 
 	explicit Rgba( unsigned char redByte, unsigned char greenByte,
 				   unsigned char blueByte, unsigned char alphaByte=255 );

@@ -1,5 +1,6 @@
 #include "LuaScript.h"
 #include "..\..\Core\General\EngineCommon.hpp"
+#include "..\..\Core\General\EngineLuaFunctionBindings.hpp"
 
 
 //#pragma comment( lib, "Engine/ThirdParty/Lua/lua.lib" )
@@ -7,6 +8,9 @@
 LuaScript::LuaScript(const std::string& fileName) {
     L = luaL_newstate();
 	String pathwithDir = dirPath + fileName + ".lua";
+
+	// WE HAVE TO BIND THE CLASSES AND STUFF BEFORE LOADING OR IT THINKS THE CODE HAS AN ERROR
+	BindClassesToLua(L);
 
 	if (luaL_loadfile(L, pathwithDir.c_str()) || lua_pcall(L, 0, 0, 0)) 
 	{

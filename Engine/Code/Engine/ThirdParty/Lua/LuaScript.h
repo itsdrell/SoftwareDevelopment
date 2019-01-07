@@ -11,6 +11,8 @@ extern "C" {
 # include "LuaSource/lualib.h"
 }
 
+#pragma warning(disable: 4100)
+
 #define dirPath ("Data/Scripts/Lua/")
 
 //====================================================================================

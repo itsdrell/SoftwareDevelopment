@@ -65,8 +65,7 @@ Game::Game()
 	m_loadingState = new Loading();
 	
 	m_luaMain = new LuaScript("Main");
-	BindLuaFunctionsToScript(m_luaMain);
-	float posX = m_luaMain->get<float>("player.position.x");
+	LuaStartUp(m_luaMain);
 
 	s_theGame = this;
 }

@@ -549,6 +549,8 @@
     <ClInclude Include="ThirdParty\Lua\LuaSource\lundump.h" />
     <ClInclude Include="ThirdParty\Lua\LuaSource\lvm.h" />
     <ClInclude Include="ThirdParty\Lua\LuaSource\lzio.h" />
+    <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapper.hpp" />
+    <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapperutil.hpp" />
     <ClInclude Include="ThirdParty\MikkT\mikktspace.h" />
     <ClInclude Include="ThirdParty\SquirrelNoise\RawNoise.hpp" />
     <ClInclude Include="ThirdParty\SquirrelNoise\SmoothNoise.hpp" />
