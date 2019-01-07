@@ -31,7 +31,7 @@ bool OnHeartbeat(NetMessage& msg, const NetSender& from )
 	uint sendersTime;
 	msg.ReadBytes(&sendersTime, sizeof(uint));
 
-	float seconds = (float)sendersTime * .001f;
+	//float seconds = (float)sendersTime * .001f;
 
 	from.GetSession()->ProcessHeartbeatTime(sendersTime);
 	
@@ -80,11 +80,13 @@ bool OnPong( NetMessage & msg, const NetSender & from )
 //-----------------------------------------------------------------------------------------------
 bool OnJoinRequest(NetMessage & msg, const NetSender & from )
 {	
+	UNUSED(msg);
+	
 	NetConnectionInfo newConnection;
 	newConnection.m_address = from.m_connection->m_address;
 
 	// read the char name from packet
-	char* name = nullptr;
+	//char* name = nullptr;
 //	msg.ReadString(name,16U);
 	strcpy_s(newConnection.m_id, "idk");
 	
@@ -122,6 +124,8 @@ bool OnJoinAccept(NetMessage & msg, const NetSender & from )
 bool OnNewConnection(NetMessage & msg, const NetSender & from )
 {
 	// for peer to peer telling everyone about new connections
+	UNUSED(msg);
+	UNUSED(from);
 	return false;
 }
 
@@ -129,6 +133,8 @@ bool OnNewConnection(NetMessage & msg, const NetSender & from )
 bool OnJoinFinished(NetMessage & msg, const NetSender & from )
 {
 	DevConsole::AddConsoleDialogue("Join is Finished!");
+
+	UNUSED(msg);
 
 	NetSession* theSession = from.GetSession();
 	theSession->m_myConnection->m_state = NET_CONNECTION_STATUS_CONNECTED;
@@ -157,6 +163,8 @@ bool OnUpdateConnState(NetMessage & msg, const NetSender & from )
 //-----------------------------------------------------------------------------------------------
 bool OnHangup(NetMessage& msg, const NetSender& from)
 {
+	UNUSED(msg);
+	
 	NetSession* theSession = from.GetSession();
 
 	DevConsole::AddConsoleDialogue(Stringf("Connection at index %u hung up and was disconnected", from.m_connection->m_indexInSession));

@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4244)
 
 /*
 ** This file uses only the official API of Lua.

@@ -28,7 +28,7 @@
 #include "ltable.h"
 #include "lvm.h"
 
-
+#pragma warning(disable: 4244)
 
 
 /* Maximum number of registers in a Lua function (must fit in 8 bits) */

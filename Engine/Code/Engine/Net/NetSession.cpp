@@ -137,7 +137,7 @@ void NetSession::Join(char const * my_id, const NetAddress & hostAddress)
 	//m_channel = PacketChannel();
 	
 	// bind socket
-	bool result = Bind(GAME_PORT, NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS);
+	/*bool result = */Bind(GAME_PORT, NET_SESSION_MAX_AMOUNT_OF_CONNECTIONS);
 
 	// Create a connection for the host, bind it, and mark it as CONNECTED. 
 	NetConnectionInfo hostInfo;
@@ -691,7 +691,7 @@ void NetSession::SendDirectMessageTo(NetMessage &messageToSend, const NetAddress
 	// Update the index of this messageToSend
 	NetMessageDefinition* msgDef = GetMessageDefinitionByName( messageToSend.m_definitionName );
 	messageToSend.m_definition = msgDef;
-	messageToSend.m_header.m_messageCallbackDefinitionIndex = msgDef->m_callbackID;
+	messageToSend.m_header.m_messageCallbackDefinitionIndex = (uint8_t) msgDef->m_callbackID;
 
 	// Send the Packet
 	NetPacket packetToSend;
@@ -1278,6 +1278,8 @@ bool NetSession::ProcessJoinRequest(const NetConnectionInfo& connectionWantingTo
 //-----------------------------------------------------------------------------------------------
 bool NetSession::CanWeAcceptTheConnection(const NetConnectionInfo& connectionWantingToJoin)
 {
+	UNUSED(connectionWantingToJoin);
+	
 	// not host
 	if(m_myConnection->IsHost() == false)
 		return false;

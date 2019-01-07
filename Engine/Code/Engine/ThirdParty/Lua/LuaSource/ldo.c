@@ -33,7 +33,8 @@
 #include "lvm.h"
 #include "lzio.h"
 
-
+#pragma warning(disable: 4324)
+#pragma warning(disable: 4244)
 
 #define errorstatus(s)	((s) > LUA_YIELD)
 

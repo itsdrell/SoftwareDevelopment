@@ -29,7 +29,8 @@
 #include "ltm.h"
 #include "lvm.h"
 
-
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4244)
 
 #define noLuaClosure(f)		((f) == NULL || (f)->c.tt == LUA_TCCL)
 

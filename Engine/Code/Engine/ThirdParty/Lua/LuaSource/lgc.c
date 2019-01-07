@@ -25,6 +25,8 @@
 #include "ltable.h"
 #include "ltm.h"
 
+#pragma warning(disable: 4244)
+
 
 /*
 ** internal state for collector while inside the atomic phase. The

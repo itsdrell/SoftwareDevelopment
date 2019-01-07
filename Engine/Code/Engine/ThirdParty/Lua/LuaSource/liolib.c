@@ -23,7 +23,8 @@
 #include "lualib.h"
 
 
-
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4244)
 
 /*
 ** Change this macro to accept other modes for 'fopen' besides

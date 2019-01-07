@@ -48,6 +48,7 @@ public:
 	static NetSession* GetNetSession() { return GetInstance()->m_theNetSession; }
 
 	void		StartUp();
+	void		NetworkStartUp();
 	void		RegisterCommands();
 	void		RegisterNetCallbacks();
 

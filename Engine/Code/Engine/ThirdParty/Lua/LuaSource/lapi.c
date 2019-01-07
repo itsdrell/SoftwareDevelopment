@@ -29,7 +29,9 @@
 #include "lundump.h"
 #include "lvm.h"
 
-
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4244)
+#pragma warning(disable: 4702)
 
 const char lua_ident[] =
   "$LuaVersion: " LUA_COPYRIGHT " $"

@@ -27,7 +27,8 @@
 #include "lstring.h"
 #include "ltable.h"
 
-
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4244)
 
 /* maximum number of local variables per function (must be smaller
    than 250, due to the bytecode format) */

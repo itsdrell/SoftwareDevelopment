@@ -40,14 +40,14 @@ void RegisterGameCommands()
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 
 	// NetSession stuff
-	CommandRegister("send_ping", "", "", SendPing);
-	CommandRegister("send_add", "", "", SendAdd);
-	CommandRegister("testUnreliable", "","a14", UnreliableTest);
-	CommandRegister("testReliable", "","a15", ReliableTest);
-	
-	CommandRegister("net_host", "","name port", NetHost);
-	CommandRegister("net_join", "","name address:port", NetJoin);
-	CommandRegister("net_leave","","", NetLeave);
+	//CommandRegister("send_ping", "", "", SendPing);
+	//CommandRegister("send_add", "", "", SendAdd);
+	//CommandRegister("testUnreliable", "","a14", UnreliableTest);
+	//CommandRegister("testReliable", "","a15", ReliableTest);
+	//
+	//CommandRegister("net_host", "","name port", NetHost);
+	//CommandRegister("net_join", "","name address:port", NetJoin);
+	//CommandRegister("net_leave","","", NetLeave);
 }
 
 void EndTurn(Command & theCommand)
@@ -457,6 +457,9 @@ void DebugGrid(Command& theCommand)
 // 	}
 // }
 
+//===============================================================================================
+// NET STUFF
+//===============================================================================================
 //-----------------------------------------------------------------------------------------------
 void SendPing(Command & theCommand)
 {

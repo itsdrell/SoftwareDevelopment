@@ -34,6 +34,7 @@
 #include "Engine/Net/EngineRegisteredNetMessages.hpp"
 #include "../Net/GameRegisteredNetMessages.hpp"
 #include "Engine/Core/General/EngineLuaFunctionBindings.hpp"
+#include "Game/Main/EngineBuildPreferences.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -103,11 +104,21 @@ void Game::StartUp()
 
 	m_console->StartUp();
 
-	m_theNetSession = new NetSession();
-	RegisterNetCallbacks();
+	NetworkStartUp();
+	
 	//m_theNetSession->Bind( GAME_PORT, 16U);
 }
 
+//-----------------------------------------------------------------------------------------------
+void Game::NetworkStartUp()
+{
+#if defined(NETWORKING_ENABLED)
+	
+	m_theNetSession = new NetSession();
+	RegisterNetCallbacks();
+
+#endif
+}
 
 void Game::RegisterCommands()
 {
@@ -123,8 +134,7 @@ void Game::RegisterNetCallbacks()
 
 void Game::Update()
 {
-	UDPTest::GetInstance()->Update();
-	m_theNetSession->Update();
+	if(m_theNetSession != nullptr ) { m_theNetSession->Update(); }
 
 	switch (m_currentState)
 	{
@@ -147,7 +157,7 @@ void Game::Update()
 
 
 	CheckKeyBoardInputs();
-	m_theNetSession->ProcessOutgoing();
+	if(m_theNetSession != nullptr ) { m_theNetSession->ProcessOutgoing(); }
 	m_console->Update(); // using engine clock?
 
 	LuaUpdate(*m_luaMain, g_theGameClock->deltaTime);
@@ -217,7 +227,7 @@ void Game::Render() const
 
 	//////////////////////////////////////////////////////////////////////////
 	// Show the console, we return instantly if its not open
-	NetSession::GetInstance()->Render();
+	if(m_theNetSession != nullptr ) { NetSession::GetInstance()->Render(); }
 	m_console->Render();
 
 

@@ -42,11 +42,13 @@ bool OnReliableTest(NetMessage& msg, const NetSender& from )
 //-----------------------------------------------------------------------------------------------
 bool OnSequenceTest(NetMessage& msg, const NetSender& from )
 {
+	UNUSED(from);
+	
 	uint val0 = 0U;
 	uint val1 = 0U; 
 
-	bool checkForFirstNumber = msg.ReadBytes( &val0, sizeof(uint) );
-	bool checkForSecondNumber = msg.ReadBytes( &val1, sizeof(uint) );
+	msg.ReadBytes( &val0, sizeof(uint) );
+	msg.ReadBytes( &val1, sizeof(uint) );
 
 	DevConsole::GetInstance()->AddConsoleDialogue(Stringf("Got something reliable IN ORDER %u/%u", val0, val1));
 	return true;
