@@ -97,6 +97,9 @@
     <ClCompile Include="Net\GameRegisteredNetMessages.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="GameStates\MapEditor.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -140,5 +143,6 @@
     <ClInclude Include="General\GameObjects\Effect.hpp" />
     <ClInclude Include="General\BattleScene\BattleCutscene.hpp" />
     <ClInclude Include="Net\GameRegisteredNetMessages.hpp" />
+    <ClInclude Include="GameStates\MapEditor.hpp" />
   </ItemGroup>
 </Project>

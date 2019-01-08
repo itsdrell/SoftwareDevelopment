@@ -290,6 +290,7 @@
   <ItemGroup>
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
+    <ClCompile Include="GameStates\MapEditor.cpp" />
     <ClCompile Include="General\BattleScene\BattleCutscene.cpp" />
     <ClCompile Include="General\CombatLookUpTable.cpp" />
     <ClCompile Include="General\CommandingOfficerStats.cpp" />
@@ -324,6 +325,7 @@
   <ItemGroup>
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
+    <ClInclude Include="GameStates\MapEditor.hpp" />
     <ClInclude Include="General\BattleScene\BattleCutscene.hpp" />
     <ClInclude Include="General\CombatLookUpTable.hpp" />
     <ClInclude Include="General\CommandingOfficerStats.hpp" />
