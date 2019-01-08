@@ -26,6 +26,7 @@
 #include "Game\General\Maps\GameHeatMap.hpp"
 #include "Game\General\GameObjects\Effect.hpp"
 #include "Game\General\BattleScene\BattleCutscene.hpp"
+#include "Game\GameStates\MapEditor.hpp"
 
 //====================================================================================
 // Externs
@@ -109,7 +110,7 @@ void Map::CreateMapRenderable(bool makeDebug)
 		m_debugRenderable = new Renderable2D();
 	
 	// For now, hacky
-	TileDefinition* grass = GetTileDefinition("default");
+	TileDefinition* grass = GetTileDefinition("water");
 	Sprite theSprite;
 
 	float tileSize = TILE_SIZE;
@@ -155,7 +156,10 @@ void Map::CreateMapRenderable(bool makeDebug)
 		mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
 		m_mapRenderable->SetMaterial(mapMat);
 
-		g_theGame->m_playingState->AddRenderable(m_mapRenderable);
+		if(g_theGame->m_currentState == PLAY)
+			g_theGame->m_playingState->AddRenderable(m_mapRenderable);
+		else
+			g_theGame->m_mapEditorState->AddRenderable(m_mapRenderable);
 	}
 	else
 	{

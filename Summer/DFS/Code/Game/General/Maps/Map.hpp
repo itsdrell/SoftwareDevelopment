@@ -32,6 +32,7 @@ class Unit;
 class Map
 {
 public:
+	Map();
 	Map(std::string name, const IntVector2& dimensions);
 	Map(std::string name, const Image& mapImage);
 

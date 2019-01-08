@@ -5,6 +5,8 @@
 #include "Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "Game\Main\GameCommon.hpp"
+#include "Game\GameStates\MapEditor.hpp"
+#include "Game\GameStates\Attract.hpp"
 
 Cursor::Cursor()
 	: GameObject2D("Cursor")
@@ -22,5 +24,9 @@ Cursor::Cursor()
 	m_renderable->SetSprite(newSprite);
 	m_renderable->SetLayer(UI);
 
-	g_theGame->m_playingState->AddRenderable(m_renderable);
+	if(g_theGame->m_currentState == PLAY)
+		g_theGame->m_playingState->AddRenderable(m_renderable);
+	
+	if(g_theGame->m_attractState->m_currentMenuItem == MAP_EDITOR_BUTTON)
+		g_theGame->m_mapEditorState->AddRenderable(m_renderable);
 }

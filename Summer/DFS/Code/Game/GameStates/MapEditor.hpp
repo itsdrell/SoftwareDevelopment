@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Math/Vectors/Vector2.hpp"
+#include "Engine/Renderer/Systems/Scene2D.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -9,6 +10,7 @@ class Scene2D;
 class Camera;
 class Map;
 class Cursor;
+class Renderable2D;
 
 //====================================================================================
 // Type Defs + Defines
@@ -37,14 +39,19 @@ class MapEditor
 {
 public:
 	MapEditor();
+	void StartUp();
+
 	~MapEditor();
 
 	void Update();
 	void Render() const;
 
 	void CheckKeyboardInputs();
+	void MoveCursor();
 	void MoveCamera();
 
+	void		AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }
+	void		RemoveRenderable(Renderable2D* toRemove) { m_scene->RemoveRenderable(toRemove); }
 
 public:
 	

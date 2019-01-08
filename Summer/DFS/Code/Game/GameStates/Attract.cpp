@@ -8,6 +8,7 @@
 #include "Engine\Core\Tools/DevConsole.hpp"
 #include "Game/Main/Game.hpp"
 #include "Game/GameStates/Playing.hpp"
+#include "MapEditor.hpp"
 
 Attract::Attract()
 {
@@ -49,22 +50,27 @@ void Attract::RenderHoverText() const
 	
 	//=============================================================
 	// Draw
-
+	Vector2 textPivot = Vector2(-16.f, 25.f);
 	float cellHeight = 8.f;
-	float offsetX = -16.f;
-	float offsetY = 10.f;
+	float offsetY = textPivot.y;
 	
 	// Play
 	if(m_currentMenuItem == PLAY_BUTTON)
-		g_theRenderer->DrawText2D(Vector2(offsetX, offsetY), "Play", cellHeight, Rgba::GREEN);
+		g_theRenderer->DrawText2D(Vector2(textPivot.x, textPivot.y), "Play", cellHeight, Rgba::GREEN);
 	else
-		g_theRenderer->DrawText2D(Vector2(offsetX, offsetY), "Play", cellHeight, Rgba::WHITE);
+		g_theRenderer->DrawText2D(Vector2(textPivot.x, textPivot.y), "Play", cellHeight, Rgba::WHITE);
+
+	// Level Editor
+	if(m_currentMenuItem == MAP_EDITOR_BUTTON)
+		g_theRenderer->DrawText2D(Vector2(textPivot.x * 1.5f,  textPivot.y - offsetY), "Level Editor", cellHeight * .5f, Rgba::GREEN);
+	else
+		g_theRenderer->DrawText2D(Vector2(textPivot.x * 1.5f,  textPivot.y - offsetY), "Level Editor", cellHeight * .5f, Rgba::WHITE);
 
 	// Quit
 	if(m_currentMenuItem == QUIT_BUTTON)
-		g_theRenderer->DrawText2D(Vector2(offsetX, - offsetY), "Quit", cellHeight, Rgba::GREEN);
+		g_theRenderer->DrawText2D(Vector2(textPivot.x,  textPivot.y - (offsetY * 2.f)), "Quit", cellHeight, Rgba::GREEN);
 	else
-		g_theRenderer->DrawText2D(Vector2(offsetX, - offsetY), "Quit", cellHeight, Rgba::WHITE);
+		g_theRenderer->DrawText2D(Vector2(textPivot.x,  textPivot.y - (offsetY * 2.f)), "Quit", cellHeight, Rgba::WHITE);
 
 
 }
@@ -75,9 +81,15 @@ void Attract::KeyboardInput()
 		return;
 	
 	// Change selection
-	if(WasKeyJustReleased(KEYBOARD_UP_ARROW) || WasKeyJustReleased(KEYBOARD_DOWN_ARROW))
+	if(WasKeyJustReleased(KEYBOARD_DOWN_ARROW))
 	{
 		if(m_currentMenuItem == PLAY_BUTTON)
+		{
+			m_currentMenuItem = MAP_EDITOR_BUTTON;
+			return;
+		}
+
+		if(m_currentMenuItem == MAP_EDITOR_BUTTON)
 		{
 			m_currentMenuItem = QUIT_BUTTON;
 			return;
@@ -91,6 +103,27 @@ void Attract::KeyboardInput()
 
 	}
 
+	if(WasKeyJustReleased(KEYBOARD_UP_ARROW))
+	{
+		if(m_currentMenuItem == PLAY_BUTTON)
+		{
+			m_currentMenuItem = QUIT_BUTTON;
+			return;
+		}
+
+		if(m_currentMenuItem == MAP_EDITOR_BUTTON)
+		{
+			m_currentMenuItem = PLAY_BUTTON;
+			return;
+		}
+
+		if(m_currentMenuItem == QUIT_BUTTON)
+		{
+			m_currentMenuItem = MAP_EDITOR_BUTTON;
+			return;
+		}
+	}
+
 	// Do the option
 	if(WasKeyJustPressed(KEYBOARD_ENTER))
 	{
@@ -102,6 +135,15 @@ void Attract::KeyboardInput()
 		if(m_currentMenuItem == QUIT_BUTTON)
 			g_theApp->m_isQuitting = true;
 		
-		
+		if(m_currentMenuItem == MAP_EDITOR_BUTTON)
+		{
+			if(g_theGame->m_mapEditorState != nullptr)
+				delete g_theGame->m_mapEditorState;
+
+			g_theGame->m_mapEditorState = new MapEditor();
+			g_theGame->m_mapEditorState->StartUp();
+			
+			g_theGame->m_currentState = MAP_EDIT;
+		}
 	}
 }

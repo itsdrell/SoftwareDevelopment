@@ -18,6 +18,7 @@ class Attract;
 class Playing;
 class Loading;
 class NetSession;
+class MapEditor;
 
 //=============================================================
 // ENUMS
@@ -28,6 +29,7 @@ enum GameStates
 	LOADING,
 	ATTRACT,
 	PLAY,
+	MAP_EDIT,
 	NUM_OF_GAME_STATES
 };
 
@@ -71,6 +73,7 @@ public:
 	Attract*		m_attractState = nullptr;
 	Playing*		m_playingState = nullptr;
 	Loading*		m_loadingState = nullptr;
+	MapEditor*		m_mapEditorState = nullptr;
 
 	Timer*			m_loadingScreenTimer = nullptr;
 

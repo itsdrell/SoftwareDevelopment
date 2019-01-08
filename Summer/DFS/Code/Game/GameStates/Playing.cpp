@@ -117,9 +117,10 @@ void Playing::Render() const
 
 
 	//m_camera->SetProjectionOrtho(750, 450, -10.0f, 100.0f);
-	m_camera->SetProjectionOrthoByAspect(Window::GetInstance()->GetHeight());
+	m_camera->SetProjectionOrthoByAspect(Window::GetInstance()->GetHeight() * .5f); // .5f makes it bigger
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
-	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
+	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), 
+		Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
 	//Matrix44 view = Matrix44::MakeView(Vector3(0.f, 0.f, -10.f), Vector3::ZERO );
 	//view = Matrix44::MakeTranslation3D(Vector3(-100.f, -100.f, -10.f));
 	//m_camera->m_viewMatrix = view;
@@ -137,10 +138,13 @@ void Playing::Render() const
 	// draw the battle scene
 	//g_theRenderer->SetCamera(m_currentMap->m_battleScene->GetCamera());
 	//g_theRenderer->DrawTexturedAABB2(m_currentMap->m_battleScene->GetRenderedTextureOfScene(), m_currentMap->m_battleScene->GetCamera()->GetOrthoBounds());
-	m_camera->m_viewMatrix = Matrix44();
-	g_theRenderer->SetCamera(m_camera);
-	g_theRenderer->DrawTexturedAABB2(m_camera->GetOrthoBounds(), 
-		*m_currentMap->m_battleScene->GetRenderedTextureOfScene(), Vector2(0.f, 0.f), Vector2(1.f, 1.f), Rgba::WHITE);
+	
+	// vvvv this works but breaks mouse input regularly so it needs an if check.
+	// vvvv Gonna comment it out for now
+	//m_camera->m_viewMatrix = Matrix44();
+	//g_theRenderer->SetCamera(m_camera);
+	//g_theRenderer->DrawTexturedAABB2(m_camera->GetOrthoBounds(), 
+	//	*m_currentMap->m_battleScene->GetRenderedTextureOfScene(), Vector2(0.f, 0.f), Vector2(1.f, 1.f), Rgba::WHITE);
 
 	// Debug heat map
 	if(m_showHeatmap)

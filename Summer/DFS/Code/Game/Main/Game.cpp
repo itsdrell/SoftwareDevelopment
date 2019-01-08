@@ -35,6 +35,7 @@
 #include "../Net/GameRegisteredNetMessages.hpp"
 #include "Engine/Core/General/EngineLuaFunctionBindings.hpp"
 #include "Game/Main/EngineBuildPreferences.hpp"
+#include "Game/GameStates/MapEditor.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -64,6 +65,7 @@ Game::Game()
 	m_attractState = new Attract();
 	m_playingState = new Playing();
 	m_loadingState = new Loading();
+	//m_mapEditorState = new MapEditor();
 	
 	m_luaMain = new LuaScript("Main");
 	LuaStartUp(m_luaMain);
@@ -91,6 +93,9 @@ Game::~Game()
 
 	delete m_luaMain;
 	m_luaMain = nullptr;
+
+	delete m_mapEditorState;
+	m_mapEditorState = nullptr;
 
 	//delete g_theGameClock; // the master clock will delete this
 	//g_theGameClock = nullptr;
@@ -148,6 +153,9 @@ void Game::Update()
 		break;
 	case PLAY:
 		m_playingState->Update();
+		break;
+	case MAP_EDIT:
+		m_mapEditorState->Update();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;
@@ -215,6 +223,9 @@ void Game::Render() const
 		break;
 	case PLAY:
 		m_playingState->Render();
+		break;
+	case MAP_EDIT:
+		m_mapEditorState->Render();
 		break;
 	case NUM_OF_GAME_STATES:
 		break;
