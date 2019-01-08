@@ -43,9 +43,6 @@
     <ClCompile Include="GameStates\Loading.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="General\Map.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="General\GameObjects\Unit.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -73,9 +70,6 @@
     <ClCompile Include="General\UI\UnitWidget.cpp">
       <Filter>General</Filter>
     </ClCompile>
-    <ClCompile Include="General\GameHeatMap.cpp">
-      <Filter>General</Filter>
-    </ClCompile>
     <ClCompile Include="General\CombatLookUpTable.cpp">
       <Filter>General</Filter>
     </ClCompile>
@@ -98,6 +92,15 @@
       <Filter>General</Filter>
     </ClCompile>
     <ClCompile Include="GameStates\MapEditor.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\Maps\GameHeatMap.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\Maps\Map.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\Maps\BattleMap.cpp">
       <Filter>General</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,7 +126,6 @@
     <ClInclude Include="General\Tiles\Tile.hpp" />
     <ClInclude Include="General\Tiles\TileDefinition.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
-    <ClInclude Include="General\Map.hpp" />
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\GameObjects\Building.hpp" />
     <ClInclude Include="General\GameObjects\Cursor.hpp" />
@@ -135,7 +137,6 @@
     <ClInclude Include="General\Player\Controller.hpp" />
     <ClInclude Include="General\Player\PlayerController.hpp" />
     <ClInclude Include="General\UI\UnitWidget.hpp" />
-    <ClInclude Include="General\GameHeatMap.hpp" />
     <ClInclude Include="General\CombatLookUpTable.hpp" />
     <ClInclude Include="Main\Playground.hpp" />
     <ClInclude Include="General\CommandingOfficerStats.hpp" />
@@ -144,5 +145,8 @@
     <ClInclude Include="General\BattleScene\BattleCutscene.hpp" />
     <ClInclude Include="Net\GameRegisteredNetMessages.hpp" />
     <ClInclude Include="GameStates\MapEditor.hpp" />
+    <ClInclude Include="General\Maps\BattleMap.hpp" />
+    <ClInclude Include="General\Maps\GameHeatMap.hpp" />
+    <ClInclude Include="General\Maps\Map.hpp" />
   </ItemGroup>
 </Project>

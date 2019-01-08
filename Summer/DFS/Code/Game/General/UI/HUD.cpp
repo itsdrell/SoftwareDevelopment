@@ -8,12 +8,13 @@
 #include "..\GameObjects\Unit.hpp"
 #include "Engine\Core\General\GameObject2D.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
-#include "Game\General\Map.hpp"
+#include "Game\General\Maps\Map.hpp"
 #include "Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
 #include "..\..\Main\GameCommon.hpp"
 #include "..\GameObjects\Building.hpp"
 #include "Game\General\Player\CommandingOfficer.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 void HUD::Render() const
 {
@@ -54,10 +55,10 @@ void HUD::RenderPlayerDisplay() const
 	Vector2 moneyTextLocation = Vector2(		iconBounds.maxs.x + 1.f,		backgroundBounds.maxs.y - 4.5f);
 	Vector2 turnTextLocation =  Vector2(		iconBounds.maxs.x + 1.f,		backgroundBounds.maxs.y - 7.5f);
 
-	CommandingOfficer* current = g_theCurrentMap->m_currentOfficer;
+	CommandingOfficer* current = g_theBattleMap->m_currentOfficer;
 	String name = (current != nullptr) ? current->m_name : "NULL NAME";
 	String money = (current != nullptr) ? std::to_string(current->m_money) : "";
-	String turnOrder = std::to_string(g_theCurrentMap->m_turnOrder.m_turnCount);
+	String turnOrder = std::to_string(g_theBattleMap->m_turnOrder.m_turnCount);
 
 	r->DrawAABB2( backgroundBounds, GetColorFromTeamName(theTeam));
 	r->DrawTexturedAABB2( r->m_defaultTexture, iconBounds);
@@ -182,9 +183,9 @@ void HUD::RenderAllUnitHP() const
 	r->SetCamera(g_theGame->m_playingState->m_camera);
 	r->BindMaterial(Material::CreateOrGetMaterial("sprite"));
 
-	for(uint i = 0; i < g_theCurrentMap->m_units.size(); i++)
+	for(uint i = 0; i < g_theBattleMap->m_units.size(); i++)
 	{
-		Unit& current = *g_theCurrentMap->m_units.at(i);
+		Unit& current = *g_theBattleMap->m_units.at(i);
 
 		if(current.m_health != MAX_UNIT_HEALTH)
 		{

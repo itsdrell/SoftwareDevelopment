@@ -20,6 +20,7 @@ class Unit;
 class Container;
 class HUD;
 class Tile;
+class BattleMap;
 
 //=============================================================
 // ENUMS
@@ -69,7 +70,7 @@ public:
 
 	GameObject2D*			m_test = nullptr;
 
-	Map*					m_currentMap = nullptr;
+	BattleMap*				m_currentMap = nullptr;
 
 	PlayState				m_currentPlayState;
 

@@ -13,7 +13,7 @@
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 #include "../General/Tiles/TileDefinition.hpp"
 #include "../General/Tiles/Tile.hpp"
-#include "../General/Map.hpp"
+#include "Game/General/Maps/Map.hpp"
 #include "Engine/Core/Tools/Command.hpp"
 #include "Engine/Input/Mouse.hpp"
 #include "../General/GameObjects/Cursor.hpp"
@@ -24,9 +24,10 @@
 #include "../General/UI/UIWidget.hpp"
 #include "../General/UI/HUD.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
-#include "Game/General/GameHeatMap.hpp"
+#include "Game/General/Maps/GameHeatMap.hpp"
 #include "Game/General/BattleScene/BattleCutscene.hpp"
 #include "Engine/Core/Platform/Window.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 //====================================================================================
 Tile* g_currentTile = nullptr;
@@ -81,16 +82,17 @@ void Playing::StartUp()
 	m_currentPlayState = SELECTING;
 
 	Image mapImage = Image("Data/Images/Maps/beanIsland.png");
-	m_currentMap = new Map("test", mapImage);
-	g_theCurrentMap = m_currentMap;
+	m_currentMap = new BattleMap("test", mapImage);
+	g_theBattleMap = m_currentMap;
 
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
 
 	//---------------------------------------------------------
 	// Creating a test scene
-	//CommandRunScriptFromFile("LevelScripts/beanIsland");
-	CommandRunScriptFromFile("LevelScripts/zooLevel");
+	CommandRunScriptFromFile("LevelScripts/beanIsland");
+	m_currentMap->CreateTeams();
+	//CommandRunScriptFromFile("LevelScripts/zooLevel");
 
 }
 
@@ -125,7 +127,7 @@ void Playing::Render() const
 	//////////////////////////////////////////////////////////////////////////
 
 	m_renderingPath->Render(m_scene);
-	m_currentMap->m_battleScene->Render();
+	//m_currentMap->m_battleScene->Render();
 	
 	// #TODO make this a renderable once we figure out a clean way to maintain it
 	m_currentMap->m_actionMenu->Render();
@@ -217,7 +219,7 @@ void Playing::CheckKeyBoardInputs()
 					{
 						// Pop up the general menu for now 
 						m_currentMap->m_actionMenu->AddPauseMenu();
-						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+						g_theBattleMap->m_currentContainer = m_currentMap->m_actionMenu;
 						return;
 					}
 					
@@ -244,7 +246,7 @@ void Playing::CheckKeyBoardInputs()
 					else
 					{
 						// Show general menu
-						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+						g_theBattleMap->m_currentContainer = m_currentMap->m_actionMenu;
 						m_currentMap->m_actionMenu->AddPauseMenu();
 						return;
 					}
@@ -283,7 +285,7 @@ void Playing::CheckKeyBoardInputs()
 
 						UIWidget* newWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("wait"));
 						m_currentMap->m_actionMenu->AddWidget(*newWidget);
-						g_theCurrentMap->m_currentContainer = m_currentMap->m_actionMenu;
+						g_theBattleMap->m_currentContainer = m_currentMap->m_actionMenu;
 
 						m_currentMap->PlaceUnit(mousePos.xy());
 						m_currentPlayState = ACTION;

@@ -4,7 +4,7 @@
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
 #include "Game\GameStates\Playing.hpp"
-#include "..\Map.hpp"
+#include "Game\General\Maps\Map.hpp"
 //====================================================================================
 Tile::Tile()
 {

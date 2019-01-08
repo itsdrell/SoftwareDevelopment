@@ -1,9 +1,10 @@
 #include "UnitWidget.hpp"
 #include "Engine/Renderer/Images/Sprites/Sprite.hpp"
-#include "Game/General/Map.hpp"
+#include "Game/General/Maps/Map.hpp"
 #include "Game/General/Player/CommandingOfficer.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "../ConsoleCommands.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 //--------------------------------------------------------------------------
 UnitWidget::UnitWidget(const TeamName & team, UnitDefinition & unitDef, UIWidgetDefinition & definition)
@@ -47,7 +48,7 @@ void UnitWidget::Render() const
 	//r->DrawAABB2(m_unitNameBounds, Rgba::GREEN);
 	//r->DrawAABB2(m_unitPriceBounds, Rgba::VIOLET);
 
-	if(g_theCurrentMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
+	if(g_theBattleMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
 	{
 		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"),m_bounds, Rgba(100,100,100,255));
 	}
@@ -79,7 +80,7 @@ void UnitWidget::GenerateBounds(const AABB2& newBounds)
 //--------------------------------------------------------------------------
 void UnitWidget::OnClick()
 {
-	if(g_theCurrentMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
+	if(g_theBattleMap->m_currentOfficer->m_money < m_unitToDisplay->m_cost)
 		return;
 	
 	if(m_definition != nullptr)

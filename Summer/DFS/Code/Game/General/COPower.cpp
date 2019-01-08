@@ -1,7 +1,8 @@
 #include "COPower.hpp"
-#include "Map.hpp"
+#include "Game\General\Maps\Map.hpp"
 #include "GameObjects\Unit.hpp"
 #include "Player\CommandingOfficer.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 //===============================================================================================
 // CO Powers
@@ -39,8 +40,8 @@ void COPower::AssignCallbacks()
 //===============================================================================================
 void HealAllUnits(float amount)
 {
-	CommandingOfficer& currentOfficer = *g_theCurrentMap->m_currentOfficer;
-	std::vector<Unit*>& listOfUnits = g_theCurrentMap->m_units;
+	CommandingOfficer& currentOfficer = *g_theBattleMap->m_currentOfficer;
+	std::vector<Unit*>& listOfUnits = g_theBattleMap->m_units;
 
 	for(uint i = 0; i < listOfUnits.size(); i++)
 	{

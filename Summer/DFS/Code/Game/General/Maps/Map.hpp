@@ -1,8 +1,8 @@
 #pragma once
 #include "Engine\Renderer\RenderableComponents\Renderable2D.hpp"
-#include "Tiles\Tile.hpp"
+#include "Game\General\Tiles\Tile.hpp"
 #include "Engine\Renderer\Images\Image.hpp"
-#include "..\Main\GameCommon.hpp"
+#include "Game\Main\GameCommon.hpp"
 
 
 //=============================================================
@@ -10,13 +10,6 @@
 //=============================================================
 class GameObject2D;
 class Unit;
-class HeatMap;
-class HoverTile;
-class GameHeatMap;
-class CommandingOfficer;
-class Container;
-class HUD;
-class BattleCutscene;
 
 //====================================================================================
 // Typedefs
@@ -31,23 +24,7 @@ class BattleCutscene;
 //=============================================================
 // Structs
 //=============================================================
-struct TurnOrder
-{
-	TurnOrder()
-	: m_current (0U) {}
 
-	void GoToNextTurn();
-	void CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck);
-	
-	void AddTeam(TeamName team) { m_order.push_back(team); }
-	TeamName GetCurrentTeamTurn() const { return m_order.at(m_current); }
-	std::string GetCurrentTurnString() const { return TeamNameToString(m_order.at(m_current)); }
-
-	//--------------------------------------------------------------------------
-	uint						m_current = 0U;
-	uint						m_turnCount = 1U;
-	std::vector<TeamName>		m_order;
-};
 
 //=============================================================
 // Classes
@@ -56,21 +33,17 @@ class Map
 {
 public:
 	Map(std::string name, const IntVector2& dimensions);
-	Map(std::string name, Image& mapImage);
+	Map(std::string name, const Image& mapImage);
 
 	~Map();
 	void DeleteUnits();
 	void DeleteBuildings();
-	void DeleteOfficers();
+	
 
-	void Update();
-	void UpdateCurrentCO();
-	void UpdateUI();
-
+	virtual void Update();
+	
 	void CreateMapRenderable(bool makeDebug = false);
 	void CreateMapRenderableFromImage();
-
-	void CreateCommandingOfficer(TeamName theTeam); // v1 for now
 
 	Tile* GetTile(const Vector2& worldPos);
 	Tile* GetTile(const IntVector2& tilePos);
@@ -79,30 +52,7 @@ public:
 	bool SelectUnit(Vector2 pos);
 	void PlaceUnit(Vector2 pos);
 	void PutSelectedUnitBack();
-	bool CheckForAction(const IntVector2& mousePos);
-	void AttackUnitAt(const IntVector2& tileCoords);
-
-	void CreateMovementTiles(const Unit& theUnitToUse);
-	void CreateActionTiles(const Unit& theUnitToUse);
-	void CreateAttackTiles(const Unit& theUnitToUse, bool showRange = false);
-
-	void CreateStoreUI();
-
-	bool CanUnitCaptureBuilding(const Unit& theUnitToUse);
-	bool CanPlayerMoveThere(IntVector2& posToCheck);
-	bool CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck);
-	bool CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck);
-
-	void ClearHoverTiles();
-	void ClearAttackTiles();
-	void RemoveDeadGameObjects();
-
-	void GoToNextTurn();
-	void GenerateIncome();
-
-	void CheckForVictory();
-	bool IsATeamWithoutUnits();
-
+	
 	//--------------------------------------------------------------------------
 	void AddGameObject(GameObject2D& newObject) { m_gameObjects.push_back(&newObject) ;}
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
@@ -119,29 +69,17 @@ public:
 	Renderable2D*						m_debugRenderable = nullptr;
 	Image								m_mapImage;
 
+	Unit*								m_selectedUnit = nullptr;
+	Building*							m_selectedBuilding = nullptr;
+
 	std::vector<Tile>					m_tiles;
-	std::vector<HoverTile*>				m_hoverTiles;
-	std::vector<HoverTile*>				m_attackTiles;
+	
 	std::vector<GameObject2D*>			m_gameObjects;
 	std::vector<Unit*>					m_units;
 	std::vector<Building*>				m_buildings;
-	std::vector<CommandingOfficer*>		m_officers;
-
-	TurnOrder							m_turnOrder;
-	GameHeatMap*						m_movementHeatMap = nullptr;
-	HeatMap*							m_attackHeatMap = nullptr;
 	
-	CommandingOfficer*					m_currentOfficer = nullptr;
-	Unit*								m_selectedUnit = nullptr;
-	Building*							m_selectedBuilding = nullptr;
-	Building*							m_buildingToCapture = nullptr; // for console command 
 
-	Container*							m_currentContainer = nullptr;
-	Container*							m_actionMenu = nullptr;
-	Container*							m_storeMenu = nullptr;
-	HUD*								m_hud = nullptr;
-
-	BattleCutscene*						m_battleScene = nullptr;
+	
 };
 
 
@@ -153,4 +91,3 @@ public:
 //=============================================================
 // Externs
 //=============================================================
-extern Map*	g_theCurrentMap;

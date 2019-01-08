@@ -1,9 +1,10 @@
 #include "GameHeatMap.hpp"
 #include "Engine/Math/Vectors/IntVector2.hpp"
 #include "Game/General/Tiles/Tile.hpp"
-#include "Game/General/Map.hpp"
+#include "Game/General/Maps/Map.hpp"
 #include "Game/General/GameObjects/Unit.hpp"
 #include "Game/General/Tiles/TileDefinition.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 #include <deque>
 
 void GameHeatMap::UpdateMap(IntVector2 initialSeed)
@@ -21,8 +22,8 @@ void GameHeatMap::UpdateMap(IntVector2 initialSeed)
 		{
 			if(DoWeChangeValue(currentSeed,northSeed))
 			{
-				Tile* theTile = g_theCurrentMap->GetTile(northSeed);
-				float heatStep = g_theCurrentMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
+				Tile* theTile = g_theBattleMap->GetTile(northSeed);
+				float heatStep = g_theBattleMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
 				
 				SetHeat(northSeed,GetHeat(currentSeed) + heatStep);
 				openSeeds.push_back(northSeed);
@@ -35,8 +36,8 @@ void GameHeatMap::UpdateMap(IntVector2 initialSeed)
 		{
 			if(DoWeChangeValue(currentSeed,southSeed))
 			{
-				Tile* theTile = g_theCurrentMap->GetTile(southSeed);
-				float heatStep = g_theCurrentMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
+				Tile* theTile = g_theBattleMap->GetTile(southSeed);
+				float heatStep = g_theBattleMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
 				
 				SetHeat(southSeed,GetHeat(currentSeed) + heatStep);
 				openSeeds.push_back(southSeed);
@@ -49,8 +50,8 @@ void GameHeatMap::UpdateMap(IntVector2 initialSeed)
 		{
 			if(DoWeChangeValue(currentSeed,westSeed))
 			{
-				Tile* theTile = g_theCurrentMap->GetTile(westSeed);
-				float heatStep = g_theCurrentMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
+				Tile* theTile = g_theBattleMap->GetTile(westSeed);
+				float heatStep = g_theBattleMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
 				
 				SetHeat(westSeed,GetHeat(currentSeed) + heatStep);
 				openSeeds.push_back(westSeed);
@@ -64,8 +65,8 @@ void GameHeatMap::UpdateMap(IntVector2 initialSeed)
 		{	
 			if(DoWeChangeValue(currentSeed,eastSeed))
 			{
-				Tile* theTile = g_theCurrentMap->GetTile(eastSeed);
-				float heatStep = g_theCurrentMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
+				Tile* theTile = g_theBattleMap->GetTile(eastSeed);
+				float heatStep = g_theBattleMap->m_selectedUnit->GetCostForTileType(theTile->m_definition->m_name);
 				
 				SetHeat(eastSeed,GetHeat(currentSeed) + heatStep);
 				openSeeds.push_back(eastSeed);

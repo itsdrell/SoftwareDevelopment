@@ -6,7 +6,7 @@
 #include "Engine\Core\General\Camera.hpp"
 #include "Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
-#include "Game\General\Map.hpp"
+#include "Game\General\Maps\Map.hpp"
 #include "Engine\Core\Platform\File.hpp"
 #include "Engine\Core\Utils\XmlUtilities.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"

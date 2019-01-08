@@ -11,7 +11,8 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
 #include "..\CombatLookUpTable.hpp"
-#include "..\Map.hpp"
+#include "Game\General\Maps\Map.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -212,7 +213,7 @@ void Unit::Die()
 	g_theGame->m_playingState->RemoveRenderable(m_renderable);
 
 	Vector2 pos = m_transform.GetLocalPosition() * (1 / TILE_SIZE);
-	g_theCurrentMap->CreateEffect("explosion", pos.GetVector2AsInt());
+	g_theBattleMap->CreateEffect("explosion", pos.GetVector2AsInt());
 }
 
 //-----------------------------------------------------------------------------------------------

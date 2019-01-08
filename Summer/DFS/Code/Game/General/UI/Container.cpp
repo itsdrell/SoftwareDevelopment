@@ -6,7 +6,8 @@
 #include "Engine\Math\MathUtils.hpp"
 #include "Engine\Core\Tools\Clock.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
-#include "Game\General\Map.hpp"
+#include "Game\General\Maps\Map.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 
 Container::Container(const String& name, uint amoutOfWidgets, const Vector2& center, const AABB2& menuSize)
@@ -116,7 +117,7 @@ void Container::OnClick()
 void Container::CloseMenu()
 {
 	ClearWidgets();
-	if(g_theCurrentMap->m_currentContainer != nullptr) g_theCurrentMap->m_currentContainer = nullptr;
+	if(g_theBattleMap->m_currentContainer != nullptr) g_theBattleMap->m_currentContainer = nullptr;
 }
 
 void Container::AddPauseMenu()

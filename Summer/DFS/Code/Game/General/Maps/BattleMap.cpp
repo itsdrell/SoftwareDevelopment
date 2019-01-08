@@ -1,15 +1,16 @@
-#include "Map.hpp"
-#include "Tiles\TileDefinition.hpp"
+#include "BattleMap.hpp"
+#include "Game\General\Maps\Map.hpp"
+#include "Game\General\Tiles\TileDefinition.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 #include "Engine\Core\General\EngineCommon.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Renderer\Systems\MeshBuilder.hpp"
 #include "Engine\Renderer\RenderableComponents\Material.hpp"
-#include "..\Main\Game.hpp"
+#include "Game\Main\Game.hpp"
 #include "Game\GameStates\Playing.hpp"
-#include "GameObjects\Unit.hpp"
+#include "Game\General\GameObjects\Unit.hpp"
 #include "Engine\Core\General\GameObject2D.hpp"
-#include "GameObjects\Building.hpp"
+#include "Game\General\GameObjects\Building.hpp"
 #include "..\..\TankGame\Code\Game\Main\GameCommon.hpp"
 #include "Engine\Core\Tools\Command.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
@@ -19,24 +20,23 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 #include "Game\General\Player\CommandingOfficer.hpp"
-#include "UI\Container.hpp"
-#include "UI\HUD.hpp"
-#include "UI\UIWidget.hpp"
-#include "UI\UnitWidget.hpp"
-#include "Game\General\GameHeatMap.hpp"
-#include "GameObjects\Effect.hpp"
+#include "Game\General\UI\Container.hpp"
+#include "Game\General\UI\HUD.hpp"
+#include "Game\General\UI\UIWidget.hpp"
+#include "Game\General\UI\UnitWidget.hpp"
+#include "Game\General\Maps\GameHeatMap.hpp"
+#include "Game\General\GameObjects\Effect.hpp"
 #include "Game\General\BattleScene\BattleCutscene.hpp"
 
-//====================================================================================
-// Externs
-Map* g_theCurrentMap = nullptr;
+//===============================================================================================
+BattleMap* g_theBattleMap = nullptr;
 
 //====================================================================================
 // TURN ORDER
 void TurnOrder::GoToNextTurn()
 {
 	m_current++;
-	
+
 	if(m_current >= m_order.size())
 	{
 		m_current = 0;
@@ -53,7 +53,7 @@ void TurnOrder::CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck)
 {
 	if(teamToCheck == TEAM_NONE)
 		return;
-	
+
 	for(uint i = 0; i < m_order.size(); i++)
 	{
 		TeamName current = m_order.at(i);
@@ -65,28 +65,24 @@ void TurnOrder::CheckIfTeamIsRegisteredAndAdd(TeamName teamToCheck)
 
 	// we don't know about the team so lets add em
 	AddTeam(teamToCheck);
-	g_theCurrentMap->CreateCommandingOfficer(teamToCheck);
+
+	// If you get an error here the cast failed 
+	BattleMap* theMap = (BattleMap*) g_theBattleMap;
+	theMap->CreateCommandingOfficer(teamToCheck);
 }
 
 //====================================================================================
-
-Map::Map(std::string name, const IntVector2 & dimensions)
+// BattleMapz
+BattleMap::BattleMap(const String & name, const IntVector2 & dimensions)
+	: Map(name, dimensions)
 {
-	m_name = name;
-	m_dimensions = dimensions;
-
 	m_movementHeatMap = new GameHeatMap(dimensions);
-
-	CreateMapRenderable();
-	CreateMapRenderable(true);
 }
 
-Map::Map(std::string name, Image& mapImage)
+//-----------------------------------------------------------------------------------------------
+BattleMap::BattleMap(const String& name, const Image& mapImage)
+	: Map(name, mapImage)
 {
-	m_name = name;
-	m_dimensions = mapImage.m_dimensions;
-	m_mapImage = mapImage;
-
 	m_actionMenu = new Container("Main Menu", 5, Vector2(30.f, 30.f), AABB2(-10.f, 10.f));
 	m_storeMenu = new Container("Purchase", 10, Vector2(25.f, 0.f), AABB2(-20.f, -40.f, 20.f, 40.f));
 	m_hud = new HUD();
@@ -94,25 +90,32 @@ Map::Map(std::string name, Image& mapImage)
 	m_movementHeatMap = new GameHeatMap(m_dimensions);
 	m_attackHeatMap = new HeatMap(m_dimensions);
 
-	CreateMapRenderableFromImage();
-	CreateMapRenderable(true);
-
 	m_battleScene = new BattleCutscene();
 	
 }
 
-Map::~Map()
+//-----------------------------------------------------------------------------------------------
+void BattleMap::CreateTeams()
+{
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		TeamName unitsTeam = m_units.at(i)->m_team;
+		m_turnOrder.CheckIfTeamIsRegisteredAndAdd(unitsTeam);
+	}
+
+	for(uint j = 0; j < m_buildings.size(); j++)
+	{
+		TeamName buildingsTeam = m_buildings.at(j)->m_team;
+
+		if(buildingsTeam != TEAM_NONE)
+			m_turnOrder.CheckIfTeamIsRegisteredAndAdd(buildingsTeam);
+	}
+}
+
+BattleMap::~BattleMap()
 {
 	ClearHoverTiles(); //sanity check
-	DeleteBuildings();
 	DeleteOfficers();
-	DeleteUnits();
-	
-	// this is deleted in the scene 
-	m_mapRenderable = nullptr;
-
-	delete m_debugRenderable;
-	m_debugRenderable = nullptr;
 
 	delete m_movementHeatMap;
 	m_movementHeatMap = nullptr;
@@ -130,33 +133,8 @@ Map::~Map()
 	m_hud = nullptr;
 }
 
-void Map::DeleteUnits()
-{
-	for(uint i = 0; i < m_units.size(); i++)
-	{
-		Unit* current = m_units.at(i);
-
-		delete current;
-		current = nullptr;
-	}
-
-	m_units.clear();
-}
-
-void Map::DeleteBuildings()
-{
-	for(uint i = 0; i < m_buildings.size(); i++)
-	{
-		Building* current = m_buildings.at(i);
-
-		delete current;
-		current = nullptr;
-	}
-
-	m_buildings.clear();
-}
-
-void Map::DeleteOfficers()
+//-----------------------------------------------------------------------------------------------
+void BattleMap::DeleteOfficers()
 {
 	for(uint i = 0; i < m_officers.size(); i++)
 	{
@@ -169,217 +147,40 @@ void Map::DeleteOfficers()
 	m_officers.clear();
 }
 
-void Map::Update()
+//-----------------------------------------------------------------------------------------------
+void BattleMap::Update()
 {
 	UpdateCurrentCO();
-	
-	for(uint i = 0; i < m_gameObjects.size(); i++)
-	{
-		m_gameObjects.at(i)->Update();
-	}
 
-	
+	Map::Update(); // might be a bad idea
+
 	UpdateUI();
 	CheckForVictory();
 }
 
-void Map::UpdateCurrentCO()
+void BattleMap::UpdateCurrentCO()
 {
 	if(m_currentOfficer != m_officers.at(m_turnOrder.m_current))
 		m_currentOfficer = m_officers.at(m_turnOrder.m_current);
 }
 
-void Map::UpdateUI()
+void BattleMap::UpdateUI()
 {
 	m_actionMenu->Update();
 	m_storeMenu->Update();
 }
 
-void Map::CreateMapRenderable(bool makeDebug)
-{
-	if(makeDebug == false)
-		m_mapRenderable = new Renderable2D();
-	else
-		m_debugRenderable = new Renderable2D();
-	
-	// For now, hacky
-	TileDefinition* grass = GetTileDefinition("default");
-	Sprite theSprite;
-
-	float tileSize = TILE_SIZE;
-
-	if(makeDebug == false)
-		theSprite = Sprite(*g_tileSpriteSheet.m_spriteSheetTexture, Vector2::ONE, tileSize, Vector2(.5f,.5f), grass->m_uvCoords);
-	else
-		theSprite = Sprite(*g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/highlightCell.png"), Vector2::ONE, tileSize, Vector2(.5f,.5f));
-
-
-	Vector2 currentPos = Vector2::ZERO;
-	float stepSize = tileSize;
-
-	MeshBuilder mb;
-	int theTileSize = TILE_SIZE_INT;
-	for(int y = 0; y < m_dimensions.y; y++)
-	{
-		for(int x = 0; x < m_dimensions.x; x++)
-		{
-			Tile newTile = Tile(currentPos.GetVector2AsInt(), *grass, theTileSize);
-			m_tiles.push_back(newTile);
-			
-			mb.AddFromSprite(currentPos, theSprite);
-
-
-			currentPos.x += stepSize;
-		}
-
-		currentPos.x = 0.f;
-		currentPos.y += stepSize;
-	}
-
-
-	//---------------------------------------------------------
-	// Create the mesh
-	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
-
-	if(makeDebug == false)
-	{
-		m_mapRenderable->SetMesh(theMesh);
-
-		Material* mapMat = Material::CreateOrGetMaterial("default");
-		mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
-		m_mapRenderable->SetMaterial(mapMat);
-
-		g_theGame->m_playingState->AddRenderable(m_mapRenderable);
-	}
-	else
-	{
-		m_debugRenderable->SetMesh(theMesh);
-
-		Material* mapMat = Material::CreateOrGetMaterial("sprite");
-		mapMat->SetTexture(0,g_theRenderer->CreateOrGetTexture("Data/Images/Sprites/highlightCell.png"));
-		m_debugRenderable->SetMaterial(mapMat);
-		m_debugRenderable->SetLayer(-10);
-
-		//g_theGame->m_playingState->AddRenderable(m_debugRenderable);
-
-	}
-	
-
-
-}
-
-void Map::CreateMapRenderableFromImage()
-{
-	m_mapRenderable = new Renderable2D();
-
-	float tileSize = TILE_SIZE;
-
-	Vector2 currentPos = Vector2::ZERO;
-	float stepSize = tileSize;
-
-	MeshBuilder mb;
-	int theTileSize = TILE_SIZE_INT;
-	for(int y = 0; y < m_dimensions.y; y++)
-	{
-		for(int x = 0; x < m_dimensions.x; x++)
-		{
-			Rgba color = m_mapImage.GetColorAt(x,y);
-			TileDefinition* currentDef = GetTileDefinition(color);
-
-			Tile newTile = Tile(currentPos.GetVector2AsInt(), *currentDef, theTileSize);
-			m_tiles.push_back(newTile);
-
-			Sprite theSprite = Sprite(*g_tileSpriteSheet.m_spriteSheetTexture, Vector2::ONE, tileSize, Vector2(.5f,.5f), currentDef->m_uvCoords);
-			mb.AddFromSprite(currentPos, theSprite);
-
-
-			currentPos.x += stepSize;
-		}
-
-		currentPos.x = 0.f;
-		currentPos.y += stepSize;
-	}
-
-
-	//---------------------------------------------------------
-	// Create the mesh
-	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
-
-	m_mapRenderable->SetMesh(theMesh);
-
-	Material* mapMat = Material::CreateOrGetMaterial("default");
-	mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
-	m_mapRenderable->SetMaterial(mapMat);
-
-	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
-}
-
-void Map::CreateCommandingOfficer(TeamName theTeam)
+void BattleMap::CreateCommandingOfficer(TeamName theTeam)
 {
 	//String playerName = "Player " + std::to_string(m_officers.size() + 1U);
-	
+
 	CommandingOfficer* newOfficer = new CommandingOfficer("Andy", theTeam, PLAYER_CO);
 
 	m_officers.push_back(newOfficer);
 }
 
-Tile* Map::GetTile(const Vector2& worldPos)
-{
-	//int Tilesize = TILE_SIZE_INT;
-	
-	for(uint i = 0; i < m_tiles.size(); i++)
-	{
-		Tile* current = &m_tiles.at(i);
 
-		if( current->IsPointInsideTile(worldPos.GetVector2AsInt()) )
-		{
-			return current;
-		}
-	}
-
-	return nullptr; 
-}
-
-Tile* Map::GetTile(const IntVector2& tilePos)
-{
-	return &m_tiles.at(tilePos.y * m_dimensions.x + tilePos.x);
-}
-
-bool Map::SelectUnit(Vector2 pos)
-{
-	Tile* selectedTile = GetTile(pos);
-
-	if(selectedTile->m_unit == nullptr)
-		return false;
-
-	m_selectedUnit = selectedTile->m_unit;
-	m_selectedUnit->m_tileIAmOn = selectedTile; // keep this so we know where to go back to
-	selectedTile->m_unit = nullptr;
-
-	return true;
-}
-
-void Map::PlaceUnit(Vector2 pos)
-{
-	Tile* selectedTile = GetTile(pos);
-
-	selectedTile->m_unit = m_selectedUnit;
-	m_selectedUnit->m_tileIAmOn->m_unit = nullptr;
-	m_selectedUnit->m_tileIAmOn = selectedTile;
-	m_selectedUnit->m_beenMoved = true;
-	selectedTile->m_unit = m_selectedUnit;
-}
-
-void Map::PutSelectedUnitBack()
-{
-	Tile* tileToGoBackTo = m_selectedUnit->m_tileIAmOn;
-
-	tileToGoBackTo->m_unit = m_selectedUnit;
-	m_selectedUnit->m_transform.SetLocalPosition(tileToGoBackTo->GetCenterOfTile());
-
-}
-
-bool Map::CheckForAction(const IntVector2& mousePos)
+bool BattleMap::CheckForAction(const IntVector2& mousePos)
 {
 	int tileSize = TILE_SIZE_INT;
 
@@ -389,13 +190,13 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 	for(uint i = 0; i < m_attackTiles.size(); i++)
 	{
 		HoverTile* currentTile = m_attackTiles.at(i);
-		
+
 		IntVector2 current = currentTile->m_tileCoords * tileSize;
 
 		if(mousePos == current)
 		{
 			check = true;
-			
+
 			// do something based off the action
 			switch (currentTile->m_type)
 			{
@@ -405,7 +206,7 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 			default:
 				break;
 			}
-			
+
 		}
 	}
 
@@ -413,7 +214,7 @@ bool Map::CheckForAction(const IntVector2& mousePos)
 	return check;
 }
 
-void Map::AttackUnitAt(const IntVector2& tileCoords)
+void BattleMap::AttackUnitAt(const IntVector2& tileCoords)
 {
 	Tile* theTile = GetTile(tileCoords);
 
@@ -422,7 +223,7 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 	// store off the start health
 	int aStartHealth = m_selectedUnit->m_health;
 	int dStartHealth = target->m_health;
-	
+
 	// do the attack
 	Unit::Attack(*m_selectedUnit, *target);
 
@@ -440,13 +241,13 @@ void Map::AttackUnitAt(const IntVector2& tileCoords)
 
 	if(target->m_isDead == true)
 		theTile->m_unit = nullptr;
-	
+
 }
 
-void Map::CreateMovementTiles(const Unit& theUnitToUse)
+void BattleMap::CreateMovementTiles(const Unit& theUnitToUse)
 {
 	m_movementHeatMap->ResetHeatMap();
-	
+
 	// Gotta translate from world coords to tileCoords
 	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
 	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
@@ -454,7 +255,7 @@ void Map::CreateMovementTiles(const Unit& theUnitToUse)
 	m_movementHeatMap->AddHeat(tileCoords);
 
 	std::vector<IntVector2> tilePos = m_movementHeatMap->GetAllTileCoordsWithHeatLessOrEqual(theUnitToUse.GetMovement());
-	
+
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
 		if(CanUnitEnterThatTile(theUnitToUse, tilePos.at(i)))
@@ -468,16 +269,16 @@ void Map::CreateMovementTiles(const Unit& theUnitToUse)
 		//
 		//m_hoverTiles.push_back(newTile);
 	}
-	
-	
+
+
 }
 
-void Map::CreateActionTiles(const Unit& theUnitToUse)
+void BattleMap::CreateActionTiles(const Unit& theUnitToUse)
 {
 	CreateAttackTiles(theUnitToUse);
 }
 
-void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
+void BattleMap::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 {
 	m_attackHeatMap->ResetHeatMap();
 
@@ -491,7 +292,7 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 
 	for(uint i = 0; i < tilePos.size(); i++)
 	{
-		
+
 		// see if we want to get the attack range of the unit, or just show what we can attack
 		if(showRange == false)
 		{
@@ -512,36 +313,36 @@ void Map::CreateAttackTiles(const Unit& theUnitToUse, bool showRange)
 	}
 }
 
-void Map::CreateStoreUI()
+void BattleMap::CreateStoreUI()
 {
 	String typeOfUnit = m_selectedBuilding->m_definition->m_typeOfUnitToSpawn;
 
 	std::vector<UnitDefinition*> units;
 	UnitDefinition::GetAllUnitDefinitionsWithStoreTag(typeOfUnit, &units);
-	
+
 	for(uint i = 0; i < units.size(); i++)
 	{
 		UIWidget* unitWidget = new UnitWidget(m_currentOfficer->m_team, *units.at(i), *UIWidgetDefinition::GetUIWidgetDefinition("unit"));
 		m_storeMenu->AddWidget(*unitWidget);
 	}
-	
+
 	m_currentContainer = m_storeMenu;
 	m_currentContainer->AddCloseWidget();
 }
 
-bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)
+bool BattleMap::CanUnitCaptureBuilding(const Unit& theUnitToUse)
 {
 	if(theUnitToUse.m_definition->m_canCapture == false)
 		return false;
-	
+
 	IntVector2 worldCoords = GetTileCoords(theUnitToUse.m_transform.GetLocalPosition());
 	IntVector2 tileCoords = IntVector2(worldCoords.x / TILE_SIZE_INT, worldCoords.y / TILE_SIZE_INT);
 
 	Tile* theTile = GetTile(tileCoords);
-	
-	
+
+
 	Building* theBuilding = theTile->m_building;
-	
+
 	if(theBuilding != nullptr)
 	{
 		if(theBuilding->m_team != theUnitToUse.m_team)
@@ -554,7 +355,7 @@ bool Map::CanUnitCaptureBuilding(const Unit& theUnitToUse)
 	return false;
 }
 
-bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
+bool BattleMap::CanPlayerMoveThere(IntVector2& posToCheck)
 {
 	int tileSize = TILE_SIZE_INT;
 
@@ -573,7 +374,7 @@ bool Map::CanPlayerMoveThere(IntVector2& posToCheck)
 	return check;
 }
 
-bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck)
+bool BattleMap::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& posToCheck)
 {
 	Tile* currentTile = GetTile(posToCheck);
 
@@ -591,7 +392,7 @@ bool Map::CanPlayerAttackUnitOnTile(const Unit& theUnitToUse, const IntVector2& 
 	return false;
 }
 
-bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck)
+bool BattleMap::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck)
 {
 	Tags unitTags = theUnitToUse.GetMovementTags();
 
@@ -608,11 +409,11 @@ bool Map::CanUnitEnterThatTile(const Unit& theUnitToUse, IntVector2& tileToCheck
 	}
 
 	Tags tileTags = currentTile->m_definition->m_movementTags;
-	
+
 	return DoTagsShareATag(unitTags, tileTags);
 }
 
-void Map::ClearHoverTiles()
+void BattleMap::ClearHoverTiles()
 {
 	for(uint i = 0; i < m_hoverTiles.size(); i++)
 	{
@@ -624,7 +425,7 @@ void Map::ClearHoverTiles()
 	m_hoverTiles.clear();
 }
 
-void Map::ClearAttackTiles()
+void BattleMap::ClearAttackTiles()
 {
 	for(uint i = 0; i < m_attackTiles.size(); i++)
 	{
@@ -636,9 +437,9 @@ void Map::ClearAttackTiles()
 	m_attackTiles.clear();
 }
 
-void Map::RemoveDeadGameObjects()
+void BattleMap::RemoveDeadGameObjects()
 {
-	
+
 	for(uint i = 0; i < m_gameObjects.size(); i++)
 	{
 		GameObject2D* current = m_gameObjects.at(i);
@@ -663,7 +464,7 @@ void Map::RemoveDeadGameObjects()
 
 }
 
-void Map::GoToNextTurn()
+void BattleMap::GoToNextTurn()
 {
 	// This needs to reset all the states of the units
 	m_turnOrder.GoToNextTurn();
@@ -673,7 +474,7 @@ void Map::GoToNextTurn()
 	for(uint i = 0; i < m_units.size(); i++)
 	{
 		Unit*& current = m_units.at(i);
-		
+
 		current->m_beenMoved = false;
 		current->m_usedAction = false;
 	}
@@ -681,7 +482,7 @@ void Map::GoToNextTurn()
 	GenerateIncome();
 }
 
-void Map::GenerateIncome()
+void BattleMap::GenerateIncome()
 {
 	uint allowance = 0U;
 
@@ -696,17 +497,17 @@ void Map::GenerateIncome()
 	m_currentOfficer->m_money += allowance;
 }
 
-void Map::CheckForVictory()
+void BattleMap::CheckForVictory()
 {
 	// Later this could have other objectives based off the map (enum)
-	
+
 	bool victory = IsATeamWithoutUnits();
 
 	if(victory)
 		DebugRenderLog(10.f, "VICTORY");
 }
 
-bool Map::IsATeamWithoutUnits()
+bool BattleMap::IsATeamWithoutUnits()
 {
 	std::vector<TeamName> teams = m_turnOrder.m_order;
 
@@ -727,61 +528,6 @@ bool Map::IsATeamWithoutUnits()
 		if(foundOneAlive == false)
 			return true;
 	}
-	
+
 	return false;
 }
-
-Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
-{
-	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name));
-	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
-	newUnit->SetLocalPosition(position);
-
-	newUnit->m_health = hp;
-
-	// Put the unit on the tile
-	Tile* tilePlacedOn = GetTile(position);
-	tilePlacedOn->m_unit = newUnit;
-	newUnit->m_tileIAmOn = tilePlacedOn;
-
-	// make sure we know about their team
-	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
-
-	AddGameObject(*newUnit);
-	AddUnit(*newUnit);
-
-	return newUnit;
-}
-
-void Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
-{
-	Building* newBuilding = new Building(team, *BuildingDefinition::GetDefinition(name));
-	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
-	newBuilding->SetLocalPosition(position);
-
-	Tile* tilePlacedOn = GetTile(position);
-	tilePlacedOn->m_building = newBuilding;
-
-	newBuilding->m_tileReference = tilePlacedOn;
-
-	if(tilePlacedOn->m_definition != newBuilding->m_definition->m_tileToSpawnBeneath)
-		tilePlacedOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;
-
-	if(team != TEAM_NONE)
-		m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
-
-	AddGameObject(*newBuilding);
-	AddBuilding(*newBuilding);
-}
-
-//-----------------------------------------------------------------------------------------------
-void Map::CreateEffect(const String& name, const IntVector2& pos)
-{
-	Effect* newEffect = new Effect(name);
-	Vector2 position = (pos.GetAsVector2() * TILE_SIZE);
-	position.y += (TILE_SIZE * .5f);
-	newEffect->SetLocalPosition(position);
-
-	AddGameObject(*newEffect);
-}
-

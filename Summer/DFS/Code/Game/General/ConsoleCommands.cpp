@@ -1,7 +1,7 @@
 #include "ConsoleCommands.hpp"
 #include "Game/Main/Game.hpp"
 #include "Game/GameStates/Playing.hpp"
-#include "Game/General/Map.hpp"
+#include "Game/General/Maps/Map.hpp"
 #include "Game/General/GameObjects/Unit.hpp"
 #include "Game/General/GameObjects/Building.hpp"
 #include "../GameStates/Playing.hpp"
@@ -18,6 +18,7 @@
 #include "Game/General/BattleScene/BattleCutscene.hpp"
 #include <string>
 #include "Engine/Async/Threading.hpp"
+#include "Game\General\Maps\BattleMap.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -54,23 +55,23 @@ void EndTurn(Command & theCommand)
 {
 	UNUSED(theCommand);
 	
-	g_theCurrentMap->ClearHoverTiles();
-	g_theCurrentMap->GoToNextTurn();
-	g_theCurrentMap->m_actionMenu->ClearWidgets();
+	g_theBattleMap->ClearHoverTiles();
+	g_theBattleMap->GoToNextTurn();
+	g_theBattleMap->m_actionMenu->ClearWidgets();
 }
 
 void HaveAUnitWait(Command& theCommand)
 {
 	UNUSED(theCommand);
 
-	Unit* currentUnit = g_theCurrentMap->m_selectedUnit;
+	Unit* currentUnit = g_theBattleMap->m_selectedUnit;
 
 	if(currentUnit == nullptr)
 		return;
 
 	currentUnit->m_usedAction = true;
-	g_theCurrentMap->ClearHoverTiles();
-	g_theCurrentMap->m_actionMenu->ClearWidgets();
+	g_theBattleMap->ClearHoverTiles();
+	g_theBattleMap->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
 }
 
@@ -78,19 +79,19 @@ void CaptureBuilding(Command& theCommand)
 {
 	UNUSED(theCommand);
 
-	if(g_theCurrentMap->m_selectedUnit == nullptr)
+	if(g_theBattleMap->m_selectedUnit == nullptr)
 	{
 		DevConsole::GetInstance()->AddErrorMessage("No building or unit selected");
 		return;
 	}
 
-	g_theCurrentMap->m_buildingToCapture->Capture(*g_theCurrentMap->m_selectedUnit); 
+	g_theBattleMap->m_buildingToCapture->Capture(*g_theBattleMap->m_selectedUnit); 
 
 	// reset state
-	g_theCurrentMap->m_selectedUnit->m_usedAction = true;
-	g_theCurrentMap->m_actionMenu->ClearWidgets();
+	g_theBattleMap->m_selectedUnit->m_usedAction = true;
+	g_theBattleMap->m_actionMenu->ClearWidgets();
 	g_theGame->m_playingState->m_currentPlayState = SELECTING;
-	g_theCurrentMap->ClearHoverTiles();
+	g_theBattleMap->ClearHoverTiles();
 }
 
 void AddUnit(Command& theCommand)
@@ -138,7 +139,7 @@ void AddUnit(Command& theCommand)
 	}
 	else
 	{
-		g_theCurrentMap->CreateUnit(unitName, teamName, pos, hp);
+		g_theBattleMap->CreateUnit(unitName, teamName, pos, hp);
 	}
 
 }
@@ -185,7 +186,7 @@ void AddBuilding(Command& theCommand)
 	}
 	else
 	{
-		g_theCurrentMap->CreateBuilding(buildingName, teamName, pos);
+		g_theBattleMap->CreateBuilding(buildingName, teamName, pos);
 	}
 
 }
@@ -221,7 +222,7 @@ void AddEffect(Command& theCommand)
 	}
 	else
 	{
-		g_theCurrentMap->CreateEffect(effectName, pos);
+		g_theBattleMap->CreateEffect(effectName, pos);
 	}
 }
 
@@ -229,10 +230,10 @@ void CloseOpenMenu(Command& theCommand)
 {
 	UNUSED(theCommand);
 
-	g_theCurrentMap->m_currentContainer->CloseMenu();
+	g_theBattleMap->m_currentContainer->CloseMenu();
 
-	if(g_theCurrentMap->m_selectedUnit != nullptr)
-		g_theCurrentMap->PutSelectedUnitBack();
+	if(g_theBattleMap->m_selectedUnit != nullptr)
+		g_theBattleMap->PutSelectedUnitBack();
 }
 
 void PurchaseUnit(Command& theCommand)
@@ -240,16 +241,16 @@ void PurchaseUnit(Command& theCommand)
 	UNUSED(theCommand);
 	
 	// subtract funds
-	g_theCurrentMap->m_currentOfficer->m_money -= g_unitToSpawn->m_cost;
+	g_theBattleMap->m_currentOfficer->m_money -= g_unitToSpawn->m_cost;
 	
-	Vector2 tilePos = g_theCurrentMap->m_selectedBuilding->m_tileReference->m_position.GetAsVector2();
+	Vector2 tilePos = g_theBattleMap->m_selectedBuilding->m_tileReference->m_position.GetAsVector2();
 	tilePos *= (1 / TILE_SIZE);
 
 
 	// add unit
-	Unit* newUnit = g_theCurrentMap->CreateUnit(
+	Unit* newUnit = g_theBattleMap->CreateUnit(
 		g_unitToSpawn->m_name, 
-		g_theCurrentMap->m_currentOfficer->m_team, 
+		g_theBattleMap->m_currentOfficer->m_team, 
 		tilePos.GetVector2AsInt(), 
 		10);
 	
@@ -264,7 +265,7 @@ void AddAllUnitTypesToMap(Command& theCommand)
 {
 	UNUSED(theCommand);
 
-	IntVector2 dim = g_theCurrentMap->m_dimensions;
+	IntVector2 dim = g_theBattleMap->m_dimensions;
 
 	std::vector<UnitDefinition*> defList;
 	UnitDefinition::GetAllUnitDefinitions( &defList );
@@ -274,10 +275,10 @@ void AddAllUnitTypesToMap(Command& theCommand)
 	IntVector2 currentPos = IntVector2(0,0);
 	for(uint i = 0; i < amountOfUnits; i++)
 	{
-		g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos, 10);
-		g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_BLUE, currentPos + IntVector2(1,0), 10);
-		//g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(2,0), 10);
-		//g_theCurrentMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(3,0), 10);
+		g_theBattleMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos, 10);
+		g_theBattleMap->CreateUnit(defList.at(i)->m_name, TEAM_BLUE, currentPos + IntVector2(1,0), 10);
+		//g_theBattleMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(2,0), 10);
+		//g_theBattleMap->CreateUnit(defList.at(i)->m_name, TEAM_RED,  currentPos + IntVector2(3,0), 10);
 
 		currentPos.y += 1;
 	}
@@ -288,7 +289,7 @@ void UseCOPower(Command& theCommand)
 {
 	UNUSED(theCommand);
 
-	g_theCurrentMap->m_currentOfficer->m_definition->m_power->UsePower();
+	g_theBattleMap->m_currentOfficer->m_definition->m_power->UsePower();
 }
 
 
@@ -392,7 +393,7 @@ void CreateBattleScene(Command& theCommand)
 		BattleResults br = BattleResults(attacker, defender, attackerStartHP, defStartHP);
 
 		// set it on the battle scene
-		g_theCurrentMap->m_battleScene->SetBattleResults(br);
+		g_theBattleMap->m_battleScene->SetBattleResults(br);
 
 		// this is just to make sure we got what we wanted, or if we do random make sure what we see is what we put in
 		dc->AddConsoleDialogue(Stringf("Created a battle between %s on team %s with start hp: %i endHp: %i",
