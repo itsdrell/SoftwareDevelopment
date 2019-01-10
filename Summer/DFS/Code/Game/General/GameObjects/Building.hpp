@@ -10,6 +10,7 @@
 //=============================================================
 class TileDefinition;
 class Tile;
+class Map;
 
 #define MAX_BUILDING_HEALTH (MAX_UNIT_HEALTH * 2)
 
@@ -59,7 +60,7 @@ class Building : public GameObject2D
 {
 public:
 	Building(TeamName theTeam = TEAM_NONE);
-	Building(const TeamName& theTeam, BuildingDefinition& def);
+	Building(const TeamName& theTeam, BuildingDefinition& def, Map& mapToPutOn);
 	void SetSpriteFromTeam(const TeamName& theTeam);
 
 	virtual ~Building();

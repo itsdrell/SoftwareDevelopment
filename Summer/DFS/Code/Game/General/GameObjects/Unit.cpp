@@ -13,6 +13,7 @@
 #include "..\CombatLookUpTable.hpp"
 #include "Game\General\Maps\Map.hpp"
 #include "Game\General\Maps\BattleMap.hpp"
+#include "Game\GameStates\MapEditor.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -44,7 +45,7 @@ Unit::Unit(TeamName team)
 }
 
 //-----------------------------------------------------------------------------------------------
-Unit::Unit(TeamName team, UnitDefinition & def)
+Unit::Unit(TeamName team, UnitDefinition & def, Map& theMapToGoOn)
 	: GameObject2D("Unit")
 {
 	m_team = team;
@@ -64,7 +65,7 @@ Unit::Unit(TeamName team, UnitDefinition & def)
 	m_renderable->SetSprite(m_animator->GetCurrentSprite());
 	m_renderable->SetLayer(UNITS);
 
-	g_theGame->m_playingState->AddRenderable(m_renderable);
+	theMapToGoOn.AddRenderable(m_renderable);
 }
 
 //-----------------------------------------------------------------------------------------------

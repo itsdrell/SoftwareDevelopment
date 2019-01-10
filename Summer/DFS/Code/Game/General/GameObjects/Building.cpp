@@ -7,6 +7,7 @@
 #include "Engine\Renderer\Systems\DebugRenderSystem.hpp"
 #include "Engine\Core\Utils\XmlUtilities.hpp"
 #include "..\Tiles\TileDefinition.hpp"
+#include "Game\General\Maps\Map.hpp"
 
 //====================================================================================
 std::map<std::string, BuildingDefinition*>	BuildingDefinition::s_definitions;
@@ -99,7 +100,7 @@ Building::Building(TeamName theTeam)
 	g_theGame->m_playingState->AddRenderable(m_renderable);
 }
 
-Building::Building(const TeamName& theTeam, BuildingDefinition& def)
+Building::Building(const TeamName& theTeam, BuildingDefinition& def, Map& mapToPutOn)
 	: GameObject2D("Building")
 {
 	m_team = theTeam;
@@ -119,7 +120,7 @@ Building::Building(const TeamName& theTeam, BuildingDefinition& def)
 	m_renderable->SetMaterial(newMaterial);
 	m_renderable->SetLayer(BUILDINGS);
 
-	g_theGame->m_playingState->AddRenderable(m_renderable);
+	mapToPutOn.AddRenderable(m_renderable);
 }
 
 void Building::SetSpriteFromTeam(const TeamName& theTeam)

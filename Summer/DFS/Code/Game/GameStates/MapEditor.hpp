@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Math/Vectors/Vector2.hpp"
-#include "Engine/Renderer/Systems/Scene2D.hpp"
+#include "Game/General/Maps/Map.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -8,9 +8,9 @@
 class SpriteRendering;
 class Scene2D;
 class Camera;
-class Map;
 class Cursor;
 class Renderable2D;
+class Tile;
 
 //====================================================================================
 // Type Defs + Defines
@@ -47,16 +47,22 @@ public:
 	void Render() const;
 
 	void CheckKeyboardInputs();
+	void PlaceObjectOrTile();
 	void MoveCursor();
 	void MoveCamera();
 
-	void		AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }
-	void		RemoveRenderable(Renderable2D* toRemove) { m_scene->RemoveRenderable(toRemove); }
+	void ChangeTile();
+	void PlaceUnit();
+	void PlaceBuilding();
+
+	Tile* GetSelectedTile();
+
+	void		AddRenderable(Renderable2D* newRenderable) { m_currentMap->AddRenderable(newRenderable); }
+	void		RemoveRenderable(Renderable2D* toRemove) { m_currentMap->RemoveRenderable(toRemove); }
 
 public:
 	
 	SpriteRendering*		m_renderingPath = nullptr;
-	Scene2D*				m_scene = nullptr;
 
 	Camera*					m_camera = nullptr;
 
@@ -65,6 +71,9 @@ public:
 	Cursor*					m_cursor = nullptr;
 	Vector2					m_cameraLocation;
 
+	SelectionType			m_selectionType = SELECTIONTYPE_TILE;
+
+	Tile*					m_selectedTileToChange = nullptr; // convienence pointer
 
 };
 

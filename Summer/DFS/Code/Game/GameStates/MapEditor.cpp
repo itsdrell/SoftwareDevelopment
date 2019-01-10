@@ -8,6 +8,9 @@
 #include "Engine\Core\Platform\Window.hpp"
 #include "Engine\Input\Mouse.hpp"
 #include "Engine\Core\Tools\DevConsole.hpp"
+#include "Game\General\Tiles\Tile.hpp"
+#include "Game\General\Tiles\TileDefinition.hpp"
+#include "..\General\GameObjects\Unit.hpp"
 
 //===============================================================================================
 MapEditor::MapEditor()
@@ -17,8 +20,10 @@ MapEditor::MapEditor()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::StartUp()
 {
-	m_scene = new Scene2D("Test");
+	//m_scene = new Scene2D("Test");
 	m_renderingPath = new SpriteRendering();
+	
+	m_currentMap = new Map("new map:)", IntVector2(10,10));
 
 	//---------------------------------------------------------
 	// Cameras
@@ -26,12 +31,10 @@ void MapEditor::StartUp()
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 
-	m_scene->AddCamera(m_camera);
+	m_currentMap->m_scene->AddCamera(m_camera);
 
 	g_theRenderer->SetCamera();
 	
-	m_currentMap = new Map("new map:)", IntVector2(30,20));
-
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
 }
@@ -39,8 +42,6 @@ void MapEditor::StartUp()
 //-----------------------------------------------------------------------------------------------
 MapEditor::~MapEditor()
 {
-	delete m_scene;
-	m_scene = nullptr;
 
 	delete m_renderingPath;
 	m_renderingPath = nullptr;
@@ -71,7 +72,7 @@ void MapEditor::Render() const
 	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), 
 		Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
 
-	m_renderingPath->Render(m_scene);
+	m_renderingPath->Render(m_currentMap->m_scene);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -79,8 +80,40 @@ void MapEditor::CheckKeyboardInputs()
 {
 	if(IsDevConsoleOpen())
 		return;
+
+	PlaceObjectOrTile();
 	
 	MoveCursor();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::PlaceObjectOrTile()
+{
+	// when the user hits mouse button, do a thing based on mode
+	if(IsMouseButtonPressed(LEFT_MOUSE_BUTTON))
+	{
+		m_selectedTileToChange = GetSelectedTile();
+
+		// this check is to enable dragging/painting tiles
+		if(m_selectedTileToChange == nullptr)
+			return;
+		
+		switch (m_selectionType)
+		{
+		case SELECTIONTYPE_TILE:
+			ChangeTile();
+			break;
+		case SELECTIONTYPE_BUILDING:
+			PlaceBuilding();
+			break;
+		case SELECTIONTYPE_UNIT:
+			PlaceUnit();
+			break;
+		default:
+			break;
+		}
+	}
+	
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -105,4 +138,41 @@ void MapEditor::MoveCursor()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::MoveCamera()
 {
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::ChangeTile()
+{
+	m_selectedTileToChange->m_definition = GetTileDefinition("grass");
+	m_currentMap->RecreateMapRenderable();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::PlaceUnit()
+{
+	if(m_selectedTileToChange->m_unit != nullptr)
+		return;
+
+	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
+	
+	m_currentMap->CreateUnit("grunt", TEAM_RED, pos, 10);
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::PlaceBuilding()
+{
+	if(m_selectedTileToChange->m_building != nullptr)
+		return;
+
+	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
+
+	m_currentMap->CreateBuilding("default", TEAM_NONE, pos);
+}
+
+//-----------------------------------------------------------------------------------------------
+Tile* MapEditor::GetSelectedTile()
+{
+	Vector2 cmouse = GetMouseCurrentPosition();
+	Vector3 mousePos = m_camera->ScreenToWorldCoordinate(cmouse, 0.f);
+	return m_currentMap->GetTile(mousePos.xy());
 }

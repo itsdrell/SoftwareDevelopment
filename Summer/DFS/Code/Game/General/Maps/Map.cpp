@@ -28,6 +28,7 @@
 #include "Game\General\BattleScene\BattleCutscene.hpp"
 #include "Game\GameStates\MapEditor.hpp"
 
+
 //====================================================================================
 // Externs
 
@@ -39,6 +40,7 @@ Map::Map(std::string name, const IntVector2 & dimensions)
 {
 	m_name = name;
 	m_dimensions = dimensions;
+	m_scene = new Scene2D("Test");
 
 	CreateMapRenderable();
 	CreateMapRenderable(true);
@@ -49,6 +51,7 @@ Map::Map(std::string name, const Image& mapImage)
 	m_name = name;
 	m_dimensions = mapImage.m_dimensions;
 	m_mapImage = mapImage;
+	m_scene = new Scene2D("Test");
 
 	CreateMapRenderableFromImage();
 	CreateMapRenderable(true);
@@ -64,6 +67,9 @@ Map::~Map()
 
 	delete m_debugRenderable;
 	m_debugRenderable = nullptr;
+
+	delete m_scene;
+	m_scene = nullptr;
 }
 
 void Map::DeleteUnits()
@@ -131,7 +137,9 @@ void Map::CreateMapRenderable(bool makeDebug)
 		for(int x = 0; x < m_dimensions.x; x++)
 		{
 			Tile newTile = Tile(currentPos.GetVector2AsInt(), *grass, theTileSize);
-			m_tiles.push_back(newTile);
+			
+			if(!makeDebug)
+				m_tiles.push_back(newTile);
 			
 			mb.AddFromSprite(currentPos, theSprite);
 
@@ -156,10 +164,11 @@ void Map::CreateMapRenderable(bool makeDebug)
 		mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
 		m_mapRenderable->SetMaterial(mapMat);
 
-		if(g_theGame->m_currentState == PLAY)
-			g_theGame->m_playingState->AddRenderable(m_mapRenderable);
-		else
-			g_theGame->m_mapEditorState->AddRenderable(m_mapRenderable);
+		AddRenderable(m_mapRenderable);
+		//if(g_theGame->m_currentState == PLAY)
+		//	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
+		//else
+		//	g_theGame->m_mapEditorState->AddRenderable(m_mapRenderable);
 	}
 	else
 	{
@@ -224,6 +233,46 @@ void Map::CreateMapRenderableFromImage()
 	g_theGame->m_playingState->AddRenderable(m_mapRenderable);
 }
 
+//-----------------------------------------------------------------------------------------------
+void Map::RecreateMapRenderable()
+{
+	Vector2 currentPos = Vector2::ZERO;
+	float stepSize = TILE_SIZE;
+
+	MeshBuilder mb;
+	int theTileSize = TILE_SIZE_INT;
+	for(int y = 0; y < m_dimensions.y; y++)
+	{
+		for(int x = 0; x < m_dimensions.x; x++)
+		{
+			Tile* current = GetTile(currentPos);
+			Sprite theSprite = Sprite(*g_tileSpriteSheet.m_spriteSheetTexture, Vector2::ONE, 
+				TILE_SIZE, Vector2(.5f,.5f), current->m_definition->m_uvCoords);
+
+			mb.AddFromSprite(currentPos, theSprite);
+
+			currentPos.x += stepSize;
+		}
+
+		currentPos.x = 0.f;
+		currentPos.y += stepSize;
+	}
+
+
+	//---------------------------------------------------------
+	// Create the mesh
+	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	m_mapRenderable->SetMesh(theMesh);
+
+	Material* mapMat = Material::CreateOrGetMaterial("default");
+	mapMat->SetTexture(0, g_tileSpriteSheet.m_spriteSheetTexture);
+	m_mapRenderable->SetMaterial(mapMat);
+
+	//g_theGame->m_mapEditorState->AddRenderable(m_mapRenderable);
+
+}
+
 Tile* Map::GetTile(const Vector2& worldPos)
 {
 	//int Tilesize = TILE_SIZE_INT;
@@ -282,7 +331,7 @@ void Map::PutSelectedUnitBack()
 
 Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 {
-	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name));
+	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name), *this);
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
 	newUnit->SetLocalPosition(position);
 
@@ -304,7 +353,7 @@ Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 
 void Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
 {
-	Building* newBuilding = new Building(team, *BuildingDefinition::GetDefinition(name));
+	Building* newBuilding = new Building(team, *BuildingDefinition::GetDefinition(name), *this);
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
 	newBuilding->SetLocalPosition(position);
 
@@ -314,7 +363,10 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 	newBuilding->m_tileReference = tilePlacedOn;
 
 	if(tilePlacedOn->m_definition != newBuilding->m_definition->m_tileToSpawnBeneath)
+	{
 		tilePlacedOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;
+		RecreateMapRenderable();
+	}
 
 	//if(team != TEAM_NONE)
 	//	m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);

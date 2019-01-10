@@ -8,11 +8,13 @@
 #include "Engine\Math\Vectors\IntVector2.hpp"
 
 
+
 //=============================================================
 // Forward Declare
 //=============================================================
 class Tile;
 class SpriteAnimator;
+class Map;
 
 //=============================================================
 // ENUMS
@@ -73,7 +75,7 @@ public:
 	Unit() {};
 
 	Unit(TeamName team);
-	Unit(TeamName team, UnitDefinition& def);
+	Unit(TeamName team, UnitDefinition& def, Map& theMapToGoOn);
 	Unit(const String& name, const TeamName team, int hp); // used for created a battle scene (mostly just passing data)
 	
 	virtual ~Unit();
