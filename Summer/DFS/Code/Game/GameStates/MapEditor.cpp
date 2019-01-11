@@ -11,10 +11,19 @@
 #include "Game\General\Tiles\Tile.hpp"
 #include "Game\General\Tiles\TileDefinition.hpp"
 #include "..\General\GameObjects\Unit.hpp"
+#include "Game\General\GameObjects\Building.hpp"
+#include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
+#include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
+#include "Engine\Renderer\Images\Sprites\Sprite.hpp"
 
 //===============================================================================================
 MapEditor::MapEditor()
 {
+	Renderer* r = Renderer::GetInstance();
+	m_teamColorBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .8f), Vector2(.2f, .9f));
+	m_tileBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .6f), Vector2(.2f, .7f));
+	m_unitBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .4f), Vector2(.2f, .5f));
+	m_buildingBounds =	GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .2f), Vector2(.2f, .3f));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -23,7 +32,7 @@ void MapEditor::StartUp()
 	//m_scene = new Scene2D("Test");
 	m_renderingPath = new SpriteRendering();
 	
-	m_currentMap = new Map("new map:)", IntVector2(10,10));
+	m_currentMap = new Map("new map:)", IntVector2(20,16));
 
 	//---------------------------------------------------------
 	// Cameras
@@ -37,6 +46,10 @@ void MapEditor::StartUp()
 	
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
+
+	m_currentTileDefinition = GetTileDefinition("grass");
+	m_currentUnitDefinition = UnitDefinition::GetUnitDefinition("grunt");
+	m_currentBuildingDefinition = BuildingDefinition::GetDefinition("default");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -63,9 +76,21 @@ void MapEditor::Update()
 }
 
 //-----------------------------------------------------------------------------------------------
+void MapEditor::SwapTeamColors()
+{
+	if(WasKeyJustPressed(KEYBOARD_TAB))
+	{
+		if(m_currentTeam == TEAM_RED)
+			m_currentTeam = TEAM_BLUE;
+		else
+			m_currentTeam = TEAM_RED;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void MapEditor::Render() const
 {
-	Renderer::GetInstance()->DrawAABB2(AABB2(-1000,1000), Rgba(51, 102, 255));
+	Renderer::GetInstance()->DrawAABB2(AABB2(-1000,1000), Rgba::BLACK);
 
 	m_camera->SetProjectionOrthoByAspect(Window::GetInstance()->GetHeight() * .5f); // .5f makes it bigger
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
@@ -73,6 +98,67 @@ void MapEditor::Render() const
 		Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
 
 	m_renderingPath->Render(m_currentMap->m_scene);
+
+	RenderUI();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::RenderUI() const
+{
+	RenderSelectionBar();
+	RenderCurrentPaintMethod();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::RenderSelectionBar() const
+{
+	Renderer* r = Renderer::GetInstance();
+	r->SetCurrentTexture();
+
+	// team color
+	r->DrawAABB2(m_teamColorBounds, GetColorFromTeamName(m_currentTeam));
+
+	// tiles
+	Texture* tileTexture = g_tileSpriteSheet.m_spriteSheetTexture;
+	r->SetCurrentTexture(0, tileTexture);
+	r->DrawTexturedAABB2(m_tileBounds, *tileTexture, m_currentTileDefinition->m_uvCoords.mins, m_currentTileDefinition->m_uvCoords.maxs, Rgba::WHITE);
+
+	// units
+	SpriteAnimator theAnimator = SpriteAnimator(Unit::GetAnimatorName(m_currentUnitDefinition->m_name,m_currentTeam));
+	Sprite* currentUnitSprite = theAnimator.GetCurrentSprite();
+	r->SetCurrentTexture(0, currentUnitSprite->m_image);
+	r->DrawTexturedAABB2(m_unitBounds, *currentUnitSprite->m_image, currentUnitSprite->m_uv.mins, currentUnitSprite->m_uv.maxs, Rgba::WHITE);
+
+	// buildings
+	Texture* buildingTexture = g_buildingSpriteSheet.m_spriteSheetTexture;
+	r->SetCurrentTexture(0, buildingTexture);
+	r->DrawTexturedAABB2(m_buildingBounds, *buildingTexture, m_currentBuildingDefinition->m_uvCoords.mins, m_currentBuildingDefinition->m_uvCoords.maxs, Rgba::WHITE);
+	
+	r->SetCurrentTexture();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::RenderCurrentPaintMethod() const
+{
+	Renderer* r = Renderer::GetInstance();
+	AABB2 space;
+
+	switch (m_selectionType)
+	{
+	case SELECTIONTYPE_TILE:
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.64f), Vector2(.06f, .66f));
+		break;
+	case SELECTIONTYPE_BUILDING:
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.24f), Vector2(.06f, .26f));
+		break;
+	case SELECTIONTYPE_UNIT:
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.44f), Vector2(.06f, .46f));
+		break;
+	default:
+		break;
+	}
+
+	r->DrawAABB2(space, Rgba::YELLOW);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -81,7 +167,11 @@ void MapEditor::CheckKeyboardInputs()
 	if(IsDevConsoleOpen())
 		return;
 
+	SwapTeamColors();
+	SwapPlacementMode();
+	SwapTypeOfObject();
 	PlaceObjectOrTile();
+	
 	
 	MoveCursor();
 }
@@ -114,6 +204,26 @@ void MapEditor::PlaceObjectOrTile()
 		}
 	}
 	
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::SwapPlacementMode()
+{
+	if(WasKeyJustPressed(G_THE_LETTER_W))
+	{
+		m_selectionType = (SelectionType)((m_selectionType + NUM_OF_SELECTION_TYPES - 1) % NUM_OF_SELECTION_TYPES);
+	}
+
+	if(WasKeyJustPressed(G_THE_LETTER_S))
+	{
+		m_selectionType = (SelectionType)((m_selectionType + 1) % NUM_OF_SELECTION_TYPES);
+	}
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::SwapTypeOfObject()
+{
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -155,7 +265,7 @@ void MapEditor::PlaceUnit()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 	
-	m_currentMap->CreateUnit("grunt", TEAM_RED, pos, 10);
+	m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentTeam, pos, 10);
 }
 
 //-----------------------------------------------------------------------------------------------
