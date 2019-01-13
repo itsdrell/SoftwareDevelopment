@@ -1,7 +1,19 @@
 #include "Engine/Core/General/GameObject2D.hpp"
 
 
+//===============================================================================================
+int GameObject2D::s_gameobjectID = 0;
+
+//-----------------------------------------------------------------------------------------------
+GameObject2D::GameObject2D()
+	: m_ID(s_gameobjectID++)
+{
+
+}
+
+//-----------------------------------------------------------------------------------------------
 GameObject2D::GameObject2D(std::string name)
+	: m_ID(s_gameobjectID++)
 {
 	m_name = name;
 	m_renderable = new Renderable2D();
@@ -12,6 +24,7 @@ GameObject2D::GameObject2D(std::string name)
 }
 
 GameObject2D::GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform)
+	: m_ID(s_gameobjectID++)
 {
 	m_name = name; 
 	m_renderable = &renderable;

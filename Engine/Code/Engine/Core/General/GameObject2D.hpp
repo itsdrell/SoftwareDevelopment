@@ -24,7 +24,7 @@
 class GameObject2D
 {
 public:
-	GameObject2D() {};
+	GameObject2D();
 	GameObject2D(std::string name);
 	GameObject2D(std::string name, Renderable2D& renderable, Transform2D transform);
 
@@ -36,13 +36,15 @@ public:
 
 	virtual void Update();
 
+	static int s_gameobjectID;
+
 public:
 	std::string		m_name;
 	Transform2D		m_transform;
 	Renderable2D*	m_renderable;
 
 	bool			m_isDead;
-	uint			m_ID;
+	int				m_ID; // gave me errors making this const
 
 };
 

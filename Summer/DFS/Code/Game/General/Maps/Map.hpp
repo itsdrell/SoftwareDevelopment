@@ -61,6 +61,12 @@ public:
 	void AddGameObject(GameObject2D& newObject) { m_gameObjects.push_back(&newObject) ;}
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
 	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
+	
+	// removes from gameobject list as well as others
+	void DeleteGameObjectFromMap(GameObject2D* objectToRemove);
+	void RemoveGameObject(int ID);
+	void RemoveUnit(int ID);
+	void RemoveBuilding(int ID);
 
 	void AddRenderable(Renderable2D* newRenderable) { m_scene->AddRenderable(newRenderable); }
 	void RemoveRenderable(Renderable2D* newRenderable) { m_scene->RemoveRenderable(newRenderable); }

@@ -29,6 +29,7 @@ enum SelectionType
 	SELECTIONTYPE_TILE,
 	SELECTIONTYPE_UNIT,
 	SELECTIONTYPE_BUILDING,
+	SELECTIONTYPE_DELETE,
 	NUM_OF_SELECTION_TYPES
 };
 
@@ -71,6 +72,9 @@ public:
 	void ChangeTile();
 	void PlaceUnit();
 	void PlaceBuilding();
+	void DeleteUnitOrBuilding();
+	void RemoveUnit();
+	void RemoveBuilding();
 
 	Tile* GetSelectedTile();
 
@@ -101,11 +105,12 @@ public:
 	int									m_buildingDefinitionIndex = 0;
 
 private:
-	AABB2 m_teamColorBounds;
+	AABB2 m_deleteBounds;
 	AABB2 m_tileBounds;	
 	AABB2 m_unitBounds;	
 	AABB2 m_buildingBounds;
 
+	
 };
 
 //====================================================================================

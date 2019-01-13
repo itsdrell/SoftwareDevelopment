@@ -329,6 +329,60 @@ void Map::PutSelectedUnitBack()
 
 }
 
+//-----------------------------------------------------------------------------------------------
+void Map::DeleteGameObjectFromMap(GameObject2D* objectToRemove)
+{
+	int ID = objectToRemove->m_ID;
+
+	RemoveRenderable(objectToRemove->m_renderable);
+	RemoveGameObject(ID);
+
+	// this could probably be optimized but they aren't gonna be that big so its ok for now
+	RemoveUnit(ID);
+	RemoveBuilding(ID);
+
+	// doing the delete here
+	delete objectToRemove;
+	objectToRemove = nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::RemoveGameObject(int ID)
+{
+	for(uint i = 0; i < m_gameObjects.size(); i++)
+	{
+		GameObject2D* current = m_gameObjects.at(i);
+
+		if(current->m_ID == ID)
+			RemoveFast(i, m_gameObjects);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::RemoveUnit(int ID)
+{
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Unit* current = m_units.at(i);
+
+		if(current->m_ID == ID)
+			RemoveFast(i, m_units);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::RemoveBuilding(int ID)
+{
+	for(uint i = 0; i < m_buildings.size(); i++)
+	{
+		Building* current = m_buildings.at(i);
+
+		if(current->m_ID == ID)
+			RemoveFast(i, m_buildings);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 {
 	Unit* newUnit = new Unit(team, *UnitDefinition::GetUnitDefinition(name), *this);
