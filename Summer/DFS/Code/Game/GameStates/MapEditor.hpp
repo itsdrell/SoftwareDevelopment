@@ -53,11 +53,12 @@ public:
 	void Update();
 	void SwapTeamColors();
 
-
 	void Render() const;
 	void RenderUI() const;
 	void RenderSelectionBar() const;
 	void RenderCurrentPaintMethod() const;
+	void RenderBackgroundUI() const;
+	void RenderCurrentSelectionBar() const;
 
 	void CheckKeyboardInputs();
 	void PlaceObjectOrTile();
@@ -77,6 +78,7 @@ public:
 	void RemoveBuilding();
 
 	Tile* GetSelectedTile();
+	String GetCurrentSelectionText() const;
 
 	void AddRenderable(Renderable2D* newRenderable) { m_currentMap->AddRenderable(newRenderable); }
 	void RemoveRenderable(Renderable2D* toRemove) { m_currentMap->RemoveRenderable(toRemove); }

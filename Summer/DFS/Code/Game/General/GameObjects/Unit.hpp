@@ -100,7 +100,7 @@ public:
 
 public:
 	UnitDefinition*		m_definition = nullptr;
-
+	Map*				m_mapTheyAreOn = nullptr;
 	SpriteAnimator*		m_animator = nullptr;
 
 	TeamName			m_team;

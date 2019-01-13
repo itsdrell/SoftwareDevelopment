@@ -105,6 +105,12 @@ void Map::Update()
 	for(uint i = 0; i < m_gameObjects.size(); i++)
 	{
 		m_gameObjects.at(i)->Update();
+
+		// delete dead objects
+		if(m_gameObjects.at(i)->m_isDead)
+		{
+			DeleteGameObjectFromMap(m_gameObjects.at(i));
+		}
 	}
 }
 
@@ -432,7 +438,7 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 //-----------------------------------------------------------------------------------------------
 void Map::CreateEffect(const String& name, const IntVector2& pos)
 {
-	Effect* newEffect = new Effect(name);
+	Effect* newEffect = new Effect(name, *this);
 	Vector2 position = (pos.GetAsVector2() * TILE_SIZE);
 	position.y += (TILE_SIZE * .5f);
 	newEffect->SetLocalPosition(position);

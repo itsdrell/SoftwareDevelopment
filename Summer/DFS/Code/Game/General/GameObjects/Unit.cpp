@@ -52,6 +52,7 @@ Unit::Unit(TeamName team, UnitDefinition & def, Map& theMapToGoOn)
 	m_team = team;
 	m_definition = &def;
 	m_name = m_definition->m_name;
+	m_mapTheyAreOn = &theMapToGoOn;
 
 
 	m_animator = new SpriteAnimator(Unit::GetAnimatorName(m_name,m_team));
@@ -212,10 +213,10 @@ void Unit::Die()
 
 	PlayOneShot("default");
 
-	g_theGame->m_playingState->RemoveRenderable(m_renderable);
-
 	Vector2 pos = m_transform.GetLocalPosition() * (1 / TILE_SIZE);
-	g_theBattleMap->CreateEffect("explosion", pos.GetVector2AsInt());
+	m_mapTheyAreOn->CreateEffect("explosion", pos.GetVector2AsInt());
+
+	m_mapTheyAreOn->RemoveRenderable(m_renderable);
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 #include "Game\Main\Game.hpp"
 #include "Game\Main\GameCommon.hpp"
 #include "Game\GameStates\Playing.hpp"
+#include "Game\General\Maps\Map.hpp"
 
 //===============================================================================================
 std::map<String, EffectDefinition*> EffectDefinition::s_definitions;
@@ -69,7 +70,7 @@ void EffectDefinition::DeleteAllDefinitions()
 }
 
 //===============================================================================================
-Effect::Effect(const String& nameOfEffect)
+Effect::Effect(const String& nameOfEffect, Map& mapItIsOn)
 	: GameObject2D("effect")
 {
 	m_definition = EffectDefinition::GetEffectDefinition(nameOfEffect);
@@ -88,7 +89,7 @@ Effect::Effect(const String& nameOfEffect)
 	m_renderable->SetSprite(m_animator->GetCurrentSprite());
 	m_renderable->SetLayer(EFFECTS);
 
-	g_theGame->m_playingState->AddRenderable(m_renderable);
+	mapItIsOn.AddRenderable(m_renderable);
 }
 
 //-----------------------------------------------------------------------------------------------

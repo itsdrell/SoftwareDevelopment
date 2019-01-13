@@ -9,6 +9,7 @@
 //====================================================================================
 class SpriteAnimator;
 class SpriteAnimation;
+class Map;
 
 //====================================================================================
 // Type Defs + Defines
@@ -51,7 +52,7 @@ class Effect : public GameObject2D
 {
 public:
 	Effect() {}
-	Effect(const String& nameOfEffect);
+	Effect(const String& nameOfEffect, Map& mapItIsOn);
 
 	void Update();
 

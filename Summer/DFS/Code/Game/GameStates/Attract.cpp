@@ -21,8 +21,8 @@ void Attract::Update()
 
 	if(m_startedBackgroundMusic == false)
 	{
-		m_startedBackgroundMusic = true;
-		PlayLoopingSound("bg");
+		//m_startedBackgroundMusic = true;
+		//PlayLoopingSound("bg");
 	}
 }
 

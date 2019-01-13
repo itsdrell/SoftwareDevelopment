@@ -20,10 +20,10 @@
 MapEditor::MapEditor()
 {
 	Renderer* r = Renderer::GetInstance();
-	m_tileBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .7f), Vector2(.2f, .8f));
-	m_unitBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .5f), Vector2(.2f, .6f));
-	m_buildingBounds =	GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .3f), Vector2(.2f, .4f));
-	m_deleteBounds =	GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .1f), Vector2(.2f, .2f));
+	m_tileBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .7f), Vector2(.2f, .87f));
+	m_unitBounds =		GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .5f), Vector2(.2f, .67f));
+	m_buildingBounds =	GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .3f), Vector2(.2f, .47f));
+	m_deleteBounds =	GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.1f, .1f), Vector2(.2f, .27f));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -80,6 +80,7 @@ MapEditor::~MapEditor()
 void MapEditor::Update()
 {
 	CheckKeyboardInputs();
+	m_currentMap->Update();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -98,11 +99,12 @@ void MapEditor::SwapTeamColors()
 void MapEditor::Render() const
 {
 	Renderer::GetInstance()->DrawAABB2(AABB2(-1000,1000), Rgba::BLACK);
-
+	
 	m_camera->SetProjectionOrthoByAspect(Window::GetInstance()->GetHeight() * .5f); // .5f makes it bigger
 	Vector3 cursorPos = m_camera->ScreenToWorldCoordinate(GetMouseCurrentPosition(), 0.f);
 	m_camera->m_viewMatrix = Matrix44::LookAt(Vector3(m_cameraLocation.x, m_cameraLocation.y, -10.f), 
 		Vector3(m_cameraLocation.x, m_cameraLocation.y, .5f));
+	
 
 	m_renderingPath->Render(m_currentMap->m_scene);
 
@@ -112,8 +114,10 @@ void MapEditor::Render() const
 //-----------------------------------------------------------------------------------------------
 void MapEditor::RenderUI() const
 {
-	RenderSelectionBar();
+	RenderBackgroundUI();
+	RenderCurrentSelectionBar();
 	RenderCurrentPaintMethod();
+	RenderSelectionBar();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -159,22 +163,49 @@ void MapEditor::RenderCurrentPaintMethod() const
 	switch (m_selectionType)
 	{
 	case SELECTIONTYPE_TILE:
-		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.74f), Vector2(.06f, .76f));
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.0f,.76f), Vector2(.3f, .81f));
 		break;
 	case SELECTIONTYPE_BUILDING:
-		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.34f), Vector2(.06f, .36f));
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.0f,.34f), Vector2(.3f, .39f));
 		break;
 	case SELECTIONTYPE_UNIT:
-		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.54f), Vector2(.06f, .56f));
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.0f,.54f), Vector2(.3f, .59f));
 		break;
 	case SELECTIONTYPE_DELETE:
-		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.04f,.14f), Vector2(.06f, .16f));
+		space = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.0f,.14f), Vector2(.3f, .19f));
 		break;
 	default:
 		break;
 	}
 
 	r->DrawAABB2(space, Rgba::YELLOW);
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::RenderBackgroundUI() const
+{
+	Renderer* r = Renderer::GetInstance();
+	r->SetCurrentTexture();
+
+	AABB2 bottomBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .2f));
+	AABB2 bottomOutline = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .21f));
+	r->DrawAABB2(bottomOutline, Rgba::RED);
+	r->DrawAABB2(bottomBar, Rgba::RAINBOW_VIOLET);
+
+	AABB2 leftBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(.3f, 1.f));
+	r->DrawAABB2(leftBar, Rgba::RAINBOW_GREEN);
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::RenderCurrentSelectionBar() const
+{
+	Renderer* r = Renderer::GetInstance();
+	AABB2 topBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.32f, .9f), Vector2(.98f, .98f));
+
+	r->DrawAABB2(topBar, GetColorFromTeamName(m_currentTeam));
+
+	String textToShow = GetCurrentSelectionText();
+	r->DrawFittedTextInBox(topBar, textToShow, 3.f, 1.f);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -389,13 +420,39 @@ Tile* MapEditor::GetSelectedTile()
 }
 
 //-----------------------------------------------------------------------------------------------
+String MapEditor::GetCurrentSelectionText() const
+{
+	String result = "idk what I am doing, man";
+	switch (m_selectionType)
+	{
+	case SELECTIONTYPE_TILE:
+		result = "Painting: " + m_currentTileDefinition->m_name + " tile :)";
+		break;
+	case SELECTIONTYPE_UNIT:
+		result = "Creating: " + m_currentUnitDefinition->m_displayName + " for team: " + TeamNameToString(m_currentTeam);
+		break;
+	case SELECTIONTYPE_BUILDING:
+		result = "Creating: " + m_currentBuildingDefinition->m_displayName + " for team: " + TeamNameToString(m_currentTeam);
+		break;
+	case SELECTIONTYPE_DELETE:
+		result = "D E L E T I N G	>:D";
+		break;
+	case NUM_OF_SELECTION_TYPES:
+		break;
+	default:
+		break;
+	}
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------------
 void MapEditor::RemoveUnit()
 {
 	PlayOneShot("default");
 
 	Unit* unitToDestroy = m_selectedTileToChange->m_unit;
-
-	m_currentMap->DeleteGameObjectFromMap(unitToDestroy);
+	unitToDestroy->Die();
 
 }
 
@@ -405,6 +462,9 @@ void MapEditor::RemoveBuilding()
 	PlayOneShot("default");
 
 	Building* buildingToDestroy = m_selectedTileToChange->m_building;
+
+	Vector2 pos = buildingToDestroy->m_transform.GetLocalPosition() * (1 / TILE_SIZE);
+	m_currentMap->CreateEffect("explosion", pos.GetVector2AsInt());
 
 	m_currentMap->DeleteGameObjectFromMap(buildingToDestroy);
 }
