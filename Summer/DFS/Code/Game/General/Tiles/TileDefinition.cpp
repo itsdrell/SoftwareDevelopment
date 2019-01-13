@@ -5,10 +5,11 @@
 
 #pragma warning( disable : 4239) // Strings parsing
 
-//=========================================================
+//===============================================================================================
 std::map<std::string, TileDefinition*> TileDefinition::s_definitions;
-//=========================================================
+std::vector<TileDefinition*> TileDefinition::s_definitionsInOrderOfLoad;
 
+//===============================================================================================
 TileDefinition* GetTileDefinition(std::string name)
 {
 	std::map<std::string,TileDefinition*>::iterator tileIterator;
@@ -53,6 +54,7 @@ TileDefinition::TileDefinition(const tinyxml2::XMLElement & definitionNode)
 
 	// Add definition to map
 	s_definitions.insert(std::pair<std::string,TileDefinition*>(m_name,this));
+	s_definitionsInOrderOfLoad.push_back(this);
 }
 
 void TileDefinition::DeleteAllDefinitions()
@@ -71,4 +73,5 @@ void TileDefinition::DeleteAllDefinitions()
 	}
 
 	s_definitions.clear();
+	s_definitionsInOrderOfLoad.clear();
 }

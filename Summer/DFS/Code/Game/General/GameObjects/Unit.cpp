@@ -20,6 +20,7 @@
 //====================================================================================
 
 std::map<std::string, UnitDefinition*> UnitDefinition::s_definitions;
+std::vector<UnitDefinition*> UnitDefinition::s_definitionsInOrderOfLoad;
 
 //====================================================================================
 Unit::Unit(TeamName team)
@@ -263,6 +264,7 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 
 	// Add definition to map
 	s_definitions.insert(std::pair<std::string,UnitDefinition*>(m_name,this));
+	s_definitionsInOrderOfLoad.push_back(this);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -346,6 +348,7 @@ void UnitDefinition::DeleteAllDefinitions()
 	}
 
 	s_definitions.clear();
+	s_definitionsInOrderOfLoad.clear();
 }
 
 //--------------------------------------------------------------------------

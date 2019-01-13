@@ -45,6 +45,7 @@ class MapEditor
 public:
 	MapEditor();
 	void StartUp();
+	void GetDefinitions();
 
 	~MapEditor();
 
@@ -61,6 +62,9 @@ public:
 	void PlaceObjectOrTile();
 	void SwapPlacementMode();
 	void SwapTypeOfObject();
+	void ChangeTheUnitToPlace(int direction);
+	void ChangeTheTileToPlace(int direction);
+	void ChangeTheBuildingToPlace(int direction);
 	void MoveCursor();
 	void MoveCamera();
 
@@ -75,23 +79,26 @@ public:
 
 public:
 	
-	SpriteRendering*		m_renderingPath = nullptr;
+	SpriteRendering*					m_renderingPath = nullptr;
 
-	Camera*					m_camera = nullptr;
+	Camera*								m_camera = nullptr;
 
-	Map*					m_currentMap = nullptr;
+	Map*								m_currentMap = nullptr;
 
-	Cursor*					m_cursor = nullptr;
-	Vector2					m_cameraLocation;
+	Cursor*								m_cursor = nullptr;
+	Vector2								m_cameraLocation;
 
-	SelectionType			m_selectionType = SELECTIONTYPE_TILE;
+	SelectionType						m_selectionType = SELECTIONTYPE_TILE;
 
-	Tile*					m_selectedTileToChange = nullptr; // convienence pointer
+	Tile*								m_selectedTileToChange = nullptr; // convienence pointer
 
-	TeamName				m_currentTeam = TEAM_RED;
-	TileDefinition*			m_currentTileDefinition = nullptr;
-	UnitDefinition*			m_currentUnitDefinition = nullptr;
-	BuildingDefinition*		m_currentBuildingDefinition = nullptr;
+	TeamName							m_currentTeam = TEAM_RED;
+	TileDefinition*						m_currentTileDefinition = nullptr;
+	int									m_tileDefinitionIndex = 0;
+	UnitDefinition*						m_currentUnitDefinition = nullptr;
+	int									m_unitDefinitionIndex = 0;
+	BuildingDefinition*					m_currentBuildingDefinition = nullptr;
+	int									m_buildingDefinitionIndex = 0;
 
 private:
 	AABB2 m_teamColorBounds;

@@ -41,6 +41,7 @@ public:
 	Tags				m_movementTags;
 
 	static std::map<std::string, TileDefinition*>	s_definitions;
+	static std::vector<TileDefinition*>				s_definitionsInOrderOfLoad; // util for map editor
 
 };
 

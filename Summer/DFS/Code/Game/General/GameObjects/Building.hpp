@@ -38,6 +38,7 @@ public:
 	static void DeleteAllDefinitions();
 
 	static std::map<std::string, BuildingDefinition*>	s_definitions;
+	static std::vector<BuildingDefinition*>				s_definitionsInOrderOfLoad; // map editor util
 
 public:
 	std::string			m_name;

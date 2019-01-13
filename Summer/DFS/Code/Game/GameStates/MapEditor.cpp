@@ -47,9 +47,16 @@ void MapEditor::StartUp()
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
 
-	m_currentTileDefinition = GetTileDefinition("grass");
-	m_currentUnitDefinition = UnitDefinition::GetUnitDefinition("grunt");
-	m_currentBuildingDefinition = BuildingDefinition::GetDefinition("default");
+	GetDefinitions();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::GetDefinitions()
+{
+	// By doing it in order we let the data show what units are more common/ do grouping etc
+	m_currentTileDefinition =		TileDefinition::s_definitionsInOrderOfLoad.at(0);
+	m_currentUnitDefinition =		UnitDefinition::s_definitionsInOrderOfLoad.at(0);
+	m_currentBuildingDefinition =	BuildingDefinition::s_definitionsInOrderOfLoad.at(0);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -131,8 +138,9 @@ void MapEditor::RenderSelectionBar() const
 
 	// buildings
 	Texture* buildingTexture = g_buildingSpriteSheet.m_spriteSheetTexture;
+	AABB2 newSpriteCoords = g_buildingSpriteSheet.GetTexCoordsForSpriteCoords(IntVector2(m_currentBuildingDefinition->m_spriteCoords.x, m_currentTeam));
 	r->SetCurrentTexture(0, buildingTexture);
-	r->DrawTexturedAABB2(m_buildingBounds, *buildingTexture, m_currentBuildingDefinition->m_uvCoords.mins, m_currentBuildingDefinition->m_uvCoords.maxs, Rgba::WHITE);
+	r->DrawTexturedAABB2(m_buildingBounds, *buildingTexture, newSpriteCoords.mins, newSpriteCoords.maxs, Rgba::WHITE);
 	
 	r->SetCurrentTexture();
 }
@@ -209,12 +217,12 @@ void MapEditor::PlaceObjectOrTile()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::SwapPlacementMode()
 {
-	if(WasKeyJustPressed(G_THE_LETTER_W))
+	if(WasKeyJustPressed(G_THE_LETTER_W) || WasKeyJustPressed(KEYBOARD_UP_ARROW))
 	{
 		m_selectionType = (SelectionType)((m_selectionType + NUM_OF_SELECTION_TYPES - 1) % NUM_OF_SELECTION_TYPES);
 	}
 
-	if(WasKeyJustPressed(G_THE_LETTER_S))
+	if(WasKeyJustPressed(G_THE_LETTER_S) || WasKeyJustPressed(KEYBOARD_DOWN_ARROW))
 	{
 		m_selectionType = (SelectionType)((m_selectionType + 1) % NUM_OF_SELECTION_TYPES);
 	}
@@ -224,6 +232,72 @@ void MapEditor::SwapPlacementMode()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::SwapTypeOfObject()
 {
+	int direction = 0;
+	if(WasKeyJustPressed(G_THE_LETTER_D) || WasKeyJustPressed(KEYBOARD_LEFT_ARROW))
+		direction = 1;
+	if(WasKeyJustPressed(G_THE_LETTER_A) || WasKeyJustPressed(KEYBOARD_RIGHT_ARROW))
+		direction = -1;
+
+	// no key was pressed ignore
+	if(direction == 0)
+		return;
+
+	// change type
+	switch (m_selectionType)
+	{
+	case SELECTIONTYPE_TILE:
+		ChangeTheTileToPlace(direction);
+		break;
+	case SELECTIONTYPE_UNIT:
+		ChangeTheUnitToPlace(direction);
+		break;
+	case SELECTIONTYPE_BUILDING:
+		ChangeTheBuildingToPlace(direction);
+		break;
+	case NUM_OF_SELECTION_TYPES:
+		break;
+	default:
+		break;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::ChangeTheUnitToPlace(int direction)
+{
+	m_unitDefinitionIndex += direction;
+
+	if(m_unitDefinitionIndex >= (int) UnitDefinition::s_definitionsInOrderOfLoad.size())
+		m_unitDefinitionIndex = 0;
+	if(m_unitDefinitionIndex < 0)
+		m_unitDefinitionIndex = (int) UnitDefinition::s_definitionsInOrderOfLoad.size() - 1;
+
+	m_currentUnitDefinition = UnitDefinition::s_definitionsInOrderOfLoad.at(m_unitDefinitionIndex);
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::ChangeTheTileToPlace(int direction)
+{
+	m_tileDefinitionIndex += direction;
+
+	if(m_tileDefinitionIndex >= (int) TileDefinition::s_definitionsInOrderOfLoad.size())
+		m_tileDefinitionIndex = 0;
+	if(m_tileDefinitionIndex < 0)
+		m_tileDefinitionIndex = (int) TileDefinition::s_definitionsInOrderOfLoad.size() - 1;
+
+	m_currentTileDefinition = TileDefinition::s_definitionsInOrderOfLoad.at(m_tileDefinitionIndex);
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::ChangeTheBuildingToPlace(int direction)
+{
+	m_buildingDefinitionIndex += direction;
+
+	if(m_buildingDefinitionIndex >= (int) BuildingDefinition::s_definitionsInOrderOfLoad.size())
+		m_buildingDefinitionIndex = 0;
+	if(m_buildingDefinitionIndex < 0)
+		m_buildingDefinitionIndex = (int) BuildingDefinition::s_definitionsInOrderOfLoad.size() - 1;
+
+	m_currentBuildingDefinition = BuildingDefinition::s_definitionsInOrderOfLoad.at(m_buildingDefinitionIndex);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -253,7 +327,7 @@ void MapEditor::MoveCamera()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::ChangeTile()
 {
-	m_selectedTileToChange->m_definition = GetTileDefinition("grass");
+	m_selectedTileToChange->m_definition = m_currentTileDefinition;
 	m_currentMap->RecreateMapRenderable();
 }
 
@@ -276,7 +350,7 @@ void MapEditor::PlaceBuilding()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 
-	m_currentMap->CreateBuilding("default", TEAM_NONE, pos);
+	m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentTeam, pos);
 }
 
 //-----------------------------------------------------------------------------------------------

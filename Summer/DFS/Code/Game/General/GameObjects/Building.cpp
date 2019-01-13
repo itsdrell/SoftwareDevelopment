@@ -11,6 +11,7 @@
 
 //====================================================================================
 std::map<std::string, BuildingDefinition*>	BuildingDefinition::s_definitions;
+std::vector<BuildingDefinition*> BuildingDefinition::s_definitionsInOrderOfLoad;
 
 //====================================================================================
 BuildingDefinition::BuildingDefinition(tinyxml2::XMLElement& node)
@@ -30,6 +31,7 @@ BuildingDefinition::BuildingDefinition(tinyxml2::XMLElement& node)
 
 	// Add definition to map
 	s_definitions.insert(std::pair<std::string,BuildingDefinition*>(m_name,this));
+	s_definitionsInOrderOfLoad.push_back(this);
 }
 
 BuildingDefinition * BuildingDefinition::GetDefinition(std::string name)
@@ -76,6 +78,7 @@ void BuildingDefinition::DeleteAllDefinitions()
 	}
 
 	s_definitions.clear();
+	s_definitionsInOrderOfLoad.clear();
 }
 
 //====================================================================================

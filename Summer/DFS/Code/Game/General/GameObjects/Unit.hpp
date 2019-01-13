@@ -43,6 +43,7 @@ public:
 	static void DeleteAllDefinitions();
 
 	static std::map<std::string, UnitDefinition*>	s_definitions;
+	static std::vector<UnitDefinition*>				s_definitionsInOrderOfLoad; // util
 
 	float GetMovementCost(const String& tileName);
 
