@@ -303,6 +303,7 @@
     <ClCompile Include="General\GameObjects\Effect.cpp" />
     <ClCompile Include="General\GameObjects\Unit.cpp" />
     <ClCompile Include="General\Maps\Map.cpp" />
+    <ClCompile Include="General\Maps\MapDefinition.cpp" />
     <ClCompile Include="General\Player\CommandingOfficer.cpp" />
     <ClCompile Include="General\Tiles\Tile.cpp" />
     <ClCompile Include="General\Tiles\TileDefinition.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="General\GameObjects\Unit.hpp" />
     <ClInclude Include="General\Maps\Map.hpp" />
     <ClInclude Include="General\Maps\BattleMap.hpp" />
+    <ClInclude Include="General\Maps\MapDefinition.hpp" />
     <ClInclude Include="General\Player\CommandingOfficer.hpp" />
     <ClInclude Include="General\Player\Controller.hpp" />
     <ClInclude Include="General\Player\PlayerController.hpp" />

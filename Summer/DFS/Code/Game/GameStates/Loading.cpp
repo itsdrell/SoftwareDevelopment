@@ -15,6 +15,7 @@
 #include "..\General\CombatLookUpTable.hpp"
 #include "..\General\Player\CommandingOfficer.hpp"
 #include "..\General\GameObjects\Effect.hpp"
+#include "..\General\Maps\MapDefinition.hpp"
 
 Loading::Loading()
 {
@@ -57,6 +58,7 @@ void Loading::LoadDefinitions()
 	LoadBuildingDefinitions();
 	LoadCombatRelationships();
 	LoadEffectsDefinitions();
+	LoadMapDefinitions();
 
 }
 
@@ -154,6 +156,23 @@ void Loading::LoadCombatRelationships()
 	{
 		CombatLookUpTable::AddRelationshipToTable(*indexElement);
 		indexElement = indexElement->NextSiblingElement();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Loading::LoadMapDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( MapDefinition::s_definitionPath );
+	
+	tinyxml2::XMLElement* currentElement = doc.FirstChildElement("Map");
+	GUARANTEE_OR_DIE(currentElement != nullptr, "Could not read: Map Definitions");
+	
+	//tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( currentElement )
+	{
+		new MapDefinition(*currentElement);
+		currentElement = currentElement->NextSiblingElement("Map");
 	}
 }
 
@@ -339,6 +358,7 @@ void Loading::DeleteAllDefinitions()
 	BuildingDefinition::DeleteAllDefinitions();
 	CommandingOfficerDefinition::DeleteAllDefinitions();
 	EffectDefinition::DeleteAllDefinitions();
+	MapDefinition::DeleteAllDefinitions();
 
 	// TODO Delete Animation and SpriteSheets
 }

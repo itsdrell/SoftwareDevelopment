@@ -121,19 +121,23 @@ void Map::Save(const String& levelName)
 {
 	Strings data;
 	String fullPath = SAVED_MAP_FILE_PATH + levelName + ".script";
+	String xmlReadPath = "LevelScripts/Custom/" + levelName;
 
 	SaveTiles(data);
 	SaveBuildings(data);
 	SaveUnits(data);
 
 	LogStringsToFile(fullPath.c_str(), data, true);
+
+	String mapDefinitionEntry = "\n<Map name=\"" + levelName + "\" script=\"" + xmlReadPath + "\" />";
+	LogStringToFile("Data/Definitions/Maps.xml", mapDefinitionEntry.c_str());
 }
 
 //-----------------------------------------------------------------------------------------------
 void Map::SaveTiles(Strings & currentStrings)
 {
-	// ChangeTile TileDefName Pos
-	String consoleCommandName = "ChangeTile ";
+	// changeTile TileDefName Pos
+	String consoleCommandName = "changeTile ";
 
 	for(uint i = 0; i < m_tiles.size(); i++)
 	{
@@ -153,18 +157,20 @@ void Map::SaveUnits(Strings & currentStrings)
 	if(m_units.size() == 0)
 		return;
 	
-	// AddUnit UnitDefName TeamName Pos
-	String consoleCommandName = "AddUnit ";
+	// addUnit UnitDefName TeamName Pos
+	String consoleCommandName = "addUnit ";
 
 	for(uint i = 0; i < m_units.size(); i++)
 	{
 		Unit* current = m_units.at(i);
 
+		IntVector2 pos = (current->m_transform.GetLocalPosition() / TILE_SIZE).GetVector2AsInt();
+
 		String currentInfo =	
 			consoleCommandName + 
 			current->m_definition->m_name + " " + 
 			TeamNameToString(current->m_team) + " " +
-			current->m_tileIAmOn->m_position.ToString();
+			pos.ToString();
 
 		currentStrings.push_back(currentInfo);
 	}
@@ -176,18 +182,20 @@ void Map::SaveBuildings(Strings & currentStrings)
 	if(m_buildings.size() == 0)
 		return;
 	
-	// AddBuilding BuildingDef TeamName Pos
-	String consoleCommandName = "AddBuilding ";
+	// addBuilding BuildingDef TeamName Pos
+	String consoleCommandName = "addBuilding ";
 
 	for(uint i = 0; i < m_units.size(); i++)
 	{
 		Building* current = m_buildings.at(i);
 
+		IntVector2 pos = (current->m_transform.GetLocalPosition() / TILE_SIZE).GetVector2AsInt();
+
 		String currentInfo =	
 			consoleCommandName + 
 			current->m_definition->m_name + " " + 
 			TeamNameToString(current->m_team) + " " +
-			current->m_tileReference->m_position.ToString();
+			pos.ToString();
 
 		currentStrings.push_back(currentInfo);
 	}

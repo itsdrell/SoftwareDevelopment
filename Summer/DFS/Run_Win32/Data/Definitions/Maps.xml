@@ -1,0 +1,6 @@
+<!-- <Map name="testMap" script="fullPath" image="imagePath"> -->
+
+
+<Map name="hi" script="LevelScripts/Custom/hi" />
+<Map name="hi2" script="LevelScripts/Custom/hi2" />
+<Map name="test1" script="LevelScripts/Custom/test1" />

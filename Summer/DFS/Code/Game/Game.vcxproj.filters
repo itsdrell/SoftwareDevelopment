@@ -103,6 +103,9 @@
     <ClCompile Include="General\Maps\BattleMap.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\Maps\MapDefinition.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -148,5 +151,6 @@
     <ClInclude Include="General\Maps\BattleMap.hpp" />
     <ClInclude Include="General\Maps\GameHeatMap.hpp" />
     <ClInclude Include="General\Maps\Map.hpp" />
+    <ClInclude Include="General\Maps\MapDefinition.hpp" />
   </ItemGroup>
 </Project>

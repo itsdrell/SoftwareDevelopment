@@ -32,6 +32,7 @@ public:
 	void LoadUnitDefinitions();
 	void LoadBuildingDefinitions();
 	void LoadCombatRelationships();
+	void LoadMapDefinitions();
 
 
 	void LoadSpriteSheets();

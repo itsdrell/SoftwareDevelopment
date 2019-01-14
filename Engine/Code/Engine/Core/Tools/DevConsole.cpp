@@ -102,6 +102,10 @@ void CommandRunScriptFromFile(char const* filePath)
 
 	for(uint i = 0; i < lines.size(); i++)
 	{
+		String current = lines.at(i).c_str();
+		current = RemoveCharacterFromString(current, "(");
+		current = RemoveCharacterFromString(current, ")");
+		
 		CommandRunScript(lines.at(i).c_str());
 	}
 }

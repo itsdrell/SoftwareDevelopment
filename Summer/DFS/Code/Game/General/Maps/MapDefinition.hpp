@@ -1,10 +1,12 @@
 #pragma once
-#include "Engine\Core\Tools\Command.hpp"
+#include "Engine\Core\General\EngineCommon.hpp"
+#include "Engine\ThirdParty\tinyxml\tinyxml2.h"
+#include <map>
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class UnitDefinition;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -24,48 +26,33 @@ class UnitDefinition;
 //====================================================================================
 // Classes
 //====================================================================================
+class MapDefinition
+{
+public:
+	MapDefinition(tinyxml2::XMLElement& node);
 
+	static MapDefinition* GetDefinition(String name);
+	static void DeleteAllDefinitions();
+
+public:
+	String			m_name;
+	String			m_scriptPath;
+	String			m_imagePath;
+	
+	static std::map<std::string, MapDefinition*>	s_definitions;
+	static const char*								s_definitionPath;
+};
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
 
-void RegisterGameCommands();
-
-void EndTurn(Command& theCommand);
-void HaveAUnitWait(Command& theCommand);
-void CaptureBuilding(Command& theCommand);
-void AddUnit(Command& theCommand);
-void AddBuilding(Command& theCommand);
-void ChangeTile(Command& theCommand);
-void AddEffect(Command& theCommand);
-void CloseOpenMenu(Command& theCommand);
-void PurchaseUnit(Command& theCommand);
-void AddAllUnitTypesToMap(Command& theCommand);
-void UseCOPower(Command& theCommand);
-void DebugGrid(Command& theCommand);
-void KillAllUnitsOfTeam(Command& theCommand);
-void CreateBattleScene( Command& theCommand );
-void SaveMap( Command& theCommand );
-void LoadMap( Command& theCommand) ;
-
-// net session stuff
-//void AddConnection( Command& theCommand );
-void SendPing( Command& theCommand );
-void SendAdd( Command& theCommand );
-void UnreliableTest( Command& theCommand );
-void ReliableTest( Command& theCommand );
-
-void NetHost( Command& theCommand );
-void NetJoin( Command& theCommand );
-void NetLeave( Command& theCommand);
 
 //====================================================================================
 // Externs
 //====================================================================================
-extern UnitDefinition* g_unitToSpawn;
 
 
 //====================================================================================
-// Written by Zachary Bracken : [6/25/2018]
+// Written by Zachary Bracken : [1/14/2019]
 //====================================================================================

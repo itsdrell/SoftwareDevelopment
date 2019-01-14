@@ -19,6 +19,7 @@
 #include <string>
 #include "Engine/Async/Threading.hpp"
 #include "Game\General\Maps\BattleMap.hpp"
+#include "Maps/MapDefinition.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -41,6 +42,7 @@ void RegisterGameCommands()
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 	CommandRegister("saveMap", "", "Save the current Map", SaveMap);
+	CommandRegister("loadMap", "", "Load map from file", LoadMap);
 
 
 	// NetSession stuff
@@ -451,6 +453,19 @@ void SaveMap(Command& theCommand)
 		mapName = theCommand.m_commandArguements.at(1);
 
 	g_theGame->GetCurrentMap()->Save(mapName);
+}
+
+//-----------------------------------------------------------------------------------------------
+void LoadMap(Command& theCommand)
+{
+	String mapName = "idk man";
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		mapName = theCommand.m_commandArguements.at(1);
+
+	MapDefinition* theDef = MapDefinition::GetDefinition(mapName);
+	CommandRunScriptFromFile(theDef->m_scriptPath.c_str());
+	//g_theGame->GetCurrentMap()->Save(mapName);
 }
 
 //-----------------------------------------------------------------------------------------------
