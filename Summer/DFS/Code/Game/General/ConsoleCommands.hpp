@@ -37,6 +37,7 @@ void HaveAUnitWait(Command& theCommand);
 void CaptureBuilding(Command& theCommand);
 void AddUnit(Command& theCommand);
 void AddBuilding(Command& theCommand);
+void ChangeTile(Command& theCommand);
 void AddEffect(Command& theCommand);
 void CloseOpenMenu(Command& theCommand);
 void PurchaseUnit(Command& theCommand);
@@ -45,6 +46,7 @@ void UseCOPower(Command& theCommand);
 void DebugGrid(Command& theCommand);
 void KillAllUnitsOfTeam(Command& theCommand);
 void CreateBattleScene( Command& theCommand );
+void SaveMap( Command& theCommand );
 
 // net session stuff
 //void AddConnection( Command& theCommand );

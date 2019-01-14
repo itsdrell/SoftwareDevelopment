@@ -16,6 +16,7 @@ class Scene2D;
 //====================================================================================
 // Typedefs
 //====================================================================================
+constexpr const char* SAVED_MAP_FILE_PATH = "Data/Scripts/LevelScripts/Custom/";
 
 
 //=============================================================
@@ -42,7 +43,6 @@ public:
 	void DeleteUnits();
 	void DeleteBuildings();
 	
-
 	virtual void Update();
 	
 	void CreateMapRenderable(bool makeDebug = false);
@@ -61,6 +61,7 @@ public:
 	void AddGameObject(GameObject2D& newObject) { m_gameObjects.push_back(&newObject) ;}
 	void AddUnit(Unit& newUnit) { m_units.push_back(&newUnit); }
 	void AddBuilding(Building& newBuilding) { m_buildings.push_back(&newBuilding); }
+	void ChangeTile(String tileDefName, IntVector2 tilePos);
 	
 	// removes from gameobject list as well as others
 	void DeleteGameObjectFromMap(GameObject2D* objectToRemove);
@@ -75,6 +76,13 @@ public:
 	Unit* CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
 	void CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos);
 	void CreateEffect(const String& name, const IntVector2& pos);
+
+	virtual void Save(const String& filePath);
+
+private:
+	void SaveTiles(Strings& currentStrings);
+	void SaveUnits(Strings& currentStrings);
+	void SaveBuildings(Strings& currentStrings);
 	
 public:
 	std::string							m_name;

@@ -27,6 +27,8 @@
 #include "Game\General\GameObjects\Effect.hpp"
 #include "Game\General\BattleScene\BattleCutscene.hpp"
 #include "Game\GameStates\MapEditor.hpp"
+#include "Game\General\Maps\Map.hpp"
+#include "Engine\Core\Platform\File.hpp"
 
 
 //====================================================================================
@@ -111,6 +113,83 @@ void Map::Update()
 		{
 			DeleteGameObjectFromMap(m_gameObjects.at(i));
 		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::Save(const String& levelName)
+{
+	Strings data;
+	String fullPath = SAVED_MAP_FILE_PATH + levelName + ".script";
+
+	SaveTiles(data);
+	SaveBuildings(data);
+	SaveUnits(data);
+
+	LogStringsToFile(fullPath.c_str(), data, true);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::SaveTiles(Strings & currentStrings)
+{
+	// ChangeTile TileDefName Pos
+	String consoleCommandName = "ChangeTile ";
+
+	for(uint i = 0; i < m_tiles.size(); i++)
+	{
+		Tile current = m_tiles.at(i);
+
+		String currentInfo =	consoleCommandName + 
+								current.m_definition->m_name + " " + 
+								current.m_position.ToString();
+		
+		currentStrings.push_back(currentInfo);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::SaveUnits(Strings & currentStrings)
+{
+	if(m_units.size() == 0)
+		return;
+	
+	// AddUnit UnitDefName TeamName Pos
+	String consoleCommandName = "AddUnit ";
+
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Unit* current = m_units.at(i);
+
+		String currentInfo =	
+			consoleCommandName + 
+			current->m_definition->m_name + " " + 
+			TeamNameToString(current->m_team) + " " +
+			current->m_tileIAmOn->m_position.ToString();
+
+		currentStrings.push_back(currentInfo);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::SaveBuildings(Strings & currentStrings)
+{
+	if(m_buildings.size() == 0)
+		return;
+	
+	// AddBuilding BuildingDef TeamName Pos
+	String consoleCommandName = "AddBuilding ";
+
+	for(uint i = 0; i < m_units.size(); i++)
+	{
+		Building* current = m_buildings.at(i);
+
+		String currentInfo =	
+			consoleCommandName + 
+			current->m_definition->m_name + " " + 
+			TeamNameToString(current->m_team) + " " +
+			current->m_tileReference->m_position.ToString();
+
+		currentStrings.push_back(currentInfo);
 	}
 }
 
@@ -333,6 +412,17 @@ void Map::PutSelectedUnitBack()
 	tileToGoBackTo->m_unit = m_selectedUnit;
 	m_selectedUnit->m_transform.SetLocalPosition(tileToGoBackTo->GetCenterOfTile());
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void Map::ChangeTile(String tileDefName, IntVector2 tilePos)
+{
+	TileDefinition* newDefintion = GetTileDefinition(tileDefName);
+	Tile* tileToChange = GetTile(tilePos);
+
+	tileToChange->m_definition = newDefintion;
+
+	RecreateMapRenderable();
 }
 
 //-----------------------------------------------------------------------------------------------

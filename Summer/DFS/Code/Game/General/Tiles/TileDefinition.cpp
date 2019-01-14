@@ -75,3 +75,19 @@ void TileDefinition::DeleteAllDefinitions()
 	s_definitions.clear();
 	s_definitionsInOrderOfLoad.clear();
 }
+
+//-----------------------------------------------------------------------------------------------
+Strings TileDefinition::GetAllTileDefinitionNames()
+{
+	Strings allNames;
+
+	std::map<std::string,TileDefinition*>::iterator tileIterator;
+
+	for(tileIterator = s_definitions.begin(); tileIterator != s_definitions.end(); tileIterator++)
+	{
+		std::string current = tileIterator->second->m_name;
+		allNames.push_back(current);
+	}
+
+	return allNames;
+}

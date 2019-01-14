@@ -260,4 +260,14 @@ void Game::CheckKeyBoardInputs()
 	
 }
 
+//-----------------------------------------------------------------------------------------------
+Map* Game::GetCurrentMap()
+{
+	if(m_currentState == MAP_EDIT)
+		return m_mapEditorState->m_currentMap;
+	if(m_currentState == PLAY)
+		return (Map*) m_playingState->m_currentMap;
+
+	return nullptr;
+}
 

@@ -19,6 +19,7 @@ class Playing;
 class Loading;
 class NetSession;
 class MapEditor;
+class Map;
 
 //=============================================================
 // ENUMS
@@ -62,6 +63,8 @@ public:
 
 
 	void		CheckKeyBoardInputs();
+
+	Map*		GetCurrentMap();
 
 
 public:

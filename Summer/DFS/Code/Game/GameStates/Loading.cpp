@@ -39,8 +39,6 @@ void Loading::LoadAssets()
 	LoadSpriteSheets();
 	LoadDefinitions();
 
-	g_theGame->m_playingState->StartUp();
-
 	// Make sure we see it before switching
 	Sleep((DWORD) 1.f);
 	g_theGame->m_currentState = ATTRACT;

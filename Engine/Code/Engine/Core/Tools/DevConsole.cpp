@@ -220,6 +220,9 @@ void DevConsole::LoadHistory()
 		m_commandHistory.push_back(m_currentEntry);
 		//AddACommandToHistory();
 	}
+
+	// make sure nothing is left over
+	m_currentEntry = "";
 }
 
 void DevConsole::SaveHistoryToFile()

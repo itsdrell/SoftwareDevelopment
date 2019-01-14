@@ -31,6 +31,7 @@ void RegisterGameCommands()
 	CommandRegister("capture", "", "Capture Building for selected unit", CaptureBuilding);
 	CommandRegister("addUnit", "", "Add unit to map", AddUnit);
 	CommandRegister("addBuilding", "", "Add a building to map", AddBuilding);
+	CommandRegister("changeTile", "", "Change tile on map", ChangeTile);
 	CommandRegister("closeMenu", "", "Close current Open Menu", CloseOpenMenu);
 	CommandRegister("purchase", "", "Purchase Unit in Store", PurchaseUnit);
 	CommandRegister("addAllUnits", "", "", AddAllUnitTypesToMap);
@@ -39,6 +40,8 @@ void RegisterGameCommands()
 	CommandRegister("debugMap","Type: debugMap <bool>","Turns on debug map mode", DebugGrid);
 	CommandRegister("killTeam","Type: killTeam <teamName>","Kills a team and wins the game", KillAllUnitsOfTeam);
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
+	CommandRegister("saveMap", "", "Save the current Map", SaveMap);
+
 
 	// NetSession stuff
 	//CommandRegister("send_ping", "", "", SendPing);
@@ -139,7 +142,7 @@ void AddUnit(Command& theCommand)
 	}
 	else
 	{
-		g_theBattleMap->CreateUnit(unitName, teamName, pos, hp);
+		g_theGame->GetCurrentMap()->CreateUnit(unitName, teamName, pos, hp);
 	}
 
 }
@@ -186,9 +189,43 @@ void AddBuilding(Command& theCommand)
 	}
 	else
 	{
-		g_theBattleMap->CreateBuilding(buildingName, teamName, pos);
+		g_theGame->GetCurrentMap()->CreateBuilding(buildingName, teamName, pos);
 	}
 
+}
+
+//-----------------------------------------------------------------------------------------------
+void ChangeTile(Command& theCommand)
+{
+	DevConsole* dc = DevConsole::GetInstance();
+
+	// addUnit name team pos health 
+	std::string tileName = "default";
+	IntVector2 pos = IntVector2(0,0);
+
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		tileName = theCommand.m_commandArguements.at(1);
+	if(IsIndexValid(2, theCommand.m_commandArguements))
+		pos = ParseString(theCommand.m_commandArguements.at(2), pos);
+
+
+	if(tileName == "help")
+	{
+		dc->AddHeader("Params: tileName pos", Rgba::WHITE, 2);
+		dc->AddHeader("Possible Tiles to Create", Rgba::WHITE);
+
+		Strings tileNames = TileDefinition::GetAllTileDefinitionNames();
+		for(uint i = 0; i < tileNames.size(); i++)
+		{
+			dc->AddConsoleDialogue(tileNames.at(i), GetRainbowColor((int) i , (int) tileNames.size()));
+		}
+
+		dc->AddFooter();
+	}
+	else
+	{
+		g_theGame->GetCurrentMap()->ChangeTile(tileName, pos);
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -403,6 +440,17 @@ void CreateBattleScene(Command& theCommand)
 			defUnitName.c_str(), TeamNameToString(defTeamName).c_str(), defStartHP, defEndHP), Rgba::WHITE);
 
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void SaveMap(Command& theCommand)
+{
+	String mapName = "idk man";
+	
+	if(IsIndexValid(1, theCommand.m_commandArguements))
+		mapName = theCommand.m_commandArguements.at(1);
+
+	g_theGame->GetCurrentMap()->Save(mapName);
 }
 
 //-----------------------------------------------------------------------------------------------

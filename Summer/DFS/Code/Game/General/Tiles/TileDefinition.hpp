@@ -30,6 +30,7 @@ public:
 	TileDefinition(const tinyxml2::XMLElement& definitionNode);
 
 	static void DeleteAllDefinitions();
+	static Strings GetAllTileDefinitionNames();
 
 public:
 	std::string			m_name;
