@@ -65,7 +65,7 @@ Rgba GetColorFromTeamName(TeamName team)
 		color = Rgba::YELLOW;
 		break;
 	default:
-		color = Rgba::WHITE;
+		color = Rgba::CYAN;
 		break;
 	}
 

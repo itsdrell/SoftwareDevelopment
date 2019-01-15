@@ -20,6 +20,7 @@
 #include "Engine/Async/Threading.hpp"
 #include "Game\General\Maps\BattleMap.hpp"
 #include "Maps/MapDefinition.hpp"
+#include "Game/GameStates/MapEditor.hpp"
 
 //====================================================================================
 UnitDefinition* g_unitToSpawn = nullptr;
@@ -44,6 +45,7 @@ void RegisterGameCommands()
 	CommandRegister("saveMap", "", "Save the current Map", SaveMap);
 	CommandRegister("loadMap", "", "Load map from file", LoadMap);
 	CommandRegister("clearMap", "", "Clear map of units and buildings", ClearMap);
+	CommandRegister("goToGameState", "", "Set state of Game", SetGameState);
 
 
 	// NetSession stuff
@@ -477,6 +479,45 @@ void ClearMap(Command& theCommand)
 {
 	Map* currentMap = g_theGame->GetCurrentMap();
 	currentMap->ClearMap();
+
+	//g_theGame->m_mapEditorState->CreateNewMap();
+}
+
+//-----------------------------------------------------------------------------------------------
+void SetGameState(Command& theCommand)
+{
+	std::string input;
+	std::string stateFrom;
+	DevConsole* dc; 
+
+	if(theCommand.m_commandArguements.size() == 1)
+		input = "help";
+	else
+	{
+		input = theCommand.m_commandArguements.at(1);
+
+		if(IsIndexValid(2, theCommand.m_commandArguements))
+			stateFrom = theCommand.m_commandArguements.at(2);
+		else
+			stateFrom = GetGameStateAsString(g_theGame->m_currentState);
+	}
+
+	if(input == "help")
+	{
+		dc->AddConsoleDialogue(ConsoleDialogue("States to go to: Syntax is <State to go to> <State you are in> ", Rgba::WHITE));
+
+		for(int i = 0; i < NUM_OF_GAME_STATES; i++)
+		{
+			String theState = GetGameStateAsString((GameStates) i);
+			dc->AddConsoleDialogue(ConsoleDialogue(theState, Rgba::WHITE));
+		}
+
+		dc->AddSpace(1);
+	}
+	else
+	{
+		g_theGame->GoToGameStateFrom(GetGameStateFromString(input), GetGameStateFromString(stateFrom));
+	}
 }
 
 //-----------------------------------------------------------------------------------------------

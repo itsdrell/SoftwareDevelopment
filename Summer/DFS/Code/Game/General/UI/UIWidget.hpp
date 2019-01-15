@@ -40,6 +40,7 @@ public:
 public:
 	std::string					m_name;
 	std::string					m_text;
+	String						m_imagePath;
 	
 	Strings						m_commands;
 

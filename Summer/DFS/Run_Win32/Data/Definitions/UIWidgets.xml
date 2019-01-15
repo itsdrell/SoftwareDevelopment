@@ -4,6 +4,7 @@
     name="wait"
     displayText="Wait"
     scriptFile="haveUnitWait"
+    imageFile="Data/Images/Sprites/menuBackground.png"
     hoverColor = "153, 153, 102,255"
     defaultColor = "255,255,255,255"
     />
@@ -12,6 +13,7 @@
     name="capture"
     displayText="Capture"
     scriptFile="captureBuilding"
+    imageFile="Data/Images/Sprites/menuBackground.png"
     hoverColor = "153, 153, 102,255"
     defaultColor = "255,255,255,255"
     />
@@ -20,6 +22,7 @@
     name = "endTurn"
     displayText = "End Turn"
     scriptFile = "endTurn"
+    imageFile="Data/Images/Sprites/menuBackground.png"
     hoverColor = "153, 153, 102,255"
     defaultColor = "255,255,255,255"
     />
@@ -28,6 +31,7 @@
     name = "close"
     displayText = "Close"
     scriptFile = "closeOpenMenu"
+    imageFile="Data/Images/Sprites/menuBackground.png"
     hoverColor = "153, 153, 102,255"
     defaultColor = "255,255,255,255"
     fontColor = "0,0,0,255"
@@ -37,8 +41,29 @@
     name = "unit"
     displayText = "unit name"
     scriptFile = "purchaseUnit"
+    imageFile="Data/Images/Sprites/menuBackground.png"
     hoverColor = "153, 153, 102,255"
     defaultColor = "255,255,255,255"
+    />
+
+    <Widget
+    name = "exitLevelEditor"
+    displayText = "Exit"
+    scriptFile = "exitLevelEditor"
+    hoverColor = "255,255,0,255"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,255"
+    borderColor= "250,193,248,255"
+    />
+
+    <Widget
+    name = "clearMap"
+    displayText = "Restart"
+    scriptFile = "clearMap"
+    hoverColor = "255,255,0,255"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,255"
+    borderColor= "250,193,248,255"
     />
 
 </UIWidgets>
@@ -51,6 +76,7 @@
     name = ""
     displayText = ""
     scriptFile = "Data/Scripts/UIScripts/theScript.script"
+    imageFile = "Data/Images/adasdasd" <Leave blank for default texture>
     hoverColor = r,g,b,a
     defaultColor = r,g,b,a
     borderColor = r,g,b,a

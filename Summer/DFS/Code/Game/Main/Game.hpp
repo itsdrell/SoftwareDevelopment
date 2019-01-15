@@ -33,6 +33,8 @@ enum GameStates
 	MAP_EDIT,
 	NUM_OF_GAME_STATES
 };
+String GetGameStateAsString(GameStates theState);
+GameStates GetGameStateFromString(String theState);
 
 //=============================================================
 // Structs
@@ -65,6 +67,7 @@ public:
 	void		CheckKeyBoardInputs();
 
 	Map*		GetCurrentMap();
+	void		GoToGameStateFrom(GameStates theStateToGoTo, GameStates theStateItWas);
 
 
 public:

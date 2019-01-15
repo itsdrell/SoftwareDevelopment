@@ -15,6 +15,7 @@
 #include "Engine\Renderer\Images\Sprites\SpriteSheet.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimator.hpp"
 #include "Engine\Renderer\Images\Sprites\Sprite.hpp"
+#include "Game\General\UI\UIWidget.hpp"
 
 //===============================================================================================
 MapEditor::MapEditor()
@@ -32,7 +33,7 @@ void MapEditor::StartUp()
 	//m_scene = new Scene2D("Test");
 	m_renderingPath = new SpriteRendering();
 	
-	m_currentMap = new Map("new map:)", IntVector2(20,16));
+	CreateNewMap();
 
 	//---------------------------------------------------------
 	// Cameras
@@ -47,7 +48,35 @@ void MapEditor::StartUp()
 	m_cursor = new Cursor();
 	m_cameraLocation = Vector2(-112,-112);
 
+	AddWidgets();
+
 	GetDefinitions();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::CreateNewMap()
+{
+	if(m_currentMap != nullptr)
+		delete m_currentMap;
+
+	m_currentMap = new Map("new map:)", IntVector2(20,16));
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::AddWidgets()
+{
+	Renderer* r = Renderer::GetInstance();
+	
+	UIWidget* exitWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("exitLevelEditor"));
+	AABB2 exitBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .01f), Vector2(.99f, .1f));
+	exitWidget->GenerateBounds(exitBounds);
+	m_widgets.push_back(exitWidget);
+
+	UIWidget* clearMapWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("clearMap"));
+	AABB2 clearBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .1f), Vector2(.99f, .2f));
+	clearMapWidget->GenerateBounds(clearBounds);
+	m_widgets.push_back(clearMapWidget);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -74,13 +103,46 @@ MapEditor::~MapEditor()
 
 	delete m_currentMap;
 	m_currentMap = nullptr;
+
+	DeleteWidgets();
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::Exit()
+{
+
+}
+
+//-----------------------------------------------------------------------------------------------
+void MapEditor::DeleteWidgets()
+{
+	for(uint i = 0; i < m_widgets.size(); i++)
+	{
+		UIWidget* current = m_widgets.at(i);
+		delete current;
+		current = nullptr;
+	}
+
+	m_widgets.clear();
 }
 
 //-----------------------------------------------------------------------------------------------
 void MapEditor::Update()
 {
-	CheckKeyboardInputs();
 	m_currentMap->Update();
+
+	if(m_widgets.size() != 0)
+	{
+		for(uint i = 0; i < m_widgets.size(); i++)
+		{
+			UIWidget*& current = m_widgets.at(i);
+
+			current->Update();
+		}
+	}
+	
+	
+	CheckKeyboardInputs();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -88,10 +150,22 @@ void MapEditor::SwapTeamColors()
 {
 	if(WasKeyJustPressed(KEYBOARD_TAB))
 	{
-		if(m_currentTeam == TEAM_RED)
-			m_currentTeam = TEAM_BLUE;
-		else
-			m_currentTeam = TEAM_RED;
+		if(m_selectionType == SELECTIONTYPE_UNIT)
+		{
+			if(m_currentUnitTeam == TEAM_RED)
+				m_currentUnitTeam = TEAM_BLUE;
+			else
+				m_currentUnitTeam = TEAM_RED;
+		}
+		
+
+		if(m_selectionType == SELECTIONTYPE_BUILDING)
+		{
+			if(m_currentBuildingTeam == TEAM_NONE) { m_currentBuildingTeam = TEAM_RED; return; }
+			if(m_currentBuildingTeam == TEAM_RED) { m_currentBuildingTeam = TEAM_BLUE; return; }
+			if(m_currentBuildingTeam == TEAM_BLUE) { m_currentBuildingTeam = TEAM_NONE; return; }
+
+		}
 	}
 }
 
@@ -118,6 +192,14 @@ void MapEditor::RenderUI() const
 	RenderCurrentSelectionBar();
 	RenderCurrentPaintMethod();
 	RenderSelectionBar();
+
+	if(m_widgets.size() != 0)
+	{
+		for(UIWidget* currentWidget : m_widgets)
+		{
+			currentWidget->Render();
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -135,14 +217,14 @@ void MapEditor::RenderSelectionBar() const
 	r->DrawTexturedAABB2(m_tileBounds, *tileTexture, m_currentTileDefinition->m_uvCoords.mins, m_currentTileDefinition->m_uvCoords.maxs, Rgba::WHITE);
 
 	// units
-	SpriteAnimator theAnimator = SpriteAnimator(Unit::GetAnimatorName(m_currentUnitDefinition->m_name,m_currentTeam));
+	SpriteAnimator theAnimator = SpriteAnimator(Unit::GetAnimatorName(m_currentUnitDefinition->m_name, m_currentUnitTeam));
 	Sprite* currentUnitSprite = theAnimator.GetCurrentSprite();
 	r->SetCurrentTexture(0, currentUnitSprite->m_image);
 	r->DrawTexturedAABB2(m_unitBounds, *currentUnitSprite->m_image, currentUnitSprite->m_uv.mins, currentUnitSprite->m_uv.maxs, Rgba::WHITE);
 
 	// buildings
 	Texture* buildingTexture = g_buildingSpriteSheet.m_spriteSheetTexture;
-	AABB2 newSpriteCoords = g_buildingSpriteSheet.GetTexCoordsForSpriteCoords(IntVector2(m_currentBuildingDefinition->m_spriteCoords.x, m_currentTeam));
+	AABB2 newSpriteCoords = g_buildingSpriteSheet.GetTexCoordsForSpriteCoords(IntVector2(m_currentBuildingDefinition->m_spriteCoords.x, m_currentBuildingTeam));
 	r->SetCurrentTexture(0, buildingTexture);
 	r->DrawTexturedAABB2(m_buildingBounds, *buildingTexture, newSpriteCoords.mins, newSpriteCoords.maxs, Rgba::WHITE);
 
@@ -187,13 +269,13 @@ void MapEditor::RenderBackgroundUI() const
 	Renderer* r = Renderer::GetInstance();
 	r->SetCurrentTexture();
 
-	AABB2 bottomBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .2f));
-	AABB2 bottomOutline = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .21f));
-	r->DrawAABB2(bottomOutline, Rgba::RED);
-	r->DrawAABB2(bottomBar, Rgba::RAINBOW_VIOLET);
+	//AABB2 bottomBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .2f));
+	//AABB2 bottomOutline = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(1.f, .21f));
+	//r->DrawAABB2(bottomOutline, Rgba::RED);
+	//r->DrawAABB2(bottomBar, Rgba::RAINBOW_VIOLET);
 
 	AABB2 leftBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2::ZERO, Vector2(.3f, 1.f));
-	r->DrawAABB2(leftBar, Rgba::RAINBOW_GREEN);
+	r->DrawAABB2(leftBar, Rgba::RAINBOW_VIOLET);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -202,7 +284,11 @@ void MapEditor::RenderCurrentSelectionBar() const
 	Renderer* r = Renderer::GetInstance();
 	AABB2 topBar = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.32f, .9f), Vector2(.98f, .98f));
 
-	r->DrawAABB2(topBar, GetColorFromTeamName(m_currentTeam));
+	if(m_selectionType == SELECTIONTYPE_UNIT)
+		r->DrawAABB2(topBar, GetColorFromTeamName(m_currentUnitTeam));
+	else 
+		r->DrawAABB2(topBar, GetColorFromTeamName(m_currentBuildingTeam));
+
 
 	String textToShow = GetCurrentSelectionText();
 	r->DrawFittedTextInBox(topBar, textToShow, 3.f, 1.f);
@@ -221,6 +307,23 @@ void MapEditor::CheckKeyboardInputs()
 	
 	
 	MoveCursor();
+
+	if(WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
+	{
+		for(uint i = 0; i < m_widgets.size(); i++)
+		{
+			UIWidget* current = m_widgets.at(i);
+			if(current != nullptr)
+			{
+				if(current->m_isHoveredOver)
+				{
+					current->OnClick();
+					PlayOneShot("default");
+				}
+			}
+		}
+	}
+	
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -381,7 +484,7 @@ void MapEditor::PlaceUnit()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 	
-	m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentTeam, pos, 10);
+	m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentUnitTeam, pos, 10);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -392,7 +495,7 @@ void MapEditor::PlaceBuilding()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 
-	m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentTeam, pos);
+	m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentBuildingTeam, pos);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -429,10 +532,10 @@ String MapEditor::GetCurrentSelectionText() const
 		result = "Painting: " + m_currentTileDefinition->m_name + " tile :)";
 		break;
 	case SELECTIONTYPE_UNIT:
-		result = "Creating: " + m_currentUnitDefinition->m_displayName + " for team: " + TeamNameToString(m_currentTeam);
+		result = "Creating: " + m_currentUnitDefinition->m_displayName + " for team: " + TeamNameToString(m_currentUnitTeam);
 		break;
 	case SELECTIONTYPE_BUILDING:
-		result = "Creating: " + m_currentBuildingDefinition->m_displayName + " for team: " + TeamNameToString(m_currentTeam);
+		result = "Creating: " + m_currentBuildingDefinition->m_displayName + " for team: " + TeamNameToString(m_currentBuildingTeam);
 		break;
 	case SELECTIONTYPE_DELETE:
 		result = "D E L E T I N G	>:D";

@@ -15,6 +15,7 @@ class Tile;
 class UnitDefinition;
 class BuildingDefinition;
 class TileDefinition;
+class UIWidget;
 
 //====================================================================================
 // Type Defs + Defines
@@ -46,9 +47,13 @@ class MapEditor
 public:
 	MapEditor();
 	void StartUp();
+	void CreateNewMap();
+	void AddWidgets();
 	void GetDefinitions();
 
 	~MapEditor();
+	void Exit();
+	void DeleteWidgets();
 
 	void Update();
 	void SwapTeamColors();
@@ -98,7 +103,8 @@ public:
 
 	Tile*								m_selectedTileToChange = nullptr; // convienence pointer
 
-	TeamName							m_currentTeam = TEAM_RED;
+	TeamName							m_currentUnitTeam = TEAM_RED;
+	TeamName							m_currentBuildingTeam = TEAM_NONE;
 	TileDefinition*						m_currentTileDefinition = nullptr;
 	int									m_tileDefinitionIndex = 0;
 	UnitDefinition*						m_currentUnitDefinition = nullptr;
@@ -112,7 +118,7 @@ private:
 	AABB2 m_unitBounds;	
 	AABB2 m_buildingBounds;
 
-	
+	std::vector<UIWidget*> m_widgets;
 };
 
 //====================================================================================

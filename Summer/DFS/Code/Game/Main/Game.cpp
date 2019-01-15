@@ -271,3 +271,76 @@ Map* Game::GetCurrentMap()
 	return nullptr;
 }
 
+//-----------------------------------------------------------------------------------------------
+void Game::GoToGameStateFrom(GameStates theStateToGoTo, GameStates theStateItWas)
+{
+	if(m_currentState != theStateItWas)
+		m_currentState = theStateItWas;
+
+	
+
+	switch (m_currentState)
+	{
+	case NONE:
+		break;
+	case LOADING:
+		break;
+	case ATTRACT:
+		break;
+	case PLAY:
+		break;
+	case MAP_EDIT:
+		m_mapEditorState->Exit(); // cleanup. May not need since we are exiting
+		delete m_mapEditorState;
+		m_mapEditorState = nullptr;
+		break;
+	case NUM_OF_GAME_STATES:
+		break;
+	default:
+		break;
+	}
+
+
+
+	m_currentState = theStateToGoTo;
+}
+
+//-----------------------------------------------------------------------------------------------
+String GetGameStateAsString(GameStates theState)
+{
+	String result;
+	
+	switch (theState)
+	{
+	case NONE:
+		break;
+	case LOADING:
+		result = "loading";
+		break;
+	case ATTRACT:
+		result = "attract";
+		break;
+	case PLAY:
+		result = "play";
+		break;
+	case MAP_EDIT:
+		result = "mapEdit";
+		break;
+	case NUM_OF_GAME_STATES:
+		break;
+	default:
+		break;
+	}
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------------
+GameStates GetGameStateFromString(String theState)
+{
+	if(theState == "attract")	{ return ATTRACT; }
+	if(theState == "loading")	{ return LOADING; }
+	if(theState == "play")		{ return PLAY; }
+	if(theState == "mapEdit")	{ return MAP_EDIT; }
+
+	return NONE;
+}

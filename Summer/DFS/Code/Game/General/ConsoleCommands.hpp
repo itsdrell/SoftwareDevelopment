@@ -49,6 +49,7 @@ void CreateBattleScene( Command& theCommand );
 void SaveMap( Command& theCommand );
 void LoadMap( Command& theCommand) ;
 void ClearMap( Command& theCommand);
+void SetGameState( Command& theCommand );
 
 // net session stuff
 //void AddConnection( Command& theCommand );

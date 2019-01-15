@@ -60,9 +60,9 @@ void UIWidget::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	if(m_isHoveredOver)
-		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"), m_bounds, m_hoverColor);
+		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture(m_definition->m_imagePath), m_bounds, m_hoverColor);
 	else
-		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/Sprites/menuBackground.png"), m_bounds, m_nonHoverColor);
+		r->DrawTexturedAABB2(Renderer::GetInstance()->CreateOrGetTexture(m_definition->m_imagePath), m_bounds, m_nonHoverColor);
 
 	r->DrawAABB2(m_bounds, m_borderColor, false);
 	r->DrawFittedTextInBox(m_textBounds, m_definition->m_text, 2.f, 1.f, m_fontColor);
@@ -118,6 +118,7 @@ UIWidgetDefinition::UIWidgetDefinition(tinyxml2::XMLElement& node)
 {
 	m_name = ParseXmlAttribute(node, "name", "IDK");
 	m_text = ParseXmlAttribute(node, "displayText", "IDK");
+	m_imagePath = ParseXmlAttribute(node, "imageFile", "Data/Images/defaultTexture.png");
 
 	m_defaultHoverColor = ParseXmlAttribute(node, "hoverColor", Rgba::WHITE);
 	m_defaultNonHoverColor = ParseXmlAttribute(node, "defaultColor", Rgba::BLUE);
