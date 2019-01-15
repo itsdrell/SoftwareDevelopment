@@ -43,6 +43,7 @@ void RegisterGameCommands()
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 	CommandRegister("saveMap", "", "Save the current Map", SaveMap);
 	CommandRegister("loadMap", "", "Load map from file", LoadMap);
+	CommandRegister("clearMap", "", "Clear map of units and buildings", ClearMap);
 
 
 	// NetSession stuff
@@ -463,9 +464,19 @@ void LoadMap(Command& theCommand)
 	if(IsIndexValid(1, theCommand.m_commandArguements))
 		mapName = theCommand.m_commandArguements.at(1);
 
+	g_theGame->GetCurrentMap()->ClearMap();
+	
 	MapDefinition* theDef = MapDefinition::GetDefinition(mapName);
 	CommandRunScriptFromFile(theDef->m_scriptPath.c_str());
-	//g_theGame->GetCurrentMap()->Save(mapName);
+
+	g_theGame->GetCurrentMap()->RecreateMapRenderable();
+}
+
+//-----------------------------------------------------------------------------------------------
+void ClearMap(Command& theCommand)
+{
+	Map* currentMap = g_theGame->GetCurrentMap();
+	currentMap->ClearMap();
 }
 
 //-----------------------------------------------------------------------------------------------

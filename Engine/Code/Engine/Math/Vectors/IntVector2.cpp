@@ -14,7 +14,7 @@ Vector2 IntVector2::GetAsVector2() const
 
 std::string IntVector2::ToString()
 {
-	std::string result = Stringf("(%i, %i)", x , y);
+	std::string result = Stringf("(%i,%i)", x , y);
 
 	return result;
 }

@@ -42,6 +42,7 @@ public:
 	~Map();
 	void DeleteUnits();
 	void DeleteBuildings();
+	void ClearMap();
 	
 	virtual void Update();
 	

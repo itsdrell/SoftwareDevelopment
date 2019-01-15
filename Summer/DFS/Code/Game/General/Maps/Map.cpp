@@ -100,8 +100,18 @@ void Map::DeleteBuildings()
 	m_buildings.clear();
 }
 
+//-----------------------------------------------------------------------------------------------
+void Map::ClearMap()
+{
+	for(uint i = 0; i < m_gameObjects.size(); i++)
+	{
+		GameObject2D* current = m_gameObjects.at(i);
 
+		DeleteGameObjectFromMap(current);
+	}
+}
 
+//-----------------------------------------------------------------------------------------------
 void Map::Update()
 {
 	for(uint i = 0; i < m_gameObjects.size(); i++)
@@ -143,9 +153,11 @@ void Map::SaveTiles(Strings & currentStrings)
 	{
 		Tile current = m_tiles.at(i);
 
+		IntVector2 pos = (current.m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
+
 		String currentInfo =	consoleCommandName + 
 								current.m_definition->m_name + " " + 
-								current.m_position.ToString();
+								pos.ToString();
 		
 		currentStrings.push_back(currentInfo);
 	}
@@ -185,7 +197,7 @@ void Map::SaveBuildings(Strings & currentStrings)
 	// addBuilding BuildingDef TeamName Pos
 	String consoleCommandName = "addBuilding ";
 
-	for(uint i = 0; i < m_units.size(); i++)
+	for(uint i = 0; i < m_buildings.size(); i++)
 	{
 		Building* current = m_buildings.at(i);
 
@@ -430,7 +442,7 @@ void Map::ChangeTile(String tileDefName, IntVector2 tilePos)
 
 	tileToChange->m_definition = newDefintion;
 
-	RecreateMapRenderable();
+	//RecreateMapRenderable();
 }
 
 //-----------------------------------------------------------------------------------------------
