@@ -512,6 +512,14 @@ Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 	tilePlacedOn->m_unit = newUnit;
 	newUnit->m_tileIAmOn = tilePlacedOn;
 
+	// I am creating a tile for the unit if it needs it, I could also just not spawn the unit it the tile
+	// underneath is not the right type but idk which i perfer atm
+	if(newUnit->m_definition->m_tileNeededUnderneath != nullptr && newUnit->m_definition->m_tileNeededUnderneath != tilePlacedOn->m_definition)
+	{
+		tilePlacedOn->m_definition = newUnit->m_definition->m_tileNeededUnderneath;
+		RecreateMapRenderable();
+	}
+
 	// make sure we know about their team
 	//m_turnOrder.CheckIfTeamIsRegisteredAndAdd(team);
 
@@ -532,6 +540,8 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 
 	newBuilding->m_tileReference = tilePlacedOn;
 
+	// I am creating a tile for the building if it needs it, I could also just not spawn the building it the tile
+	// underneath is not the right type but idk which i perfer atm
 	if(tilePlacedOn->m_definition != newBuilding->m_definition->m_tileToSpawnBeneath)
 	{
 		tilePlacedOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;

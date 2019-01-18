@@ -376,12 +376,12 @@ void MapEditor::PlaceObjectOrTile()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::SwapPlacementMode()
 {
-	if(WasKeyJustPressed(G_THE_LETTER_W) || WasKeyJustPressed(KEYBOARD_UP_ARROW))
+	if(WasKeyJustPressed(G_THE_LETTER_W) || WasKeyJustPressed(KEYBOARD_UP_ARROW) || DidMouseWheelScrollUp())
 	{
 		m_selectionType = (SelectionType)((m_selectionType + NUM_OF_SELECTION_TYPES - 1) % NUM_OF_SELECTION_TYPES);
 	}
 
-	if(WasKeyJustPressed(G_THE_LETTER_S) || WasKeyJustPressed(KEYBOARD_DOWN_ARROW))
+	if(WasKeyJustPressed(G_THE_LETTER_S) || WasKeyJustPressed(KEYBOARD_DOWN_ARROW) || DidMouseWheelScrollDown())
 	{
 		m_selectionType = (SelectionType)((m_selectionType + 1) % NUM_OF_SELECTION_TYPES);
 	}

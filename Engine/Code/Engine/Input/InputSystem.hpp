@@ -51,6 +51,8 @@ public:
 	bool					IsMouseButtonPressed( MouseButtons theButton );
 	bool					WasMouseButtonJustPressed( MouseButtons theButton );
 	bool					WasMouseButtonJustReleased( MouseButtons theButton );
+	bool					DidMouseWheelScrollUp();
+	bool					DidMouseWheelScrollDown();
 
 public:
 
@@ -86,6 +88,8 @@ bool					WasKeyJustReleased( unsigned char keyCode );
 bool					IsMouseButtonPressed( MouseButtons theButton );
 bool					WasMouseButtonJustPressed( MouseButtons theButton );
 bool					WasMouseButtonJustReleased( MouseButtons theButton );
+bool					DidMouseWheelScrollUp();
+bool					DidMouseWheelScrollDown();
 
 //////////////////////////////////////////////////////////////////////////
 // UNIQUE KEYS

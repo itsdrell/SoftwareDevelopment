@@ -14,6 +14,7 @@
 #include "Game\General\Maps\Map.hpp"
 #include "Game\General\Maps\BattleMap.hpp"
 #include "Game\GameStates\MapEditor.hpp"
+#include "..\Tiles\TileDefinition.hpp"
 
 #pragma warning( disable : 4239) // Strings parsing
 
@@ -238,6 +239,9 @@ UnitDefinition::UnitDefinition(tinyxml2::XMLElement & node)
 	m_cost = (uint) ParseXmlAttribute(node, "cost", 1000);
 	m_factoryTag = ParseXmlAttribute(node, "storeType", "ERROR");
 	m_spriteCoords = ParseXmlAttribute(node, "spriteCoords", IntVector2(0,0));
+	
+	String tileNeededUnderneath = ParseXmlAttribute(node, "underTile", "NONE");
+	m_tileNeededUnderneath = GetTileDefinition(tileNeededUnderneath);
 	
 	m_canCapture = ParseXmlAttribute(node, "capture", false);
 	m_movement = ParseXmlAttribute(node, "movement", 1);

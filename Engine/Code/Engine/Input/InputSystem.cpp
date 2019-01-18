@@ -322,6 +322,24 @@ bool InputSystem::WasMouseButtonJustReleased(MouseButtons theButton)
 }
 
 //-----------------------------------------------------------------------------------------------
+bool InputSystem::DidMouseWheelScrollUp()
+{
+	if(m_mouseFrameWheelDelta > 0.0f)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool InputSystem::DidMouseWheelScrollDown()
+{
+	if(m_mouseFrameWheelDelta < 0.0f)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
 void InputSystem::UpdateKeyboard()
 {
 	// Clear all just-changed flags, in preparation for the next round of WM_KEYDOWN, etc. messages
@@ -392,4 +410,14 @@ bool WasMouseButtonJustPressed(MouseButtons theButton)
 bool WasMouseButtonJustReleased(MouseButtons theButton)
 {
 	return InputSystem::GetInstance()->WasMouseButtonJustReleased(theButton);
+}
+
+bool DidMouseWheelScrollUp()
+{
+	return InputSystem::GetInstance()->DidMouseWheelScrollUp(); 
+}
+
+bool DidMouseWheelScrollDown()
+{
+	return InputSystem::GetInstance()->DidMouseWheelScrollDown(); 
 }

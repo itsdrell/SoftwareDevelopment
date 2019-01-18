@@ -15,6 +15,7 @@
 class Tile;
 class SpriteAnimator;
 class Map;
+class TileDefinition;
 
 //=============================================================
 // ENUMS
@@ -64,6 +65,7 @@ public:
 	Tags				m_attackTags;
 
 	IntRange			m_attackRange;
+	TileDefinition*		m_tileNeededUnderneath;
 
 	std::map<String, float>		m_movementCosts;
 };
