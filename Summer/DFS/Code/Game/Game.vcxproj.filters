@@ -106,6 +106,9 @@
     <ClCompile Include="General\Maps\MapDefinition.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\Maps\MapEditorHistory.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -152,5 +155,6 @@
     <ClInclude Include="General\Maps\GameHeatMap.hpp" />
     <ClInclude Include="General\Maps\Map.hpp" />
     <ClInclude Include="General\Maps\MapDefinition.hpp" />
+    <ClInclude Include="General\Maps\MapEditorHistory.hpp" />
   </ItemGroup>
 </Project>

@@ -529,7 +529,7 @@ Unit* Map::CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp)
 	return newUnit;
 }
 
-void Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
+Building* Map::CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos)
 {
 	Building* newBuilding = new Building(team, *BuildingDefinition::GetDefinition(name), *this);
 	Vector2 position = pos.GetAsVector2() * TILE_SIZE;
@@ -553,6 +553,8 @@ void Map::CreateBuilding(const std::string& name, const TeamName& team, const In
 
 	AddGameObject(*newBuilding);
 	AddBuilding(*newBuilding);
+
+	return newBuilding;
 }
 
 //-----------------------------------------------------------------------------------------------

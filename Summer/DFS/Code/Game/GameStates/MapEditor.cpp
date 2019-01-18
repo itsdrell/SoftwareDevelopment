@@ -314,6 +314,18 @@ void MapEditor::CheckKeyboardInputs()
 	if(IsDevConsoleOpen())
 		return;
 
+	if(WasMouseButtonJustReleased(LEFT_MOUSE_BUTTON))
+	{
+		if(m_currentHistory != nullptr && m_currentHistory->m_history.size() > 0)
+		{
+			m_history.push_front(m_currentHistory);
+
+			// the queue will handle deleting, this is just so we know to make
+			// a new one on click
+			m_currentHistory = nullptr;
+		}
+	}
+
 	SwapTeamColors();
 	SwapPlacementMode();
 	SwapTypeOfObject();
@@ -337,6 +349,18 @@ void MapEditor::CheckKeyboardInputs()
 			}
 		}
 	}
+
+	if(WasKeyJustPressed(KEYBOARD_BACKSPACE))
+	{
+		Undo();
+	}
+
+
+	// check if we need to remake the renderable
+	if(m_isDirty)
+	{
+		m_currentMap->RecreateMapRenderable();
+	}
 	
 }
 
@@ -351,6 +375,9 @@ void MapEditor::PlaceObjectOrTile()
 		// this check is to enable dragging/painting tiles
 		if(m_selectedTileToChange == nullptr)
 			return;
+
+		if(m_currentHistory == nullptr)
+			m_currentHistory = new History();
 		
 		switch (m_selectionType)
 		{
@@ -376,12 +403,12 @@ void MapEditor::PlaceObjectOrTile()
 //-----------------------------------------------------------------------------------------------
 void MapEditor::SwapPlacementMode()
 {
-	if(WasKeyJustPressed(G_THE_LETTER_W) || WasKeyJustPressed(KEYBOARD_UP_ARROW) || DidMouseWheelScrollUp())
+	if(WasKeyJustPressed(G_THE_LETTER_W) || WasKeyJustPressed(KEYBOARD_UP_ARROW) /*|| DidMouseWheelScrollUp()*/)
 	{
 		m_selectionType = (SelectionType)((m_selectionType + NUM_OF_SELECTION_TYPES - 1) % NUM_OF_SELECTION_TYPES);
 	}
 
-	if(WasKeyJustPressed(G_THE_LETTER_S) || WasKeyJustPressed(KEYBOARD_DOWN_ARROW) || DidMouseWheelScrollDown())
+	if(WasKeyJustPressed(G_THE_LETTER_S) || WasKeyJustPressed(KEYBOARD_DOWN_ARROW) /*|| DidMouseWheelScrollDown()*/)
 	{
 		m_selectionType = (SelectionType)((m_selectionType + 1) % NUM_OF_SELECTION_TYPES);
 	}
@@ -392,9 +419,9 @@ void MapEditor::SwapPlacementMode()
 void MapEditor::SwapTypeOfObject()
 {
 	int direction = 0;
-	if(WasKeyJustPressed(G_THE_LETTER_D) || WasKeyJustPressed(KEYBOARD_LEFT_ARROW))
+	if(WasKeyJustPressed(G_THE_LETTER_D) || WasKeyJustPressed(KEYBOARD_LEFT_ARROW) || DidMouseWheelScrollDown())
 		direction = 1;
-	if(WasKeyJustPressed(G_THE_LETTER_A) || WasKeyJustPressed(KEYBOARD_RIGHT_ARROW))
+	if(WasKeyJustPressed(G_THE_LETTER_A) || WasKeyJustPressed(KEYBOARD_RIGHT_ARROW) || DidMouseWheelScrollUp())
 		direction = -1;
 
 	// no key was pressed ignore
@@ -484,10 +511,43 @@ void MapEditor::MoveCamera()
 }
 
 //-----------------------------------------------------------------------------------------------
+void MapEditor::Undo()
+{
+	if(m_history.size() == 0)
+		return;
+
+	History* previous = m_history.front();
+
+	for(uint i = 0; i < previous->m_history.size(); i++)
+	{
+		HistoryItem* current = previous->m_history.at(i);
+
+		current->Undo();	
+
+		delete current;
+		current = nullptr;
+	}
+
+	m_history.pop_front();
+
+	delete previous;
+	previous = nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
 void MapEditor::ChangeTile()
 {
+	TileDefinition* previousDef = m_selectedTileToChange->m_definition;
+	
+	// prevent duplicates
+	if(previousDef == m_currentTileDefinition)
+		return;
+
 	m_selectedTileToChange->m_definition = m_currentTileDefinition;
 	m_currentMap->RecreateMapRenderable();
+
+	TileHistory* newHistory = new TileHistory(previousDef, *m_selectedTileToChange);
+	m_currentHistory->m_history.push_back(newHistory);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -498,7 +558,10 @@ void MapEditor::PlaceUnit()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 	
-	m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentUnitTeam, pos, 10);
+	Unit* newUnit = m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentUnitTeam, pos, 10);
+	
+	UnitHistory* newHistory = new UnitHistory(*newUnit);
+	m_currentHistory->m_history.push_back(newHistory);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -509,7 +572,10 @@ void MapEditor::PlaceBuilding()
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
 
-	m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentBuildingTeam, pos);
+	Building* newBuilding = m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentBuildingTeam, pos);
+
+	BuildingHistory* newHistory = new BuildingHistory(*newBuilding);
+	m_currentHistory->m_history.push_back(newHistory);
 }
 
 //-----------------------------------------------------------------------------------------------

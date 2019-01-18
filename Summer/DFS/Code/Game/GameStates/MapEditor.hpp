@@ -2,6 +2,8 @@
 #include "Engine/Math/Vectors/Vector2.hpp"
 #include "Game/General/Maps/Map.hpp"
 #include "../Main/GameCommon.hpp"
+#include "Game/General/Maps/MapEditorHistory.hpp"
+#include <deque>
 
 //====================================================================================
 // Forward Declare
@@ -33,6 +35,7 @@ enum SelectionType
 	SELECTIONTYPE_DELETE,
 	NUM_OF_SELECTION_TYPES
 };
+
 
 //====================================================================================
 // Structs
@@ -75,6 +78,8 @@ public:
 	void MoveCursor();
 	void MoveCamera();
 
+	void Undo();
+
 	void ChangeTile();
 	void PlaceUnit();
 	void PlaceBuilding();
@@ -87,6 +92,8 @@ public:
 
 	void AddRenderable(Renderable2D* newRenderable) { m_currentMap->AddRenderable(newRenderable); }
 	void RemoveRenderable(Renderable2D* toRemove) { m_currentMap->RemoveRenderable(toRemove); }
+
+	void MarkRenderableAsDirty() { m_isDirty = true; }
 
 public:
 	
@@ -112,6 +119,10 @@ public:
 	BuildingDefinition*					m_currentBuildingDefinition = nullptr;
 	int									m_buildingDefinitionIndex = 0;
 
+	History*							m_currentHistory;
+	std::deque<History*>				m_history;
+
+	bool								m_isDirty = false;
 private:
 	AABB2 m_deleteBounds;
 	AABB2 m_tileBounds;	

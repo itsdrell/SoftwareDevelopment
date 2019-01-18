@@ -12,6 +12,7 @@
 class GameObject2D;
 class Unit;
 class Scene2D;
+class Building;
 
 //====================================================================================
 // Typedefs
@@ -75,7 +76,7 @@ public:
 
 
 	Unit* CreateUnit(std::string name, TeamName team, IntVector2 pos, int hp = 10);
-	void CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos);
+	Building* CreateBuilding(const std::string& name, const TeamName& team, const IntVector2& pos);
 	void CreateEffect(const String& name, const IntVector2& pos);
 
 	virtual void Save(const String& filePath);
