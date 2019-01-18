@@ -50,6 +50,7 @@ void SaveMap( Command& theCommand );
 void LoadMap( Command& theCommand) ;
 void ClearMap( Command& theCommand);
 void SetGameState( Command& theCommand );
+void ChangeLevelEditorMode( Command& theCommand );
 
 // net session stuff
 //void AddConnection( Command& theCommand );

@@ -66,6 +66,46 @@
     borderColor= "250,193,248,255"
     />
 
+    <Widget
+    name = "changeLevelEditorUnit"
+    displayText = ""
+    scriptFile = "changeLevelEditorModeToUnit"
+    hoverColor = "255,255,0,0"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,0"
+    borderColor= "250,193,248,0"
+    />
+
+    <Widget
+    name = "changeLevelEditorBuilding"
+    displayText = ""
+    scriptFile = "changeLevelEditorModeToBuilding"
+    hoverColor = "255,255,0,0"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,0"
+    borderColor= "250,193,248,0"
+    />
+
+    <Widget
+    name = "changeLevelEditorTile"
+    displayText = ""
+    scriptFile = "changeLevelEditorModeToTile"
+    hoverColor = "255,255,0,0"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,0"
+    borderColor= "250,193,248,0"
+    />
+
+    <Widget
+    name = "changeLevelEditorDelete"
+    displayText = ""
+    scriptFile = "changeLevelEditorModeToDelete"
+    hoverColor = "255,255,0,0"
+    defaultColor = "255,255,255,0"
+    fontColor = "255,255,255,0"
+    borderColor= "250,193,248,0"
+    />
+
 </UIWidgets>
 
 

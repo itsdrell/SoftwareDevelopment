@@ -18,12 +18,12 @@ void CommandShutdown()
 	
 }
 
-void CommandRegister(char const* name,std::string syntax, std::string desciption, command_cb cb)
+void CommandRegister(char const* name,std::string syntax, std::string desciption, command_cb cb, bool isHidden)
 {
 	// Doing the check and addition to the map inside of the constructor
 	/*CommandRegistration* newCommand = */
 	
-	new CommandRegistration(name,syntax,desciption,cb);
+	new CommandRegistration(name,syntax,desciption,cb, isHidden);
 
 }
 
@@ -163,7 +163,7 @@ std::string Command::GetCommandParameters()
 
 //////////////////////////////////////////////////////////////////////////
 // Registration
-CommandRegistration::CommandRegistration(std::string name, std::string syntax, std::string desciption, command_cb theCallBack)
+CommandRegistration::CommandRegistration(std::string name, std::string syntax, std::string desciption, command_cb theCallBack, bool isHidden)
 {
 	// Make sure we don't already have one
 	if(CheckForCallBack(name) == true)
@@ -178,6 +178,7 @@ CommandRegistration::CommandRegistration(std::string name, std::string syntax, s
 	m_name = name;
 	m_syntax = syntax;
 	m_description = desciption;
+	m_isHidden = isHidden;
 
 	s_allCallBacks.push_back(this);
 	s_mapOfCallBacks[name] = this;
@@ -225,8 +226,11 @@ Strings CommandRegistration::GetAllTheCommandsNames()
 
 	for(nameIterator = s_mapOfCallBacks.begin(); nameIterator != s_mapOfCallBacks.end(); nameIterator++)
 	{
-		std::string currentName = nameIterator->first;
-		theCommandNames.push_back(currentName);
+		if(nameIterator->second->m_isHidden == false)
+		{
+			std::string currentName = nameIterator->first;
+			theCommandNames.push_back(currentName);
+		}
 	}
 
 	return theCommandNames;
@@ -240,8 +244,11 @@ Strings CommandRegistration::GetAllCommandHelpText()
 
 	for(nameIterator = s_mapOfCallBacks.begin(); nameIterator != s_mapOfCallBacks.end(); nameIterator++)
 	{
-		std::string currentName = nameIterator->second->m_description;
-		theCommandNames.push_back(currentName);
+		if(nameIterator->second->m_isHidden == false)
+		{
+			std::string currentName = nameIterator->second->m_description;
+			theCommandNames.push_back(currentName);
+		}
 	}
 
 	return theCommandNames;
@@ -261,11 +268,15 @@ Strings CommandRegistration::GetAllCommandsAndTheirHelp()
 		//std::string currentText = std::string(currentCommand->m_name 
 		//	+ " | " + currentCommand->m_syntax + " | " + currentCommand->m_description);
 
-		// this is without the syntax since I give them all a help command
-		std::string currentText = std::string(currentCommand->m_name 
-			+ " | " + currentCommand->m_description);
+		if(currentCommand->m_isHidden == false)
+		{
+			// this is without the syntax since I give them all a help command
+			std::string currentText = std::string(currentCommand->m_name 
+				+ " | " + currentCommand->m_description);
 
-		allTheText.push_back(currentText);
+			allTheText.push_back(currentText);
+		}
+		
 	}
 
 	return allTheText;

@@ -35,19 +35,6 @@ void MapEditor::StartUp()
 	
 	CreateNewMap();
 
-	//---------------------------------------------------------
-	// Cameras
-	m_camera = new Camera();
-	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
-	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
-
-	m_currentMap->m_scene->AddCamera(m_camera);
-
-	g_theRenderer->SetCamera();
-	
-	m_cursor = new Cursor();
-	m_cameraLocation = Vector2(-112,-112);
-
 	AddWidgets();
 
 	GetDefinitions();
@@ -60,6 +47,17 @@ void MapEditor::CreateNewMap()
 		delete m_currentMap;
 
 	m_currentMap = new Map("new map:)", IntVector2(20,16));
+
+	m_camera = new Camera();
+	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
+	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
+	m_currentMap->m_scene->AddCamera(m_camera);
+
+	g_theRenderer->SetCamera();
+
+	m_cursor = new Cursor();
+	m_cameraLocation = Vector2(-112,-112);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -76,6 +74,22 @@ void MapEditor::AddWidgets()
 	AABB2 clearBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .1f), Vector2(.99f, .2f));
 	clearMapWidget->GenerateBounds(clearBounds);
 	m_widgets.push_back(clearMapWidget);
+
+	UIWidget* selectUnitWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("changeLevelEditorUnit"));
+	selectUnitWidget->GenerateBounds(m_unitBounds);
+	m_widgets.push_back(selectUnitWidget);
+
+	UIWidget* selectBuildingWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("changeLevelEditorBuilding"));
+	selectBuildingWidget->GenerateBounds(m_buildingBounds);
+	m_widgets.push_back(selectBuildingWidget);
+
+	UIWidget* selectTileWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("changeLevelEditorTile"));
+	selectTileWidget->GenerateBounds(m_tileBounds);
+	m_widgets.push_back(selectTileWidget);
+
+	UIWidget* selectDeleteWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("changeLevelEditorDelete"));
+	selectDeleteWidget->GenerateBounds(m_deleteBounds);
+	m_widgets.push_back(selectDeleteWidget);
 
 }
 

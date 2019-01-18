@@ -47,7 +47,7 @@ public:
 public:
 	std::string	m_command; 
 	Strings		m_commandArguements;
-
+	
 	uint		m_commandIndex = 1; // the name is the 0, so we start at 1
 
 	// gonna let the dev console hold it..?
@@ -64,7 +64,7 @@ typedef void (*command_cb)( Command &cmd );
 class CommandRegistration
 {
 public:
-	CommandRegistration(std::string name, std::string syntax, std::string desciption, command_cb theCallBack);
+	CommandRegistration(std::string name, std::string syntax, std::string desciption, command_cb theCallBack, bool isHidden = false);
 	~CommandRegistration();
 
 	static command_cb	GetCallBack(std::string callBackName);
@@ -79,6 +79,7 @@ public:
 	std::string		m_syntax;
 	std::string		m_description;
 	command_cb		m_callBack;
+	bool			m_isHidden;
 
 private:
 	// I'm not sure which I like yet, so im testing both
@@ -100,7 +101,7 @@ void CommandShutdown();
 // 
 // We then, during some startup, call
 //    CommandRegister( "help", Help ); 
-void CommandRegister( char const *name, std::string syntax, std::string desciption, command_cb cb ); 
+void CommandRegister( char const *name, std::string syntax, std::string desciption, command_cb cb, bool isHidden = false ); 
 
 // Will construct a Command object locally, and if 
 // a callback is associated with its name, will call it and 

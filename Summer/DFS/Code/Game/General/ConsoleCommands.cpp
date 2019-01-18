@@ -44,9 +44,9 @@ void RegisterGameCommands()
 	CommandRegister("battle", "", "create a test battle scene", CreateBattleScene);
 	CommandRegister("saveMap", "", "Save the current Map", SaveMap);
 	CommandRegister("loadMap", "", "Load map from file", LoadMap);
-	CommandRegister("clearMap", "", "Clear map of units and buildings", ClearMap);
+	CommandRegister("clearMap", "", "Clear map of units and buildings", ClearMap, true);
 	CommandRegister("goToGameState", "", "Set state of Game", SetGameState);
-
+	CommandRegister("changeLevelEditorMode", "", "Change Mode of Level Editor", ChangeLevelEditorMode, true);
 
 	// NetSession stuff
 	//CommandRegister("send_ping", "", "", SendPing);
@@ -477,10 +477,10 @@ void LoadMap(Command& theCommand)
 //-----------------------------------------------------------------------------------------------
 void ClearMap(Command& theCommand)
 {
-	Map* currentMap = g_theGame->GetCurrentMap();
-	currentMap->ClearMap();
+	//Map* currentMap = g_theGame->GetCurrentMap();
+	//currentMap->ClearMap();
 
-	//g_theGame->m_mapEditorState->CreateNewMap();
+	g_theGame->m_mapEditorState->CreateNewMap();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -518,6 +518,30 @@ void SetGameState(Command& theCommand)
 	{
 		g_theGame->GoToGameStateFrom(GetGameStateFromString(input), GetGameStateFromString(stateFrom));
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void ChangeLevelEditorMode(Command& theCommand)
+{
+	String modeToGoTo = theCommand.GetNextString();
+	DevConsole* dc = DevConsole::GetInstance();
+
+	if(modeToGoTo != "help")
+	{
+		if(modeToGoTo == "unit") { g_theGame->m_mapEditorState->m_selectionType = SELECTIONTYPE_UNIT; }
+		if(modeToGoTo == "building") { g_theGame->m_mapEditorState->m_selectionType = SELECTIONTYPE_BUILDING; }
+		if(modeToGoTo == "tile") { g_theGame->m_mapEditorState->m_selectionType = SELECTIONTYPE_TILE; }
+		if(modeToGoTo == "delete") { g_theGame->m_mapEditorState->m_selectionType = SELECTIONTYPE_DELETE; }
+	}
+	else
+	{
+		dc->AddConsoleDialogue(ConsoleDialogue("States to go to: Syntax is <State to go to> <State you are in> ", Rgba::WHITE));
+
+		dc->AddConsoleDialogue("Enter one of these: <unit> <building> <tile> <delete>");
+
+		dc->AddSpace(1);
+	}
+	
 }
 
 //-----------------------------------------------------------------------------------------------
