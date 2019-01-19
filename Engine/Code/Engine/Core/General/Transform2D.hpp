@@ -82,6 +82,8 @@ public:
 
 	 void SetParentTransform( Transform2D& parent) { m_parentTransform = &parent; }
 
+	 IntVector2 GetTilePosition(int tileSize);
+
 private:
 	Transform_T		m_localTransform;
 

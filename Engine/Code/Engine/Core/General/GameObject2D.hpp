@@ -36,7 +36,7 @@ public:
 
 	virtual void Update();
 
-	static int s_gameobjectID;
+	IntVector2 GetTilePosition(int tileSize) { return m_transform.GetTilePosition(tileSize); }
 
 public:
 	std::string		m_name;
@@ -46,6 +46,7 @@ public:
 	bool			m_isDead;
 	int				m_ID; // gave me errors making this const
 
+	static int s_gameobjectID;
 };
 
 //=============================================================

@@ -78,6 +78,11 @@ Vector3 Transform2D::GetWorldPosition() const
 	return GetWorldMatrix().GetPosition();
 }
 
+//-----------------------------------------------------------------------------------------------
+IntVector2 Transform2D::GetTilePosition(int tileSize)
+{
+	return (GetLocalPosition() * (1 / (float)tileSize)).GetVector2AsInt();
+}
 
 //=============================================================
 Matrix44 Transform_T::GetMatrix() const

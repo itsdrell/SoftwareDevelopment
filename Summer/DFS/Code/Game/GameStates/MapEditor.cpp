@@ -360,6 +360,7 @@ void MapEditor::CheckKeyboardInputs()
 	if(m_isDirty)
 	{
 		m_currentMap->RecreateMapRenderable();
+		m_isDirty = false;
 	}
 	
 }
@@ -557,10 +558,22 @@ void MapEditor::PlaceUnit()
 		return;
 
 	IntVector2 pos = (m_selectedTileToChange->m_position.GetAsVector2() / TILE_SIZE).GetVector2AsInt();
-	
 	Unit* newUnit = m_currentMap->CreateUnit(m_currentUnitDefinition->m_name, m_currentUnitTeam, pos, 10);
+
+	// I am creating a tile for the unit if it needs it, I could also just not spawn the unit it the tile
+	// underneath is not the right type but idk which i prefer atm
+	Tile* tileWeAreOn = newUnit->m_tileIAmOn;
+	if(newUnit->m_definition->m_tileNeededUnderneath != nullptr 
+		&& newUnit->m_definition->m_tileNeededUnderneath != tileWeAreOn->m_definition)
+	{
+		TileHistory* newHistory = new TileHistory(tileWeAreOn->m_definition, *tileWeAreOn);
+		m_currentHistory->m_history.push_back(newHistory);
+		
+		tileWeAreOn->m_definition = newUnit->m_definition->m_tileNeededUnderneath;
+		MarkRenderableAsDirty();
+	}
 	
-	UnitHistory* newHistory = new UnitHistory(*newUnit);
+	UnitHistory* newHistory = new UnitHistory(pos);
 	m_currentHistory->m_history.push_back(newHistory);
 }
 
@@ -574,7 +587,20 @@ void MapEditor::PlaceBuilding()
 
 	Building* newBuilding = m_currentMap->CreateBuilding(m_currentBuildingDefinition->m_name, m_currentBuildingTeam, pos);
 
-	BuildingHistory* newHistory = new BuildingHistory(*newBuilding);
+	// I am creating a tile for the unit if it needs it, I could also just not spawn the unit it the tile
+	// underneath is not the right type but idk which i prefer atm
+	Tile* tileWeAreOn = newBuilding->m_tileReference;
+	if(newBuilding->m_definition->m_tileToSpawnBeneath != nullptr 
+		&& newBuilding->m_definition->m_tileToSpawnBeneath != tileWeAreOn->m_definition)
+	{
+		TileHistory* newHistory = new TileHistory(tileWeAreOn->m_definition, *tileWeAreOn);
+		m_currentHistory->m_history.push_back(newHistory);
+
+		tileWeAreOn->m_definition = newBuilding->m_definition->m_tileToSpawnBeneath;
+		MarkRenderableAsDirty();
+	}
+
+	BuildingHistory* newHistory = new BuildingHistory(pos);
 	m_currentHistory->m_history.push_back(newHistory);
 }
 
@@ -635,8 +661,15 @@ void MapEditor::RemoveUnit()
 	PlayOneShot("default");
 
 	Unit* unitToDestroy = m_selectedTileToChange->m_unit;
-	unitToDestroy->Die();
 
+	DeleteHistory* newHistory = new DeleteHistory(
+		UNDO_TYPE_UNIT, 
+		unitToDestroy->m_team, 
+		unitToDestroy->m_definition->m_name, 
+		unitToDestroy->GetTilePosition(TILE_SIZE_INT));
+	m_currentHistory->m_history.push_back(newHistory);
+
+	unitToDestroy->Die();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -646,8 +679,14 @@ void MapEditor::RemoveBuilding()
 
 	Building* buildingToDestroy = m_selectedTileToChange->m_building;
 
-	Vector2 pos = buildingToDestroy->m_transform.GetLocalPosition() * (1 / TILE_SIZE);
-	m_currentMap->CreateEffect("explosion", pos.GetVector2AsInt());
+	m_currentMap->CreateEffect("explosion", buildingToDestroy->GetTilePosition(TILE_SIZE_INT));
+
+	DeleteHistory* newHistory = new DeleteHistory(
+		UNDO_TYPE_BUILDING, 
+		buildingToDestroy->m_team, 
+		buildingToDestroy->m_definition->m_name, 
+		buildingToDestroy->GetTilePosition(TILE_SIZE_INT));
+	m_currentHistory->m_history.push_back(newHistory);
 
 	m_currentMap->DeleteGameObjectFromMap(buildingToDestroy);
 }

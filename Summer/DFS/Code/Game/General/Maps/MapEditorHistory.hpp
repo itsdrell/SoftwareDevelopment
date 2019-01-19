@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "Game\Main\GameCommon.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -20,7 +21,8 @@ class TileDefinition;
 //====================================================================================
 enum UndoType
 {
-	UNDO_TYPE_GAMEOBJECT,
+	UNDO_TYPE_UNIT,
+	UNDO_TYPE_BUILDING,
 	UNDO_TYPE_TILE
 };
 
@@ -36,36 +38,44 @@ class HistoryItem
 {
 public:
 	HistoryItem() {}
+	HistoryItem(const IntVector2& tilePos) { m_position = tilePos; }
 	virtual void Undo() = 0;
+
+	// the reason we use position instead of gameobjects is because
+	// when undoing a delete the gameobject is destroyed leaving 
+	// behind a dangling pointer
+	IntVector2	m_position;
 };
 
+//-----------------------------------------------------------------------------------------------
 class UnitHistory : public HistoryItem
 {
 public:
-	UnitHistory(Unit& unitToDestroy);
+	UnitHistory(const IntVector2& tilePos);
 	virtual void Undo() override;
-	
-	Unit*		m_unitToDestroy;
 };
 
+//-----------------------------------------------------------------------------------------------
 class BuildingHistory : public HistoryItem
 {
 public:
-	BuildingHistory(Building& buildingToDestroy);
+	BuildingHistory(const IntVector2& tilePos);
+	virtual void Undo() override;
+};
+
+//-----------------------------------------------------------------------------------------------
+class DeleteHistory : public HistoryItem
+{
+public:
+	DeleteHistory( UndoType theType, TeamName theTeam, const String& definitionName, const IntVector2& tilePos );
 	virtual void Undo() override;
 	
-	Building*	m_buildingToDestroy;
+	UndoType			m_type;
+	TeamName			m_team;
+	String				m_definitionName;
 };
-//
-//class DeleteHistory : public HistoryItem
-//{
-//public:
-//	virtual void Undo() override;
-//	
-//	UndoType			m_type;
-//	GameObject2D*		m_gameObjectToMake;
-//};
-//
+
+//-----------------------------------------------------------------------------------------------
 class TileHistory : public HistoryItem
 {
 public:
@@ -76,6 +86,7 @@ public:
 	Tile*				m_theTile;
 };
 
+//-----------------------------------------------------------------------------------------------
 class History
 {
 public:

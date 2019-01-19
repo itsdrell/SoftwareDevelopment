@@ -6,29 +6,31 @@
 #include "Game\GameStates\MapEditor.hpp"
 
 //===============================================================================================
-UnitHistory::UnitHistory(Unit& unitToDestroy)
+UnitHistory::UnitHistory(const IntVector2& tilePos)
+	: HistoryItem(tilePos)
 {
-	m_unitToDestroy = &unitToDestroy;
 }
 
 //-----------------------------------------------------------------------------------------------
 void UnitHistory::Undo()
 {
-	m_unitToDestroy->m_tileIAmOn->m_unit = nullptr;
-	g_theGame->GetCurrentMap()->DeleteGameObjectFromMap(m_unitToDestroy);
+	Tile* theTile = g_theGame->GetCurrentMap()->GetTile(m_position);
+	g_theGame->GetCurrentMap()->DeleteGameObjectFromMap(theTile->m_unit);
+	theTile->m_unit = nullptr;
 }
 
 //-----------------------------------------------------------------------------------------------
-BuildingHistory::BuildingHistory(Building & buildingToDestroy)
+BuildingHistory::BuildingHistory(const IntVector2& tilePos)
+	: HistoryItem(tilePos)
 {
-	m_buildingToDestroy = &buildingToDestroy;
 }
 
 //-----------------------------------------------------------------------------------------------
 void BuildingHistory::Undo()
-{
-	m_buildingToDestroy->m_tileReference->m_building = nullptr;
-	g_theGame->GetCurrentMap()->DeleteGameObjectFromMap(m_buildingToDestroy);
+{	
+	Tile* theTile = g_theGame->GetCurrentMap()->GetTile(m_position);
+	g_theGame->GetCurrentMap()->DeleteGameObjectFromMap(theTile->m_building);
+	theTile->m_building = nullptr;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -42,7 +44,35 @@ TileHistory::TileHistory(TileDefinition* previousDef, Tile& theTile)
 void TileHistory::Undo()
 {
 	m_theTile->m_definition = m_previousDefinition;
-
-	// maybe make this a "isDirty"
 	g_theGame->m_mapEditorState->MarkRenderableAsDirty();
+}
+
+//-----------------------------------------------------------------------------------------------
+DeleteHistory::DeleteHistory(UndoType theType, TeamName theTeam, const String& definitionName, const IntVector2& tilePos)
+	: HistoryItem(tilePos)
+{
+	m_type = theType;
+	m_team = theTeam;
+	m_definitionName = definitionName;
+}
+
+//-----------------------------------------------------------------------------------------------
+void DeleteHistory::Undo()
+{
+	Map* currentMap = g_theGame->GetCurrentMap();
+	
+	switch (m_type)
+	{
+	case UNDO_TYPE_UNIT:
+		currentMap->CreateUnit(m_definitionName, m_team, m_position);
+		break;
+	case UNDO_TYPE_BUILDING:
+		currentMap->CreateBuilding(m_definitionName, m_team, m_position);
+		break;
+	case UNDO_TYPE_TILE:
+		currentMap->ChangeTile(m_definitionName, m_position);
+		break;
+	default:
+		break;
+	}
 }
