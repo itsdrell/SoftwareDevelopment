@@ -68,6 +68,7 @@ public:
 	void RenderBackgroundUI() const;
 	void RenderCurrentSelectionBar() const;
 
+private:
 	void CheckKeyboardInputs();
 	void PlaceObjectOrTile();
 	void SwapPlacementMode();

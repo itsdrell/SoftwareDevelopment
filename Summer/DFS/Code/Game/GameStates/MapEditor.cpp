@@ -46,7 +46,7 @@ void MapEditor::CreateNewMap()
 	if(m_currentMap != nullptr)
 		delete m_currentMap;
 
-	m_currentMap = new Map("new map:)", IntVector2(20,16));
+	m_currentMap = new Map("new map:)", IntVector2(30,20));
 
 	m_camera = new Camera();
 	m_camera->SetColorTarget( g_theRenderer->m_defaultColorTarget );
@@ -56,7 +56,7 @@ void MapEditor::CreateNewMap()
 	g_theRenderer->SetCamera();
 
 	m_cursor = new Cursor();
-	m_cameraLocation = Vector2(-112,-112);
+	m_cameraLocation = Vector2(-112,-160);
 
 }
 
@@ -66,12 +66,12 @@ void MapEditor::AddWidgets()
 	Renderer* r = Renderer::GetInstance();
 	
 	UIWidget* exitWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("exitLevelEditor"));
-	AABB2 exitBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .01f), Vector2(.99f, .1f));
+	AABB2 exitBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .01f), Vector2(.99f, .08f));
 	exitWidget->GenerateBounds(exitBounds);
 	m_widgets.push_back(exitWidget);
 
 	UIWidget* clearMapWidget = new UIWidget(*UIWidgetDefinition::GetUIWidgetDefinition("clearMap"));
-	AABB2 clearBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.8f, .1f), Vector2(.99f, .2f));
+	AABB2 clearBounds = GetBounds(r->m_defaultUICamera->GetOrthoBounds(), Vector2(.31f, .01f), Vector2(.49f, .08f));
 	clearMapWidget->GenerateBounds(clearBounds);
 	m_widgets.push_back(clearMapWidget);
 
