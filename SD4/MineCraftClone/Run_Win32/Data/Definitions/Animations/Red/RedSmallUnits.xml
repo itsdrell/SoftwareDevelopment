@@ -1,0 +1,252 @@
+<Animations>
+
+<!-- __________________ Ground __________________ -->
+
+<!-- GRUNT -->
+    <Animation id= "grunt_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,1" time = "1" />
+        <frame coords = "2,1" time = "1" />
+        <frame coords = "3,1" time = "1" />
+        <frame coords = "4,1" time = "1" />
+
+    </Animation>
+
+<!-- MECH -->
+    <Animation id= "mech_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,5" time = "1" />
+        <frame coords = "2,5" time = "1" />
+        <frame coords = "3,5" time = "1" />
+        <frame coords = "4,5" time = "1" />
+
+    </Animation>
+
+<!-- recon -->
+    <Animation id= "recon_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,9" time = "1" />
+        <frame coords = "2,9" time = "1" />
+        <frame coords = "3,9" time = "1" />
+        <frame coords = "4,9" time = "1" />
+
+    </Animation>
+
+<!-- tank  -->
+    <Animation id= "tank_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,13" time = "1" />
+        <frame coords = "2,13" time = "1" />
+        <frame coords = "3,13" time = "1" />
+        <frame coords = "4,13" time = "1" />
+
+    </Animation>
+
+<!-- MedTank -->
+    <Animation id= "medTank_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,17" time = "1" />
+        <frame coords = "2,17" time = "1" />
+        <frame coords = "3,17" time = "1" />
+        <frame coords = "4,17" time = "1" />
+
+    </Animation>
+
+<!-- neoTank -->
+    <Animation id= "neoTank_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,21" time = "1" />
+        <frame coords = "2,21" time = "1" />
+        <frame coords = "3,21" time = "1" />
+        <frame coords = "4,21" time = "1" />
+
+    </Animation>
+
+<!-- megaTank -->
+    <Animation id= "megaTank_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,25" time = "1" />
+        <frame coords = "2,25" time = "1" />
+        <frame coords = "3,25" time = "1" />
+        <frame coords = "4,25" time = "1" />
+
+    </Animation>
+
+<!-- cannon -->
+    <Animation id= "cannon_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,29" time = "1" />
+        <frame coords = "2,29" time = "1" />
+        <frame coords = "3,29" time = "1" />
+        <frame coords = "4,29" time = "1" />
+
+    </Animation>
+
+<!-- rockets -->
+    <Animation id= "rockets_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,9" time = "1" />
+        <frame coords = "2,9" time = "1" />
+        <frame coords = "3,9" time = "1" />
+        <frame coords = "4,9" time = "1" />
+
+    </Animation>
+
+
+<!-- missiles -->
+    <Animation id= "missiles_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,37" time = "1" />
+        <frame coords = "2,37" time = "1" />
+        <frame coords = "3,37" time = "1" />
+        <frame coords = "4,37" time = "1" />
+
+    </Animation>
+
+<!-- anitAir -->
+    <Animation id= "antiAir_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,41" time = "1" />
+        <frame coords = "2,41" time = "1" />
+        <frame coords = "3,41" time = "1" />
+        <frame coords = "4,41" time = "1" />
+
+    </Animation>
+
+<!-- __________________ AIR __________________ -->
+
+<!-- copter -->
+    <Animation id= "copter_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,45" time = "1" />
+        <frame coords = "2,45" time = "1" />
+        <frame coords = "3,45" time = "1" />
+        <frame coords = "4,45" time = "1" />
+
+    </Animation>
+
+<!-- jet -->
+    <Animation id= "jet_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,49" time = "1" />
+        <frame coords = "2,49" time = "1" />
+        <frame coords = "3,49" time = "1" />
+        <frame coords = "4,49" time = "1" />
+
+    </Animation>
+
+<!-- bomber -->
+    <Animation id= "bomber_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,53" time = "1" />
+        <frame coords = "2,53" time = "1" />
+        <frame coords = "3,53" time = "1" />
+        <frame coords = "4,53" time = "1" />
+
+    </Animation>
+
+<!-- stealth -->
+    <Animation id= "stealth_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,57" time = "1" />
+        <frame coords = "2,57" time = "1" />
+        <frame coords = "3,57" time = "1" />
+        <frame coords = "4,57" time = "1" />
+
+    </Animation>
+
+<!-- __________________ Sea __________________ -->
+<!-- cruiser -->
+    <Animation id= "cruiser_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,61" time = "1" />
+        <frame coords = "2,61" time = "1" />
+        <frame coords = "3,61" time = "1" />
+        <frame coords = "4,61" time = "1" />
+
+    </Animation>
+
+<!-- sub -->
+    <Animation id= "sub_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,65" time = "1" />
+        <frame coords = "2,65" time = "1" />
+        <frame coords = "3,65" time = "1" />
+        <frame coords = "4,65" time = "1" />
+
+    </Animation>
+
+<!-- battleShip -->
+    <Animation id= "battleShip_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,69" time = "1" />
+        <frame coords = "2,69" time = "1" />
+        <frame coords = "3,69" time = "1" />
+        <frame coords = "4,69" time = "1" />
+
+    </Animation>
+
+<!-- carrier -->
+    <Animation id= "carrier_idle_r" loop = "loop">
+        
+        <spriteSheet name="Units"/>
+
+        <frame coords = "1,37" time = "1" />
+        <frame coords = "2,37" time = "1" />
+        <frame coords = "3,37" time = "1" />
+        <frame coords = "4,37" time = "1" />
+
+    </Animation>
+
+</Animations>
+
+
+<!--
+
+<Animation id="name" loop = "loop,clamp,pingpong">
+
+    <spriteSheet name="Units"/>
+
+        Make sure these are in order
+        <frame idx="int" <or> coords="x,y" time="float" />
+
+    </Animation>
+
+
+-->

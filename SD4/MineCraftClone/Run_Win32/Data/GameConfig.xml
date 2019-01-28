@@ -1,0 +1,29 @@
+<GameConfig
+	
+	startLevel="WizardTower3"
+	windowAspect="1.4"
+	isFullscreen="false"
+  
+  mouseMode="absolute"
+  showCursor="true"
+  
+  IntRangeTest ="1~2"
+  FloatRangeTest ="3.1~4.1"
+  Vector2Test ="5.1,6.1"
+  IntVectorTest ="7,8"
+  RgbaTest1 ="1,2,3,4"
+  RgbaTest2 ="1,2,3"
+  boolTestFalse ="false"
+  boolTestTrue ="true"
+  
+	
+/>
+
+
+<!--
+  - Mouse Mode : Can be either "absolute" or "relative"
+  - 
+
+
+
+-->

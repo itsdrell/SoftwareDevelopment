@@ -1,0 +1,4 @@
+net_host player1
+rcb net_join player2 10.8.141.14:10084
+rca net_sim_lag 100 200
+rca net_sim_loss 20

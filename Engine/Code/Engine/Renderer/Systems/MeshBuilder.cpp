@@ -3,7 +3,6 @@
 #include "Engine\Math\MathUtils.hpp"
 #include <stdio.h> //fopen
 #include "../Images/Sprites/Sprite.hpp"
-#include "../../TankGame/Code/Game/Main/GameCommon.hpp"
 #include "../Images/Fonts/BitmapFont.hpp"
 
 MeshBuilder::MeshBuilder()
@@ -953,7 +952,7 @@ void MeshBuilder::Add2DText(Vector2 startPos, std::string text,  float cellHeigh
 
 	// Use a default font
 	if(font == nullptr)
-		font = g_theRenderer->m_defaultFont;
+		font = Renderer::GetInstance()->m_defaultFont;
 
 	// Draw
 	for(int i = 0; i < length; i++)
@@ -981,7 +980,7 @@ void MeshBuilder::Add2DRandomColoredText(Vector2 startPos, std::string text, flo
 
 	// Use a default font
 	if(font == nullptr)
-		font = g_theRenderer->m_defaultFont;
+		font = Renderer::GetInstance()->m_defaultFont;
 
 	// Draw
 	for(int i = 0; i < length; i++)

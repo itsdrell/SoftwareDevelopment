@@ -1,0 +1,122 @@
+<AnimSets>
+
+<!-- __________________ Ground __________________ -->
+    <animset id = "grunt_B" >
+        <set id = "idle">
+            <anim id = "grunt_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "mech_B" >
+        <set id = "idle">
+            <anim id = "mech_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "recon_B" >
+        <set id = "idle">
+            <anim id = "recon_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "tank_B" >
+        <set id = "idle">
+            <anim id = "tank_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "medTank_B" >
+        <set id = "idle">
+            <anim id = "medTank_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "neoTank_B" >
+        <set id = "idle">
+            <anim id = "neoTank_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "megaTank_B" >
+        <set id = "idle">
+            <anim id = "megaTank_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "cannon_B" >
+        <set id = "idle">
+            <anim id = "cannon_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "rockets_B" >
+        <set id = "idle">
+            <anim id = "rockets_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "missiles_B" >
+        <set id = "idle">
+            <anim id = "missiles_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "antiAir_B" >
+        <set id = "idle">
+            <anim id = "antiAir_idle_b" />
+        </set>
+    </animset>
+
+<!-- __________________ Air __________________ -->
+
+    <animset id = "copter_B" >
+        <set id = "idle">
+            <anim id = "copter_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "jet_B" >
+        <set id = "idle">
+            <anim id = "jet_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "bomber_B" >
+        <set id = "idle">
+            <anim id = "bomber_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "stealth_B" >
+        <set id = "idle">
+            <anim id = "stealth_idle_b" />
+        </set>
+    </animset>
+
+<!-- __________________ Sea __________________ -->
+
+    <animset id = "cruiser_B" >
+        <set id = "idle">
+            <anim id = "cruiser_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "sub_B" >
+        <set id = "idle">
+            <anim id = "sub_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "battleShip_B" >
+        <set id = "idle">
+            <anim id = "battleShip_idle_b" />
+        </set>
+    </animset>
+
+    <animset id = "carrier_B" >
+        <set id = "idle">
+            <anim id = "carrier_idle_b" />
+        </set>
+    </animset>
+
+</AnimSets>

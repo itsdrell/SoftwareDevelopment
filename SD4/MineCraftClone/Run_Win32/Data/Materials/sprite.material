@@ -1,0 +1,5 @@
+<Material name = "sprite">
+    
+    <Shader name = "sprite" />
+
+</Material>

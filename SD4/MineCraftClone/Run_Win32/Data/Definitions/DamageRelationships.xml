@@ -1,0 +1,260 @@
+<DamageInteractions>
+
+
+<!-- GRUNT -->
+    <Damage attacker="grunt" defender="grunt" damage="50"  />
+    <Damage attacker="grunt" defender="mech" damage="40"  />
+    <Damage attacker="grunt" defender="recon" damage="30"  />
+    <Damage attacker="grunt" defender="tank" damage="10"  />
+    <Damage attacker="grunt" defender="medTank" damage="5"  />
+    <Damage attacker="grunt" defender="neoTank" damage="2"  />
+    <Damage attacker="grunt" defender="megaTank" damage="1"  />
+    <Damage attacker="grunt" defender="cannon" damage="35"  />
+    <Damage attacker="grunt" defender="rockets" damage="30"  />
+    <Damage attacker="grunt" defender="missiles" damage="40"  />
+    <Damage attacker="grunt" defender="antiAir" damage="42"  />
+
+
+<!-- MECH -->
+    <Damage attacker="mech" defender="grunt" damage="60"  />
+    <Damage attacker="mech" defender="mech" damage="40"  />
+    <Damage attacker="mech" defender="recon" damage="65"  />
+    <Damage attacker="mech" defender="tank" damage="70"  />
+    <Damage attacker="mech" defender="medTank" damage="50"  />
+    <Damage attacker="mech" defender="neoTank" damage="35"  />
+    <Damage attacker="mech" defender="megaTank" damage="11"  />
+    <Damage attacker="mech" defender="cannon" damage="45"  />
+    <Damage attacker="mech" defender="rockets" damage="50"  />
+    <Damage attacker="mech" defender="missiles" damage="50"  />
+    <Damage attacker="mech" defender="antiAir" damage="52"  />
+
+
+<!-- RECON -->
+    <Damage attacker="recon" defender="grunt" damage="60"  />
+    <Damage attacker="recon" defender="mech" damage="40"  />
+    <Damage attacker="recon" defender="recon" damage="60"  />
+    <Damage attacker="recon" defender="tank" damage="30"  />
+    <Damage attacker="recon" defender="medTank" damage="5"  />
+    <Damage attacker="recon" defender="neoTank" damage="2"  />
+    <Damage attacker="recon" defender="megaTank" damage="1"  />
+    <Damage attacker="recon" defender="cannon" damage="35"  />
+    <Damage attacker="recon" defender="rockets" damage="30"  />
+    <Damage attacker="recon" defender="missiles" damage="40"  />
+    <Damage attacker="recon" defender="antiAir" damage="42"  />
+
+<!-- TANK -->
+    <Damage attacker="tank" defender="grunt" damage="65"  />
+    <Damage attacker="tank" defender="mech" damage="55"  />
+    <Damage attacker="tank" defender="recon" damage="50"  />
+    <Damage attacker="tank" defender="tank" damage="55"  />
+    <Damage attacker="tank" defender="medTank" damage="35"  />
+    <Damage attacker="tank" defender="neoTank" damage="20"  />
+    <Damage attacker="tank" defender="megaTank" damage="10"  />
+    <Damage attacker="tank" defender="cannon" damage="65"  />
+    <Damage attacker="tank" defender="rockets" damage="55"  />
+    <Damage attacker="tank" defender="missiles" damage="55"  />
+    <Damage attacker="tank" defender="antiAir" damage="51"  />
+
+<!-- MED TANK -->
+    <Damage attacker="medTank" defender="grunt" damage="75"  />
+    <Damage attacker="medTank" defender="mech" damage="65"  />
+    <Damage attacker="medTank" defender="recon" damage="60"  />
+    <Damage attacker="medTank" defender="tank" damage="65"  />
+    <Damage attacker="medTank" defender="medTank" damage="55"  />
+    <Damage attacker="medTank" defender="neoTank" damage="40"  />
+    <Damage attacker="medTank" defender="megaTank" damage="25"  />
+    <Damage attacker="medTank" defender="cannon" damage="75"  />
+    <Damage attacker="medTank" defender="rockets" damage="65"  />
+    <Damage attacker="medTank" defender="missiles" damage="70"  />
+    <Damage attacker="medTank" defender="antiAir" damage="75"  />
+
+<!-- neoTank -->
+    <Damage attacker="neoTank" defender="grunt" damage="90"  />
+    <Damage attacker="neoTank" defender="mech" damage="90"  />
+    <Damage attacker="neoTank" defender="recon" damage="85"  />
+    <Damage attacker="neoTank" defender="tank" damage="80"  />
+    <Damage attacker="neoTank" defender="medTank" damage="65"  />
+    <Damage attacker="neoTank" defender="neoTank" damage="55"  />
+    <Damage attacker="neoTank" defender="megaTank" damage="10"  />
+    <Damage attacker="neoTank" defender="cannon" damage="65"  />
+    <Damage attacker="neoTank" defender="rockets" damage="55"  />
+    <Damage attacker="neoTank" defender="missiles" damage="55"  />
+    <Damage attacker="neoTank" defender="antiAir" damage="51"  />
+
+<!-- Mega Tank -->
+    <Damage attacker="megaTank" defender="grunt" damage="95"  />
+    <Damage attacker="megaTank" defender="mech" damage="85"  />
+    <Damage attacker="megaTank" defender="recon" damage="80"  />
+    <Damage attacker="megaTank" defender="tank" damage="78"  />
+    <Damage attacker="megaTank" defender="medTank" damage="70"  />
+    <Damage attacker="megaTank" defender="neoTank" damage="65"  />
+    <Damage attacker="megaTank" defender="megaTank" damage="55"  />
+    <Damage attacker="megaTank" defender="cannon" damage="80"  />
+    <Damage attacker="megaTank" defender="rockets" damage="75"  />
+    <Damage attacker="megaTank" defender="missiles" damage="80"  />
+    <Damage attacker="megaTank" defender="antiAir" damage="85"  />
+
+<!-- CANNON -->
+    <Damage attacker="cannon" defender="grunt" damage="70"  />
+    <Damage attacker="cannon" defender="mech" damage="70"  />
+    <Damage attacker="cannon" defender="recon" damage="80"  />
+    <Damage attacker="cannon" defender="tank" damage="80"  />
+    <Damage attacker="cannon" defender="medTank" damage="60"  />
+    <Damage attacker="cannon" defender="neoTank" damage="55"  />
+    <Damage attacker="cannon" defender="megaTank" damage="45"  />
+    <Damage attacker="cannon" defender="cannon" damage="80"  />
+    <Damage attacker="cannon" defender="rockets" damage="75"  />
+    <Damage attacker="cannon" defender="missiles" damage="80"  />
+    <Damage attacker="cannon" defender="antiAir" damage="85"  />
+
+<!-- ROCKETS (ground and sea) -->
+    <Damage attacker="rockets" defender="grunt" damage="80"  />
+    <Damage attacker="rockets" defender="mech" damage="80"  />
+    <Damage attacker="rockets" defender="recon" damage="90"  />
+    <Damage attacker="rockets" defender="tank" damage="90"  />
+    <Damage attacker="rockets" defender="medTank" damage="70"  />
+    <Damage attacker="rockets" defender="neoTank" damage="65"  />
+    <Damage attacker="rockets" defender="megaTank" damage="55"  />
+    <Damage attacker="rockets" defender="cannon" damage="90"  />
+    <Damage attacker="rockets" defender="rockets" damage="85"  />
+    <Damage attacker="rockets" defender="missiles" damage="90"  />
+    <Damage attacker="rockets" defender="antiAir" damage="80"  />
+
+    <!-- Naval -->
+
+<!-- ANTI AIR (Air + Ground) -->
+    <Damage attacker="anitAir" defender="grunt" damage="70"  />
+    <Damage attacker="anitAir" defender="mech" damage="70"  />
+    <Damage attacker="anitAir" defender="recon" damage="80"  />
+    <Damage attacker="anitAir" defender="tank" damage="30"  />
+    <Damage attacker="anitAir" defender="medTank" damage="20"  />
+    <Damage attacker="anitAir" defender="neoTank" damage="15"  />
+    <Damage attacker="anitAir" defender="megaTank" damage="5"  />
+    <Damage attacker="anitAir" defender="cannon" damage="50"  />
+    <Damage attacker="anitAir" defender="rockets" damage="40"  />
+    <Damage attacker="anitAir" defender="missiles" damage="40"  />
+    <Damage attacker="anitAir" defender="antiAir" damage="55"  />
+
+    <!-- AIR -->
+    <Damage attacker="anitAir" defender="copter" damage="70"  />
+    <Damage attacker="anitAir" defender="jet" damage="60"  />
+    <Damage attacker="anitAir" defender="bomber" damage="80"  />
+    <Damage attacker="anitAir" defender="stealth" damage="70"  />
+
+
+<!-- MISSILES (air only)-->
+    <Damage attacker="missiles" defender="copter" damage="70"  />
+    <Damage attacker="missiles" defender="jet" damage="60"  />
+    <Damage attacker="missiles" defender="bomber" damage="80"  />
+    <Damage attacker="missiles" defender="stealth" damage="70"  />
+
+
+<!--COPTER (itself and ground) -->
+    <Damage attacker="copter" defender="grunt" damage="70"  />
+    <Damage attacker="copter" defender="mech" damage="70"  />
+    <Damage attacker="copter" defender="recon" damage="80"  />
+    <Damage attacker="copter" defender="tank" damage="30"  />
+    <Damage attacker="copter" defender="medTank" damage="20"  />
+    <Damage attacker="copter" defender="neoTank" damage="15"  />
+    <Damage attacker="copter" defender="megaTank" damage="5"  />
+    <Damage attacker="copter" defender="cannon" damage="50"  />
+    <Damage attacker="copter" defender="rockets" damage="40"  />
+    <Damage attacker="copter" defender="missiles" damage="40"  />
+    <Damage attacker="copter" defender="antiAir" damage="55"  />
+
+    <!-- AIR -->
+    <Damage attacker="copter" defender="copter" damage="70"  />
+
+<!-- JET -->
+    <Damage attacker="jet" defender="jet" damage="60"  />
+    <Damage attacker="jet" defender="bomber" damage="80"  />
+    <Damage attacker="jet" defender="stealth" damage="70"  />
+
+<!-- Bomber -->
+    <Damage attacker="bomber" defender="grunt" damage="70"  />
+    <Damage attacker="bomber" defender="mech" damage="70"  />
+    <Damage attacker="bomber" defender="recon" damage="80"  />
+    <Damage attacker="bomber" defender="tank" damage="30"  />
+    <Damage attacker="bomber" defender="medTank" damage="20"  />
+    <Damage attacker="bomber" defender="neoTank" damage="15"  />
+    <Damage attacker="bomber" defender="megaTank" damage="5"  />
+    <Damage attacker="bomber" defender="cannon" damage="50"  />
+    <Damage attacker="bomber" defender="rockets" damage="40"  />
+    <Damage attacker="bomber" defender="missiles" damage="40"  />
+    <Damage attacker="bomber" defender="antiAir" damage="55"  />
+
+<!-- Stealth (all air and ground) -->
+    <Damage attacker="stealth" defender="grunt" damage="70"  />
+    <Damage attacker="stealth" defender="mech" damage="70"  />
+    <Damage attacker="stealth" defender="recon" damage="80"  />
+    <Damage attacker="stealth" defender="tank" damage="30"  />
+    <Damage attacker="stealth" defender="medTank" damage="20"  />
+    <Damage attacker="stealth" defender="neoTank" damage="15"  />
+    <Damage attacker="stealth" defender="megaTank" damage="5"  />
+    <Damage attacker="stealth" defender="cannon" damage="50"  />
+    <Damage attacker="stealth" defender="rockets" damage="40"  />
+    <Damage attacker="stealth" defender="missiles" damage="40"  />
+    <Damage attacker="stealth" defender="antiAir" damage="55"  />
+
+    <!-- AIR -->
+    <Damage attacker="stealth" defender="copter" damage="70"  />
+    <Damage attacker="stealth" defender="jet" damage="60"  />
+    <Damage attacker="stealth" defender="bomber" damage="80"  />
+    <Damage attacker="stealth" defender="stealth" damage="70"  />
+
+<!-- Cruiser (Sea Only) -->
+    <Damage attacker="cruiser" defender="cruiser" damage="70"  />
+    <Damage attacker="cruiser" defender="sub" damage="60"  />
+    <Damage attacker="cruiser" defender="battleShip" damage="80"  />
+    <Damage attacker="cruiser" defender="carrier" damage="70"  />
+
+<!-- Sub -->
+    <Damage attacker="sub" defender="cruiser" damage="70"  />
+    <Damage attacker="sub" defender="sub" damage="60"  />
+    <Damage attacker="sub" defender="battleShip" damage="80"  />
+    <Damage attacker="sub" defender="carrier" damage="70"  />
+
+<!-- Carrier (Air Only) -->
+    <Damage attacker="carrier" defender="copter" damage="70"  />
+    <Damage attacker="carrier" defender="jet" damage="60"  />
+    <Damage attacker="carrier" defender="bomber" damage="80"  />
+    <Damage attacker="carrier" defender="stealth" damage="70"  />
+
+<!-- Battle Ship (ground and sea) -->
+    <Damage attacker="battleShip" defender="grunt" damage="70"  />
+    <Damage attacker="battleShip" defender="mech" damage="70"  />
+    <Damage attacker="battleShip" defender="recon" damage="80"  />
+    <Damage attacker="battleShip" defender="tank" damage="30"  />
+    <Damage attacker="battleShip" defender="medTank" damage="20"  />
+    <Damage attacker="battleShip" defender="neoTank" damage="15"  />
+    <Damage attacker="battleShip" defender="megaTank" damage="5"  />
+    <Damage attacker="battleShip" defender="cannon" damage="50"  />
+    <Damage attacker="battleShip" defender="rockets" damage="40"  />
+    <Damage attacker="battleShip" defender="missiles" damage="40"  />
+    <Damage attacker="battleShip" defender="antiAir" damage="55"  />
+
+    <Damage attacker="battleShip" defender="cruiser" damage="70"  />
+    <Damage attacker="battleShip" defender="sub" damage="60"  />
+    <Damage attacker="battleShip" defender="battleShip" damage="80"  />
+    <Damage attacker="battleShip" defender="carrier" damage="70"  />
+
+</DamageInteractions>
+
+
+
+<!--
+
+    The reason we are doing are not doing a counter damage is because the attacker
+    Gets to damage the defender first which decreases the health and makes their damage
+    shorter
+
+    Damage is in range 0-100
+
+    Only Creating damage things for things that they can attack
+
+    <Damage attacker="" defender="" damage="" >
+
+
+
+
+-->
