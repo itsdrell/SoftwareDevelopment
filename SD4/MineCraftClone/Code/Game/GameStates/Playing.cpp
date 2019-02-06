@@ -18,6 +18,8 @@
 #include "Engine/Renderer/Systems/ForwardRenderingPath.hpp"
 #include "Engine/Renderer/Systems/MeshBuilder.hpp"
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
+#include "Engine/Renderer/RenderableComponents/Renderable.hpp"
+#include "Game/General/GameCamera.hpp"
 
 
 //====================================================================================
@@ -51,6 +53,7 @@ void Playing::StartUp()
 	m_renderingPath = new ForwardRenderingPath();
 
 	DebugRenderWireAABB3(1000.f, AABB3(Vector3(-4.f, -4.f, 8.f), Vector3(4.f, 4.f, 8.f)));
+	DebugRenderBasis(1000.f, Matrix44());
 
 	m_skyBox = new TextureCube();
 	m_skyBox->make_from_image("Data/Images/galaxy2.png");
@@ -60,6 +63,15 @@ void Playing::StartUp()
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
 	m_skyMesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	m_cubeRenderable = new Renderable();
+	mb.AddCube(Vector3(5.f, 0.f, 0.f), Vector3::ONE);
+	m_cubeRenderable->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
+	Shader* test = Shader::CreateOrGetShader("default");
+	m_cubeRenderable->SetMaterial(Material::CreateOrGetMaterial("default"));
+	m_cubeRenderable->m_material->m_textures.at(0) = Renderer::GetInstance()->m_testTexture;
+	m_scene->AddRenderable(m_cubeRenderable);
+
 
 	//---------------------------------------------------------
 	// Cameras
@@ -73,12 +85,7 @@ void Playing::StartUp()
 
 	g_theRenderer->SetCamera();
 
-	//--------------------------------------------------------------------------
-	// Game specific setup
-
-	m_currentPlayState = SELECTING;
-
-	m_cameraLocation = Vector2(-112,-112);
+	m_gameCamera = new GameCamera();
 
 }
 
@@ -91,17 +98,19 @@ void Playing::Update()
 
 void Playing::Render() const
 {
+	Renderer* r = Renderer::GetInstance();
+	
 	//////////////////////////////////////////////////////////////////////////
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f/9.f), .1f , 100.f);
 
-	//Matrix44 modelMatrix = Matrix44::LookAt(
-	//	m_ship->m_behindTransform.GetWorldPosition(), 
-	//	m_ship->m_frontTransform.GetWorldPosition() , 
-	//	m_ship->m_transform.GetLocalUp()); 
+	//m_camera->m_cameraMatrix = m_camera->transform.GetLocalMatrix();//Matrix44(); //modelMatrix;
+	Matrix44 theModel = m_gameCamera->GetModelMatrix();
+	Matrix44 theView = m_gameCamera->GetViewMatrix();
+	m_camera->m_cameraMatrix = theModel;
+	//m_camera->m_viewMatrix = InvertFast(m_camera->m_cameraMatrix/*modelMatrix*/); // inverse this 
+	m_camera->m_viewMatrix = theView;
 
-	m_camera->m_cameraMatrix = m_camera->transform.GetLocalMatrix();//Matrix44(); //modelMatrix;
-	m_camera->m_viewMatrix = InvertFast(m_camera->m_cameraMatrix/*modelMatrix*/); // inverse this 
 
 	//////////////////////////////////////////////////////////////////////////
 
@@ -135,51 +144,41 @@ void Playing::CheckKeyBoardInputs()
 
 void Playing::MoveCamera()
 {
-	//float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
-	//
-	//float rotationSpeed = .20f;
-	//
-	//// Apply Rotation
-	//Vector2 mouse_delta = g_theInput->GetMouseDelta();
-	////mouse_delta = mouse_delta.GetNormalized();
-	//
-	//// m_current_cam_euler; // defined, starts at zero
-	//Vector3 local_euler = Vector3::ZERO; 
-	//local_euler.y = mouse_delta.x * rotationSpeed * dt; 
-	//local_euler.x = mouse_delta.y * rotationSpeed * dt; 
-	//
-	//Vector3 currentRotation = m_camera->transform.GetLocalEulerAngles();
-	//currentRotation.x += local_euler.x; 
-	//currentRotation.y += local_euler.y; 
-	//
-	//currentRotation.x = ClampFloat( currentRotation.x, -90.f, 90.f );
-	//currentRotation.y = fmod(currentRotation.y, 360.f ); 
-	//
-	//m_camera->transform.SetLocalRotationEuler(currentRotation);
+	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
+	float rotationSpeed = .20f;
+	float sensitivity = .05f;
 	
-	
+	// Apply Rotation
+	Vector2 mouse_delta = g_theInput->GetMouseDelta();
+
+	m_gameCamera->pitchDegreesAboutY += mouse_delta.y * sensitivity;
+	m_gameCamera->yawDegreesAboutZ -= mouse_delta.x * sensitivity;
+
+	m_gameCamera->pitchDegreesAboutY = ClampFloat(m_gameCamera->pitchDegreesAboutY, -90.f, 90.f);
+	m_gameCamera->yawDegreesAboutZ = fmod(m_gameCamera->yawDegreesAboutZ, 360.f);
 	
 	// movement
-	
 	Vector3 amountToMove = Vector3::ZERO;
 	float ds = g_theGameClock->deltaTime;
 
+	Vector3 forward = m_gameCamera->GetForwardXY0();
+	Vector3 right = Vector3(forward.y, -forward.x, 0.f);
+
 	if(IsKeyPressed(G_THE_LETTER_W))
-		amountToMove = Vector3::FORWARD;
+		amountToMove = forward;
 	if(IsKeyPressed(G_THE_LETTER_S))
-		amountToMove = -Vector3::FORWARD;
+		amountToMove = -forward;
 	if(IsKeyPressed(G_THE_LETTER_A))
-		amountToMove = -Vector3::RIGHT;
+		amountToMove = -right;
 	if(IsKeyPressed(G_THE_LETTER_D))
-		amountToMove = Vector3::RIGHT;
-	if(IsKeyPressed(KEYBOARD_SPACE))
+		amountToMove = right;
+	if(IsKeyPressed(G_THE_LETTER_E))
 		amountToMove = Vector3::UP;
-	if(IsKeyPressed(KEYBOARD_SHIFT))
+	if(IsKeyPressed(G_THE_LETTER_Q))
 		amountToMove = Vector3::DOWN;
 
 	if(amountToMove != Vector3::ZERO)
-		m_camera->transform.TranslateLocal(amountToMove * ds * 10.f);
-	//m_camera->transform.RotateLocalByEuler(Vector3::RIGHT * 10.f * g_theGameClock->deltaTime);
+		m_gameCamera->pos += (amountToMove * ds * 10.f);
 }
 
 

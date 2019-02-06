@@ -893,9 +893,19 @@ void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 	
 	Vector3 position = basis.GetPosition();
 
+#ifdef XRIGHT_YUP_ZFORWARD
 	Vector3 x = position + (basis.GetRight() * lengthOfLine);
 	Vector3 y = position + (basis.GetUp() * lengthOfLine);
 	Vector3 z = position + (basis.GetForward() * lengthOfLine);
+#else
+	Vector3 x = position + (basis.GetForward() * lengthOfLine);
+	Vector3 y = position + (basis.GetRight() * lengthOfLine);
+	Vector3 z = position + (basis.GetUp() * lengthOfLine);
+#endif
+
+	//Vector3 x = position + (basis.GetRight() * lengthOfLine);
+	//Vector3 y = position + (basis.GetUp() * lengthOfLine);
+	//Vector3 z = position + (basis.GetForward() * lengthOfLine);
 
 	DrawLine3D(position, x, Rgba::RED);
 	DrawLine3D(position, y, Rgba::YELLOW);

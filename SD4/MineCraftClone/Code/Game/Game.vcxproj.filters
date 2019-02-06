@@ -40,6 +40,9 @@
     <ClCompile Include="Main\Playground.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\GameCamera.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -62,5 +65,6 @@
     </ClInclude>
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="Main\Playground.hpp" />
+    <ClInclude Include="General\GameCamera.hpp" />
   </ItemGroup>
 </Project>

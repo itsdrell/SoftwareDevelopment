@@ -4,7 +4,7 @@
 	windowAspect="1.4"
 	isFullscreen="false"
   
-  mouseMode="absolute"
+  mouseMode="relative"
   showCursor="true"
   
   IntRangeTest ="1~2"

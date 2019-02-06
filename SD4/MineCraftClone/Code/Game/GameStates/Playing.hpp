@@ -15,6 +15,8 @@ class Renderable;
 class Light;
 class SpriteRendering;
 class Mesh;
+class Renderable;
+class GameCamera;
 
 
 //=============================================================
@@ -71,6 +73,9 @@ public:
 	Vector2					m_cameraLocation;
 
 	bool					m_showHeatmap;
+
+	Renderable*				m_cubeRenderable = nullptr;
+	GameCamera*				m_gameCamera;
 };
 
 

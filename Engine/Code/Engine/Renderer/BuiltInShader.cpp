@@ -2,6 +2,7 @@
 #include "RenderableComponents/Shader.hpp"
 #include "RenderableComponents/shaderprogram.hpp"
 #include "Renderer.hpp"
+#include "Game/Main/EngineBuildPreferences.hpp"
 
 
 void BuiltInShaders::CreateAllBuiltInShaders()
@@ -116,6 +117,10 @@ void main( void )
 
 	newShader->SetProgram(new ShaderProgram("default", fs,vs, theDefines));
 	
+#ifdef WINDING_ORDER_CLOCKWISE	
+	newShader->SetFrontFace(WIND_CLOCKWISE);
+	newShader->SetCullMode(CULLMODE_BACK);
+#endif
 	//////////////////////////////////////////////////////////////////////////
 	// Add all properties
 	newShader->m_textures.push_back(Renderer::GetInstance()->CreateOrGetTexture("Data/Images/defaultTexture.png"));

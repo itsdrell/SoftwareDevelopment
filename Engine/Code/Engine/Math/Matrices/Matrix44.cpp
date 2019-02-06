@@ -1,5 +1,6 @@
 #include "Matrix44.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Game/Main/EngineBuildPreferences.hpp"
 
 
 Matrix44::Matrix44(const float* sixteenValuesBasisMajor)
@@ -173,17 +174,29 @@ Vector2 Matrix44::TransformDisplacement2D(const Vector2& displacement2D) const /
 
 Vector3 Matrix44::GetForward() const
 {
+#ifdef XRIGHT_YUP_ZFORWARD
 	return Vector3(Kx,Ky,Kz);
+#else
+	return Vector3(Ix,Iy,Iz);
+#endif
 }
 
 Vector3 Matrix44::GetRight() const
 {
+#ifdef XRIGHT_YUP_ZFORWARD
 	return Vector3(Ix,Iy,Iz);
+#else
+	return Vector3(Jx,Jy,Jz);
+#endif
 }
 
 Vector3 Matrix44::GetUp() const
 {
+#ifdef XRIGHT_YUP_ZFORWARD
 	return Vector3(Jx,Jy,Jz);
+#else
+	return Vector3(Kx,Ky,Kz);
+#endif
 }
 
 Vector3 Matrix44::GetPosition() const

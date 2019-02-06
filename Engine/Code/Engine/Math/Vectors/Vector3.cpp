@@ -1,17 +1,33 @@
 #include "Vector3.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Vectors/IntVector3.hpp"
+#include "Game/Main/EngineBuildPreferences.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 // Static variables
 const Vector3 Vector3::ZERO = Vector3(0.f,0.f,0.f);
 const Vector3 Vector3::ONE = Vector3(1.f,1.f,1.f);
+
+#ifdef XRIGHT_YUP_ZFORWARD
+
 const Vector3 Vector3::UP = Vector3(0.f,1.f,0.f); // Y is up in my engine (unity)
 const Vector3 Vector3::DOWN = Vector3(0.f,-1.f,0.f);
 const Vector3 Vector3::RIGHT = Vector3(1.f,0.f,0.f);
 const Vector3 Vector3::LEFT = Vector3(-1.f,0.f,0.f);
 const Vector3 Vector3::FORWARD = Vector3(0.f,0.f,1.f);
 const Vector3 Vector3::BACK = Vector3(0.f,0.f,-1.f);
+
+#endif
+
+#ifdef XFORWARD_YLEFT_ZUP
+const Vector3 Vector3::UP =			Vector3(0.f,	0.f,	1.f); 
+const Vector3 Vector3::DOWN =		Vector3(0.f,	0.f	,   -1.f);
+const Vector3 Vector3::RIGHT =		Vector3(0.f,	-1.f,	0.f);
+const Vector3 Vector3::LEFT =		Vector3(0.f,	1.f,	0.f);
+const Vector3 Vector3::FORWARD =	Vector3(1.f,	0.f,	0.f);
+const Vector3 Vector3::BACK =		Vector3(-1.f,	0.f,	0.f);
+
+#endif
 //////////////////////////////////////////////////////////////////////////
 
 Vector3::Vector3(const Vector3& copyfrom)

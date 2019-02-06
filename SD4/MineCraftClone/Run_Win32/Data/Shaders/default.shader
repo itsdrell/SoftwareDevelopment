@@ -1,4 +1,4 @@
-<shader name="Default">
+<shader name="Default" frontface="cw" cull="back"> 
 <program define="Hello;Fam">
       <both file="Data/Shaders/glsl/Default"/>
    </program>
