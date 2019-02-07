@@ -188,6 +188,12 @@ void DevConsole::StartUp()
 	m_uiCamera->SetColorTarget( m_theRenderer->m_defaultColorTarget );
 	m_uiCamera->SetDepthStencilTarget(m_theRenderer->m_defaultDepthTarget);
 
+	// Create ortho
+	m_uiCamera->SetProjectionOrtho( m_windowWidth, m_windowHeight, -10.0f, 100.0f ); 
+
+	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
+	m_uiCamera->m_viewMatrix = view;
+
 	// reset the default camera
 	m_theRenderer->SetCamera();
 
@@ -309,11 +315,7 @@ void DevConsole::Render()
 	m_theRenderer->SetShader();
 	m_theRenderer->SetCurrentTexture();
 	
-	// Create ortho
-	m_uiCamera->SetProjectionOrtho( m_windowWidth, m_windowHeight, -10.0f, 100.0f ); 
 
-	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
-	m_uiCamera->m_viewMatrix = view;
 	
 	// Set the ui camera to do the drawing
 	m_theRenderer->SetCamera(m_uiCamera);

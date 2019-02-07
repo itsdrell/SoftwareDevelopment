@@ -28,8 +28,9 @@ class GameCamera
 {
 public:
 	GameCamera() {}
+	~GameCamera() {}
 
-
+public:
 	Vector3 GetForwardXY0();
 
 	Matrix44 GetModelMatrix();
@@ -39,6 +40,7 @@ public:
 	float yawDegreesAboutZ = 0.f;
 	float pitchDegreesAboutY = 0.f;
 	float rollDegreesAboutX = 0.f;
+	
 	Vector3 pos = Vector3::ONE;
 };
 

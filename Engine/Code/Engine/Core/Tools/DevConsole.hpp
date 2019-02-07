@@ -129,11 +129,12 @@ public:
 	// Fun stuff
 	void UpdateRoll(float ds);
 
+public:
+	Camera*		m_uiCamera = nullptr;
 
 private: 
 	
 	Renderer*	m_theRenderer = nullptr;
-	Camera*		m_uiCamera = nullptr;
 
 	bool		m_isOpen;
 

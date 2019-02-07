@@ -55,6 +55,8 @@ Game::Game()
 	m_console = new DevConsole(g_theRenderer);
 	g_theGameClock = new Clock(g_theMasterClock);
 
+	CommandRegister("quit", "","", QuitGame);
+
 	//RegisterCommands();
 
 	// Create all the states
@@ -101,7 +103,13 @@ void Game::StartUp()
 	m_loadingScreenTimer = new Timer(g_theGameClock);
 	m_loadingScreenTimer->SetTimer(3.f);
 
+	// changing UI camera
+	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO, Vector3(0.f, 1.f, 0.f) );
+	Renderer::GetInstance()->m_defaultUICamera->m_viewMatrix = view;
+
+
 	m_console->StartUp();
+	m_console->m_uiCamera->m_viewMatrix = view;
 
 	NetworkStartUp();
 	
@@ -215,6 +223,11 @@ void Game::Render() const
 	//////////////////////////////////////////////////////////////////////////
 	// Show the console, we return instantly if its not open
 	if(m_theNetSession != nullptr ) { NetSession::GetInstance()->Render(); }
+	
+
+	Matrix44 view = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO, Vector3(0.f, 1.f, 0.f) );
+	m_console->m_uiCamera->m_viewMatrix = view;
+
 	m_console->Render();
 
 
