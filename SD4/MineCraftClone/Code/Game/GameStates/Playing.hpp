@@ -17,6 +17,7 @@ class SpriteRendering;
 class Mesh;
 class Renderable;
 class GameCamera;
+class BlockDefinition;
 
 
 //=============================================================
@@ -49,6 +50,7 @@ public:
 	void		Update();
 
 	void		Render() const;
+	void		RenderTestCube() const;
 	void		RenderSkyBox() const;
 
 	void		CheckKeyBoardInputs();
@@ -76,6 +78,8 @@ public:
 
 	Renderable*				m_cubeRenderable = nullptr;
 	GameCamera*				m_gameCamera;
+
+	BlockDefinition*		m_grassDefinition;
 };
 
 

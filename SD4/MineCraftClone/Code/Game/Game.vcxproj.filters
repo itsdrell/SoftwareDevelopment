@@ -43,6 +43,9 @@
     <ClCompile Include="General\GameCamera.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\World\BlockDefinition.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -66,5 +69,9 @@
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="Main\Playground.hpp" />
     <ClInclude Include="General\GameCamera.hpp" />
+    <ClInclude Include="General\World\Block.hpp" />
+    <ClInclude Include="General\World\BlockDefinition.hpp" />
+    <ClInclude Include="General\World\Chunk.hpp" />
+    <ClInclude Include="General\World\World.hpp" />
   </ItemGroup>
 </Project>

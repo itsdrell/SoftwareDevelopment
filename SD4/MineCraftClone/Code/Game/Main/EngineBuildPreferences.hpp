@@ -20,5 +20,5 @@
 //#define XRIGHT_YUP_ZFORWARD
 #define XFORWARD_YLEFT_ZUP
 
-#define WINDING_ORDER_CLOCKWISE
+//#define WINDING_ORDER_CLOCKWISE // only works for built in shaders (which we dont even use so :()
 

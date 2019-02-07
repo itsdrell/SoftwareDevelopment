@@ -1,8 +1,4 @@
 #pragma once
-#include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -19,7 +15,6 @@
 //====================================================================================
 
 
-
 //====================================================================================
 // Structs
 //====================================================================================
@@ -28,7 +23,16 @@
 //====================================================================================
 // Classes
 //====================================================================================
+class Block
+{
+public:
+	Block() {}
+	Block(unsigned char type) { m_type = type; }
+	~Block() {}
 
+public:
+	unsigned char m_type = 0; // default to air
+};
 
 //====================================================================================
 // Standalone C Functions
@@ -38,15 +42,8 @@
 //====================================================================================
 // Externs
 //====================================================================================
-extern Renderer*		g_theRenderer;
-extern InputSystem*		g_theInput;
-extern AudioSystem*		g_audio; // not the audio cause we could have multiple...?
 
-
-extern SpriteSheet		g_blockSpriteSheet;
 
 //====================================================================================
-// Written by Zachary Bracken : [6/19/2018]
+// Written by Zachary Bracken : [2/6/2019]
 //====================================================================================
-
-

@@ -114,6 +114,9 @@ void Game::StartUp()
 	NetworkStartUp();
 	
 	//m_theNetSession->Bind( GAME_PORT, 16U);
+
+	Texture* blockTexture = g_theRenderer->CreateOrGetTexture("Data/Images/Terrain_32x32.png");
+	g_blockSpriteSheet = SpriteSheet(blockTexture, 32, 32);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -241,7 +244,13 @@ void Game::CheckKeyBoardInputs()
 	if(WasKeyJustPressed(G_TILDE))
 	{
 		m_console->Toggle(); // Turns off or on the Console
+		
 	}
+
+	// unlock mouse when dev console is open
+	InputSystem* is = InputSystem::GetInstance();
+	is->UnlockMouse(IsDevConsoleOpen());
+	is->ShowCursor(IsDevConsoleOpen());
 
 
 	//////////////////////////////////////////////////////////////////////

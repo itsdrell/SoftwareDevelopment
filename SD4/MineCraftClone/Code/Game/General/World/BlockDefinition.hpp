@@ -1,8 +1,7 @@
 #pragma once
-#include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Input/InputSystem.hpp"
-#include "Engine/Audio/AudioSystem.hpp"
-#include "Engine/Renderer/Images/Sprites/SpriteSheet.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Math/Geometry/AABB2.hpp"
+#include <map>
 
 //====================================================================================
 // Forward Declare
@@ -17,8 +16,12 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-
-
+enum BLOCK_TYPES
+{
+	BLOCK_TYPE_AIR = 0,
+	BLOCK_TYPE_GRASS,
+	BLOCK_TYPE_STONE
+};
 
 //====================================================================================
 // Structs
@@ -28,7 +31,23 @@
 //====================================================================================
 // Classes
 //====================================================================================
+class BlockDefinition
+{
+public:
+	BlockDefinition(const String& name, const IntVector2& spriteCoordsForTop, const IntVector2& spriteCoordsForSides, const IntVector2& spriteCoordsForBottom);
+	~BlockDefinition() {}
 
+	static BlockDefinition* GetDefinitionByName(const String& nameOfDefinition);
+
+private:
+	static std::map<String, BlockDefinition*> s_definitions;
+
+public:
+	String			m_name;
+	AABB2			m_topUVs;
+	AABB2			m_sideUVs;
+	AABB2			m_bottomUVs;
+};
 
 //====================================================================================
 // Standalone C Functions
@@ -38,15 +57,8 @@
 //====================================================================================
 // Externs
 //====================================================================================
-extern Renderer*		g_theRenderer;
-extern InputSystem*		g_theInput;
-extern AudioSystem*		g_audio; // not the audio cause we could have multiple...?
 
-
-extern SpriteSheet		g_blockSpriteSheet;
 
 //====================================================================================
-// Written by Zachary Bracken : [6/19/2018]
+// Written by Zachary Bracken : [2/6/2019]
 //====================================================================================
-
-

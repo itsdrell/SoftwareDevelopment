@@ -20,6 +20,8 @@
 #include "Engine/Renderer/Images/Textures/TextureCube.hpp"
 #include "Engine/Renderer/RenderableComponents/Renderable.hpp"
 #include "Game/General/GameCamera.hpp"
+#include "Game/General/World/Block.hpp"
+#include "Game/General/World/BlockDefinition.hpp"
 
 
 //====================================================================================
@@ -52,26 +54,32 @@ void Playing::StartUp()
 	m_scene = new Scene("Test");
 	m_renderingPath = new ForwardRenderingPath();
 
-	DebugRenderWireAABB3(1000.f, AABB3(Vector3(-4.f, -4.f, 8.f), Vector3(4.f, 4.f, 8.f)));
+	//DebugRenderWireAABB3(1000.f, AABB3(Vector3(-4.f, -4.f, 8.f), Vector3(4.f, 4.f, 8.f)));
 	DebugRenderBasis(1000.f, Matrix44());
 
 	m_skyBox = new TextureCube();
 	m_skyBox->make_from_image("Data/Images/galaxy2.png");
 	//m_skyBox->make_from_image("Data/Images/skybox.jpg");
 
+	//-----------------------------------------------------------------------------------------------
+	// Create some block defs
+	m_grassDefinition = new BlockDefinition("grass", IntVector2(2,0), IntVector2(3,3), IntVector2(4,3));
+	new BlockDefinition("snow", IntVector2(1,3), IntVector2(2,3), IntVector2(4,3));
+
 
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
 	m_skyMesh = mb.CreateMesh<Vertex3D_PCU>();
 
-	m_cubeRenderable = new Renderable();
-	mb.AddCube(Vector3(5.f, 0.f, 0.f), Vector3::ONE);
-	m_cubeRenderable->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
-	Shader* test = Shader::CreateOrGetShader("default");
-	m_cubeRenderable->SetMaterial(Material::CreateOrGetMaterial("default"));
-	m_cubeRenderable->m_material->m_textures.at(0) = Renderer::GetInstance()->m_testTexture;
-	m_scene->AddRenderable(m_cubeRenderable);
-
+	RenderTestCube();
+	//
+	//m_cubeRenderable = new Renderable();
+	//mb.AddCube(Vector3(5.f, 0.f, 0.f), Vector3::ONE);
+	//m_cubeRenderable->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
+	//Shader* test = Shader::CreateOrGetShader("default");
+	//m_cubeRenderable->SetMaterial(Material::CreateOrGetMaterial("default"));
+	//m_cubeRenderable->m_material->m_textures.at(0) = Renderer::GetInstance()->m_testTexture;
+	//m_scene->AddRenderable(m_cubeRenderable);
 
 	//---------------------------------------------------------
 	// Cameras
@@ -92,8 +100,6 @@ void Playing::StartUp()
 void Playing::Update()
 {
 	CheckKeyBoardInputs();
-
-	MoveCamera();
 }
 
 void Playing::Render() const
@@ -107,8 +113,7 @@ void Playing::Render() const
 	//m_camera->m_cameraMatrix = m_camera->transform.GetLocalMatrix();//Matrix44(); //modelMatrix;
 	Matrix44 theModel = m_gameCamera->GetModelMatrix();
 	Matrix44 theView = m_gameCamera->GetViewMatrix();
-	m_camera->m_cameraMatrix = theModel;
-	//m_camera->m_viewMatrix = InvertFast(m_camera->m_cameraMatrix/*modelMatrix*/); // inverse this 
+	m_camera->m_cameraMatrix = theModel; 
 	m_camera->m_viewMatrix = theView;
 
 
@@ -116,8 +121,159 @@ void Playing::Render() const
 
 	RenderSkyBox();
 
-	m_renderingPath->Render(m_scene);	
+	//m_renderingPath->Render(m_scene);	
+
+	RenderTestCube();
 	
+}
+
+//-----------------------------------------------------------------------------------------------
+void Playing::RenderTestCube() const
+{
+	MeshBuilder mb;
+	Vector3 center = Vector3(5.f, 0.f, 0.f);
+	Vector3 dimensions = Vector3::ONE;
+	Renderer* r = Renderer::GetInstance();
+
+	BlockDefinition* theDefinition = BlockDefinition::GetDefinitionByName("snow");
+
+	mb.Begin(PRIMITIVE_TRIANGLES, true);
+	mb.SetColor(Rgba::WHITE);
+
+	//-----------------------------------------------------------------------------------------------
+	// Top
+	// br
+	AABB2 uvs = theDefinition->m_topUVs;
+	
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	uint idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// Front face
+	uvs = theDefinition->m_sideUVs;
+
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// left
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// back
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// right face
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// Bottom Face
+	uvs = theDefinition->m_bottomUVs;
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// Do the draw
+	Mesh* mesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	r->SetShader(Shader::CreateOrGetShader("default"));
+	r->SetCurrentTexture(0 , g_blockSpriteSheet.m_spriteSheetTexture);
+	r->SetCamera(m_camera);
+	r->DrawMesh(mesh, true);
 }
 
 void Playing::RenderSkyBox() const
@@ -138,6 +294,9 @@ void Playing::RenderSkyBox() const
 
 void Playing::CheckKeyBoardInputs()
 {
+	if(IsDevConsoleOpen())
+		return;
+	
 	// do this last cause itll move the mouse 
 	MoveCamera();
 }
