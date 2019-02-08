@@ -46,6 +46,9 @@
     <ClCompile Include="General\World\BlockDefinition.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\World\Chunk.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">

@@ -292,6 +292,7 @@
     <ClCompile Include="GameStates\Loading.cpp" />
     <ClCompile Include="General\GameCamera.cpp" />
     <ClCompile Include="General\World\BlockDefinition.cpp" />
+    <ClCompile Include="General\World\Chunk.cpp" />
     <ClCompile Include="Main\Game.cpp" />
     <ClCompile Include="Main\GameCommon.cpp" />
     <ClCompile Include="Main\Main_Win32.cpp" />

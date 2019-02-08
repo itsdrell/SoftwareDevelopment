@@ -17,7 +17,7 @@ class SpriteRendering;
 class Mesh;
 class Renderable;
 class GameCamera;
-class BlockDefinition;
+class Chunk;
 
 
 //=============================================================
@@ -69,17 +69,13 @@ public:
 	Mesh*					m_skyMesh = nullptr;
 
 	Camera*					m_camera = nullptr;
+	GameCamera*				m_gameCamera;
 
 	PlayState				m_currentPlayState;
 
-	Vector2					m_cameraLocation;
+	Chunk*					m_testChunk = nullptr;
 
-	bool					m_showHeatmap;
-
-	Renderable*				m_cubeRenderable = nullptr;
-	GameCamera*				m_gameCamera;
-
-	BlockDefinition*		m_grassDefinition;
+	float					m_cameraSpeed = 10.f;
 };
 
 

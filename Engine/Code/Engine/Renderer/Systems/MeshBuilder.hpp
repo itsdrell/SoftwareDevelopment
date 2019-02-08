@@ -17,6 +17,7 @@ public:
 
 	void Begin(PrimitiveType theType, bool useIndices);
 	void End(); 
+	void Clear();
 
 
 	void SetColor(Rgba const &c);

@@ -16,11 +16,13 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-enum BLOCK_TYPES
+enum BlockTypes
 {
 	BLOCK_TYPE_AIR = 0,
 	BLOCK_TYPE_GRASS,
-	BLOCK_TYPE_STONE
+	BLOCK_TYPE_STONE,
+	BLOCK_TYPE_SNOW,
+	BLOCK_TYPE_TEST
 };
 
 //====================================================================================
@@ -34,15 +36,17 @@ enum BLOCK_TYPES
 class BlockDefinition
 {
 public:
-	BlockDefinition(const String& name, const IntVector2& spriteCoordsForTop, const IntVector2& spriteCoordsForSides, const IntVector2& spriteCoordsForBottom);
+	BlockDefinition(const String& name, BlockTypes theType, const IntVector2& spriteCoordsForTop, const IntVector2& spriteCoordsForSides, const IntVector2& spriteCoordsForBottom);
 	~BlockDefinition() {}
 
 	static BlockDefinition* GetDefinitionByName(const String& nameOfDefinition);
+	static BlockDefinition* GetDefinitionByType( BlockTypes theType );
 
 private:
 	static std::map<String, BlockDefinition*> s_definitions;
 
 public:
+	BlockTypes		m_type;
 	String			m_name;
 	AABB2			m_topUVs;
 	AABB2			m_sideUVs;

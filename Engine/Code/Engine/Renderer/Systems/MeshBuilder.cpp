@@ -35,6 +35,14 @@ void MeshBuilder::End()
 	m_draw.elemCount = end_idx - m_draw.startIndex; 
 }
 
+//-----------------------------------------------------------------------------------------------
+void MeshBuilder::Clear()
+{
+	m_vertices.clear();
+	m_indices.clear();
+	m_bounds.Invalidate();
+}
+
 void MeshBuilder::SetColor(Rgba const & c)
 {
 	m_stamp.m_color = c;

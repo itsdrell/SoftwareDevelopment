@@ -22,6 +22,7 @@
 #include "Game/General/GameCamera.hpp"
 #include "Game/General/World/Block.hpp"
 #include "Game/General/World/BlockDefinition.hpp"
+#include "Game/General/World/Chunk.hpp"
 
 
 //====================================================================================
@@ -29,7 +30,6 @@
 //====================================================================================
 Playing::Playing()
 {
-	m_showHeatmap = false;
 }
 
 //--------------------------------------------------------------------------
@@ -54,7 +54,6 @@ void Playing::StartUp()
 	m_scene = new Scene("Test");
 	m_renderingPath = new ForwardRenderingPath();
 
-	//DebugRenderWireAABB3(1000.f, AABB3(Vector3(-4.f, -4.f, 8.f), Vector3(4.f, 4.f, 8.f)));
 	DebugRenderBasis(1000.f, Matrix44());
 
 	m_skyBox = new TextureCube();
@@ -63,23 +62,20 @@ void Playing::StartUp()
 
 	//-----------------------------------------------------------------------------------------------
 	// Create some block defs
-	m_grassDefinition = new BlockDefinition("grass", IntVector2(2,0), IntVector2(3,3), IntVector2(4,3));
-	new BlockDefinition("snow", IntVector2(1,3), IntVector2(2,3), IntVector2(4,3));
+	new BlockDefinition("air", BLOCK_TYPE_AIR, IntVector2(), IntVector2(), IntVector2());
+	new BlockDefinition("grass", BLOCK_TYPE_GRASS, IntVector2(2,0), IntVector2(3,3), IntVector2(4,3));
+	new BlockDefinition("snow", BLOCK_TYPE_SNOW,  IntVector2(1,3), IntVector2(2,3), IntVector2(4,3));
+	new BlockDefinition("stone", BLOCK_TYPE_STONE, IntVector2(7,4), IntVector2(7,4), IntVector2(7,4));
+	new BlockDefinition("test", BLOCK_TYPE_TEST, IntVector2(31,31), IntVector2(31,31), IntVector2(31,31));
 
+
+	m_testChunk = new Chunk(IntVector2(1,1));
 
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
 	m_skyMesh = mb.CreateMesh<Vertex3D_PCU>();
 
-	RenderTestCube();
-	//
-	//m_cubeRenderable = new Renderable();
-	//mb.AddCube(Vector3(5.f, 0.f, 0.f), Vector3::ONE);
-	//m_cubeRenderable->SetMesh(mb.CreateMesh<Vertex3D_PCU>());
-	//Shader* test = Shader::CreateOrGetShader("default");
-	//m_cubeRenderable->SetMaterial(Material::CreateOrGetMaterial("default"));
-	//m_cubeRenderable->m_material->m_textures.at(0) = Renderer::GetInstance()->m_testTexture;
-	//m_scene->AddRenderable(m_cubeRenderable);
+	//RenderTestCube();
 
 	//---------------------------------------------------------
 	// Cameras
@@ -123,7 +119,12 @@ void Playing::Render() const
 
 	//m_renderingPath->Render(m_scene);	
 
-	RenderTestCube();
+	//RenderTestCube();
+
+	r->SetShader(Shader::CreateOrGetShader("default"));
+	r->SetCurrentTexture(0 , g_blockSpriteSheet.m_spriteSheetTexture);
+	r->SetCamera(m_camera);
+	r->DrawMesh(m_testChunk->m_gpuMesh);
 	
 }
 
@@ -296,6 +297,18 @@ void Playing::CheckKeyBoardInputs()
 {
 	if(IsDevConsoleOpen())
 		return;
+
+	if(DidMouseWheelScrollUp())
+	{
+		m_cameraSpeed *= 1.2f;
+	}
+
+	if(DidMouseWheelScrollDown())
+	{
+		m_cameraSpeed *= .5f;
+
+		m_cameraSpeed = ClampFloat(m_cameraSpeed, 10.f, 1000.f);
+	}
 	
 	// do this last cause itll move the mouse 
 	MoveCamera();
@@ -337,7 +350,7 @@ void Playing::MoveCamera()
 		amountToMove = Vector3::DOWN;
 
 	if(amountToMove != Vector3::ZERO)
-		m_gameCamera->pos += (amountToMove * ds * 10.f);
+		m_gameCamera->pos += (amountToMove * ds * m_cameraSpeed);
 }
 
 
