@@ -12,11 +12,7 @@ class Scene;
 class ForwardRenderingPath;
 class Camera;
 class Renderable;
-class Light;
-class SpriteRendering;
-class Mesh;
-class Renderable;
-class GameCamera;
+class World;
 class Chunk;
 
 
@@ -65,17 +61,12 @@ public:
 	ForwardRenderingPath*	m_renderingPath = nullptr;
 	Scene*					m_scene = nullptr;
 
-	TextureCube*			m_skyBox = nullptr;
-	Mesh*					m_skyMesh = nullptr;
-
-	Camera*					m_camera = nullptr;
-	GameCamera*				m_gameCamera;
+	World*					m_world = nullptr;
 
 	PlayState				m_currentPlayState;
 
 	Chunk*					m_testChunk = nullptr;
 
-	float					m_cameraSpeed = 10.f;
 };
 
 

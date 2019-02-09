@@ -33,6 +33,8 @@ public:
 	Chunk(const ChunkCoords& myCoords);
 	~Chunk();
 
+	void Update();
+	void Render() const;
 
 	void GenerateMyBounds();
 	void GenerateBlocks();

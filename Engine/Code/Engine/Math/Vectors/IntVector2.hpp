@@ -24,7 +24,9 @@ public:
 	void operator*=( const int uniformScale );					
 	void operator=( const IntVector2& copyFrom );						
 	bool operator==( const IntVector2& compare ) const;				
-	bool operator!=( const IntVector2& compare ) const;				
+	bool operator!=( const IntVector2& compare ) const;	
+
+	bool operator<(const IntVector2& compare) const;
 
 	Vector2 GetAsVector2() const;
 

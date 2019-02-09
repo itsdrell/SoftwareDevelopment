@@ -18,6 +18,16 @@ Chunk::~Chunk()
 		delete m_gpuMesh;
 }
 
+void Chunk::Update()
+{
+}
+
+void Chunk::Render() const
+{
+	
+
+}
+
 //-----------------------------------------------------------------------------------------------
 void Chunk::GenerateMyBounds()
 {
