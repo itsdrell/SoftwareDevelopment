@@ -27,21 +27,21 @@ World::World()
 	Chunk* newChunk = new Chunk(pos);
 	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
 
-	//pos = IntVector2(-1, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(0, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(1, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(0, 3);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	pos = IntVector2(-1, 2);
+	newChunk = new Chunk(pos);
+	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	
+	pos = IntVector2(0, 2);
+	newChunk = new Chunk(pos);
+	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	
+	pos = IntVector2(1, 2);
+	newChunk = new Chunk(pos);
+	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	
+	pos = IntVector2(0, 3);
+	newChunk = new Chunk(pos);
+	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
 
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
@@ -64,6 +64,15 @@ World::~World()
 void World::Update()
 {
 	CheckKeyboardInputs();
+}
+
+void World::UpdateChunks()
+{
+	std::map<IntVector2, Chunk*>::iterator theIterator;
+	for (theIterator = s_activeChunks.begin(); theIterator != s_activeChunks.end(); theIterator++)
+	{
+		theIterator->second->Update();
+	}
 }
 
 void World::CheckKeyboardInputs()
@@ -131,7 +140,7 @@ void World::Render() const
 	Renderer* r = Renderer::GetInstance();
 
 	// Set up Cameras
-	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 100.f);
+	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
 
 	//m_camera->m_cameraMatrix = m_camera->transform.GetLocalMatrix();//Matrix44(); //modelMatrix;
 	Matrix44 theModel = m_gameCamera->GetModelMatrix();
@@ -144,7 +153,7 @@ void World::Render() const
 	RenderChunks();
 	//r->DrawMesh(m_testChunk->m_gpuMesh);
 
-	r->DrawBasis(Matrix44(), 10.f);
+	RenderBasis();
 }
 
 
@@ -160,7 +169,7 @@ void World::RenderChunks() const
 	for (theIterator = s_activeChunks.begin(); theIterator != s_activeChunks.end(); theIterator++)
 	{
 		r->DrawMesh(theIterator->second->m_gpuMesh);
-		//theIterator->second->Render();
+		theIterator->second->Render();
 	}
 
 	r->SetCurrentTexture();
@@ -180,4 +189,22 @@ void World::RenderSkyBox() const
 	g_theRenderer->ClearDepth(1.f);
 	g_theRenderer->SetShader();
 	g_theRenderer->SetCurrentTexture();
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::RenderBasis() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	Shader* theShader = Shader::CreateOrGetShader("Data/Shaders/xray.shader");
+	r->SetShader(theShader);
+	r->DrawBasis(Matrix44(), 10.f);
+
+	theShader->SetDepth(COMPARE_ALWAYS, true);
+	r->SetShader(theShader);
+	r->DrawBasis(Matrix44(), 10.f);
+
+	// clean up for dev console
+	//r->SetShader();
+	r->BindRenderState(Shader::CreateOrGetShader("default")->m_state);
 }

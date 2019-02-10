@@ -39,7 +39,9 @@ public:
 	void GenerateMyBounds();
 	void GenerateBlocks();
 	void GenerateMesh();
+	void GenerateTestMesh();
 
+	Vector3 GetWorldPositionOfColumn(int theX, int theY);
 	void SetBlockType(int blockX, int blockY, int blockZ, const String& name);
 	void AddVertsForBlock( BlockIndex theIndex );
 
@@ -53,6 +55,7 @@ public:
 	AABB3			m_bounds;
 	MeshBuilder		m_cpuMesh;
 	Mesh*			m_gpuMesh = nullptr; // can be null
+	Mesh*			m_debugMesh = nullptr;
 	bool			m_isGPUDirty; // so we can rebuild over multiple frames then set 
 };
 

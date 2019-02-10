@@ -648,7 +648,6 @@ void Renderer::DrawTexturedAABB2(const Texture* testTexture, const AABB2 bounds,
 	glEnable(GL_BLEND);												GL_CHECK_ERROR();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
 	
-	
 	// bind the texture
 	//glBindTexture( GL_TEXTURE_2D, testTexture->m_textureID);
 
@@ -827,7 +826,7 @@ void Renderer::DrawAABB2(const AABB2& bounds,const  Rgba& color, bool filled)
 	glEnable(GL_BLEND);											GL_CHECK_ERROR();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			GL_CHECK_ERROR();
 	
-	
+
 	m_currentTexture = m_defaultTexture;
 
  	if(filled == true)
@@ -906,6 +905,7 @@ void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 	//Vector3 x = position + (basis.GetRight() * lengthOfLine);
 	//Vector3 y = position + (basis.GetUp() * lengthOfLine);
 	//Vector3 z = position + (basis.GetForward() * lengthOfLine);
+	BindRenderState(m_currentShader->m_state);
 
 	DrawLine3D(position, x, Rgba::RED);
 	DrawLine3D(position, y, Rgba::YELLOW);
@@ -1432,7 +1432,6 @@ bool Renderer::CopyFrameBuffer(FrameBuffer* dst, FrameBuffer* src)
 void Renderer::DrawMeshImmediate(Vertex3D_PCU* vertexes, int numVertexes, PrimitiveType primitiveType)
 {
 	GL_CHECK_ERROR();
-
 
 	// first, copy the memory to the buffer
 	m_immediateBuffer->CopyToGPU( sizeof(Vertex3D_PCU) * numVertexes, vertexes ); 

@@ -36,12 +36,14 @@ public:
 	~World();
 
 	void Update();
+	void UpdateChunks();
 	void CheckKeyboardInputs();
 	void UpdateCamera();
 
 	void Render() const;
 	void RenderChunks() const;
 	void RenderSkyBox() const;
+	void RenderBasis() const;
 
 
 public:

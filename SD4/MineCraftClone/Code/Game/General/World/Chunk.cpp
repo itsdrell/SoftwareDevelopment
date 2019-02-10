@@ -1,5 +1,7 @@
 #include "Chunk.hpp"
 #include "Game/General/World/BlockDefinition.hpp"
+#include "Engine/ThirdParty/SquirrelNoise/SmoothNoise.hpp"
+#include "Engine/Math/MathUtils.hpp"
 
 
 //===============================================================================================
@@ -9,6 +11,7 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	GenerateMyBounds();
 	GenerateBlocks();
 	GenerateMesh();
+	GenerateTestMesh();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -18,13 +21,16 @@ Chunk::~Chunk()
 		delete m_gpuMesh;
 }
 
+//-----------------------------------------------------------------------------------------------
 void Chunk::Update()
 {
 }
 
+//-----------------------------------------------------------------------------------------------
 void Chunk::Render() const
 {
-	
+	Renderer* r = Renderer::GetInstance();
+	r->DrawMesh(m_debugMesh);
 
 }
 
@@ -43,27 +49,60 @@ void Chunk::GenerateMyBounds()
 //-----------------------------------------------------------------------------------------------
 void Chunk::GenerateBlocks()
 {
-	int seaLevel = CHUNK_HEIGHT / 2;
+	float seaLevel = (float)(CHUNK_HEIGHT / 2);
+	float grassLevel[CHUNK_SIZE_X * CHUNK_SIZE_Y];
 
-	for(uint blockZ = 0; blockZ < CHUNK_HEIGHT; blockZ++)
+	for (int i = 0; i < CHUNK_SIZE_Y; i++)
 	{
-		for(uint blockY = 0; blockY < CHUNK_SIZE_Y; blockY++)
+		for (int j = 0; j < CHUNK_SIZE_X; j++)
 		{
-			for(uint blockX = 0; blockX < CHUNK_SIZE_X; blockX++)
+			Vector3 blockWorldCoords = GetWorldPositionOfColumn(j,i);
+			float amount =  Compute2dPerlinNoise(
+				blockWorldCoords.x,
+				blockWorldCoords.y,
+				5000.f);
+				//* 5.f;
+
+			grassLevel[j * i] = RangeMapFloat(amount, -1.f, 1.f, seaLevel, (float)CHUNK_HEIGHT * .3f);
+		}
+	}
+
+	for(int blockZ = 0; blockZ < CHUNK_HEIGHT; blockZ++)
+	{
+		for(int blockY = 0; blockY < CHUNK_SIZE_Y; blockY++)
+		{
+			for(int blockX = 0; blockX < CHUNK_SIZE_X; blockX++)
 			{
-				if(blockZ < seaLevel)
-				{
-					SetBlockType(blockX, blockY, blockZ, "stone");
-				}
-				else if( blockZ >= seaLevel && blockZ < seaLevel + 3)
-				{
-					SetBlockType(blockX, blockY, blockZ, "grass");
-				}
-				else
-				{
-					SetBlockType(blockX, blockY, blockZ, "air");
-				}
+// 				if(blockZ < seaLevel)
+// 				{
+// 					SetBlockType(blockX, blockY, blockZ, "stone");
+// 				}
+// 				else
+// 				{
+					int theGrassLevel = (int) grassLevel[blockX * blockY];
+
+					if (blockZ > (theGrassLevel))
+					{
+						SetBlockType(blockX, blockY, blockZ, "air");
+					}
+					else if (blockZ < (theGrassLevel - 3))
+					{
+						SetBlockType(blockX, blockY, blockZ, "stone");
+					}
+					else
+					{
+						SetBlockType(blockX, blockY, blockZ, "grass");
+					}
 			}
+				//else if( blockZ >= seaLevel && blockZ < seaLevel + 3)
+				//{
+				//	SetBlockType(blockX, blockY, blockZ, "grass");
+				//}
+				//else
+				//{
+				//	SetBlockType(blockX, blockY, blockZ, "air");
+				//}
+			
 		}
 	}
 }
@@ -86,6 +125,47 @@ void Chunk::GenerateMesh()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Chunk::GenerateTestMesh()
+{
+	MeshBuilder mb;	
+	
+	mb.Begin(PRIMITIVE_TRIANGLES, true);
+	mb.SetColor(Rgba::WHITE);
+	
+	AABB2 uvs = AABB2(0.f, 0.f, 1.f, 1.f);
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	uint idx = mb.PushVertex(Vector3(m_bounds.maxs.x, m_bounds.mins.y, m_bounds.maxs.z));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3(m_bounds.mins.x, m_bounds.mins.y, m_bounds.maxs.z));
+
+	// tl
+	mb.SetUV(uvs.mins.x, uvs.maxs.y);
+	mb.PushVertex(Vector3(m_bounds.mins.x, m_bounds.maxs.y, m_bounds.maxs.z));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3(m_bounds.maxs.x, m_bounds.maxs.y, m_bounds.maxs.z));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	m_debugMesh = mb.CreateMesh<Vertex3D_PCU>();
+}
+
+Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
+{
+	float howFarWeAreInX = (float)(m_chunkCoords.x + theX);
+	float howFarWeAreInY = (float)(m_chunkCoords.y + theY);
+	
+	float x =  howFarWeAreInX * CHUNK_SIZE_X;
+	float y =  howFarWeAreInY * CHUNK_SIZE_Y;
+
+	return Vector3(x, y, 0.f);
+}
+
+//-----------------------------------------------------------------------------------------------
 void Chunk::SetBlockType(int blockX, int blockY, int blockZ, const String & name)
 {
 	BlockIndex theIndex = GetBlockIndexForBlockCoords(BlockCoords(blockX, blockY, blockZ));
@@ -104,7 +184,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 
 	BlockDefinition* theDefinition = BlockDefinition::GetDefinitionByType( (BlockTypes) theBlock.m_type);
 	BlockCoords theCoords = GetBlockCoordsForBlockIndex(theIndex);
-	Vector3 center = theCoords.GetAsVector3() + Vector3(.5f);
+	Vector3 center = Vector3(m_chunkCoords.GetAsVector2() * CHUNK_SIZE_X,0) + theCoords.GetAsVector3() + Vector3(.5f);
 	Vector3 dimensions = Vector3(.5f);
 
 	m_cpuMesh.SetColor(Rgba::WHITE);

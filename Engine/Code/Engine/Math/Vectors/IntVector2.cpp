@@ -167,14 +167,13 @@ bool IntVector2::operator!=( const IntVector2& compare ) const
 
 	return true; 
 }
-
 bool IntVector2::operator<(const IntVector2 & compare) const
 {
 	// used in minecraft
 	if (y < compare.y) return true;
-	if (compare.y < y) return true;
+	if (compare.y < y) return false;
 	if (x < compare.x) return true;
-	if (compare.x < x) return true;
+	if (compare.x < x) return false;
 	
 	return false;
 }
