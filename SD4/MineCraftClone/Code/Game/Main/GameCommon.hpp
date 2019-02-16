@@ -30,9 +30,11 @@ constexpr int BLOCKS_WIDE_X = (1 << CHUNK_BITS_WIDE_X); //eg if x-bits us 4
 constexpr int CHUNK_X_MASK = 0b0000'1111;
 constexpr int CHUNK_Y_MASK = 0b1111'0000;
 constexpr int CHUNK_Z_MASK = 0b1111'1111'0000'0000;
-//X mask = 0000001111
-//Y mask = 000001110000
-//Z mask = 111111110000000
+
+
+constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 4;
+constexpr float CHUNK_ACTIVATION_DISTANCE = 200.f;
+constexpr float CHUNK_ACTIVATION_DISTANCE_SQUARED = CHUNK_ACTIVATION_DISTANCE * CHUNK_ACTIVATION_DISTANCE;
 
 //====================================================================================
 // ENUMS

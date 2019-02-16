@@ -8,9 +8,10 @@
 #include "Game/General/World/BlockDefinition.hpp"
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Engine/Core/Tools/Clock.hpp"
+#include "Game/General/Utils/Neighborhood.hpp"
+#include <xtgmath.h>
 
-std::map<IntVector2, Chunk*> World::s_activeChunks;
-
+//===============================================================================================
 World::World()
 {
 	m_skyBox = new TextureCube();
@@ -23,25 +24,27 @@ World::World()
 	new BlockDefinition("stone", BLOCK_TYPE_STONE, IntVector2(7, 4), IntVector2(7, 4), IntVector2(7, 4));
 	new BlockDefinition("test", BLOCK_TYPE_TEST, IntVector2(31, 31), IntVector2(31, 31), IntVector2(31, 31));
 
-	IntVector2 pos = IntVector2(0, 0);
-	Chunk* newChunk = new Chunk(pos);
-	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	m_chunkActivationCheatSheet = new Neighborhood(ACTIVATION_RADIUS_IN_CHUNKS);
 
-	pos = IntVector2(-1, 2);
-	newChunk = new Chunk(pos);
-	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	
-	pos = IntVector2(0, 2);
-	newChunk = new Chunk(pos);
-	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	
-	pos = IntVector2(1, 2);
-	newChunk = new Chunk(pos);
-	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	
-	pos = IntVector2(0, 3);
-	newChunk = new Chunk(pos);
-	s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	//IntVector2 pos = IntVector2(0, 0);
+	//Chunk* newChunk = new Chunk(pos);
+	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	//
+	//pos = IntVector2(-1, 2);
+	//newChunk = new Chunk(pos);
+	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	//
+	//pos = IntVector2(0, 2);
+	//newChunk = new Chunk(pos);
+	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	//
+	//pos = IntVector2(1, 2);
+	//newChunk = new Chunk(pos);
+	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
+	//
+	//pos = IntVector2(0, 3);
+	//newChunk = new Chunk(pos);
+	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
 
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
@@ -63,13 +66,14 @@ World::~World()
 
 void World::Update()
 {
+	CheckAndActivateChunk();
 	CheckKeyboardInputs();
 }
 
 void World::UpdateChunks()
 {
-	std::map<IntVector2, Chunk*>::iterator theIterator;
-	for (theIterator = s_activeChunks.begin(); theIterator != s_activeChunks.end(); theIterator++)
+	std::map<ChunkCoords, Chunk*>::iterator theIterator;
+	for (theIterator = m_activeChunks.begin(); theIterator != m_activeChunks.end(); theIterator++)
 	{
 		theIterator->second->Update();
 	}
@@ -165,10 +169,9 @@ void World::RenderChunks() const
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 	r->SetCamera(m_camera);
 	
-	std::map<IntVector2, Chunk*>::iterator theIterator;
-	for (theIterator = s_activeChunks.begin(); theIterator != s_activeChunks.end(); theIterator++)
+	for (auto theIterator = m_activeChunks.begin(); theIterator != m_activeChunks.end(); theIterator++)
 	{
-		r->DrawMesh(theIterator->second->m_gpuMesh);
+		//r->DrawMesh(theIterator->second->m_gpuMesh);
 		theIterator->second->Render();
 	}
 
@@ -207,4 +210,40 @@ void World::RenderBasis() const
 	// clean up for dev console
 	//r->SetShader();
 	r->BindRenderState(Shader::CreateOrGetShader("default")->m_state);
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::CheckAndActivateChunk()
+{
+	std::vector<IntVector2>& cheatSheat = m_chunkActivationCheatSheet->m_blockCoords;
+
+	for (uint i = 0; i < cheatSheat.size(); i++)
+	{
+		ChunkCoords current = cheatSheat.at(i);
+		
+		int xPos = ((int)(floor(m_gameCamera->pos.x / CHUNK_SIZE_X)));
+		int yPos = ((int)(floor(m_gameCamera->pos.y / CHUNK_SIZE_Y)));
+		ChunkCoords worldCoords = ChunkCoords(xPos + current.x, yPos + current.y);
+
+		if (!IsChunkActivated(worldCoords))
+		{
+			ActivateChunk(worldCoords);
+			return;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::ActivateChunk(const ChunkCoords& theCoords)
+{
+	Chunk* newChunk = new Chunk(theCoords);
+	m_activeChunks.insert(std::pair<ChunkCoords, Chunk*>(theCoords, newChunk));
+}
+
+//-----------------------------------------------------------------------------------------------
+bool World::IsChunkActivated(const ChunkCoords& theCoords)
+{
+	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.find(theCoords);
+
+	return !(theIterator == m_activeChunks.end());
 }

@@ -9,8 +9,8 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	: m_chunkCoords(myCoords)
 {	
 	GenerateMyBounds();
-	GenerateBlocks();
-	GenerateMesh();
+	//GenerateBlocks();
+	//GenerateMesh();
 	GenerateTestMesh();
 }
 
@@ -30,6 +30,7 @@ void Chunk::Update()
 void Chunk::Render() const
 {
 	Renderer* r = Renderer::GetInstance();
+	r->SetCurrentTexture(0, r->m_testTexture);
 	r->DrawMesh(m_debugMesh);
 
 }
@@ -40,10 +41,10 @@ void Chunk::GenerateMyBounds()
 	m_bounds.mins.x = (float)(m_chunkCoords.x * CHUNK_SIZE_X);
 	m_bounds.mins.y = (float)(m_chunkCoords.y * CHUNK_SIZE_Y);
 	m_bounds.mins.z = 0.f;
-
-	m_bounds.maxs.x = m_bounds.mins.x + ((float) CHUNK_SIZE_X);
-	m_bounds.maxs.y = m_bounds.mins.y + ((float) CHUNK_SIZE_Y);
-	m_bounds.maxs.z = (float) CHUNK_HEIGHT;
+	
+	m_bounds.maxs.x = m_bounds.mins.x + ((float)CHUNK_SIZE_X);
+	m_bounds.maxs.y = m_bounds.mins.y + ((float)CHUNK_SIZE_Y);
+	m_bounds.maxs.z = (float)CHUNK_HEIGHT;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -131,25 +132,28 @@ void Chunk::GenerateMesh()
 void Chunk::GenerateTestMesh()
 {
 	MeshBuilder mb;	
+
+	AABB2 bounds = AABB2(m_bounds.mins.xy(), m_bounds.maxs.xy());
+	bounds.AddPaddingToSides(-4.f, -4.f);
 	
 	mb.Begin(PRIMITIVE_TRIANGLES, true);
 	mb.SetColor(Rgba::WHITE);
 	
 	AABB2 uvs = AABB2(0.f, 0.f, 1.f, 1.f);
 	mb.SetUV(uvs.maxs.x, uvs.mins.y);
-	uint idx = mb.PushVertex(Vector3(m_bounds.maxs.x, m_bounds.mins.y, m_bounds.maxs.z));
+	uint idx = mb.PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, m_bounds.maxs.z));
 
 	//bl
 	mb.SetUV(uvs.mins.x, uvs.mins.y);
-	mb.PushVertex(Vector3(m_bounds.mins.x, m_bounds.mins.y, m_bounds.maxs.z));
+	mb.PushVertex(Vector3(bounds.mins.x, bounds.mins.y, m_bounds.maxs.z));
 
 	// tl
 	mb.SetUV(uvs.mins.x, uvs.maxs.y);
-	mb.PushVertex(Vector3(m_bounds.mins.x, m_bounds.maxs.y, m_bounds.maxs.z));
+	mb.PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, m_bounds.maxs.z));
 
 	// tr
 	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
-	mb.PushVertex(Vector3(m_bounds.maxs.x, m_bounds.maxs.y, m_bounds.maxs.z));
+	mb.PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, m_bounds.maxs.z));
 
 	mb.AddFace(idx + 0, idx + 1, idx + 2);
 	mb.AddFace(idx + 2, idx + 3, idx + 0);

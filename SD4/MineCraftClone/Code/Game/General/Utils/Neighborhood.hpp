@@ -1,16 +1,11 @@
 #pragma once
-#include "Game/Main/GameCommon.hpp"
-#include <map>
+#include "Engine/Math/Vectors/IntVector2.hpp"
+#include <vector>
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class Chunk;
-class GameCamera;
-class Camera;
-class TextureCube;
-class Mesh;
-class Neighborhood;
+
 
 //====================================================================================
 // Type Defs + Defines
@@ -30,41 +25,17 @@ class Neighborhood;
 //====================================================================================
 // Classes
 //====================================================================================
-class World
+class Neighborhood
 {
 public:
-	World();
-	~World();
-
-	void Update();
-	void UpdateChunks();
-	void CheckKeyboardInputs();
-	void UpdateCamera();
-
-	void Render() const;
-	void RenderChunks() const;
-	void RenderSkyBox() const;
-	void RenderBasis() const;
-
-	void CheckAndActivateChunk();
-	void ActivateChunk(const ChunkCoords& theCoords);
-	bool IsChunkActivated(const ChunkCoords& theCoords);
-
+	Neighborhood(int radius);
 
 public:
-	std::map<ChunkCoords, Chunk*> m_activeChunks;
 
-public:
-	Camera*					m_camera = nullptr;
-	GameCamera*				m_gameCamera = nullptr;
-	float					m_cameraSpeed = 10.f;
-
-	TextureCube*			m_skyBox = nullptr;
-	Mesh*					m_skyMesh = nullptr;
-
-	Neighborhood*			m_chunkActivationCheatSheet = nullptr;
-
+	std::vector<IntVector2>		m_blockCoords;
 };
+
+bool SortBlockCoordsByDistanceFromOrigin(IntVector2 a, IntVector2 b);
 
 //====================================================================================
 // Standalone C Functions
@@ -77,5 +48,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [2/6/2019]
+// Written by Zachary Bracken : [2/16/2019]
 //====================================================================================
