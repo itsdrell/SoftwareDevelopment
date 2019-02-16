@@ -51,19 +51,21 @@ void Chunk::GenerateBlocks()
 {
 	float seaLevel = (float)(CHUNK_HEIGHT / 2);
 	float grassLevel[CHUNK_SIZE_X * CHUNK_SIZE_Y];
-
-	for (int i = 0; i < CHUNK_SIZE_Y; i++)
+	// shift alr r
+	for (int blockY = 0; blockY < CHUNK_SIZE_Y; blockY++)
 	{
-		for (int j = 0; j < CHUNK_SIZE_X; j++)
+		for (int blockX = 0; blockX < CHUNK_SIZE_X; blockX++)
 		{
-			Vector3 blockWorldCoords = GetWorldPositionOfColumn(j,i);
+			Vector3 blockWorldCoords = GetWorldPositionOfColumn(blockX,blockY);
 			float amount =  Compute2dPerlinNoise(
 				blockWorldCoords.x,
 				blockWorldCoords.y,
-				5000.f);
+				300.f, 5);
 				//* 5.f;
 
-			grassLevel[j * i] = RangeMapFloat(amount, -1.f, 1.f, seaLevel, (float)CHUNK_HEIGHT * .3f);
+			int columnindex = (blockY * CHUNK_SIZE_X) + blockX;
+			grassLevel[columnindex] = RangeMapFloat(amount, -1.f, 1.f, seaLevel, (float)CHUNK_HEIGHT * .3f);
+			//grassLevel[xDir * yDir] = seaLevel + amount;
 		}
 	}
 
@@ -79,7 +81,8 @@ void Chunk::GenerateBlocks()
 // 				}
 // 				else
 // 				{
-					int theGrassLevel = (int) grassLevel[blockX * blockY];
+				int columnindex = (blockY * CHUNK_SIZE_X) + blockX;	
+				int theGrassLevel = (int) grassLevel[columnindex];
 
 					if (blockZ > (theGrassLevel))
 					{
@@ -156,13 +159,13 @@ void Chunk::GenerateTestMesh()
 
 Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 {
-	float howFarWeAreInX = (float)(m_chunkCoords.x + theX);
-	float howFarWeAreInY = (float)(m_chunkCoords.y + theY);
+	float howFarWeAreInX = (float)((m_chunkCoords.x * CHUNK_SIZE_X) + theX);
+	float howFarWeAreInY = (float)((m_chunkCoords.y * CHUNK_SIZE_Y) + theY);
 	
-	float x =  howFarWeAreInX * CHUNK_SIZE_X;
-	float y =  howFarWeAreInY * CHUNK_SIZE_Y;
+	//float x =  howFarWeAreInX * CHUNK_SIZE_X;
+	//float y =  howFarWeAreInY * CHUNK_SIZE_Y;
 
-	return Vector3(x, y, 0.f);
+	return Vector3(howFarWeAreInX, howFarWeAreInY, 0.f);
 }
 
 //-----------------------------------------------------------------------------------------------
