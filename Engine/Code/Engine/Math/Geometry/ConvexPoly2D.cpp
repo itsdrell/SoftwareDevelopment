@@ -1,4 +1,5 @@
 #include "ConvexPoly2D.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
 
 //===============================================================================================
 void ConvexPoly2D::Addpoint(const Vector2 & point)
@@ -15,6 +16,8 @@ void ConvexPoly2D::Addpoint(const Vector2 & point)
 //-----------------------------------------------------------------------------------------------
 bool ConvexPoly2D::IsPointInside(const Vector2 & point)
 {
+	UNUSED(point);
+	
 	// for loop through all the points
 
 	// get a displacement from current point to next point

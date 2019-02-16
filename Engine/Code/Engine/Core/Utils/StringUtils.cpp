@@ -7,6 +7,10 @@
 #include <string>
 
 
+// truncate warning when turning npos to int
+#pragma warning (disable : 4310)
+
+
 //-----------------------------------------------------------------------------------------------
 const int STRINGF_STACK_LOCAL_TEMP_LENGTH = 2048;
 

@@ -9,9 +9,9 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	: m_chunkCoords(myCoords)
 {	
 	GenerateMyBounds();
-	//GenerateBlocks();
-	//GenerateMesh();
+	GenerateBlocks();
 	GenerateTestMesh();
+	m_isGPUDirty = true;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -30,9 +30,13 @@ void Chunk::Update()
 void Chunk::Render() const
 {
 	Renderer* r = Renderer::GetInstance();
-	r->SetCurrentTexture(0, r->m_testTexture);
+	if (m_isGPUDirty && m_gpuMesh == nullptr)
+		r->SetCurrentTexture(0, r->m_defaultNormalTexture);
+	else
+		r->SetCurrentTexture(0, r->m_testTexture);
+	
 	r->DrawMesh(m_debugMesh);
-
+	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ void Chunk::GenerateBlocks()
 					}
 					else
 					{
-						SetBlockType(blockX, blockY, blockZ, "grass");
+						SetBlockType(blockX, blockY, blockZ, "snow");
 					}
 			}
 				//else if( blockZ >= seaLevel && blockZ < seaLevel + 3)
@@ -126,6 +130,7 @@ void Chunk::GenerateMesh()
 		delete m_gpuMesh;
 
 	m_gpuMesh = m_cpuMesh.CreateMesh<Vertex3D_PCU>();
+	m_isGPUDirty = false;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -165,9 +170,6 @@ Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 {
 	float howFarWeAreInX = (float)((m_chunkCoords.x * CHUNK_SIZE_X) + theX);
 	float howFarWeAreInY = (float)((m_chunkCoords.y * CHUNK_SIZE_Y) + theY);
-	
-	//float x =  howFarWeAreInX * CHUNK_SIZE_X;
-	//float y =  howFarWeAreInY * CHUNK_SIZE_Y;
 
 	return Vector3(howFarWeAreInX, howFarWeAreInY, 0.f);
 }
@@ -178,7 +180,7 @@ void Chunk::SetBlockType(int blockX, int blockY, int blockZ, const String & name
 	BlockIndex theIndex = GetBlockIndexForBlockCoords(BlockCoords(blockX, blockY, blockZ));
 	Block& theBlock = m_blocks[theIndex];
 
-	theBlock.m_type = BlockDefinition::GetDefinitionByName(name)->m_type;
+	theBlock.m_type = (unsigned char) BlockDefinition::GetDefinitionByName(name)->m_type;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -322,6 +324,16 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
 	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
 
+}
+
+//-----------------------------------------------------------------------------------------------
+bool Chunk::CanRebuildItsMesh()
+{
+	return (
+		m_northNeighbor != nullptr 
+		&& m_southNeighbor != nullptr
+		&& m_eastNeighbor != nullptr 
+		&& m_westNeighbor != nullptr);
 }
 
 //-----------------------------------------------------------------------------------------------

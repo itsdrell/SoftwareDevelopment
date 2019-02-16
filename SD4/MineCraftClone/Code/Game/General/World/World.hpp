@@ -36,6 +36,7 @@ public:
 	World();
 	~World();
 
+public:
 	void Update();
 	void UpdateChunks();
 	void CheckKeyboardInputs();
@@ -46,9 +47,14 @@ public:
 	void RenderSkyBox() const;
 	void RenderBasis() const;
 
+public:
 	void CheckAndActivateChunk();
+	void CheckAndDeactivateChunk();
+	void CheckAndRebuildChunkMesh();
 	void ActivateChunk(const ChunkCoords& theCoords);
 	bool IsChunkActivated(const ChunkCoords& theCoords);
+	Chunk* GetFarthestChunkFromPlayer(const Vector2& playerWorldPos);
+	Chunk* GetChunkFromChunkCoords( const ChunkCoords& theCoords );
 
 
 public:
@@ -69,7 +75,6 @@ public:
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
 
 //====================================================================================
 // Externs

@@ -11,9 +11,9 @@ Neighborhood::Neighborhood(int radius)
 	{
 		for (int xPos = -radius; xPos < radius + 1; xPos++)
 		{
-			Vector2 worldPos = Vector2(xPos * CHUNK_SIZE_X, yPos * CHUNK_SIZE_Y);
+			Vector2 worldPos = Vector2((float)(xPos * CHUNK_SIZE_X), (float)(yPos * CHUNK_SIZE_Y));
 			float distance = GetDistanceSquared(Vector2::ZERO, worldPos);
-			if (distance < (CHUNK_ACTIVATION_DISTANCE * CHUNK_ACTIVATION_DISTANCE))
+			if (distance < (CHUNK_ACTIVATION_DISTANCE_SQUARED))
 			{
 				m_blockCoords.push_back(IntVector2(xPos, yPos));
 			}
@@ -26,8 +26,8 @@ Neighborhood::Neighborhood(int radius)
 //===============================================================================================
 bool SortBlockCoordsByDistanceFromOrigin(IntVector2 a, IntVector2 b)
 {
-	Vector2 aWorldPos = Vector2(a.x * CHUNK_SIZE_X, a.y * CHUNK_SIZE_Y);
-	Vector2 bWorldPos = Vector2(b.x * CHUNK_SIZE_X, b.y * CHUNK_SIZE_Y);
+	Vector2 aWorldPos = Vector2((float)(a.x * CHUNK_SIZE_X), (float)(a.y * CHUNK_SIZE_Y));
+	Vector2 bWorldPos = Vector2((float)(b.x * CHUNK_SIZE_X), (float)(b.y * CHUNK_SIZE_Y));
 
 	float aDistance = GetDistanceSquared(Vector2::ZERO, aWorldPos);
 	float bDistance = GetDistanceSquared(Vector2::ZERO, bWorldPos);

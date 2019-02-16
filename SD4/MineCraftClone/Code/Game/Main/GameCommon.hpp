@@ -21,7 +21,7 @@ constexpr int CHUNK_BITS_WIDE_Y = 4;
 constexpr int CHUNK_BITS_TALL_Z = 8;
 
 constexpr int CHUNK_SIZE_X = 16;
-constexpr int CHUNK_SIZE_Y = 16;
+constexpr int CHUNK_SIZE_Y = 16;	
 constexpr int CHUNK_HEIGHT = 256;
 constexpr int BLOCKS_PER_LAYER = CHUNK_SIZE_X * CHUNK_SIZE_Y;
 constexpr int BLOCKS_WIDE_X = (1 << CHUNK_BITS_WIDE_X); //eg if x-bits us 4
@@ -33,8 +33,11 @@ constexpr int CHUNK_Z_MASK = 0b1111'1111'0000'0000;
 
 
 constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 4;
-constexpr float CHUNK_ACTIVATION_DISTANCE = 200.f;
+constexpr float CHUNK_ACTIVATION_DISTANCE = ACTIVATION_RADIUS_IN_CHUNKS * CHUNK_SIZE_X;
 constexpr float CHUNK_ACTIVATION_DISTANCE_SQUARED = CHUNK_ACTIVATION_DISTANCE * CHUNK_ACTIVATION_DISTANCE;
+
+constexpr float CHUNK_DEACTIVATION_DISTANCE = CHUNK_ACTIVATION_DISTANCE + CHUNK_SIZE_X; // one chunk bigger than activation
+constexpr float CHUNK_DEACTIVATION_DISTANCE_SQUARED = CHUNK_DEACTIVATION_DISTANCE * CHUNK_DEACTIVATION_DISTANCE;
 
 //====================================================================================
 // ENUMS

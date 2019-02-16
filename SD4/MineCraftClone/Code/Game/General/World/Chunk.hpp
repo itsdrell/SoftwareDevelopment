@@ -36,18 +36,28 @@ public:
 	void Update();
 	void Render() const;
 
+public:
 	void GenerateMyBounds();
 	void GenerateBlocks();
 	void GenerateMesh();
 	void GenerateTestMesh();
 
+public:
+
 	Vector3 GetWorldPositionOfColumn(int theX, int theY);
 	void SetBlockType(int blockX, int blockY, int blockZ, const String& name);
 	void AddVertsForBlock( BlockIndex theIndex );
+	bool CanRebuildItsMesh();
 
 	BlockIndex GetBlockIndexForBlockCoords(const BlockCoords& bc);
 	BlockCoords GetBlockCoordsForBlockIndex( BlockIndex bi);
 
+
+public:
+	Chunk*			m_northNeighbor = nullptr;
+	Chunk*			m_southNeighbor = nullptr;
+	Chunk*			m_eastNeighbor = nullptr;
+	Chunk*			m_westNeighbor = nullptr;
 
 public:
 	Block			m_blocks[AMOUNT_OF_BLOCKS_IN_CHUNK];

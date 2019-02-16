@@ -67,7 +67,9 @@ World::~World()
 void World::Update()
 {
 	CheckAndActivateChunk();
+	CheckAndDeactivateChunk();
 	CheckKeyboardInputs();
+	CheckAndRebuildChunkMesh();
 }
 
 void World::UpdateChunks()
@@ -102,8 +104,6 @@ void World::CheckKeyboardInputs()
 
 void World::UpdateCamera()
 {
-	float dt = g_theGameClock->deltaTime; // this needs to be after keyboard because we might fuck with ds for go to next frames
-	float rotationSpeed = .20f;
 	float sensitivity = .05f;
 
 	// Apply Rotation
@@ -141,7 +141,7 @@ void World::UpdateCamera()
 
 void World::Render() const
 {
-	Renderer* r = Renderer::GetInstance();
+	//Renderer* r = Renderer::GetInstance();
 
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
@@ -171,7 +171,15 @@ void World::RenderChunks() const
 	
 	for (auto theIterator = m_activeChunks.begin(); theIterator != m_activeChunks.end(); theIterator++)
 	{
-		//r->DrawMesh(theIterator->second->m_gpuMesh);
+		Mesh* theMesh = theIterator->second->m_gpuMesh;
+
+		// sometimes the mesh isn't made yet
+		if (theMesh != nullptr)
+		{
+			r->DrawMesh(theIterator->second->m_gpuMesh);
+		}
+
+		// debug stuff
 		theIterator->second->Render();
 	}
 
@@ -234,10 +242,69 @@ void World::CheckAndActivateChunk()
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::CheckAndDeactivateChunk()
+{
+	Chunk* furthestChunk = GetFarthestChunkFromPlayer(m_gameCamera->pos.xy());
+
+	Vector2 currentWorldPos = Vector2(
+		(float)(furthestChunk->m_chunkCoords.x * CHUNK_SIZE_X),
+		(float)(furthestChunk->m_chunkCoords.y * CHUNK_SIZE_Y));
+
+	float distanceSquaredForCurrent = GetDistanceSquared(currentWorldPos, m_gameCamera->pos.xy());
+
+	if (distanceSquaredForCurrent > CHUNK_DEACTIVATION_DISTANCE_SQUARED)
+	{
+		m_activeChunks.erase(furthestChunk->m_chunkCoords);
+		
+		delete furthestChunk;
+		furthestChunk = nullptr;
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::CheckAndRebuildChunkMesh()
+{
+	std::vector<IntVector2>& cheatSheat = m_chunkActivationCheatSheet->m_blockCoords;
+
+	int xPos = ((int)(floor(m_gameCamera->pos.x / CHUNK_SIZE_X)));
+	int yPos = ((int)(floor(m_gameCamera->pos.y / CHUNK_SIZE_Y)));
+	ChunkCoords playerCoords = ChunkCoords(xPos, yPos);
+
+	for (uint i = 0; i < cheatSheat.size(); i++)
+	{
+		ChunkCoords currentCoords = cheatSheat.at(i) + playerCoords;
+		Chunk* currentChunk = GetChunkFromChunkCoords(currentCoords);
+
+		if (currentChunk != nullptr && currentChunk->m_isGPUDirty && currentChunk->CanRebuildItsMesh())
+		{
+			currentChunk->GenerateMesh();
+			return;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::ActivateChunk(const ChunkCoords& theCoords)
 {
 	Chunk* newChunk = new Chunk(theCoords);
 	m_activeChunks.insert(std::pair<ChunkCoords, Chunk*>(theCoords, newChunk));
+
+	Chunk* theNorthNeighbor= GetChunkFromChunkCoords(theCoords + IntVector2::NORTH);
+	Chunk* theSouthNeighbor= GetChunkFromChunkCoords(theCoords + IntVector2::SOUTH);
+	Chunk* theEastNeighbor= GetChunkFromChunkCoords(theCoords + IntVector2::EAST);
+	Chunk* theWestNeighbor= GetChunkFromChunkCoords(theCoords + IntVector2::WEST);
+
+	// let the chunk know its neighbors
+	newChunk->m_northNeighbor	= theNorthNeighbor;
+	newChunk->m_southNeighbor	= theSouthNeighbor;
+	newChunk->m_eastNeighbor	= theEastNeighbor;
+	newChunk->m_westNeighbor	= theWestNeighbor;
+
+	// let the neighbors know about the chunk
+	if (theNorthNeighbor != nullptr)	{ theNorthNeighbor->m_southNeighbor		= newChunk; }
+	if (theSouthNeighbor != nullptr)	{ theSouthNeighbor->m_northNeighbor		= newChunk; }
+	if (theEastNeighbor != nullptr)		{ theEastNeighbor->m_westNeighbor		= newChunk; }
+	if (theWestNeighbor != nullptr)		{ theWestNeighbor->m_eastNeighbor		= newChunk; }
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -246,4 +313,46 @@ bool World::IsChunkActivated(const ChunkCoords& theCoords)
 	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.find(theCoords);
 
 	return !(theIterator == m_activeChunks.end());
+}
+
+//-----------------------------------------------------------------------------------------------
+Chunk* World::GetFarthestChunkFromPlayer(const Vector2& playerWorldPos)
+{
+	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.begin();
+	Chunk* currentFurthestChunk = theIterator->second;
+	
+	Vector2 startingFurthestPos = Vector2(
+		(float)(currentFurthestChunk->m_chunkCoords.x * CHUNK_SIZE_X),
+		(float)(currentFurthestChunk->m_chunkCoords.y * CHUNK_SIZE_Y));
+
+	float farthestDistance = GetDistanceSquared(startingFurthestPos, playerWorldPos);;
+	
+	for (theIterator; theIterator != m_activeChunks.end(); theIterator++)
+	{
+		Chunk* currentChunk = theIterator->second;
+		Vector2 currentWorldPos = Vector2(
+			(float)(currentChunk->m_chunkCoords.x * CHUNK_SIZE_X), 
+			(float)(currentChunk->m_chunkCoords.y * CHUNK_SIZE_Y));
+
+		float distanceSquaredForCurrent = GetDistanceSquared(currentWorldPos, playerWorldPos);
+		
+		if (distanceSquaredForCurrent > farthestDistance)
+		{
+			farthestDistance = distanceSquaredForCurrent;
+			currentFurthestChunk = currentChunk;
+		}
+	}
+
+	return currentFurthestChunk;
+}
+
+//-----------------------------------------------------------------------------------------------
+Chunk* World::GetChunkFromChunkCoords(const ChunkCoords& theCoords)
+{
+	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.find(theCoords);
+
+	if (theIterator == m_activeChunks.end())
+		return nullptr;
+
+	return theIterator->second;
 }
