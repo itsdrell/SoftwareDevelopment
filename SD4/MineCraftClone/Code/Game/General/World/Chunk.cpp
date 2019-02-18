@@ -266,19 +266,19 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	//-----------------------------------------------------------------------------------------------
 	// back
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
 	//bl
 	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
 	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
 	// tr
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
 	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
 	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
@@ -286,19 +286,19 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	//-----------------------------------------------------------------------------------------------
 	// right face
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
 	//bl
 	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
 	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
 	// tr
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
 	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
 	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
@@ -307,19 +307,19 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// Bottom Face
 	uvs = theDefinition->m_bottomUVs;
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
 	//bl
 	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
 	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
 	// tr
 	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
 	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
 	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);

@@ -71,6 +71,7 @@ void Playing::Update()
 void Playing::Render() const
 {
 	m_world->Render();
+	//RenderTestCube();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -154,27 +155,7 @@ void Playing::RenderTestCube() const
 	//-----------------------------------------------------------------------------------------------
 	// back
 	mb.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
-
-	//bl
-	mb.SetUV(uvs.mins.x, uvs.mins.y);
-	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
-
-	// tl
-	mb.SetUV(uvs.mins.x,uvs.maxs.y);
-	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
-
-	// tr
-	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
-	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
-
-	mb.AddFace(idx + 0, idx + 1, idx + 2);
-	mb.AddFace(idx + 2, idx + 3, idx + 0);
-
-	//-----------------------------------------------------------------------------------------------
-	// right face
-	mb.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	idx = mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
 
 	//bl
 	mb.SetUV(uvs.mins.x, uvs.mins.y);
@@ -186,7 +167,27 @@ void Playing::RenderTestCube() const
 
 	// tr
 	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	//-----------------------------------------------------------------------------------------------
+	// right face
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+
+	// tl
+	mb.SetUV(uvs.mins.x,uvs.maxs.y);
 	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
 
 	mb.AddFace(idx + 0, idx + 1, idx + 2);
 	mb.AddFace(idx + 2, idx + 3, idx + 0);
@@ -195,19 +196,19 @@ void Playing::RenderTestCube() const
 	// Bottom Face
 	uvs = theDefinition->m_bottomUVs;
 	mb.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	idx = mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
 
 	//bl
 	mb.SetUV(uvs.mins.x, uvs.mins.y);
-	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
 
 	// tl
 	mb.SetUV(uvs.mins.x,uvs.maxs.y);
-	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
 
 	// tr
 	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
-	mb.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+	mb.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
 
 	mb.AddFace(idx + 0, idx + 1, idx + 2);
 	mb.AddFace(idx + 2, idx + 3, idx + 0);
@@ -216,7 +217,9 @@ void Playing::RenderTestCube() const
 	// Do the draw
 	Mesh* mesh = mb.CreateMesh<Vertex3D_PCU>();
 
-	r->SetShader(Shader::CreateOrGetShader("default"));
+	Shader* cubeShader = Shader::CreateOrGetShader("default");
+	cubeShader->SetCullMode(CULLMODE_FRONT);
+	r->SetShader(cubeShader);
 	r->SetCurrentTexture(0 , g_blockSpriteSheet.m_spriteSheetTexture);
 	//r->SetCamera(m_camera);
 	r->DrawMesh(mesh, true);

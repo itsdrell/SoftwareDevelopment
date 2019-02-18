@@ -312,10 +312,11 @@ void DevConsole::Render()
 	if(m_isOpen == false) return;
 
 	// use the default shader and default texture (for the quad)
-	m_theRenderer->SetShader();
+	Shader* devConsoleShader = Shader::CreateOrGetShader("default");
+	devConsoleShader->SetCullMode(CULLMODE_NONE);
+	m_theRenderer->SetShader(devConsoleShader);
+	m_theRenderer->BindRenderState(devConsoleShader->m_state);
 	m_theRenderer->SetCurrentTexture();
-	
-
 	
 	// Set the ui camera to do the drawing
 	m_theRenderer->SetCamera(m_uiCamera);
@@ -324,7 +325,6 @@ void DevConsole::Render()
 	m_theRenderer->ClearDepth(1.f);
 	m_theRenderer->EnableDepth(COMPARE_ALWAYS, true);
 
-	
 	// This is the tint ( was black but white is easier to read..?)
 	m_theRenderer->DrawAABB2(AABB2(-m_windowWidth,-m_windowHeight,m_windowWidth,(m_windowHeight)),Rgba(0,0,0,220));
 
@@ -334,10 +334,6 @@ void DevConsole::Render()
 	AABB2 coords = m_roll->GetTexCoordsForSpriteIndex((uint) m_currentSpriteIndex);
 	m_theRenderer->DrawTexturedAABB2(AABB2(200.f, -500.f, 800.f, 400.f), *m_roll->m_spriteSheetTexture, coords.mins, coords.maxs, Rgba(255,255,255,100));
 	m_theRenderer->SetCurrentTexture();
-
-	//
-	
-	
 
 	//////////////////////////////////////////////////////////////////////////
 	// FPS

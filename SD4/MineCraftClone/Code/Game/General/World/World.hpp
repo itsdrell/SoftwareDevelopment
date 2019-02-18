@@ -40,6 +40,7 @@ public:
 	void Update();
 	void UpdateChunks();
 	void CheckKeyboardInputs();
+	void DebugKeys();
 	void UpdateCamera();
 
 	void Render() const;

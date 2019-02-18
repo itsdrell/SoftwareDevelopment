@@ -58,6 +58,8 @@ World::World()
 	g_theRenderer->SetCamera();
 
 	m_gameCamera = new GameCamera();
+	m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
+	m_gameCamera->pitchDegreesAboutY = 89.f;
 }
 
 World::~World()
@@ -98,19 +100,39 @@ void World::CheckKeyboardInputs()
 		m_cameraSpeed = ClampFloat(m_cameraSpeed, 10.f, 1000.f);
 	}
 
+	DebugKeys();
+
 	// do this last cause it'll move the mouse 
 	UpdateCamera();
 }
 
+//-----------------------------------------------------------------------------------------------
+void World::DebugKeys()
+{
+	// go back to origin
+	if (WasKeyJustPressed(G_THE_LETTER_O))
+	{
+		m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
+		m_gameCamera->rollDegreesAboutX = 0.f;
+		m_gameCamera->pitchDegreesAboutY = 89.f;
+		m_gameCamera->yawDegreesAboutZ = 0.f;
+	}
+
+	if (WasKeyJustPressed(G_THE_LETTER_U))
+	{
+		m_activeChunks.clear();
+	}
+
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::UpdateCamera()
 {
-	float sensitivity = .05f;
-
 	// Apply Rotation
 	Vector2 mouse_delta = g_theInput->GetMouseDelta();
 
-	m_gameCamera->pitchDegreesAboutY += mouse_delta.y * sensitivity;
-	m_gameCamera->yawDegreesAboutZ -= mouse_delta.x * sensitivity;
+	m_gameCamera->pitchDegreesAboutY += mouse_delta.y * .5f;
+	m_gameCamera->yawDegreesAboutZ -= mouse_delta.x * 1.5f;
 
 	m_gameCamera->pitchDegreesAboutY = ClampFloat(m_gameCamera->pitchDegreesAboutY, -90.f, 90.f);
 	m_gameCamera->yawDegreesAboutZ = fmod(m_gameCamera->yawDegreesAboutZ, 360.f);
@@ -139,6 +161,7 @@ void World::UpdateCamera()
 		m_gameCamera->pos += (amountToMove * ds * m_cameraSpeed);
 }
 
+//-----------------------------------------------------------------------------------------------
 void World::Render() const
 {
 	//Renderer* r = Renderer::GetInstance();
@@ -160,12 +183,15 @@ void World::Render() const
 	RenderBasis();
 }
 
-
+//-----------------------------------------------------------------------------------------------
 void World::RenderChunks() const
 {
 	Renderer* r = Renderer::GetInstance();
 	
-	r->SetShader(Shader::CreateOrGetShader("default"));
+	Shader* chunkShader = Shader::CreateOrGetShader("default");
+	chunkShader->SetCullMode(CULLMODE_FRONT);
+
+	r->SetShader(chunkShader);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 	r->SetCamera(m_camera);
 	
@@ -186,6 +212,7 @@ void World::RenderChunks() const
 	r->SetCurrentTexture();
 }
 
+//-----------------------------------------------------------------------------------------------
 void World::RenderSkyBox() const
 {
 	g_theRenderer->SetCamera(m_camera);
