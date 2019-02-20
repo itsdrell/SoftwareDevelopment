@@ -1,4 +1,6 @@
 #include "Game/Main/GameCommon.hpp"
+#include "Game/General/World/Block.hpp"
+#include "Game/General/World/BlockDefinition.hpp"
 
 
 Renderer* g_theRenderer = nullptr;
@@ -7,3 +9,5 @@ AudioSystem* g_audio = nullptr;
 
 
 SpriteSheet		g_blockSpriteSheet;
+
+Block& g_invalidBlock = Block(BLOCK_TYPE_TEST);

@@ -7,7 +7,7 @@
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class Block;
 
 //====================================================================================
 // Type Defs + Defines
@@ -26,7 +26,6 @@ constexpr int CHUNK_HEIGHT = 256;
 constexpr int BLOCKS_PER_LAYER = CHUNK_SIZE_X * CHUNK_SIZE_Y;
 constexpr int BLOCKS_WIDE_X = (1 << CHUNK_BITS_WIDE_X); //eg if x-bits us 4
 
-// 0b0111'1111
 constexpr int CHUNK_X_MASK = 0b0000'1111;
 constexpr int CHUNK_Y_MASK = 0b1111'0000;
 constexpr int CHUNK_Z_MASK = 0b1111'1111'0000'0000;
@@ -69,6 +68,7 @@ extern AudioSystem*		g_audio; // not the audio cause we could have multiple...?
 
 
 extern SpriteSheet		g_blockSpriteSheet;
+extern Block&			g_invalidBlock;
 
 //====================================================================================
 // Written by Zachary Bracken : [6/19/2018]

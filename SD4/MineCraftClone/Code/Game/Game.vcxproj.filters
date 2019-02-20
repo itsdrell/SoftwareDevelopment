@@ -55,6 +55,9 @@
     <ClCompile Include="General\Utils\Neighborhood.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\Utils\BlockLocator.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -83,5 +86,6 @@
     <ClInclude Include="General\World\Chunk.hpp" />
     <ClInclude Include="General\World\World.hpp" />
     <ClInclude Include="General\Utils\Neighborhood.hpp" />
+    <ClInclude Include="General\Utils\BlockLocator.hpp" />
   </ItemGroup>
 </Project>

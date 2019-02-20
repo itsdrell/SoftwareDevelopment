@@ -2,6 +2,7 @@
 #include "Game/General/World/BlockDefinition.hpp"
 #include "Engine/ThirdParty/SquirrelNoise/SmoothNoise.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "../Utils/BlockLocator.hpp"
 
 
 //===============================================================================================
@@ -12,6 +13,8 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	GenerateBlocks();
 	GenerateTestMesh();
 	m_isGPUDirty = true;
+
+	m_cpuMesh.ReserveSpace(10'000);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -35,6 +38,7 @@ void Chunk::Render() const
 	else
 		r->SetCurrentTexture(0, r->m_testTexture);
 	
+	r->m_currentShader->SetCullMode(CULLMODE_NONE);
 	r->DrawMesh(m_debugMesh);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 }
@@ -117,7 +121,7 @@ void Chunk::GenerateBlocks()
 
 //-----------------------------------------------------------------------------------------------
 void Chunk::GenerateMesh()
-{
+{	
 	m_cpuMesh.Clear(); // this happens when we make a mesh so its redundant but explicit
 	m_cpuMesh.Begin(PRIMITIVE_TRIANGLES, true);
 
@@ -196,133 +200,171 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	Vector3 center = Vector3(m_chunkCoords.GetAsVector2() * CHUNK_SIZE_X,0) + theCoords.GetAsVector3() + Vector3(.5f);
 	Vector3 dimensions = Vector3(.5f);
 
+	AABB2 uvs;
+	uint idx = 0;
+
 	m_cpuMesh.SetColor(Rgba::WHITE);
+
+	BlockLocator myBlock = BlockLocator(this, theIndex);
+	BlockLocator northBlock = myBlock.GetBlockLocatorOfNorthNeighbor();
+	BlockLocator southBlock = myBlock.GetBlockLocatorOfSouthNeighbor();
+	BlockLocator eastBlock = myBlock.GetBlockLocatorOfEastNeighbor();
+	BlockLocator westBlock = myBlock.GetBlockLocatorOfWestNeighbor();
+	BlockLocator aboveBlock = myBlock.GetBlockLocatorOfAboveNeighbor();
+	BlockLocator belowBlock = myBlock.GetBlockLocatorOfBelowNeighbor();
+
 
 	//-----------------------------------------------------------------------------------------------
 	// Top
 	// br
-	AABB2 uvs = theDefinition->m_topUVs;
+	if (!aboveBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_topUVs;
 
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	uint idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
+
 
 	//-----------------------------------------------------------------------------------------------
 	// Front face
-	uvs = theDefinition->m_sideUVs;
+	if (!westBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_sideUVs;
 
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z - dimensions.z)));
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y - dimensions.y),	(center.z + dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
+	
 
 	//-----------------------------------------------------------------------------------------------
 	// left
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+	if (!northBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_sideUVs;
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z - dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x,uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x),	(center.y + dimensions.y),	(center.z + dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
+
 
 	//-----------------------------------------------------------------------------------------------
 	// back
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
+	if (!eastBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_sideUVs;
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z + dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
+
 
 	//-----------------------------------------------------------------------------------------------
 	// right face
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
+	if (!southBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_sideUVs;
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z + dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
+
 
 	//-----------------------------------------------------------------------------------------------
 	// Bottom Face
-	uvs = theDefinition->m_bottomUVs;
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
-	idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
+	if (!belowBlock.IsFullyOpaque())
+	{
+		uvs = theDefinition->m_bottomUVs;
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
+		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	//bl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
-	m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
+		//bl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.mins.y);
+		m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	// tl
-	m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
+		// tl
+		m_cpuMesh.SetUV(uvs.mins.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
 
-	// tr
-	m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
-	m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
+		// tr
+		m_cpuMesh.SetUV(uvs.maxs.x, uvs.maxs.y);
+		m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
 
-	m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
-	m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+		m_cpuMesh.AddFace(idx + 0, idx + 1, idx + 2);
+		m_cpuMesh.AddFace(idx + 2, idx + 3, idx + 0);
+	}
 
 }
 

@@ -19,6 +19,8 @@ public:
 	void End(); 
 	void Clear();
 
+	void ReserveSpace(int size);
+
 
 	void SetColor(Rgba const &c);
 	void SetUV(Vector2 const &uv);

@@ -18,11 +18,11 @@ World::World()
 	m_skyBox->make_from_image("Data/Images/galaxy2.png");
 
 	// Create some block defs
-	new BlockDefinition("air", BLOCK_TYPE_AIR, IntVector2(), IntVector2(), IntVector2());
-	new BlockDefinition("grass", BLOCK_TYPE_GRASS, IntVector2(2, 0), IntVector2(3, 3), IntVector2(4, 3));
-	new BlockDefinition("snow", BLOCK_TYPE_SNOW, IntVector2(1, 3), IntVector2(2, 3), IntVector2(4, 3));
-	new BlockDefinition("stone", BLOCK_TYPE_STONE, IntVector2(7, 4), IntVector2(7, 4), IntVector2(7, 4));
-	new BlockDefinition("test", BLOCK_TYPE_TEST, IntVector2(31, 31), IntVector2(31, 31), IntVector2(31, 31));
+	new BlockDefinition("air", BLOCK_TYPE_AIR, false, IntVector2(), IntVector2(), IntVector2());
+	new BlockDefinition("grass", BLOCK_TYPE_GRASS, true, IntVector2(2, 0), IntVector2(3, 3), IntVector2(4, 3));
+	new BlockDefinition("snow", BLOCK_TYPE_SNOW, true, IntVector2(1, 3), IntVector2(2, 3), IntVector2(4, 3));
+	new BlockDefinition("stone", BLOCK_TYPE_STONE, true, IntVector2(7, 4), IntVector2(7, 4), IntVector2(7, 4));
+	new BlockDefinition("test", BLOCK_TYPE_TEST, true, IntVector2(31, 31), IntVector2(31, 31), IntVector2(31, 31));
 
 	m_chunkActivationCheatSheet = new Neighborhood(ACTIVATION_RADIUS_IN_CHUNKS);
 

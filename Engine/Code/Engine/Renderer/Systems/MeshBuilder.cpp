@@ -43,6 +43,13 @@ void MeshBuilder::Clear()
 	m_bounds.Invalidate();
 }
 
+//-----------------------------------------------------------------------------------------------
+void MeshBuilder::ReserveSpace(int size)
+{
+	m_vertices.reserve((size_t)size);
+	m_indices.reserve((size_t)size);
+}
+
 void MeshBuilder::SetColor(Rgba const & c)
 {
 	m_stamp.m_color = c;
@@ -86,7 +93,7 @@ void MeshBuilder::SetNormalAndTangents(const Vector3& theNormal)
 uint MeshBuilder::PushVertex(Vector3 position)
 {
 	m_stamp.m_position = position;
-	m_vertices.push_back(m_stamp);
+	m_vertices.emplace_back(m_stamp);
 
 	// store off the bounds
 	m_bounds.GrowToContain(position);
@@ -96,20 +103,20 @@ uint MeshBuilder::PushVertex(Vector3 position)
 
 void MeshBuilder::AddFace(uint a, uint b, uint c)
 {
-	m_indices.push_back(a);
-	m_indices.push_back(b);
-	m_indices.push_back(c);
+	m_indices.emplace_back(a);
+	m_indices.emplace_back(b);
+	m_indices.emplace_back(c);
 }
 
 void MeshBuilder::AddQuad(uint a, uint b, uint c, uint d)
 {
-	m_indices.push_back(a);
-	m_indices.push_back(b);
-	m_indices.push_back(c);
+	m_indices.emplace_back(a);
+	m_indices.emplace_back(b);
+	m_indices.emplace_back(c);
 
-	m_indices.push_back(a);
-	m_indices.push_back(c);
-	m_indices.push_back(d);
+	m_indices.emplace_back(a);
+	m_indices.emplace_back(c);
+	m_indices.emplace_back(d);
 }
 
 

@@ -1,12 +1,12 @@
 #pragma once
-#include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Math/Geometry/AABB2.hpp"
-#include <map>
+#include "Game/Main/GameCommon.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class Chunk;
+class Block;
+class BlockDefinition;
 
 //====================================================================================
 // Type Defs + Defines
@@ -16,14 +16,7 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-enum BlockTypes
-{
-	BLOCK_TYPE_AIR = 0,
-	BLOCK_TYPE_GRASS,
-	BLOCK_TYPE_STONE,
-	BLOCK_TYPE_SNOW,
-	BLOCK_TYPE_TEST
-};
+
 
 //====================================================================================
 // Structs
@@ -33,26 +26,37 @@ enum BlockTypes
 //====================================================================================
 // Classes
 //====================================================================================
-class BlockDefinition
+class BlockLocator
 {
 public:
-	BlockDefinition(const String& name, BlockTypes theType, bool isOpqaue, const IntVector2& spriteCoordsForTop, const IntVector2& spriteCoordsForSides, const IntVector2& spriteCoordsForBottom);
-	~BlockDefinition() {}
-
-	static BlockDefinition* GetDefinitionByName(const String& nameOfDefinition);
-	static BlockDefinition* GetDefinitionByType( BlockTypes theType );
-
-private:
-	static std::map<String, BlockDefinition*> s_definitions;
+	BlockLocator( Chunk* theChunk, BlockIndex indexOfBlock ); 
 
 public:
-	BlockTypes		m_type;
-	String			m_name;
-	AABB2			m_topUVs;
-	AABB2			m_sideUVs;
-	AABB2			m_bottomUVs;
+	Block& GetBlock();
+	bool IsValid() { return m_chunk != nullptr;  }
 
-	bool			m_isFullyOpaque; // cant see through
+	bool IsFullyOpaque();
+	BlockDefinition* GetBlockDefinition();
+
+public:
+	BlockLocator GetBlockLocatorOfNorthNeighbor();
+	BlockLocator GetBlockLocatorOfSouthNeighbor();
+	BlockLocator GetBlockLocatorOfEastNeighbor();
+	BlockLocator GetBlockLocatorOfWestNeighbor();
+	BlockLocator GetBlockLocatorOfAboveNeighbor();
+	BlockLocator GetBlockLocatorOfBelowNeighbor();
+
+public:
+	void MoveNorth();
+	void MoveSouth();
+	void MoveEast();
+	void MoveWest();
+	void MoveUp();
+	void MoveDown();
+
+public:
+	Chunk*			m_chunk;
+	BlockIndex		m_indexOfBlock;
 };
 
 //====================================================================================
@@ -66,5 +70,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [2/6/2019]
+// Written by Zachary Bracken : [2/18/2019]
 //====================================================================================
