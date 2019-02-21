@@ -39,5 +39,5 @@ BlockDefinition* BlockDefinition::GetDefinitionByType(BlockTypes theType)
 	}
 
 	//ERROR_AND_DIE("Could not find a definiton for the type");
-	return nullptr;
+	return GetDefinitionByType(BLOCK_TYPE_TEST);
 }

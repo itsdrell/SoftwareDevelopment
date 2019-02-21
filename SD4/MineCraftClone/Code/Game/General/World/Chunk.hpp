@@ -22,7 +22,20 @@ constexpr int AMOUNT_OF_BLOCKS_IN_CHUNK = 65536;
 //====================================================================================
 // Structs
 //====================================================================================
+struct ChunkHeader
+{
+	unsigned char	m_4cc[4]			= { 'S', 'M','C', 'D' };
+	unsigned char	m_version			= 1;
+	unsigned char	m_chunkBitsX		= CHUNK_BITS_WIDE_X;
+	unsigned char	m_chunkBitsY		= CHUNK_BITS_WIDE_Y;
+	unsigned char	m_chunkBitsZ		= CHUNK_BITS_TALL_Z;
+	unsigned char	m_reserved1			= 0;
+	unsigned char	m_reserver2			= 0;
+	unsigned char	m_reserved3			= 0;
+	unsigned char	m_format			= 'R';
 
+	bool IsValid();
+};
 
 //====================================================================================
 // Classes
@@ -36,9 +49,15 @@ public:
 	void Update();
 	void Render() const;
 
+	bool LoadFromFile();
+	void SaveToFile();
+	String GetNameOfFileFromChunkCoords(const ChunkCoords& theCoords);
+
 public:
+
 	void GenerateMyBounds();
 	void GenerateBlocks();
+	void GenerateBlocksFromFile();
 	void GenerateMesh();
 	void GenerateTestMesh();
 
@@ -70,6 +89,10 @@ public:
 	Mesh*			m_gpuMesh = nullptr; // can be null
 	Mesh*			m_debugMesh = nullptr;
 	bool			m_isGPUDirty; // so we can rebuild over multiple frames then set 
+	bool			m_hasBeenModified = false;
+
+private:
+	std::vector<unsigned char>		m_dataFromFile;
 };
 
 //====================================================================================

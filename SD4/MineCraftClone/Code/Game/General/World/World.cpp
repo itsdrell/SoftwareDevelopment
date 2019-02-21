@@ -23,6 +23,11 @@ World::World()
 	new BlockDefinition("grass", BLOCK_TYPE_GRASS, true, IntVector2(2, 0), IntVector2(3, 3), IntVector2(4, 3));
 	new BlockDefinition("snow", BLOCK_TYPE_SNOW, true, IntVector2(1, 3), IntVector2(2, 3), IntVector2(4, 3));
 	new BlockDefinition("stone", BLOCK_TYPE_STONE, true, IntVector2(7, 4), IntVector2(7, 4), IntVector2(7, 4));
+	new BlockDefinition("sand", BLOCK_TYPE_SAND, true, IntVector2(6, 1), IntVector2(6, 1), IntVector2(6, 1));
+	new BlockDefinition("dirt", BLOCK_TYPE_DIRT, true, IntVector2(4, 3), IntVector2(4, 3), IntVector2(4, 3));
+	new BlockDefinition("cobblestone", BLOCK_TYPE_COBBLESTONE, true, IntVector2(17, 3), IntVector2(17, 3), IntVector2(17, 3));
+	new BlockDefinition("bedrock", BLOCK_TYPE_BEDROCK, true, IntVector2(9, 4), IntVector2(9, 4), IntVector2(9, 4));
+
 	new BlockDefinition("test", BLOCK_TYPE_TEST, true, IntVector2(31, 31), IntVector2(31, 31), IntVector2(31, 31));
 
 	m_chunkActivationCheatSheet = new Neighborhood(ACTIVATION_RADIUS_IN_CHUNKS);
@@ -510,6 +515,7 @@ RaycastResult World::RayCast(const Vector3& start, const Vector3& forward, float
 
 		ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(currentPosition);
 		Chunk* theCurrentChunk = GetChunkFromChunkCoords(theChunkCoords);
+		if (theCurrentChunk == nullptr) { break; }
 		BlockIndex theBlocksIndex = theCurrentChunk->GetBlockIndexForWorldCoords(currentPosition);
 
 		BlockLocator blockWeJustEntered = BlockLocator(theCurrentChunk, theBlocksIndex);

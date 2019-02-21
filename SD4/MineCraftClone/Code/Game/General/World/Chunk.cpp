@@ -3,6 +3,8 @@
 #include "Engine/ThirdParty/SquirrelNoise/SmoothNoise.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "../Utils/BlockLocator.hpp"
+#include <stdio.h>
+#include "Engine/Core/Tools/DevConsole.hpp"
 
 
 //===============================================================================================
@@ -10,10 +12,17 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	: m_chunkCoords(myCoords)
 {	
 	GenerateMyBounds();
-	GenerateBlocks();
+	if (LoadFromFile())
+	{
+		GenerateBlocksFromFile();
+	}
+	else
+	{
+		GenerateBlocks();
+	}
 	GenerateTestMesh();
-	m_isGPUDirty = true;
 
+	m_isGPUDirty = true;
 	m_cpuMesh.ReserveSpace(10'000);
 }
 
@@ -41,6 +50,35 @@ void Chunk::Render() const
 	r->m_currentShader->SetCullMode(CULLMODE_NONE);
 	r->DrawMesh(m_debugMesh);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool Chunk::LoadFromFile()
+{
+	String fullPath = "Saves/" + GetNameOfFileFromChunkCoords(m_chunkCoords);
+	FILE* theFile;
+	errno_t err = fopen_s(&theFile, fullPath.c_str(), "rb");
+
+	if (theFile == NULL)
+		return false;
+
+	// read the buffer
+	int c; // note: int, not char, required to handle EOF
+	while ((c = fgetc(theFile)) != EOF) 
+	{ 
+		putchar(c);
+		m_dataFromFile.push_back((unsigned char)c);
+	}
+
+	// terminate
+	fclose(theFile);
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+String Chunk::GetNameOfFileFromChunkCoords(const ChunkCoords& theCoords)
+{
+	return Stringf("Chunk_%i,%i.chunk", theCoords.x, theCoords.y);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -117,6 +155,35 @@ void Chunk::GenerateBlocks()
 			
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::GenerateBlocksFromFile()
+{
+	ChunkHeader* theHeader = (ChunkHeader*)m_dataFromFile.data();
+
+	if (!theHeader->IsValid())
+	{
+		GenerateBlocks(); 
+		return;
+	}
+		
+	uint currentBlock = 0;
+	for (uint i = sizeof(ChunkHeader); i < m_dataFromFile.size(); i+=2)
+	{
+		unsigned char type = m_dataFromFile.at(i);
+		uint amountOfBlocks = (uint) m_dataFromFile.at(i + 1);
+
+		for (uint blockIndex = 0; blockIndex < amountOfBlocks; blockIndex++)
+		{
+			Block& theBlock = m_blocks[currentBlock];
+			theBlock.m_type = type;
+
+			currentBlock++;
+		}
+	}
+
+	m_dataFromFile.clear();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -412,4 +479,79 @@ STATIC ChunkCoords Chunk::GetChunkCoordsFromWorldPosition(const Vector3& worldPo
 	int y = (int)(floorf(worldPos.y / (float)CHUNK_SIZE_Y));
 
 	return ChunkCoords(x, y);
+}
+
+
+//===============================================================================================
+bool ChunkHeader::IsValid()
+{
+	ChunkHeader correctVersion;
+
+	if (m_4cc[0] != correctVersion.m_4cc[0])
+	{
+		DevConsole::AddConsoleDialogue("Error with m_4cc[0]");
+		return false;
+	}
+
+	if (m_4cc[2] != correctVersion.m_4cc[2])
+	{
+		DevConsole::AddConsoleDialogue("Error with m_4cc[1]");
+		return false;
+	}
+
+	if (m_4cc[3] != correctVersion.m_4cc[3])
+	{
+		DevConsole::AddConsoleDialogue("Error with m_4cc[2]");
+		return false;
+	}
+
+	if (m_version != correctVersion.m_version)
+	{
+		DevConsole::AddConsoleDialogue("Error with m_4cc[3]");
+		return false;
+	}
+
+	if (m_chunkBitsX != correctVersion.m_chunkBitsX)
+	{
+		DevConsole::AddConsoleDialogue("Error with chunkbitsX");
+		return false;
+	}
+
+	if (m_chunkBitsY != correctVersion.m_chunkBitsY)
+	{
+		DevConsole::AddConsoleDialogue("Error with chunkBitsY");
+		return false;
+	}
+
+	if (m_chunkBitsZ != correctVersion.m_chunkBitsZ)
+	{
+		DevConsole::AddConsoleDialogue("Error with chunkBitsZ");
+		return false;
+	}
+
+	if (m_reserved1 != correctVersion.m_reserved1)
+	{
+		DevConsole::AddConsoleDialogue("Error with reserved slot 1");
+		return false;
+	}
+
+	if (m_reserver2 != correctVersion.m_reserver2)
+	{
+		DevConsole::AddConsoleDialogue("Error with reserved slot 2");
+		return false;
+	}
+
+	if (m_reserved3 != correctVersion.m_reserved3)
+	{
+		DevConsole::AddConsoleDialogue("Error with reserved slot 3");
+		return false;
+	}
+
+	if (m_format != correctVersion.m_format)
+	{
+		DevConsole::AddConsoleDialogue("Error with format");
+		return false;
+	}
+
+	return true;
 }

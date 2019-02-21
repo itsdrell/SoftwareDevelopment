@@ -22,7 +22,11 @@ enum BlockTypes
 	BLOCK_TYPE_GRASS,
 	BLOCK_TYPE_STONE,
 	BLOCK_TYPE_SNOW,
-	BLOCK_TYPE_TEST
+	BLOCK_TYPE_SAND, 
+	BLOCK_TYPE_DIRT,
+	BLOCK_TYPE_COBBLESTONE,
+	BLOCK_TYPE_BEDROCK,
+	BLOCK_TYPE_TEST = 69
 };
 
 //====================================================================================
