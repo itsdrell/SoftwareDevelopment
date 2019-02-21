@@ -75,6 +75,13 @@ World::World()
 //-----------------------------------------------------------------------------------------------
 World::~World()
 {
+	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.begin();
+	for (theIterator; theIterator != m_activeChunks.end(); theIterator++)
+	{
+		delete theIterator->second;
+	}
+
+	m_activeChunks.clear();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -85,6 +92,8 @@ void World::Update()
 	FindPlayersTargetedBlock();
 	CheckKeyboardInputs();
 	CheckAndRebuildChunkMesh();
+
+	DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -243,7 +252,7 @@ void World::FindPlayersTargetedBlock()
 //-----------------------------------------------------------------------------------------------
 void World::Render() const
 {
-	Renderer* r = Renderer::GetInstance();
+	//Renderer* r = Renderer::GetInstance();
 
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
@@ -406,6 +415,8 @@ void World::CheckAndDeactivateChunk()
 
 	if (distanceSquaredForCurrent > CHUNK_DEACTIVATION_DISTANCE_SQUARED)
 	{
+		furthestChunk->LeaveYourNeighbors();
+		
 		m_activeChunks.erase(furthestChunk->m_chunkCoords);
 		
 		delete furthestChunk;
@@ -519,7 +530,7 @@ RaycastResult World::RayCast(const Vector3& start, const Vector3& forward, float
 	theResult.m_endPosition = start + (forward * maxDistance);
 
 	Vector3 stepAmount = forward * RAYCAST_STEP_SIZE;
-	int amountOfSteps = maxDistance * (1 / RAYCAST_STEP_SIZE);
+	int amountOfSteps = (int)(maxDistance * (1.f / RAYCAST_STEP_SIZE));
 
 	Vector3 currentPosition = start;
 	BlockLocator previousBlock = BlockLocator(nullptr, -1);

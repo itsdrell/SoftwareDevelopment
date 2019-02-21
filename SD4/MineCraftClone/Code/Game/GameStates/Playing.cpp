@@ -42,6 +42,9 @@ Playing::~Playing()
 	delete m_renderingPath;
 	m_renderingPath = nullptr;
 
+	delete m_world;
+	m_world = nullptr;
+
 }
 
 void Playing::StartUp()

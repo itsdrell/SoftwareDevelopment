@@ -68,6 +68,7 @@ public:
 	void AddVertsForBlock( BlockIndex theIndex );
 	bool CanRebuildItsMesh();
 	void Dirty();
+	void LeaveYourNeighbors();
 
 public:
 	BlockIndex GetBlockIndexForWorldCoords(const Vector3& worldPos);

@@ -32,6 +32,8 @@ Chunk::~Chunk()
 	if(m_gpuMesh != nullptr)
 		delete m_gpuMesh;
 
+	m_cpuMesh.Clear();
+
 	if (m_hasBeenModified)
 		SaveToFile();
 }
@@ -60,7 +62,7 @@ bool Chunk::LoadFromFile()
 {
 	String fullPath = "Saves/" + GetNameOfFileFromChunkCoords(m_chunkCoords);
 	FILE* theFile;
-	errno_t err = fopen_s(&theFile, fullPath.c_str(), "rb");
+	fopen_s(&theFile, fullPath.c_str(), "rb");
 
 	if (theFile == NULL)
 		return false;
@@ -83,7 +85,7 @@ void Chunk::SaveToFile()
 {
 	String fullPath = "Saves/" + GetNameOfFileFromChunkCoords(m_chunkCoords);
 	FILE* theFile;
-	errno_t err = fopen_s(&theFile, fullPath.c_str(), "wb");
+	fopen_s(&theFile, fullPath.c_str(), "wb");
 
 	if (theFile == NULL)
 		return;
@@ -527,6 +529,22 @@ void Chunk::Dirty()
 {
 	m_isGPUDirty = true;
 	m_hasBeenModified = true;
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::LeaveYourNeighbors()
+{
+	// set my neighbors pointers of me to null
+	if (m_eastNeighbor) {  m_eastNeighbor->m_westNeighbor = nullptr; }
+	if (m_westNeighbor) {  m_westNeighbor->m_eastNeighbor = nullptr; }
+	if (m_southNeighbor) { m_southNeighbor->m_northNeighbor = nullptr; }
+	if (m_northNeighbor) { m_northNeighbor->m_southNeighbor = nullptr; }
+
+	// make them dirty
+	if (m_eastNeighbor) {  m_eastNeighbor->m_isGPUDirty = true;	 }
+	if (m_westNeighbor) {  m_westNeighbor->m_isGPUDirty = true;	 }
+	if (m_southNeighbor) { m_southNeighbor->m_isGPUDirty = true; }
+	if (m_northNeighbor) { m_northNeighbor->m_isGPUDirty = true; }
 }
 
 //-----------------------------------------------------------------------------------------------

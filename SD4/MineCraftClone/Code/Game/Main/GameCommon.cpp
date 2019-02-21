@@ -2,6 +2,7 @@
 #include "Game/General/World/Block.hpp"
 #include "Game/General/World/BlockDefinition.hpp"
 
+#pragma warning(disable : 4239)
 
 Renderer* g_theRenderer = nullptr;
 InputSystem* g_theInput = nullptr;

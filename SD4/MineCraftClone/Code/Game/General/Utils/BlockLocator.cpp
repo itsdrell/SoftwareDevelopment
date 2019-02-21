@@ -51,6 +51,8 @@ BlockLocator BlockLocator::GetBlockLocatorOfNorthNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -69,6 +71,8 @@ BlockLocator BlockLocator::GetBlockLocatorOfSouthNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -88,6 +92,7 @@ BlockLocator BlockLocator::GetBlockLocatorOfEastNeighbor()
 		}
 	}
 
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -106,6 +111,8 @@ BlockLocator BlockLocator::GetBlockLocatorOfWestNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -123,6 +130,8 @@ BlockLocator BlockLocator::GetBlockLocatorOfAboveNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -140,6 +149,8 @@ BlockLocator BlockLocator::GetBlockLocatorOfBelowNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+
+	return BlockLocator(nullptr, -1);
 }
 
 //-----------------------------------------------------------------------------------------------
