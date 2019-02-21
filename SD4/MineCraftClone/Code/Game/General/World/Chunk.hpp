@@ -51,10 +51,10 @@ public:
 
 	bool LoadFromFile();
 	void SaveToFile();
+	void WriteHeaderToBuffer();
 	String GetNameOfFileFromChunkCoords(const ChunkCoords& theCoords);
 
 public:
-
 	void GenerateMyBounds();
 	void GenerateBlocks();
 	void GenerateBlocksFromFile();
@@ -67,6 +67,7 @@ public:
 	void SetBlockType(int blockX, int blockY, int blockZ, const String& name);
 	void AddVertsForBlock( BlockIndex theIndex );
 	bool CanRebuildItsMesh();
+	void Dirty();
 
 public:
 	BlockIndex GetBlockIndexForWorldCoords(const Vector3& worldPos);
@@ -92,7 +93,7 @@ public:
 	bool			m_hasBeenModified = false;
 
 private:
-	std::vector<unsigned char>		m_dataFromFile;
+	std::vector<unsigned char>		m_fileData;
 };
 
 //====================================================================================

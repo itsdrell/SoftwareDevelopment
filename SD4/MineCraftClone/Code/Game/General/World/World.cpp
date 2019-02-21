@@ -72,10 +72,12 @@ World::World()
 	//DebugRenderLineSegment(20.f, Vector3(0.f, 0.f, 200.f), Vector3(20.f, 0.f, 200.f), DEBUG_RENDER_IGNORE_DEPTH);
 }
 
+//-----------------------------------------------------------------------------------------------
 World::~World()
 {
 }
 
+//-----------------------------------------------------------------------------------------------
 void World::Update()
 {
 	CheckAndActivateChunk();
@@ -85,6 +87,7 @@ void World::Update()
 	CheckAndRebuildChunkMesh();
 }
 
+//-----------------------------------------------------------------------------------------------
 void World::UpdateChunks()
 {
 	std::map<ChunkCoords, Chunk*>::iterator theIterator;
@@ -94,6 +97,7 @@ void World::UpdateChunks()
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
 void World::CheckKeyboardInputs()
 {
 	if (IsDevConsoleOpen())
@@ -119,13 +123,13 @@ void World::CheckKeyboardInputs()
 			Block& theBlockWeHit = theLocator.GetBlock();
 			theBlockWeHit.m_type = BLOCK_TYPE_AIR;
 
-			m_targetBlockRaycast.m_impactBlock.m_chunk->m_isGPUDirty = true;
+			m_targetBlockRaycast.m_impactBlock.m_chunk->Dirty();
 
 			// check to dirty neighbors if edge block
-			if (theLocator.IsBlockOnEastEdge()) { theLocator.m_chunk->m_eastNeighbor->m_isGPUDirty = true;  }
-			if (theLocator.IsBlockOnWestEdge()) { theLocator.m_chunk->m_westNeighbor->m_isGPUDirty = true; }
-			if (theLocator.IsBlockOnNorthEdge()) { theLocator.m_chunk->m_northNeighbor->m_isGPUDirty = true; }
-			if (theLocator.IsBlockOnSouthEdge()) { theLocator.m_chunk->m_southNeighbor->m_isGPUDirty = true; }
+			if (theLocator.IsBlockOnEastEdge()) { theLocator.m_chunk->Dirty(); }
+			if (theLocator.IsBlockOnWestEdge()) { theLocator.m_chunk->Dirty();}
+			if (theLocator.IsBlockOnNorthEdge()) { theLocator.m_chunk->Dirty(); }
+			if (theLocator.IsBlockOnSouthEdge()) { theLocator.m_chunk->Dirty(); }
 		}
 	}
 
@@ -134,16 +138,20 @@ void World::CheckKeyboardInputs()
 		BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
 		BlockLocator nextToMeBlock = theLocator.GetBlockLocatorNextToMeFromNormal(m_targetBlockRaycast.m_impactNormal);
 
-		Block& blockToEdit = nextToMeBlock.GetBlock();
-		blockToEdit.m_type = BLOCK_TYPE_GRASS;
+		if (nextToMeBlock.IsValid())
+		{
+			Block& blockToEdit = nextToMeBlock.GetBlock();
+			blockToEdit.m_type = BLOCK_TYPE_GRASS;
 
-		nextToMeBlock.m_chunk->m_isGPUDirty = true;
+			nextToMeBlock.m_chunk->Dirty();
 
-		// check to dirty neighbors if edge block
-		if (nextToMeBlock.IsBlockOnEastEdge()) { nextToMeBlock.m_chunk->m_eastNeighbor->m_isGPUDirty = true; }
-		if (nextToMeBlock.IsBlockOnWestEdge()) { nextToMeBlock.m_chunk->m_westNeighbor->m_isGPUDirty = true; }
-		if (nextToMeBlock.IsBlockOnNorthEdge()) { nextToMeBlock.m_chunk->m_northNeighbor->m_isGPUDirty = true; }
-		if (nextToMeBlock.IsBlockOnSouthEdge()) { nextToMeBlock.m_chunk->m_southNeighbor->m_isGPUDirty = true; }
+			// check to dirty neighbors if edge block
+			if (nextToMeBlock.IsBlockOnEastEdge()) { nextToMeBlock.m_chunk->Dirty(); }
+			if (nextToMeBlock.IsBlockOnWestEdge()) { nextToMeBlock.m_chunk->Dirty(); }
+			if (nextToMeBlock.IsBlockOnNorthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
+			if (nextToMeBlock.IsBlockOnSouthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
+		}
+
 	}
 
 	DebugKeys();
@@ -166,6 +174,12 @@ void World::DebugKeys()
 
 	if (WasKeyJustPressed(G_THE_LETTER_U))
 	{
+		std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.begin();
+		for (theIterator; theIterator != m_activeChunks.end(); theIterator++)
+		{
+			delete theIterator->second;
+		}
+		
 		m_activeChunks.clear();
 	}
 

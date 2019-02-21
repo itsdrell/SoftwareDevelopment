@@ -31,6 +31,9 @@ Chunk::~Chunk()
 {
 	if(m_gpuMesh != nullptr)
 		delete m_gpuMesh;
+
+	if (m_hasBeenModified)
+		SaveToFile();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -67,12 +70,86 @@ bool Chunk::LoadFromFile()
 	while ((c = fgetc(theFile)) != EOF) 
 	{ 
 		putchar(c);
-		m_dataFromFile.push_back((unsigned char)c);
+		m_fileData.push_back((unsigned char)c);
 	}
 
 	// terminate
 	fclose(theFile);
 	return true;
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::SaveToFile()
+{
+	String fullPath = "Saves/" + GetNameOfFileFromChunkCoords(m_chunkCoords);
+	FILE* theFile;
+	errno_t err = fopen_s(&theFile, fullPath.c_str(), "wb");
+
+	if (theFile == NULL)
+		return;
+
+	m_fileData.reserve(500);
+	WriteHeaderToBuffer();
+
+	unsigned char currentBlockType = BLOCK_TYPE_TEST;
+	uint amountOfBlocks = 0;
+	for(uint i = 0; i < AMOUNT_OF_BLOCKS_IN_CHUNK; i++)
+	{
+		Block& currentBlock = m_blocks[i];
+
+		if (currentBlock.m_type != currentBlockType)
+		{
+			m_fileData.push_back(currentBlockType);
+			m_fileData.push_back((unsigned char)amountOfBlocks);
+
+			amountOfBlocks = 1;
+			currentBlockType = currentBlock.m_type;
+		}
+		else
+		{
+			amountOfBlocks++;
+
+			// need to do this before checking for next block?
+			if (amountOfBlocks == 255)
+			{
+				m_fileData.push_back(currentBlockType);
+				m_fileData.push_back((unsigned char)255);
+
+				amountOfBlocks = 0U;
+			}
+		}
+	}
+
+	// make sure to add the last part
+	m_fileData.push_back(currentBlockType);
+	m_fileData.push_back((unsigned char)amountOfBlocks);
+
+	fwrite(m_fileData.data(), sizeof(unsigned char), sizeof(unsigned char) * m_fileData.size(), theFile);
+
+	// terminate
+	fclose(theFile);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::WriteHeaderToBuffer()
+{
+	ChunkHeader theHeader;
+	
+	m_fileData.push_back(theHeader.m_4cc[0]);
+	m_fileData.push_back(theHeader.m_4cc[1]);
+	m_fileData.push_back(theHeader.m_4cc[2]);
+	m_fileData.push_back(theHeader.m_4cc[3]);
+	
+	m_fileData.push_back(theHeader.m_version);
+	m_fileData.push_back(theHeader.m_chunkBitsX);
+	m_fileData.push_back(theHeader.m_chunkBitsY);
+	m_fileData.push_back(theHeader.m_chunkBitsZ);
+
+	m_fileData.push_back(theHeader.m_reserved1);
+	m_fileData.push_back(theHeader.m_reserver2);
+	m_fileData.push_back( theHeader.m_reserved3);
+
+	m_fileData.push_back( theHeader.m_format);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -160,7 +237,7 @@ void Chunk::GenerateBlocks()
 //-----------------------------------------------------------------------------------------------
 void Chunk::GenerateBlocksFromFile()
 {
-	ChunkHeader* theHeader = (ChunkHeader*)m_dataFromFile.data();
+	ChunkHeader* theHeader = (ChunkHeader*)m_fileData.data();
 
 	if (!theHeader->IsValid())
 	{
@@ -169,10 +246,10 @@ void Chunk::GenerateBlocksFromFile()
 	}
 		
 	uint currentBlock = 0;
-	for (uint i = sizeof(ChunkHeader); i < m_dataFromFile.size(); i+=2)
+	for (uint i = sizeof(ChunkHeader); i < m_fileData.size(); i+=2)
 	{
-		unsigned char type = m_dataFromFile.at(i);
-		uint amountOfBlocks = (uint) m_dataFromFile.at(i + 1);
+		unsigned char type = m_fileData.at(i);
+		uint amountOfBlocks = (uint) m_fileData.at(i + 1);
 
 		for (uint blockIndex = 0; blockIndex < amountOfBlocks; blockIndex++)
 		{
@@ -183,7 +260,7 @@ void Chunk::GenerateBlocksFromFile()
 		}
 	}
 
-	m_dataFromFile.clear();
+	m_fileData.clear();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -443,6 +520,13 @@ bool Chunk::CanRebuildItsMesh()
 		&& m_southNeighbor != nullptr
 		&& m_eastNeighbor != nullptr 
 		&& m_westNeighbor != nullptr);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::Dirty()
+{
+	m_isGPUDirty = true;
+	m_hasBeenModified = true;
 }
 
 //-----------------------------------------------------------------------------------------------
