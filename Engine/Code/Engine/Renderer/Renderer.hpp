@@ -75,7 +75,7 @@ public:
 	void HighlightPoint(const Vector3& position, float theScale = .1f, Rgba theColor = Rgba::WHITE);
 	void DrawLine2D(Vector2 startPoint, Vector2 endPoint, Rgba theColor = Rgba::WHITE);
 	void DrawLines2D(Vector2* arrayPointer, int numberOfSides, Rgba theColor = Rgba::WHITE);
-	void DrawLine3D(const Vector3& startPoint, const Vector3& endPoint, Rgba theColor = Rgba::WHITE);
+	void DrawLine3D(const Vector3& startPoint, const Vector3& endPoint, float lineThickness = 1.f, Rgba theColor = Rgba::WHITE);
 	void DrawPolygon(Vector2 position, float radius, int numberOfSides, float startingRotation, Rgba theColor = Rgba::WHITE);
 	void DrawCircle(Vector2 position, float radius, Rgba theColor = Rgba::WHITE);
 	void DrawCircleFilled(Vector2 position, float radius, Rgba fillColor = Rgba::WHITE);
@@ -83,7 +83,7 @@ public:
 	void DrawDottedCircle(Disc2 theDisc, Rgba theColor = Rgba::WHITE);
 	void DrawAABB2(const AABB2& bounds,const Rgba& color, bool filled = true);
 	void DrawAABB2Blended( const AABB2& bounds );
-	void DrawBasis(const Matrix44& basis, float lengthOfLine);
+	void DrawBasis(const Matrix44& basis, float lengthOfLine, float lineThickness = 1.f);
 	
 	//void DrawAABB3(const AABB3& bounds, Rgba theColor = Rgba::WHITE, bool wireFramed = false);
 	//void DrawQuad(const Vector3& position, AABB2& bounds, Rgba theColor = Rgba::WHITE, Texture* theTexture = nullptr, Vector3 right = Vector3::RIGHT, Vector3 up = Vector3::UP);
@@ -98,8 +98,8 @@ public:
 		Rect uv_side = Rect::ZERO_TO_ONE, 
 		Rect uv_bottom = Rect::ZERO_TO_ONE );
 
-	void DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, const Rgba& color = Rgba::WHITE);
-	void DrawWireFramedPlane(const Vector3& center, float width = 1.f, float height = 1.f, const Vector3& right = Vector3::RIGHT, const Vector3& up = Vector3::UP, const Rgba& color = Rgba::WHITE);
+	void DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, float lineThickness = 1.f, const Rgba& color = Rgba::WHITE);
+	void DrawWireFramedPlane(const Vector3& center, float width = 1.f, float height = 1.f, float lineThickness = 1.f, const Vector3& right = Vector3::RIGHT, const Vector3& up = Vector3::UP, const Rgba& color = Rgba::WHITE);
 
 	// Texture stuff
 	Texture* CreateOrGetTexture(std::string path, bool flip = true); 

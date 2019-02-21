@@ -347,11 +347,11 @@ void Renderer::HighlightPoint(const Vector3& position, float theScale, Rgba theC
 	Vector3 sw = position + ((Vector3::DOWN + Vector3::LEFT) * scale);
 
 
-	DrawLine3D(north , south , theColor);
-	DrawLine3D(east , west , theColor);
-	DrawLine3D(ne , sw , theColor);
-	DrawLine3D(nw , se , theColor);
-	DrawLine3D(forward , backward , theColor);
+	DrawLine3D(north , south , 1.f, theColor);
+	DrawLine3D(east , west , 1.f, theColor);
+	DrawLine3D(ne , sw , 1.f, theColor);
+	DrawLine3D(nw , se , 1.f, theColor);
+	DrawLine3D(forward , backward , 1.f, theColor);
 }
 
 void Renderer::DrawLine2D(Vector2 startPoint, Vector2 endPoint, Rgba theColor)
@@ -390,10 +390,11 @@ void Renderer::DrawLines2D(Vector2* arrayPointer, int numberOfSides, Rgba theCol
 
 }
 
-void Renderer::DrawLine3D(const Vector3& startPoint, const Vector3& endPoint, Rgba theColor /*= Rgba::WHITE*/)
+void Renderer::DrawLine3D(const Vector3& startPoint, const Vector3& endPoint, float lineThickness, Rgba theColor /*= Rgba::WHITE*/)
 {
-
 	m_currentTexture = m_defaultTexture;
+	
+	glLineWidth(lineThickness);
 
 	// Create the array
 	Vertex3D_PCU vertices [2];
@@ -887,7 +888,7 @@ void Renderer::DrawAABB2Blended(const AABB2& bounds)
 
 }
 
-void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
+void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine, float lineThickness)
 {
 	m_currentTexture = m_defaultTexture;
 	
@@ -908,9 +909,9 @@ void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine)
 	//Vector3 z = position + (basis.GetForward() * lengthOfLine);
 	BindRenderState(m_currentShader->m_state);
 
-	DrawLine3D(position, x, Rgba::RED);
-	DrawLine3D(position, y, Rgba::YELLOW);
-	DrawLine3D(position, z, Rgba::BLUE);
+	DrawLine3D(position, x, lineThickness,  Rgba::RED);
+	DrawLine3D(position, y, lineThickness, Rgba::YELLOW);
+	DrawLine3D(position, z, lineThickness, Rgba::BLUE);
 }
 
 void Renderer::DrawCube(Vector3 const &center, Vector3 const &dimensions, Texture* textureToUse, Rgba const &color /*= Rgba::WHITE*/, Rect uv_top /*= Rect::ZERO_TO_ONE*/, Rect uv_side /*= Rect::ZERO_TO_ONE*/, Rect uv_bottom /*= Rect::ZERO_TO_ONE */)
@@ -986,39 +987,37 @@ void Renderer::DrawCube(Vector3 const &center, Vector3 const &dimensions, Textur
 }
 
 //-----------------------------------------------------------------------------------------------
-void Renderer::DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, const Rgba& color /*= Rgba::WHITE*/)
+void Renderer::DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, float lineThickness, const Rgba& color /*= Rgba::WHITE*/)
 {
 	EnableWireframe(true);
+	glLineWidth(lineThickness);
 	DrawCube(center, dimensions, m_defaultTexture, color);
 	EnableWireframe(false);
 }
 
 //-----------------------------------------------------------------------------------------------
-void Renderer::DrawWireFramedPlane(const Vector3& center, float width, float height, const Vector3& right, const Vector3& up, const Rgba& color /*= Rgba::WHITE*/)
+void Renderer::DrawWireFramedPlane(const Vector3& center, float width, float height, float lineThickness, const Vector3& right, const Vector3& up, const Rgba& color /*= Rgba::WHITE*/)
 {
 	glEnable(GL_BLEND);												GL_CHECK_ERROR();
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
-	EnableWireframe(true);
+
 	m_currentTexture = m_defaultTexture;
 
 	Vector3 r = (right * width) * .5f;
 	Vector3 u = (up * height) *.5f;
 
-	// Could use rect but for now hard coding it
-	Vertex3D_PCU vertices[] = {
-
-		// first rectangle
-		Vertex3D_PCU(Vector3(center + -r + -u ),	color,	Vector2(0.f, 0.f)),			// bl
-		Vertex3D_PCU(Vector3(center + r + -u ),	color,	Vector2(1.f, 0.f)),			// br
-		Vertex3D_PCU(Vector3(center + r +  u ),	color,	Vector2(1.f, 1.f)),			// tr
-		Vertex3D_PCU(Vector3(center + r +  u ),	color,	Vector2(1.f, 1.f)),			// tr
-		Vertex3D_PCU(Vector3(center + -r +  u ),	color,	Vector2(0.f, 1.f)),			// tl
-		Vertex3D_PCU(Vector3(center + -r + -u ),	color,	Vector2(0.f, 0.f)),			// bl
-
+	Vector3 points[4]
+	{
+		Vector3(center + -r + -u),
+		Vector3(center + r + -u),
+		Vector3(center + r + u),
+		Vector3(center + -r + u)
 	};
-
-	DrawMeshImmediate(vertices, 6, PRIMITIVE_TRIANGLES);
-	EnableWireframe(false);
+	
+	DrawLine3D(points[0], points[1], lineThickness, color);
+	DrawLine3D(points[1], points[2], lineThickness, color);
+	DrawLine3D(points[2], points[3], lineThickness, color);
+	DrawLine3D(points[3], points[0], lineThickness, color);
 }
 
 // FONT STUFF

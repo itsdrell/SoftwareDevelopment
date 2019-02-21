@@ -143,6 +143,19 @@ BlockLocator BlockLocator::GetBlockLocatorOfBelowNeighbor()
 }
 
 //-----------------------------------------------------------------------------------------------
+BlockLocator BlockLocator::GetBlockLocatorNextToMeFromNormal(const Vector3& theNormal)
+{
+	if (theNormal.x == 1) { return	GetBlockLocatorOfEastNeighbor(); }
+	if (theNormal.x == -1) { return GetBlockLocatorOfWestNeighbor(); }
+	if (theNormal.y == 1) { return GetBlockLocatorOfNorthNeighbor(); }
+	if (theNormal.y == -1) { return GetBlockLocatorOfSouthNeighbor(); }
+	if (theNormal.z == 1) { return GetBlockLocatorOfAboveNeighbor(); }
+	if (theNormal.z == -1) { return GetBlockLocatorOfBelowNeighbor(); }
+
+	return BlockLocator(nullptr, -1);
+}
+
+//-----------------------------------------------------------------------------------------------
 Vector3 BlockLocator::GetCenterOfBlock() const
 {
 	if (m_chunk == nullptr)
@@ -158,6 +171,42 @@ Vector3 BlockLocator::GetCenterOfBlock() const
 	Vector3 center = worldPos + Vector3(.5f);
 
 	return center;
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnEastEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_X_MASK) == CHUNK_X_MASK);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnWestEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_X_MASK) == 0);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnNorthEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_Y_MASK) == CHUNK_Y_MASK);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnSouthEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_Y_MASK) == 0);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnTopEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_Z_MASK) == (CHUNK_HEIGHT - 1));
+}
+
+//-----------------------------------------------------------------------------------------------
+bool BlockLocator::IsBlockOnBottomEdge() const
+{
+	return ((m_indexOfBlock & CHUNK_Z_MASK) == 0);
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -110,18 +110,35 @@ void World::CheckKeyboardInputs()
 	{
 		if (m_targetBlockRaycast.DidImpact())
 		{
-			Block theBlockWeHit = m_targetBlockRaycast.m_impactBlock.GetBlock();
+			BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
+			Block& theBlockWeHit = theLocator.GetBlock();
 			theBlockWeHit.m_type = BLOCK_TYPE_AIR;
 
 			m_targetBlockRaycast.m_impactBlock.m_chunk->m_isGPUDirty = true;
 
 			// check to dirty neighbors if edge block
+			if (theLocator.IsBlockOnEastEdge()) { theLocator.m_chunk->m_eastNeighbor->m_isGPUDirty = true;  }
+			if (theLocator.IsBlockOnWestEdge()) { theLocator.m_chunk->m_westNeighbor->m_isGPUDirty = true; }
+			if (theLocator.IsBlockOnNorthEdge()) { theLocator.m_chunk->m_northNeighbor->m_isGPUDirty = true; }
+			if (theLocator.IsBlockOnSouthEdge()) { theLocator.m_chunk->m_southNeighbor->m_isGPUDirty = true; }
 		}
 	}
 
 	if (WasMouseButtonJustPressed(RIGHT_MOUSE_BUTTON))
 	{
-		
+		BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
+		BlockLocator nextToMeBlock = theLocator.GetBlockLocatorNextToMeFromNormal(m_targetBlockRaycast.m_impactNormal);
+
+		Block& blockToEdit = nextToMeBlock.GetBlock();
+		blockToEdit.m_type = BLOCK_TYPE_GRASS;
+
+		nextToMeBlock.m_chunk->m_isGPUDirty = true;
+
+		// check to dirty neighbors if edge block
+		if (nextToMeBlock.IsBlockOnEastEdge()) { nextToMeBlock.m_chunk->m_eastNeighbor->m_isGPUDirty = true; }
+		if (nextToMeBlock.IsBlockOnWestEdge()) { nextToMeBlock.m_chunk->m_westNeighbor->m_isGPUDirty = true; }
+		if (nextToMeBlock.IsBlockOnNorthEdge()) { nextToMeBlock.m_chunk->m_northNeighbor->m_isGPUDirty = true; }
+		if (nextToMeBlock.IsBlockOnSouthEdge()) { nextToMeBlock.m_chunk->m_southNeighbor->m_isGPUDirty = true; }
 	}
 
 	DebugKeys();
@@ -221,7 +238,6 @@ void World::Render() const
 	RenderSkyBox();
 
 	RenderChunks();
-	//r->DrawMesh(m_testChunk->m_gpuMesh);
 	RenderBasis();
 	RenderTargetBlock();
 	RenderTargettedBlockRaycast();
@@ -300,12 +316,12 @@ void World::RenderTargettedBlockRaycast() const
 
 		if (m_targetBlockRaycast.DidImpact())
 		{
-			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, Rgba::GREEN);
+			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, 3.f, Rgba::GREEN);
 			r->HighlightPoint(m_targetBlockRaycast.m_impactPosition, .1f, Rgba::MAGENTA);
 		}
 		else
 		{
-			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, Rgba::RED);
+			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, 3.f, Rgba::RED);
 		}
 	}
 }
@@ -319,7 +335,7 @@ void World::RenderTargetBlock() const
 
 		Vector3 centerPos = m_targetBlockRaycast.m_impactBlock.GetCenterOfBlock();
 
-		r->DrawWireFramedCube(centerPos, Vector3(.51f), Rgba::RED);
+		r->DrawWireFramedCube(centerPos, Vector3(.51f), 2.5f, Rgba::RED);
 
 		Vector3 normal = m_targetBlockRaycast.m_impactNormal;
 		normal.Normalize();
@@ -327,12 +343,12 @@ void World::RenderTargetBlock() const
 		if (normal == Vector3::UP || normal == Vector3::DOWN)
 		{
 			Vector3 right = Cross(m_targetBlockRaycast.m_impactNormal, Vector3(1.f, 0.f, 0.f));
-			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, right, Vector3(1.f, 0.f, 0.f), Rgba::BLUE);
+			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, 3.f, right, Vector3(1.f, 0.f, 0.f), Rgba::BLUE);
 		}
 		else
 		{
 			Vector3 right = Cross(m_targetBlockRaycast.m_impactNormal, Vector3(0.f, 0.f, 1.f));
-			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, right, Vector3(0.f, 0.f, 1.f), Rgba::BLUE);
+			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, 3.f, right, Vector3(0.f, 0.f, 1.f), Rgba::BLUE);
 		}
 	}
 }

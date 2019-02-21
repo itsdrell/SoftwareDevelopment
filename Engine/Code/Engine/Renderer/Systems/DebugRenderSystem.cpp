@@ -126,7 +126,7 @@ void DebugRenderTask::Render() const
 		//r->HighlightPoint(m_options.position1,.1f,Rgba::BLUE);
 		break;
 	case RENDER_LINE_SEGMENT: // 3d line basically
-		r->DrawLine3D(m_options.position0, m_options.position1, currentColor);
+		r->DrawLine3D(m_options.position0, m_options.position1, 1.f, currentColor);
 		break;
 	case RENDER_POINT:
 		r->HighlightPoint(m_options.position, m_options.scale, currentColor);
@@ -193,7 +193,7 @@ void DebugRenderTask::RenderGrid() const
 	Vector3 rowEndPoint =  Vector3(center.x - (rows * .5f), center.y, center.z + (columns * .5f));
 	for(uint h = 0; h <= rows; h++)
 	{
-		r->DrawLine3D(rowStartPoint, rowEndPoint, m_options.start_color);
+		r->DrawLine3D(rowStartPoint, rowEndPoint, 1.f, m_options.start_color);
 
 		// Increase the Z
 		rowStartPoint -= Vector3(0.f,0.f,cellSize);
@@ -205,7 +205,7 @@ void DebugRenderTask::RenderGrid() const
 	Vector3 collEndPoint = Vector3(center.x + (rows * .5f), center.y, center.z - (columns * .5f));
 	for(uint c = 0; c <= columns; c++)
 	{
-		r->DrawLine3D(collStartPoint, collEndPoint, m_options.start_color);
+		r->DrawLine3D(collStartPoint, collEndPoint,1.f, m_options.start_color);
 
 		// Increase the Z
 		collStartPoint -= Vector3(cellSize,0.f,0.f);

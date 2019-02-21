@@ -46,7 +46,17 @@ public:
 	BlockLocator GetBlockLocatorOfAboveNeighbor();
 	BlockLocator GetBlockLocatorOfBelowNeighbor();
 
+	BlockLocator GetBlockLocatorNextToMeFromNormal(const Vector3& theNormal);
+
 	Vector3 GetCenterOfBlock() const;
+
+public:
+	bool IsBlockOnEastEdge() const;
+	bool IsBlockOnWestEdge() const;
+	bool IsBlockOnNorthEdge() const;
+	bool IsBlockOnSouthEdge() const;
+	bool IsBlockOnTopEdge() const;
+	bool IsBlockOnBottomEdge() const;
 
 public:
 	void MoveNorth();
