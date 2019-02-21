@@ -1,6 +1,7 @@
 #pragma once
 #include "Game/Main/GameCommon.hpp"
 #include <map>
+#include "../Utils/BlockLocator.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -25,7 +26,20 @@ class Neighborhood;
 //====================================================================================
 // Structs
 //====================================================================================
+struct RaycastResult
+{
+	Vector3			m_startPos			= Vector3::ZERO;
+	Vector3			m_direction			= Vector3::ZERO;
+	float			m_maxDistance		= 0.f;
+	Vector3			m_endPosition		= Vector3::ZERO;
+	Vector3			m_impactPosition	= 0.f;
+	float			m_impactFraction	= 0.f;
+	float			m_impactDistance	= 0.f;
+	BlockLocator	m_impactBlock		= BlockLocator(nullptr, -1);
+	Vector3			m_impactNormal		= Vector3::ZERO;
 
+	bool DidImpact() const { return m_impactFraction < 1.f; }
+};
 
 //====================================================================================
 // Classes
@@ -42,11 +56,14 @@ public:
 	void CheckKeyboardInputs();
 	void DebugKeys();
 	void UpdateCamera();
+	void FindPlayersTargetedBlock();
 
 	void Render() const;
 	void RenderChunks() const;
 	void RenderSkyBox() const;
 	void RenderBasis() const;
+	void RenderTargettedBlockRaycast() const;
+	void RenderTargetBlock() const;
 
 public:
 	void CheckAndActivateChunk();
@@ -56,6 +73,9 @@ public:
 	bool IsChunkActivated(const ChunkCoords& theCoords);
 	Chunk* GetFarthestChunkFromPlayer(const Vector2& playerWorldPos);
 	Chunk* GetChunkFromChunkCoords( const ChunkCoords& theCoords );
+
+public:
+	RaycastResult RayCast(const Vector3& start, const Vector3& forward, float maxDistance);
 
 
 public:
@@ -70,6 +90,9 @@ public:
 	Mesh*					m_skyMesh = nullptr;
 
 	Neighborhood*			m_chunkActivationCheatSheet = nullptr;
+	
+	bool					m_showTargettedBlockRaycast = false;
+	RaycastResult			m_targetBlockRaycast;
 
 };
 

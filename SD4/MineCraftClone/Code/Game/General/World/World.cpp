@@ -10,6 +10,7 @@
 #include "Engine/Core/Tools/Clock.hpp"
 #include "Game/General/Utils/Neighborhood.hpp"
 #include <xtgmath.h>
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 //===============================================================================================
 World::World()
@@ -56,10 +57,14 @@ World::World()
 	m_camera->SetDepthStencilTarget(g_theRenderer->m_defaultDepthTarget);
 	m_camera->LookAt(Vector3::ZERO, Vector3(0.f, 0.f, -10.f));
 	g_theRenderer->SetCamera();
+	DebugRenderSet3DCamera(m_camera);
 
 	m_gameCamera = new GameCamera();
 	m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
 	m_gameCamera->pitchDegreesAboutY = 89.f;
+
+	//DebugRenderLog(1.f, "World Created!");
+	//DebugRenderLineSegment(20.f, Vector3(0.f, 0.f, 200.f), Vector3(20.f, 0.f, 200.f), DEBUG_RENDER_IGNORE_DEPTH);
 }
 
 World::~World()
@@ -70,6 +75,7 @@ void World::Update()
 {
 	CheckAndActivateChunk();
 	CheckAndDeactivateChunk();
+	FindPlayersTargetedBlock();
 	CheckKeyboardInputs();
 	CheckAndRebuildChunkMesh();
 }
@@ -100,6 +106,24 @@ void World::CheckKeyboardInputs()
 		m_cameraSpeed = ClampFloat(m_cameraSpeed, 10.f, 1000.f);
 	}
 
+	if (WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
+	{
+		if (m_targetBlockRaycast.DidImpact())
+		{
+			Block theBlockWeHit = m_targetBlockRaycast.m_impactBlock.GetBlock();
+			theBlockWeHit.m_type = BLOCK_TYPE_AIR;
+
+			m_targetBlockRaycast.m_impactBlock.m_chunk->m_isGPUDirty = true;
+
+			// check to dirty neighbors if edge block
+		}
+	}
+
+	if (WasMouseButtonJustPressed(RIGHT_MOUSE_BUTTON))
+	{
+		
+	}
+
 	DebugKeys();
 
 	// do this last cause it'll move the mouse 
@@ -121,6 +145,16 @@ void World::DebugKeys()
 	if (WasKeyJustPressed(G_THE_LETTER_U))
 	{
 		m_activeChunks.clear();
+	}
+
+	if (WasKeyJustPressed(G_THE_LETTER_L))
+	{
+		m_showTargettedBlockRaycast = !m_showTargettedBlockRaycast;
+
+		if(m_showTargettedBlockRaycast)
+			DebugRenderLog(1.f, "Switched to showing targetted raycast block");
+		else
+			DebugRenderLog(1.f, "Switched to hiding raycast show (and recalculating)");
 	}
 
 }
@@ -162,9 +196,18 @@ void World::UpdateCamera()
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::FindPlayersTargetedBlock()
+{
+	if (!m_showTargettedBlockRaycast)
+	{
+		m_targetBlockRaycast = RayCast(m_gameCamera->pos, m_camera->GetForward(), 8.f);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::Render() const
 {
-	//Renderer* r = Renderer::GetInstance();
+	Renderer* r = Renderer::GetInstance();
 
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
@@ -179,8 +222,9 @@ void World::Render() const
 
 	RenderChunks();
 	//r->DrawMesh(m_testChunk->m_gpuMesh);
-
 	RenderBasis();
+	RenderTargetBlock();
+	RenderTargettedBlockRaycast();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -245,6 +289,52 @@ void World::RenderBasis() const
 	// clean up for dev console
 	//r->SetShader();
 	r->BindRenderState(Shader::CreateOrGetShader("default")->m_state);
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::RenderTargettedBlockRaycast() const
+{
+	if (m_showTargettedBlockRaycast)
+	{
+		Renderer* r = Renderer::GetInstance();
+
+		if (m_targetBlockRaycast.DidImpact())
+		{
+			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, Rgba::GREEN);
+			r->HighlightPoint(m_targetBlockRaycast.m_impactPosition, .1f, Rgba::MAGENTA);
+		}
+		else
+		{
+			r->DrawLine3D(m_targetBlockRaycast.m_startPos, m_targetBlockRaycast.m_endPosition, Rgba::RED);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::RenderTargetBlock() const
+{
+	if (m_targetBlockRaycast.DidImpact() && m_targetBlockRaycast.m_impactBlock.m_chunk != nullptr)
+	{
+		Renderer* r = Renderer::GetInstance();
+
+		Vector3 centerPos = m_targetBlockRaycast.m_impactBlock.GetCenterOfBlock();
+
+		r->DrawWireFramedCube(centerPos, Vector3(.51f), Rgba::RED);
+
+		Vector3 normal = m_targetBlockRaycast.m_impactNormal;
+		normal.Normalize();
+
+		if (normal == Vector3::UP || normal == Vector3::DOWN)
+		{
+			Vector3 right = Cross(m_targetBlockRaycast.m_impactNormal, Vector3(1.f, 0.f, 0.f));
+			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, right, Vector3(1.f, 0.f, 0.f), Rgba::BLUE);
+		}
+		else
+		{
+			Vector3 right = Cross(m_targetBlockRaycast.m_impactNormal, Vector3(0.f, 0.f, 1.f));
+			r->DrawWireFramedPlane(centerPos + (m_targetBlockRaycast.m_impactNormal * .52f), 1.f, 1.f, right, Vector3(0.f, 0.f, 1.f), Rgba::BLUE);
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -382,4 +472,56 @@ Chunk* World::GetChunkFromChunkCoords(const ChunkCoords& theCoords)
 		return nullptr;
 
 	return theIterator->second;
+}
+
+//-----------------------------------------------------------------------------------------------
+RaycastResult World::RayCast(const Vector3& start, const Vector3& forward, float maxDistance)
+{
+	RaycastResult theResult;
+	theResult.m_startPos = start;
+	theResult.m_direction = forward;
+	theResult.m_maxDistance = maxDistance;
+	theResult.m_endPosition = start + (forward * maxDistance);
+
+	Vector3 stepAmount = forward * RAYCAST_STEP_SIZE;
+	int amountOfSteps = maxDistance * (1 / RAYCAST_STEP_SIZE);
+
+	Vector3 currentPosition = start;
+	BlockLocator previousBlock = BlockLocator(nullptr, -1);
+	for(int i = 0; i < amountOfSteps; i++)
+	{
+		currentPosition += stepAmount;
+
+		ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(currentPosition);
+		Chunk* theCurrentChunk = GetChunkFromChunkCoords(theChunkCoords);
+		BlockIndex theBlocksIndex = theCurrentChunk->GetBlockIndexForWorldCoords(currentPosition);
+
+		BlockLocator blockWeJustEntered = BlockLocator(theCurrentChunk, theBlocksIndex);
+
+		// we hit something solid!
+		if (blockWeJustEntered.IsFullyOpaque())
+		{
+			theResult.m_impactBlock = blockWeJustEntered;
+			theResult.m_impactPosition = currentPosition;
+
+			theResult.m_impactDistance = (maxDistance / (float)amountOfSteps);
+			theResult.m_impactFraction = (float)i / (float)amountOfSteps;
+
+			BlockCoords prev = Chunk::GetBlockCoordsForBlockIndex(previousBlock.m_indexOfBlock);
+			BlockCoords currentBlockCoords = Chunk::GetBlockCoordsForBlockIndex(theBlocksIndex);
+
+			Vector3 prevBlockPos = previousBlock.GetCenterOfBlock();
+			Vector3 currentBlockPos = blockWeJustEntered.GetCenterOfBlock();
+			Vector3 theNormal = prevBlockPos - currentBlockPos;
+			theResult.m_impactNormal = theNormal;
+
+			return theResult;
+		}
+
+		previousBlock = blockWeJustEntered;
+	}
+	
+	// we didn't hit anything
+	theResult.m_impactFraction = 1.f;
+	return theResult;
 }

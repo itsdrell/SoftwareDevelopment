@@ -24,7 +24,7 @@ public:
 	Vector2 xy() const;
 	Vector2 xz() const;
 	
-	std::string ToString();
+	std::string ToString() const;
 
 	// Vector3 specific
 	const Vector3 operator+( const Vector3& vecToAdd ) const;		// vec3 + vec3

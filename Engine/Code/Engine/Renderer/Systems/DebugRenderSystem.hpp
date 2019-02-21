@@ -50,34 +50,34 @@ struct DebugRenderOptions
 
 
 	// Shared
-	Rgba start_color; 
-	Rgba end_color; 
-	float lifetime; 
-	DebugRenderMode mode; 
+	Rgba				start_color = Rgba::WHITE;
+	Rgba				end_color = Rgba::WHITE;
+	float				lifetime = 0.f;
+	DebugRenderMode		mode = DEBUG_RENDER_IGNORE_DEPTH; 
 
-	Texture* texture;
-	Mesh*	mesh;
+	Texture*			texture = nullptr;
+	Mesh*				mesh = nullptr;
 
 	// Specific
-	AABB2	twoDBounds;
-	Vector3 position;
+	AABB2				twoDBounds;
+	Vector3				position = Vector3::ZERO;
 
-	Vector3 position0;
-	Vector3 position1;
+	Vector3				position0 = Vector3::ZERO;
+	Vector3				position1 = Vector3::ZERO;
 
 	// TEXT
-	Vector2 position2D;
-	std::string text;
-	float scale;
-	float cellHeight;
-	Vector2 alignment;
+	Vector2				position2D = Vector2(0.f);
+	std::string			text = "error";
+	float				scale = 1.f;
+	float				cellHeight = 1.f;
+	Vector2				alignment = Vector2(0.f);
 
 	// GRID
-	float rows;
-	float columns;
-	float cellSize;
+	float				rows = 0.f;
+	float				columns = 0.f;
+	float				cellSize = 0.f;
 
-	Matrix44 basis;
+	Matrix44			basis = Matrix44();
 }; 
 
 /************************************************************************/
@@ -107,10 +107,10 @@ public:
 	void CheckForWireframe() const;
 
 public:
-	float					m_timeToLive; // could be a stop watch
-	bool					m_isDead;
+	float					m_timeToLive = 0.f; // could be a stop watch
+	bool					m_isDead = false;
 	DebugRenderOptions		m_options;
-	DebugFunctions			m_function;
+	DebugFunctions			m_function = RENDER_2D_QUAD;
 
 };
 

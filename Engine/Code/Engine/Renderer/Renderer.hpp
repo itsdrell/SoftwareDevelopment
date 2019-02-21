@@ -98,6 +98,9 @@ public:
 		Rect uv_side = Rect::ZERO_TO_ONE, 
 		Rect uv_bottom = Rect::ZERO_TO_ONE );
 
+	void DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, const Rgba& color = Rgba::WHITE);
+	void DrawWireFramedPlane(const Vector3& center, float width = 1.f, float height = 1.f, const Vector3& right = Vector3::RIGHT, const Vector3& up = Vector3::UP, const Rgba& color = Rgba::WHITE);
+
 	// Texture stuff
 	Texture* CreateOrGetTexture(std::string path, bool flip = true); 
 	Texture* CreateTextureFromImagePath(std::string path);
@@ -223,7 +226,8 @@ public:
 	Camera*	m_defaultUICamera = nullptr;
 	Camera* m_currentCamera = nullptr;
 	Camera*	m_effectCamera = nullptr;
-	Camera*	m_debugCamera = nullptr;
+	Camera*	m_debugCamera3D = nullptr;
+	Camera* m_debugCamera2D = nullptr;
 	
 	// Containers
 	std::vector<Texture*>					m_listOfTextures;

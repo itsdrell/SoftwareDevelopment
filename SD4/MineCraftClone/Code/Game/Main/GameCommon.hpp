@@ -38,6 +38,8 @@ constexpr float CHUNK_ACTIVATION_DISTANCE_SQUARED = CHUNK_ACTIVATION_DISTANCE * 
 constexpr float CHUNK_DEACTIVATION_DISTANCE = CHUNK_ACTIVATION_DISTANCE + CHUNK_SIZE_X; // one chunk bigger than activation
 constexpr float CHUNK_DEACTIVATION_DISTANCE_SQUARED = CHUNK_DEACTIVATION_DISTANCE * CHUNK_DEACTIVATION_DISTANCE;
 
+constexpr float RAYCAST_STEP_SIZE = .05f;
+
 //====================================================================================
 // ENUMS
 //====================================================================================

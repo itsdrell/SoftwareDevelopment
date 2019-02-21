@@ -160,7 +160,7 @@ Vector2 Vector3::xz() const
 	return result;
 }
 
-std::string Vector3::ToString()
+std::string Vector3::ToString() const
 {
 	std::string result = Stringf("(%g, %g, %g)", x , y, z);
 
@@ -282,9 +282,9 @@ IntVector3 Vector3::GetAsIntVector3() const
 {
 	IntVector3 result;
 
-	result.x = (int)x;
-	result.y = (int)y;
-	result.z = (int)z;
+	result.x = (int)(floorf(x));
+	result.y = (int)(floorf(y));
+	result.z = (int)(floorf(z));
 
 	return result;
 }

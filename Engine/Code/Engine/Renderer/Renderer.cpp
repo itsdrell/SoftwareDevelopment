@@ -195,10 +195,11 @@ void Renderer::PostStartup()
 	m_effectCamera->SetDepthStencilTarget(m_defaultDepthTarget);
 
 	// Debug Camera
-	//m_debugCamera = new Camera();
-	//m_debugCamera->SetColorTarget(m_defaultColorTarget);
-	//m_debugCamera->SetDepthStencilTarget(m_defaultDepthTarget);
-	m_debugCamera = nullptr; // this is just a pointer to the camera we want to use
+	m_debugCamera2D = new Camera();
+	m_debugCamera2D->SetColorTarget(m_defaultColorTarget);
+	m_debugCamera2D->SetDepthStencilTarget(m_defaultDepthTarget);
+
+	m_debugCamera3D = nullptr; // this is just a pointer to the camera we want to use
 
 
 	// Call Debug Startup
@@ -982,6 +983,42 @@ void Renderer::DrawCube(Vector3 const &center, Vector3 const &dimensions, Textur
 	
 	DrawMeshImmediate(vertices,36,PRIMITIVE_TRIANGLES);
 		
+}
+
+//-----------------------------------------------------------------------------------------------
+void Renderer::DrawWireFramedCube(const Vector3& center, const Vector3& dimensions, const Rgba& color /*= Rgba::WHITE*/)
+{
+	EnableWireframe(true);
+	DrawCube(center, dimensions, m_defaultTexture, color);
+	EnableWireframe(false);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Renderer::DrawWireFramedPlane(const Vector3& center, float width, float height, const Vector3& right, const Vector3& up, const Rgba& color /*= Rgba::WHITE*/)
+{
+	glEnable(GL_BLEND);												GL_CHECK_ERROR();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);				GL_CHECK_ERROR();
+	EnableWireframe(true);
+	m_currentTexture = m_defaultTexture;
+
+	Vector3 r = (right * width) * .5f;
+	Vector3 u = (up * height) *.5f;
+
+	// Could use rect but for now hard coding it
+	Vertex3D_PCU vertices[] = {
+
+		// first rectangle
+		Vertex3D_PCU(Vector3(center + -r + -u ),	color,	Vector2(0.f, 0.f)),			// bl
+		Vertex3D_PCU(Vector3(center + r + -u ),	color,	Vector2(1.f, 0.f)),			// br
+		Vertex3D_PCU(Vector3(center + r +  u ),	color,	Vector2(1.f, 1.f)),			// tr
+		Vertex3D_PCU(Vector3(center + r +  u ),	color,	Vector2(1.f, 1.f)),			// tr
+		Vertex3D_PCU(Vector3(center + -r +  u ),	color,	Vector2(0.f, 1.f)),			// tl
+		Vertex3D_PCU(Vector3(center + -r + -u ),	color,	Vector2(0.f, 0.f)),			// bl
+
+	};
+
+	DrawMeshImmediate(vertices, 6, PRIMITIVE_TRIANGLES);
+	EnableWireframe(false);
 }
 
 // FONT STUFF

@@ -17,6 +17,7 @@
 #include "Engine/Core/General/BytePacker.hpp"
 #include "Engine/Core/Tools/RemoteCommandService.hpp"
 #include "Game/Main/Playground.hpp"
+#include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
 
 
 //  For testing blackboard
@@ -54,6 +55,7 @@ App::~App()
 	delete g_theGame;
 	g_theGame = nullptr;
 
+	DebugRenderShutdown();
 	EngineShutDown();
 
 	g_theInput = nullptr;
@@ -67,6 +69,7 @@ App::~App()
 void App::StartUp()
 {
 	g_theGame->StartUp();
+	DebugRenderStartup();
 
 	// place for testing
 	Playground::RunTestOnce();	
@@ -84,6 +87,8 @@ void App::RunFrame()
 
 	Update();
 	Render();
+
+	DebugRenderUpdateAndRender();
 
 	g_theInput->EndFrame();
 	g_theRenderer->EndFrame();

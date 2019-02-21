@@ -52,9 +52,6 @@ void Playing::StartUp()
 	m_scene = new Scene("Test");
 	m_renderingPath = new ForwardRenderingPath();
 
-	DebugRenderBasis(1000.f, Matrix44());
-	DebugRenderPoint(1000.f, Vector3::ZERO, 2.f, Rgba::WHITE, Rgba::WHITE);
-
 	//m_testChunk = new Chunk(IntVector2(1,1));
 
 	m_world = new World();

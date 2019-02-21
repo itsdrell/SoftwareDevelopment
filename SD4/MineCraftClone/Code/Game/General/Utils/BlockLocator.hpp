@@ -1,12 +1,12 @@
 #pragma once
 #include "Game/Main/GameCommon.hpp"
+#include "Game/General/World/BlockDefinition.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
 class Chunk;
 class Block;
-class BlockDefinition;
 
 //====================================================================================
 // Type Defs + Defines
@@ -33,9 +33,9 @@ public:
 
 public:
 	Block& GetBlock();
-	bool IsValid() { return m_chunk != nullptr;  }
+	inline bool IsValid() { return m_chunk != nullptr;  }
 
-	bool IsFullyOpaque();
+	inline bool IsFullyOpaque();
 	BlockDefinition* GetBlockDefinition();
 
 public:
@@ -45,6 +45,8 @@ public:
 	BlockLocator GetBlockLocatorOfWestNeighbor();
 	BlockLocator GetBlockLocatorOfAboveNeighbor();
 	BlockLocator GetBlockLocatorOfBelowNeighbor();
+
+	Vector3 GetCenterOfBlock() const;
 
 public:
 	void MoveNorth();
@@ -60,9 +62,12 @@ public:
 };
 
 //====================================================================================
-// Standalone C Functions
+// Inline
 //====================================================================================
-
+inline bool BlockLocator::IsFullyOpaque()
+{
+	return GetBlockDefinition()->m_isFullyOpaque;
+}
 
 //====================================================================================
 // Externs

@@ -38,6 +38,6 @@ BlockDefinition* BlockDefinition::GetDefinitionByType(BlockTypes theType)
 			return theIterator->second;
 	}
 
-	ERROR_AND_DIE("Could not find a definiton for the type");
+	//ERROR_AND_DIE("Could not find a definiton for the type");
 	return nullptr;
 }

@@ -49,8 +49,11 @@ public:
 	void AddVertsForBlock( BlockIndex theIndex );
 	bool CanRebuildItsMesh();
 
-	BlockIndex GetBlockIndexForBlockCoords(const BlockCoords& bc);
-	BlockCoords GetBlockCoordsForBlockIndex( BlockIndex bi);
+public:
+	BlockIndex GetBlockIndexForWorldCoords(const Vector3& worldPos);
+	static BlockCoords GetBlockCoordsForBlockIndex( BlockIndex bi);
+	static BlockIndex GetBlockIndexForBlockCoords(const BlockCoords& bc);
+	static ChunkCoords GetChunkCoordsFromWorldPosition(const Vector3& worldPos);
 
 
 public:

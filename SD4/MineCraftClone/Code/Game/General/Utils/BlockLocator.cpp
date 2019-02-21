@@ -20,12 +20,6 @@ Block & BlockLocator::GetBlock()
 }
 
 //-----------------------------------------------------------------------------------------------
-bool BlockLocator::IsFullyOpaque()
-{
-	return GetBlockDefinition()->m_isFullyOpaque;
-}
-
-//-----------------------------------------------------------------------------------------------
 BlockDefinition* BlockLocator::GetBlockDefinition()
 {
 	
@@ -146,6 +140,24 @@ BlockLocator BlockLocator::GetBlockLocatorOfBelowNeighbor()
 			return BlockLocator(m_chunk, newIndex);
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+Vector3 BlockLocator::GetCenterOfBlock() const
+{
+	if (m_chunk == nullptr)
+		return Vector3();
+	
+	BlockCoords myCords = Chunk::GetBlockCoordsForBlockIndex(m_indexOfBlock);
+
+	float newX = (float)(myCords.x + (m_chunk->m_chunkCoords.x * CHUNK_SIZE_X));
+	float newY = (float)(myCords.y + (m_chunk->m_chunkCoords.y * CHUNK_SIZE_Y));
+
+	Vector3 worldPos = Vector3(newX, newY, (float)myCords.z);
+
+	Vector3 center = worldPos + Vector3(.5f);
+
+	return center;
 }
 
 //-----------------------------------------------------------------------------------------------

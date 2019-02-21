@@ -96,17 +96,19 @@ void DebugRenderTask::Render() const
 {
 	Renderer* r = Renderer::GetInstance();
 	
-	if(r->m_debugCamera == nullptr)
-		ERROR_RECOVERABLE("No camera was set for debug drawing");
+	if (r->m_debugCamera3D == nullptr)
+	{
+		r->m_debugCamera3D = r->m_currentCamera;
+	}
 
-	r->SetCamera(r->m_debugCamera);
+	//r->SetCamera(r->m_debugCamera);
 	r->SetCurrentTexture(0,r->m_defaultTexture); // assume they use default
 	Rgba currentColor = GetCurrentColor();
 
 	// 2d stuff
-	r->m_defaultUICamera->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
-	Matrix44 viewOfCamera = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
-	r->m_defaultUICamera->m_viewMatrix = viewOfCamera;
+	r->m_debugCamera2D->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
+	Matrix44 viewOfCamera = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO, Vector3(0.f, 1.f, 0.f ));
+	r->m_debugCamera2D->m_viewMatrix = viewOfCamera;
 
 	// set the shader state then bind
 	SetupShader(currentColor);
@@ -135,7 +137,7 @@ void DebugRenderTask::Render() const
 	case RENDER_2D_TEXT:
 		r->EnableWireframe(false);
 		r->m_debugRenderShader->m_state.m_fillMode = FILLMODE_SOLID;
-		r->SetCamera(r->m_defaultUICamera);
+		r->SetCamera(r->m_debugCamera2D);
 		r->DrawText2D(m_options.position2D,m_options.text,m_options.cellHeight,currentColor,m_options.scale);
 		break;
 	case RENDER_3D_QUAD:
@@ -337,7 +339,7 @@ void DebugRenderStartup()
 {
 	Renderer::GetInstance()->m_debugRenderShader = Shader::CreateOrGetShader("Data/Shaders/debugRender.shader");
 	
-	CommandRegister("debugRender","Type: help for params","Control the DebugRendering", DebugRenderController);
+	//CommandRegister("debugRender","Type: help for params","Control the DebugRendering", DebugRenderController);
 }
 
 void DebugRenderShutdown()
@@ -389,17 +391,19 @@ void RenderLog()
 	Renderer* r = Renderer::GetInstance();
 	
 	// 2d stuff
-	r->m_defaultUICamera->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
-	Matrix44 viewOfCamera = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO );
-	r->m_defaultUICamera->m_viewMatrix = viewOfCamera;
-	r->SetCamera(r->m_defaultUICamera);
+	r->m_debugCamera2D->SetProjectionOrtho(100, 100, -10.0f, 100.0f);
+	Matrix44 viewOfCamera = Matrix44::MakeView(Vector3(0.f,0.f,-10.f), Vector3::ZERO, Vector3(0.f, 1.f, 0.f ));
+	r->m_debugCamera2D->m_viewMatrix = viewOfCamera;
+	r->SetCamera(r->m_debugCamera2D);
+	r->BindRenderState(r->m_debugRenderShader->m_state);
 
 	float yLocation = 45;
 
 	for(uint i = 0; i < g_DebugRenderLog.size(); i++)
 	{
-		if(g_DebugRenderLog.at(i)->m_isDead == false)
+		if(g_DebugRenderLog.at(i)->m_isDead == false && g_DebugRenderLog.at(i)->m_function == RENDER_LOG) // weird bug
 		{
+			// weird release only bug here if you create a log
 			DebugRenderTask currentTask = *g_DebugRenderLog.at(i);
 
 			std::string text = currentTask.m_options.text;
@@ -411,7 +415,6 @@ void RenderLog()
 		}
 		
 	}
-
 
 	g_DebugRenderLog.clear();
 }
@@ -543,7 +546,7 @@ void DebugRenderGrid2D(float lifetime, Vector3 centerPos, float rows, float coll
 void DebugRenderSet3DCamera(Camera* camera)
 {
 	Renderer* r = Renderer::GetInstance();
-	r->m_debugCamera = camera;
+	r->m_debugCamera3D = camera;
 }
 
 void DebugRenderPoint(float lifetime, Vector3 const & position, float scale, Rgba const & start_color, Rgba const & end_color, DebugRenderMode const mode)

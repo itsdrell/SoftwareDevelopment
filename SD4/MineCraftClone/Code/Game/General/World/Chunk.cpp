@@ -69,7 +69,7 @@ void Chunk::GenerateBlocks()
 			float amount =  Compute2dPerlinNoise(
 				blockWorldCoords.x,
 				blockWorldCoords.y,
-				300.f, 5);
+				300.f, 1);
 				//* 5.f;
 
 			int columnindex = (blockY * CHUNK_SIZE_X) + blockX;
@@ -379,18 +379,37 @@ bool Chunk::CanRebuildItsMesh()
 }
 
 //-----------------------------------------------------------------------------------------------
-BlockIndex Chunk::GetBlockIndexForBlockCoords(const BlockCoords & bc)
+BlockIndex Chunk::GetBlockIndexForWorldCoords(const Vector3& worldPos)
+{
+	IntVector3 thePos = worldPos.GetAsIntVector3();
+	int x = thePos.x - (m_chunkCoords.x * CHUNK_SIZE_X);
+	int y = thePos.y - (m_chunkCoords.y * CHUNK_SIZE_Y);
+
+	return GetBlockIndexForBlockCoords(BlockCoords(x, y, thePos.z));
+}
+
+//-----------------------------------------------------------------------------------------------
+STATIC BlockIndex Chunk::GetBlockIndexForBlockCoords(const BlockCoords & bc)
 {
 	// Indexing an array in 3D:  x + (y * size.x) + (z * (size.x * size.y))
 	return bc.x + (bc.y * CHUNK_SIZE_X) + (bc.z * (CHUNK_SIZE_X * CHUNK_SIZE_Y));
 }
 
 //-----------------------------------------------------------------------------------------------
-BlockCoords Chunk::GetBlockCoordsForBlockIndex(BlockIndex bi)
+STATIC BlockCoords Chunk::GetBlockCoordsForBlockIndex(BlockIndex bi)
 {
 	int z = bi >> (CHUNK_BITS_WIDE_X + CHUNK_BITS_WIDE_Y);
 	int y = (bi & CHUNK_Y_MASK) >> CHUNK_BITS_WIDE_X;
 	int x = bi & CHUNK_X_MASK;
 	
 	return BlockCoords(x,y,z);
+}
+
+//-----------------------------------------------------------------------------------------------
+STATIC ChunkCoords Chunk::GetChunkCoordsFromWorldPosition(const Vector3& worldPos)
+{
+	int x = (int)(floorf(worldPos.x / (float)CHUNK_SIZE_X));
+	int y = (int)(floorf(worldPos.y / (float)CHUNK_SIZE_Y));
+
+	return ChunkCoords(x, y);
 }
