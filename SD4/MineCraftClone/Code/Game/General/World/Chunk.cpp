@@ -343,7 +343,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 
 	BlockDefinition* theDefinition = BlockDefinition::GetDefinitionByType( (BlockTypes) theBlock.m_type);
 	BlockCoords theCoords = GetBlockCoordsForBlockIndex(theIndex);
-	Vector3 center = Vector3(m_chunkCoords.GetAsVector2() * CHUNK_SIZE_X,0) + theCoords.GetAsVector3() + Vector3(.5f);
+	Vector3 center = Vector3(m_chunkCoords.GetAsVector2() * (float) CHUNK_SIZE_X, 0.f) + theCoords.GetAsVector3() + Vector3(.5f);
 	Vector3 dimensions = Vector3(.5f);
 
 	AABB2 uvs;

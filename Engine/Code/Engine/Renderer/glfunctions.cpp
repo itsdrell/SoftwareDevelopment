@@ -91,6 +91,9 @@ bool GLCheckError( char const *file, int line )
 		DebuggerPrintf( "\nGL ERROR [0x%04x] at [%s(%i)] \n", error, file, line );
 		return true; 
 	}
+#else
+	UNUSED(file);
+	UNUSED(line);
 #endif
 	return false; 
 }
@@ -115,5 +118,9 @@ void GLCheckErrorAndDie( char const *file, char const* function, int line )
 	if (error != GL_NO_ERROR) {
 		ERROR_RECOVERABLE( Stringf("\nGL ERROR [0x%04x] in [%s] at [%s(%i)] \n", error, function, file, line).c_str() );
 	}
+#else
+	UNUSED(file);
+	UNUSED(function);
+	UNUSED(line);
 #endif
 }
