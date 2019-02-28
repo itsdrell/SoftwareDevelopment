@@ -18,39 +18,7 @@ World::World()
 	m_skyBox = new TextureCube();
 	m_skyBox->make_from_image("Data/Images/galaxy2.png");
 
-	// Create some block defs
-	new BlockDefinition("air", BLOCK_TYPE_AIR, false, IntVector2(), IntVector2(), IntVector2());
-	new BlockDefinition("grass", BLOCK_TYPE_GRASS, true, IntVector2(2, 0), IntVector2(3, 3), IntVector2(4, 3));
-	new BlockDefinition("snow", BLOCK_TYPE_SNOW, true, IntVector2(1, 3), IntVector2(2, 3), IntVector2(4, 3));
-	new BlockDefinition("stone", BLOCK_TYPE_STONE, true, IntVector2(7, 4), IntVector2(7, 4), IntVector2(7, 4));
-	new BlockDefinition("sand", BLOCK_TYPE_SAND, true, IntVector2(6, 1), IntVector2(6, 1), IntVector2(6, 1));
-	new BlockDefinition("dirt", BLOCK_TYPE_DIRT, true, IntVector2(4, 3), IntVector2(4, 3), IntVector2(4, 3));
-	new BlockDefinition("cobblestone", BLOCK_TYPE_COBBLESTONE, true, IntVector2(17, 3), IntVector2(17, 3), IntVector2(17, 3));
-	new BlockDefinition("bedrock", BLOCK_TYPE_BEDROCK, true, IntVector2(9, 4), IntVector2(9, 4), IntVector2(9, 4));
-
-	new BlockDefinition("test", BLOCK_TYPE_TEST, true, IntVector2(31, 31), IntVector2(31, 31), IntVector2(31, 31));
-
 	m_chunkActivationCheatSheet = new Neighborhood(ACTIVATION_RADIUS_IN_CHUNKS);
-
-	//IntVector2 pos = IntVector2(0, 0);
-	//Chunk* newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(-1, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(0, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(1, 2);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
-	//
-	//pos = IntVector2(0, 3);
-	//newChunk = new Chunk(pos);
-	//s_activeChunks.insert(std::pair<IntVector2, Chunk*>(pos, newChunk));
 
 	MeshBuilder mb;
 	mb.AddCube(Vector3::ZERO, Vector3::ONE);
@@ -68,8 +36,6 @@ World::World()
 	m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
 	m_gameCamera->pitchDegreesAboutY = 89.f;
 
-	//DebugRenderLog(1.f, "World Created!");
-	//DebugRenderLineSegment(20.f, Vector3(0.f, 0.f, 200.f), Vector3(20.f, 0.f, 200.f), DEBUG_RENDER_IGNORE_DEPTH);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -93,7 +59,7 @@ void World::Update()
 	CheckKeyboardInputs();
 	CheckAndRebuildChunkMesh();
 
-	DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
+	//DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -150,7 +116,7 @@ void World::CheckKeyboardInputs()
 		if (nextToMeBlock.IsValid())
 		{
 			Block& blockToEdit = nextToMeBlock.GetBlock();
-			blockToEdit.m_type = BLOCK_TYPE_GRASS;
+			blockToEdit.m_type = BlockDefinition::GetDefinitionByName("glowStone")->m_type;
 
 			nextToMeBlock.m_chunk->Dirty();
 
@@ -357,7 +323,8 @@ void World::RenderTargettedBlockRaycast() const
 //-----------------------------------------------------------------------------------------------
 void World::RenderTargetBlock() const
 {
-	if (m_targetBlockRaycast.DidImpact() && m_targetBlockRaycast.m_impactBlock.m_chunk != nullptr)
+	bool didImpact = m_targetBlockRaycast.DidImpact();
+	if ( didImpact && m_targetBlockRaycast.m_impactBlock.m_chunk != nullptr)
 	{
 		Renderer* r = Renderer::GetInstance();
 
@@ -548,21 +515,30 @@ RaycastResult World::RayCast(const Vector3& start, const Vector3& forward, float
 		// we hit something solid!
 		if (blockWeJustEntered.IsFullyOpaque())
 		{
-			theResult.m_impactBlock = blockWeJustEntered;
-			theResult.m_impactPosition = currentPosition;
+			// we are in it
+			if(i == 0)
+			{
+				theResult.m_impactFraction = 1.f;
+				return theResult;
+			}
+			else
+			{
+				theResult.m_impactBlock = blockWeJustEntered;
+				theResult.m_impactPosition = currentPosition;
 
-			theResult.m_impactDistance = (maxDistance / (float)amountOfSteps);
-			theResult.m_impactFraction = (float)i / (float)amountOfSteps;
+				theResult.m_impactDistance = (maxDistance / (float)amountOfSteps);
+				theResult.m_impactFraction = (float)i / (float)amountOfSteps;
 
-			BlockCoords prev = Chunk::GetBlockCoordsForBlockIndex(previousBlock.m_indexOfBlock);
-			BlockCoords currentBlockCoords = Chunk::GetBlockCoordsForBlockIndex(theBlocksIndex);
+				BlockCoords prev = Chunk::GetBlockCoordsForBlockIndex(previousBlock.m_indexOfBlock);
+				BlockCoords currentBlockCoords = Chunk::GetBlockCoordsForBlockIndex(theBlocksIndex);
 
-			Vector3 prevBlockPos = previousBlock.GetCenterOfBlock();
-			Vector3 currentBlockPos = blockWeJustEntered.GetCenterOfBlock();
-			Vector3 theNormal = prevBlockPos - currentBlockPos;
-			theResult.m_impactNormal = theNormal;
+				Vector3 prevBlockPos = previousBlock.GetCenterOfBlock();
+				Vector3 currentBlockPos = blockWeJustEntered.GetCenterOfBlock();
+				Vector3 theNormal = prevBlockPos - currentBlockPos;
+				theResult.m_impactNormal = theNormal;
 
-			return theResult;
+				return theResult;
+			}
 		}
 
 		previousBlock = blockWeJustEntered;

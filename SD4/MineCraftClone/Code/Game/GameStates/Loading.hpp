@@ -26,7 +26,9 @@ public:
 	~Loading();
 
 	void LoadAssets();
+
 	void LoadDefinitions();
+	void LoadBlockDefinitions();
 
 	void LoadSpriteSheets();
 

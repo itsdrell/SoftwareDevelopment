@@ -53,8 +53,10 @@ void Chunk::Render() const
 		r->SetCurrentTexture(0, r->m_testTexture);
 	
 	r->m_currentShader->SetCullMode(CULLMODE_NONE);
-	r->DrawMesh(m_debugMesh);
+	r->DrawMesh(m_debugMeshTop);
+	r->DrawMesh(m_debugMeshBottom);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
+	r->m_currentShader->SetCullMode(CULLMODE_FRONT);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -175,7 +177,7 @@ void Chunk::GenerateMyBounds()
 //-----------------------------------------------------------------------------------------------
 void Chunk::GenerateBlocks()
 {
-	float seaLevel = (float)(CHUNK_HEIGHT / 2);
+	float seaLevel = (((float)CHUNK_HEIGHT) * .6f);
 	float grassLevel[CHUNK_SIZE_X * CHUNK_SIZE_Y];
 	// shift alr r
 	for (int blockY = 0; blockY < CHUNK_SIZE_Y; blockY++)
@@ -313,7 +315,33 @@ void Chunk::GenerateTestMesh()
 	mb.AddFace(idx + 0, idx + 1, idx + 2);
 	mb.AddFace(idx + 2, idx + 3, idx + 0);
 
-	m_debugMesh = mb.CreateMesh<Vertex3D_PCU>();
+	m_debugMeshTop = mb.CreateMesh<Vertex3D_PCU>();
+
+	//-----------------------------------------------------------------------------------------------
+	// bottom
+	mb.Clear();
+	mb.Begin(PRIMITIVE_TRIANGLES, true);
+	mb.SetColor(Rgba::WHITE);
+
+	mb.SetUV(uvs.maxs.x, uvs.mins.y);
+	idx = mb.PushVertex(Vector3(bounds.maxs.x, bounds.mins.y, m_bounds.mins.z));
+
+	//bl
+	mb.SetUV(uvs.mins.x, uvs.mins.y);
+	mb.PushVertex(Vector3(bounds.mins.x, bounds.mins.y, m_bounds.mins.z));
+
+	// tl
+	mb.SetUV(uvs.mins.x, uvs.maxs.y);
+	mb.PushVertex(Vector3(bounds.mins.x, bounds.maxs.y, m_bounds.mins.z));
+
+	// tr
+	mb.SetUV(uvs.maxs.x, uvs.maxs.y);
+	mb.PushVertex(Vector3(bounds.maxs.x, bounds.maxs.y, m_bounds.mins.z));
+
+	mb.AddFace(idx + 0, idx + 1, idx + 2);
+	mb.AddFace(idx + 2, idx + 3, idx + 0);
+
+	m_debugMeshBottom = mb.CreateMesh<Vertex3D_PCU>();
 }
 
 Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)

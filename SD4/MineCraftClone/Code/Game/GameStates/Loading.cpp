@@ -8,6 +8,7 @@
 #include "Engine\Core\Tools\Profiling\ScopedProfile.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimation.hpp"
 #include "Engine\Renderer\Images\Sprites\SpriteAnimationSet.hpp"
+#include "Game\General\World\BlockDefinition.hpp"
 
 
 Loading::Loading()
@@ -42,10 +43,30 @@ void Loading::LoadDefinitions()
 {
 	// MAKE SURE TO ADD THEM TO THE DELETE DEFINITION FUNCTION
 	// AS WELL
-
+	LoadBlockDefinitions();
 }
 
 
+//-----------------------------------------------------------------------------------------------
+void Loading::LoadBlockDefinitions()
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile( "Data/Definitions/Blocks.xml" );
+
+	tinyxml2::XMLElement* rootElement = doc.RootElement();
+	GUARANTEE_OR_DIE(rootElement != nullptr, "Could not read: BlockDefs");
+
+	tinyxml2::XMLElement* indexElement = rootElement->FirstChildElement();
+	while( indexElement )
+	{
+		BlockDefinition* newDef = new BlockDefinition(*indexElement);
+		indexElement = indexElement->NextSiblingElement();
+
+		// For warning
+		newDef = nullptr;
+		delete[] newDef;
+	}
+}
 
 //-----------------------------------------------------------------------------------------------
 void Loading::LoadSpriteSheets()
@@ -79,7 +100,7 @@ void Loading::LoadSpriteSheets()
 void Loading::DeleteAllDefinitions()
 {
 	// call a static deconstructor on all definition classes we have made
-
+	BlockDefinition::DeleteDefinitions();
 }
 
 void Loading::Update()

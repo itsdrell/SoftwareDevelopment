@@ -1,0 +1,94 @@
+<BlockDefinitions>
+
+    <BlockDefinition 
+    name="air"
+    bitType="0"
+    isOpaque="false"
+    topUVs="0,0"
+    sideUVs="0,0"
+    bottomUVs="0,0"
+    />
+
+    <BlockDefinition 
+    name="grass"
+    bitType="5"
+    isOpaque="true"
+    topUVs="2,0"
+    sideUVs="3,3"
+    bottomUVs="4,3"
+    />
+
+    <BlockDefinition 
+    name="snow"
+    bitType="1"
+    isOpaque="true"
+    topUVs="1,3"
+    sideUVs="2,3"
+    bottomUVs="4,3"
+    />
+
+    <BlockDefinition 
+    name="stone"
+    bitType="3"
+    isOpaque="true"
+    topUVs="7,4"
+    sideUVs="7,4"
+    bottomUVs="7,4"
+    />
+
+    <BlockDefinition 
+    name="sand"
+    bitType="6"
+    isOpaque="true"
+    topUVs="6,1"
+    sideUVs="6,1"
+    bottomUVs="6,1"
+    />
+
+    <BlockDefinition 
+    name="dirt"
+    bitType="4"
+    isOpaque="true"
+    topUVs="4,3"
+    sideUVs="4,3"
+    bottomUVs="4,3"
+    />
+
+    <BlockDefinition 
+    name="cobbleStone"
+    bitType="2"
+    isOpaque="true"
+    topUVs="17,3"
+    sideUVs="17,3"
+    bottomUVs="17,3"
+    />
+
+    <BlockDefinition 
+    name="bedrock"
+    bitType="7"
+    isOpaque="true"
+    topUVs="9,4"
+    sideUVs="9,4"
+    bottomUVs="9,4"
+    />
+
+    <BlockDefinition 
+    name="glowStone"
+    bitType="9"
+    isOpaque="true"
+    topUVs="3,13"
+    sideUVs="3,13"
+    bottomUVs="3,13"
+    />
+
+
+    <BlockDefinition 
+    name="test"
+    bitType="69"
+    isOpaque="true"
+    topUVs="31,31"
+    sideUVs="31,31"
+    bottomUVs="31,31"
+    />
+
+</BlockDefinitions>

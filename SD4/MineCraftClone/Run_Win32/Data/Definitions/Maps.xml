@@ -1,5 +1,0 @@
-<!-- <Map name="testMap" script="fullPath" image="imagePath"> -->
-
-
-<Map name="default" script="LevelScripts/Custom/default" />
-<Map name="test" script="LevelScripts/Custom/hi" />

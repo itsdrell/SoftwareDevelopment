@@ -31,7 +31,7 @@ constexpr int CHUNK_Y_MASK = 0b1111'0000;
 constexpr int CHUNK_Z_MASK = 0b1111'1111'0000'0000;
 
 
-constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 13; // 13 is a good number, 15 gets me 60 fps
+constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 10; // 13 is a good number, 15 gets me 60 fps
 constexpr float CHUNK_ACTIVATION_DISTANCE = ACTIVATION_RADIUS_IN_CHUNKS * CHUNK_SIZE_X;
 constexpr float CHUNK_ACTIVATION_DISTANCE_SQUARED = CHUNK_ACTIVATION_DISTANCE * CHUNK_ACTIVATION_DISTANCE;
 

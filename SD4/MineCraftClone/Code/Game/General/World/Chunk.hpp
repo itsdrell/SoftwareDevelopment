@@ -89,7 +89,8 @@ public:
 	AABB3			m_bounds;
 	MeshBuilder		m_cpuMesh;
 	Mesh*			m_gpuMesh = nullptr; // can be null
-	Mesh*			m_debugMesh = nullptr;
+	Mesh*			m_debugMeshTop = nullptr;
+	Mesh*			m_debugMeshBottom = nullptr;
 	bool			m_isGPUDirty; // so we can rebuild over multiple frames then set 
 	bool			m_hasBeenModified = false;
 
