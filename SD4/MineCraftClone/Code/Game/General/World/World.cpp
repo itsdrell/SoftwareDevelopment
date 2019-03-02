@@ -9,9 +9,9 @@
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Engine/Core/Tools/Clock.hpp"
 #include "Game/General/Utils/Neighborhood.hpp"
-#include <xtgmath.h>
 #include "Engine/Renderer/Systems/DebugRenderSystem.hpp"
-
+#include "Game/General/UI/HUD.hpp"
+#include <xtgmath.h>
 //===============================================================================================
 World::World()
 {
@@ -35,6 +35,11 @@ World::World()
 	m_gameCamera = new GameCamera();
 	m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
 	m_gameCamera->pitchDegreesAboutY = 89.f;
+
+	m_playerHUD = new HUD();
+	m_playerHUD->m_world = this;
+
+	m_blockToPlace = BlockDefinition::GetDefinitionByName("glowStone");
 
 }
 
@@ -80,14 +85,21 @@ void World::CheckKeyboardInputs()
 	
 	if (DidMouseWheelScrollUp())
 	{
-		m_cameraSpeed *= 1.2f;
+		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(1, m_blockToPlace);
 	}
 
 	if (DidMouseWheelScrollDown())
 	{
-		m_cameraSpeed *= .5f;
+		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(-1, m_blockToPlace);
+	}
 
-		m_cameraSpeed = ClampFloat(m_cameraSpeed, 10.f, 1000.f);
+	if(IsKeyPressed(KEYBOARD_SHIFT))
+	{
+		m_cameraSpeed = 100.f;
+	}
+	else
+	{
+		m_cameraSpeed = 10.f;
 	}
 
 	if (WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
@@ -116,7 +128,7 @@ void World::CheckKeyboardInputs()
 		if (nextToMeBlock.IsValid())
 		{
 			Block& blockToEdit = nextToMeBlock.GetBlock();
-			blockToEdit.m_type = BlockDefinition::GetDefinitionByName("glowStone")->m_type;
+			blockToEdit.m_type = m_blockToPlace->m_type;
 
 			nextToMeBlock.m_chunk->Dirty();
 
@@ -235,6 +247,8 @@ void World::Render() const
 	RenderBasis();
 	RenderTargetBlock();
 	RenderTargettedBlockRaycast();
+
+	m_playerHUD->Render();
 }
 
 //-----------------------------------------------------------------------------------------------

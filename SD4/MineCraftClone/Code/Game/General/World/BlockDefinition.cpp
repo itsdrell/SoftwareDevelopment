@@ -63,6 +63,45 @@ BlockDefinition* BlockDefinition::GetDefinitionByType(BlockTypes theType)
 }
 
 //-----------------------------------------------------------------------------------------------
+BlockDefinition* BlockDefinition::GetNextBlockDefinition(int direction, BlockDefinition* current)
+{
+	std::map<String,BlockDefinition*>::iterator theIterator;
+	for(theIterator = s_definitions.begin(); theIterator != s_definitions.end(); theIterator++)
+	{
+		if(theIterator->second->m_type == current->m_type)
+		{
+			if(direction > 0)
+			{
+				theIterator++;
+				if(theIterator == s_definitions.end())
+				{
+					theIterator = s_definitions.begin();
+					return theIterator->second;
+				}
+				
+				return theIterator->second;
+			}
+			else
+			{
+				if(theIterator == s_definitions.begin())
+				{
+					theIterator = s_definitions.end();
+					theIterator--;
+					return theIterator->second;
+				}
+				else
+				{
+					theIterator--;
+					return theIterator->second;
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+//-----------------------------------------------------------------------------------------------
 void BlockDefinition::DeleteDefinitions()
 {
 	std::map<String,BlockDefinition*>::iterator theIterator;

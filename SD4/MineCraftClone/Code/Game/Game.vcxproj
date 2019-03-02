@@ -385,6 +385,7 @@
     <ClCompile Include="GameStates\Attract.cpp" />
     <ClCompile Include="GameStates\Loading.cpp" />
     <ClCompile Include="General\GameCamera.cpp" />
+    <ClCompile Include="General\UI\HUD.cpp" />
     <ClCompile Include="General\Utils\BlockLocator.cpp" />
     <ClCompile Include="General\Utils\Neighborhood.cpp" />
     <ClCompile Include="General\World\BlockDefinition.cpp" />
@@ -406,6 +407,7 @@
     <ClInclude Include="GameStates\Attract.hpp" />
     <ClInclude Include="GameStates\Loading.hpp" />
     <ClInclude Include="General\GameCamera.hpp" />
+    <ClInclude Include="General\UI\HUD.hpp" />
     <ClInclude Include="General\Utils\BlockLocator.hpp" />
     <ClInclude Include="General\Utils\Neighborhood.hpp" />
     <ClInclude Include="General\World\Block.hpp" />

@@ -12,6 +12,7 @@ class Camera;
 class TextureCube;
 class Mesh;
 class Neighborhood;
+class HUD;
 
 //====================================================================================
 // Type Defs + Defines
@@ -85,6 +86,9 @@ public:
 	Camera*					m_camera = nullptr;
 	GameCamera*				m_gameCamera = nullptr;
 	float					m_cameraSpeed = 10.f;
+
+	BlockDefinition*		m_blockToPlace = nullptr;
+	HUD*					m_playerHUD = nullptr;
 
 	TextureCube*			m_skyBox = nullptr;
 	Mesh*					m_skyMesh = nullptr;

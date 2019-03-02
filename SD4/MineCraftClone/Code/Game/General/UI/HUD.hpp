@@ -1,13 +1,10 @@
 #pragma once
-#include "Engine/Core/General/EngineCommon.hpp"
-#include "Engine/Math/Geometry/AABB2.hpp"
-#include "Engine/ThirdParty/tinyxml/tinyxml2.h"
-#include <map>
+
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class World;
 
 //====================================================================================
 // Type Defs + Defines
@@ -17,18 +14,7 @@
 //====================================================================================
 // ENUMS
 //====================================================================================
-enum BlockTypes
-{
-	BLOCK_TYPE_AIR = 0,
-	BLOCK_TYPE_GRASS,
-	BLOCK_TYPE_STONE,
-	BLOCK_TYPE_SNOW,
-	BLOCK_TYPE_SAND, 
-	BLOCK_TYPE_DIRT,
-	BLOCK_TYPE_COBBLESTONE,
-	BLOCK_TYPE_BEDROCK,
-	BLOCK_TYPE_TEST = 69
-};
+
 
 //====================================================================================
 // Structs
@@ -38,29 +24,16 @@ enum BlockTypes
 //====================================================================================
 // Classes
 //====================================================================================
-class BlockDefinition
+class HUD
 {
 public:
-	BlockDefinition(const tinyxml2::XMLElement& definitionNode);
-	BlockDefinition(const String& name, BlockTypes theType, bool isOpqaue, const IntVector2& spriteCoordsForTop, const IntVector2& spriteCoordsForSides, const IntVector2& spriteCoordsForBottom);
-	~BlockDefinition() {}
-
-	static BlockDefinition* GetDefinitionByName(const String& nameOfDefinition);
-	static BlockDefinition* GetDefinitionByType( BlockTypes theType );
-	static BlockDefinition* GetNextBlockDefinition(int direction, BlockDefinition* current);
-	static void DeleteDefinitions();
-
-private:
-	static std::map<String, BlockDefinition*> s_definitions;
+	HUD(); 
 
 public:
-	unsigned char	m_type;
-	String			m_name;
-	AABB2			m_topUVs;
-	AABB2			m_sideUVs;
-	AABB2			m_bottomUVs;
+	void Render() const;
 
-	bool			m_isFullyOpaque; // cant see through
+public:
+	World*		m_world; // till we get a player
 };
 
 //====================================================================================
@@ -74,5 +47,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [2/6/2019]
+// Written by Zachary Bracken : [2/28/2019]
 //====================================================================================

@@ -89,7 +89,7 @@ AudioSystem::AudioSystem()
 	// I COMMENTED OUT THIS CAUSE IT WAS FAILING AND I NEED TO WORK
 	//
 	//====================================================================================
-	result = m_fmodSystem->init( 512, FMOD_INIT_NORMAL, nullptr );
+	//result = m_fmodSystem->init( 512, FMOD_INIT_NORMAL, nullptr );
 	ValidateResult( result );
 
 	CreateDefaultSound();
