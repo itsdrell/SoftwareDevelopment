@@ -10,7 +10,10 @@ BlockDefinition::BlockDefinition(const tinyxml2::XMLElement & definitionNode)
 {
 	m_name = ParseXmlAttribute(definitionNode,"name","Error");
 	m_type = (unsigned char) ParseXmlAttribute(definitionNode,"bitType", 99);
-	m_isFullyOpaque = ParseXmlAttribute(definitionNode,"isOpaque", false);
+	m_lightLevel = ParseXmlAttribute(definitionNode, "lightLevel", 0);
+	m_isFullyOpaque = ParseXmlAttribute(definitionNode,"isOpaque", m_isFullyOpaque);
+	m_isSolid = ParseXmlAttribute(definitionNode, "isSolid", m_isSolid);
+	m_isVisible = ParseXmlAttribute(definitionNode, "isVisible", m_isVisible);
 
 	IntVector2 spriteIndex = ParseXmlAttribute(definitionNode,"topUVs", IntVector2());
 	m_topUVs = g_blockSpriteSheet.GetTexCoordsForSpriteCoords(spriteIndex);
@@ -48,7 +51,7 @@ BlockDefinition* BlockDefinition::GetDefinitionByName(const String& nameOfDefini
 }
 
 //-----------------------------------------------------------------------------------------------
-BlockDefinition* BlockDefinition::GetDefinitionByType(BlockTypes theType)
+BlockDefinition* BlockDefinition::GetDefinitionByType(Byte theType)
 {
 	std::map<std::string,BlockDefinition*>::iterator theIterator;
 

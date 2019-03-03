@@ -41,8 +41,13 @@ public:
 	Mesh* CreateMesh();
 
 
+	//-----------------------------------------------------------------------------------------------
+	void AppendPoint(const Vector3& pos, const Rgba& color = Rgba::WHITE);
+
 	//////////////////////////////////////////////////////////////////////////
 	// Make functions
+	void AddPoint(const Vector3& pos, const Rgba& color = Rgba::WHITE);
+
 	void AddPlane(const Vector3& center, const Vector3& dimensions, const AABB2& theUvs = AABB2(0.f, 1.f), Rgba color = Rgba::WHITE);
 
 	void AddPlane(const Vector3& center, const Vector3& dimensions, Vector3 right , Vector3 up , Rgba color = Rgba::WHITE);
@@ -72,7 +77,6 @@ public:
 
 	void Add2DText(Vector2 startPos, std::string text, float cellHeight, const Rgba& color, float aspectScale = 1.f, BitmapFont* font = nullptr);
 	void Add2DRandomColoredText(Vector2 startPos, std::string text, float cellHeight, float aspectScale = 1.f, BitmapFont* font = nullptr);
-
 
 	void AddFlatPlane(const Vector3& position, const AABB2& bounds, Rgba theColor = Rgba::WHITE, const AABB2& theUvs = AABB2(0.f, 1.f));
 

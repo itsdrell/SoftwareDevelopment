@@ -78,6 +78,7 @@ extern PFNGLDELETETEXTURESPROC glDeleteTextures;
 extern PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D;
 extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 extern PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf;
+extern PFNGLPOINTSIZEPROC glPointSize;
 
 // wgl
 extern PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;

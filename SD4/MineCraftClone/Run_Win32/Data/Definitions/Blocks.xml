@@ -4,6 +4,8 @@
     name="air"
     bitType="0"
     isOpaque="false"
+    isVisible="false"
+    isSolid="false"
     topUVs="0,0"
     sideUVs="0,0"
     bottomUVs="0,0"
@@ -75,6 +77,7 @@
     <BlockDefinition 
     name="glowStone"
     bitType="9"
+    lightLevel="15"
     isOpaque="true"
     topUVs="3,13"
     sideUVs="3,13"

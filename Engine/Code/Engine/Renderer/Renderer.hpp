@@ -164,6 +164,7 @@ public:
 	void EnableDepth(DepthBufferComparisons comparison, bool shouldWrite);
 	void DisableDepth();
 	void EnableWireframe(bool check);
+	void SetPointSize(int size);
 
 	Texture* CreateRenderTarget( int width, int height, eTextureFormat fmt = TEXTURE_FORMAT_RGBA8 );
 	Texture* CreateDepthStencilTarget( int width, int height ); 

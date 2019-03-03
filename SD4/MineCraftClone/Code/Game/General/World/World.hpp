@@ -2,6 +2,7 @@
 #include "Game/Main/GameCommon.hpp"
 #include <map>
 #include "../Utils/BlockLocator.hpp"
+#include <deque>
 
 //====================================================================================
 // Forward Declare
@@ -42,6 +43,17 @@ struct RaycastResult
 	bool DidImpact() const { return m_impactFraction < 1.f; }
 };
 
+//-----------------------------------------------------------------------------------------------
+struct DebugPoint
+{
+	DebugPoint(const Vector3& pos, const Rgba& color = Rgba::YELLOW)
+		:	m_position(pos),
+			m_color(color) {}
+
+	Vector3		m_position;
+	Rgba		m_color;
+};
+
 //====================================================================================
 // Classes
 //====================================================================================
@@ -59,12 +71,14 @@ public:
 	void UpdateCamera();
 	void FindPlayersTargetedBlock();
 
+public:
 	void Render() const;
 	void RenderChunks() const;
 	void RenderSkyBox() const;
 	void RenderBasis() const;
 	void RenderTargettedBlockRaycast() const;
 	void RenderTargetBlock() const;
+	void RenderDebugDirtyLighting() const;
 
 public:
 	void CheckAndActivateChunk();
@@ -76,11 +90,20 @@ public:
 	Chunk* GetChunkFromChunkCoords( const ChunkCoords& theCoords );
 
 public:
-	RaycastResult RayCast(const Vector3& start, const Vector3& forward, float maxDistance);
-
+	void UpdateDirtyLighting();
+	void ProcessDirtyLightBlock();
+	void MarkLightingDirty( BlockLocator& blockToDirty );
+	void UndirtyAllBlocksInChunk( const Chunk* theChunk );
 
 public:
-	std::map<ChunkCoords, Chunk*> m_activeChunks;
+	RaycastResult RayCast(const Vector3& start, const Vector3& forward, float maxDistance);
+
+public:
+	std::map<ChunkCoords, Chunk*>	m_activeChunks;
+
+private:
+	std::deque<BlockLocator>		m_dirtyBlocks;
+	std::vector<DebugPoint>			m_debugDirtyLighting;
 
 public:
 	Camera*					m_camera = nullptr;

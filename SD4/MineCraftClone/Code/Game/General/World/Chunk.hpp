@@ -65,6 +65,7 @@ public:
 
 	Vector3 GetWorldPositionOfColumn(int theX, int theY);
 	void SetBlockType(int blockX, int blockY, int blockZ, const String& name);
+	void SetBlockType(BlockIndex theIndex, Byte type);
 	void AddVertsForBlock( BlockIndex theIndex );
 	bool CanRebuildItsMesh();
 	void Dirty();

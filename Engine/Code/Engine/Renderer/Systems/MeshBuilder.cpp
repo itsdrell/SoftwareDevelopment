@@ -119,9 +119,25 @@ void MeshBuilder::AddQuad(uint a, uint b, uint c, uint d)
 	m_indices.emplace_back(d);
 }
 
+//-----------------------------------------------------------------------------------------------
+void MeshBuilder::AppendPoint(const Vector3& pos, const Rgba& color /*= Rgba::WHITE*/)
+{
+	SetColor(color);
+	PushVertex(pos);
+}
 
 //////////////////////////////////////////////////////////////////////////
 // MAKERS
+void MeshBuilder::AddPoint(const Vector3& pos, const Rgba& color /*= Rgba::WHITE*/)
+{
+	Begin(PRIMITIVE_POINTS, false);
+
+	SetColor(color);
+	PushVertex(pos);
+
+	End();
+}
+
 
 void MeshBuilder::AddPlane(const Vector3& center, const Vector3& dimensions, const AABB2& theUvs, Rgba color)
 {

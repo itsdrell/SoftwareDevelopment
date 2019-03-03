@@ -127,7 +127,6 @@ void RemoveFast( uint& idx, std::vector<T>& theVector )
 //====================================================================================
 extern Blackboard g_gameConfigBlackboard;
 extern SpriteSheet g_tileSpriteSheet;
-extern SpriteSheet g_dialogueSpriteSheet;
 
 //====================================================================================
 // Written by Zachary Bracken : [7/4/2018]

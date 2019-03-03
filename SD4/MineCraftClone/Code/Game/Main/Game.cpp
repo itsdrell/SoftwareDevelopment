@@ -286,6 +286,11 @@ void Game::GoToGameStateFrom(GameStates theStateToGoTo, GameStates theStateItWas
 
 	m_currentState = theStateToGoTo;
 }
+//-----------------------------------------------------------------------------------------------
+World* Game::GetCurrentWorld()
+{
+	return m_playingState->m_world;
+}
 
 //-----------------------------------------------------------------------------------------------
 String GetGameStateAsString(GameStates theState)

@@ -51,6 +51,11 @@ public:
 	Vector3 GetCenterOfBlock() const;
 
 public:
+	int GetHighestIndoorLightValueFromNeighbors();
+	int GetHighestOutdoorLightValueFromNeighbors();
+
+
+public:
 	bool IsBlockOnEastEdge() const;
 	bool IsBlockOnWestEdge() const;
 	bool IsBlockOnNorthEdge() const;

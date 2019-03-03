@@ -5,6 +5,8 @@
 #include "../Utils/BlockLocator.hpp"
 #include <stdio.h>
 #include "Engine/Core/Tools/DevConsole.hpp"
+#include "Game/Main/Game.hpp"
+#include "Game/General/World/World.hpp"
 
 
 //===============================================================================================
@@ -220,6 +222,10 @@ void Chunk::GenerateBlocks()
 					{
 						SetBlockType(blockX, blockY, blockZ, "stone");
 					}
+					else if (blockZ == seaLevel)
+					{
+						SetBlockType(blockX, blockY, blockZ, "snow");
+					}
 					else
 					{
 						SetBlockType(blockX, blockY, blockZ, "snow");
@@ -257,8 +263,10 @@ void Chunk::GenerateBlocksFromFile()
 
 		for (uint blockIndex = 0; blockIndex < amountOfBlocks; blockIndex++)
 		{
-			Block& theBlock = m_blocks[currentBlock];
-			theBlock.m_type = type;
+			//Block& theBlock = m_blocks[currentBlock];
+			//theBlock.m_type = type;
+
+			SetBlockType(currentBlock, (Byte) type);
 
 			currentBlock++;
 		}
@@ -344,6 +352,7 @@ void Chunk::GenerateTestMesh()
 	m_debugMeshBottom = mb.CreateMesh<Vertex3D_PCU>();
 }
 
+//-----------------------------------------------------------------------------------------------
 Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 {
 	float howFarWeAreInX = (float)((m_chunkCoords.x * CHUNK_SIZE_X) + theX);
@@ -356,9 +365,28 @@ Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 void Chunk::SetBlockType(int blockX, int blockY, int blockZ, const String & name)
 {
 	BlockIndex theIndex = GetBlockIndexForBlockCoords(BlockCoords(blockX, blockY, blockZ));
-	Block& theBlock = m_blocks[theIndex];
+	BlockDefinition* theDef = BlockDefinition::GetDefinitionByName(name);
+	
+	SetBlockType(theIndex, theDef->m_type);
+}
 
-	theBlock.m_type = (unsigned char) BlockDefinition::GetDefinitionByName(name)->m_type;
+//-----------------------------------------------------------------------------------------------
+void Chunk::SetBlockType(BlockIndex theIndex, Byte type)
+{
+	Block& theBlock = m_blocks[theIndex];
+	theBlock.m_type = type;
+
+	BlockDefinition* theDef = BlockDefinition::GetDefinitionByType(type);
+	if (theDef->m_isFullyOpaque)
+		theBlock.SetIsFullyOpaque();
+	if (theDef->m_isVisible)
+		theBlock.SetIsVisible();
+	if (theDef->m_isSolid)
+		theBlock.SetIsSolid();
+
+	// we don't set the value, we let the lighting fix it so it'll spread
+	if (theDef->m_lightLevel > 0)
+		g_theGame->GetCurrentWorld()->MarkLightingDirty(BlockLocator(this, theIndex));
 }
 
 //-----------------------------------------------------------------------------------------------

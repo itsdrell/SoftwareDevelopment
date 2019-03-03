@@ -185,6 +185,62 @@ Vector3 BlockLocator::GetCenterOfBlock() const
 }
 
 //-----------------------------------------------------------------------------------------------
+int BlockLocator::GetHighestIndoorLightValueFromNeighbors()
+{
+	int maxValue = 0;
+	
+	int eastNeighborLightValue =	GetBlockLocatorOfEastNeighbor().GetBlock().GetIndoorLightLevel();
+	int westNeighborLightValue =	GetBlockLocatorOfNorthNeighbor().GetBlock().GetIndoorLightLevel();
+	int northNeightborLightValue =	GetBlockLocatorOfNorthNeighbor().GetBlock().GetIndoorLightLevel();
+	int southNeightborLightValue =	GetBlockLocatorOfSouthNeighbor().GetBlock().GetIndoorLightLevel();
+	int aboveNeightborLightValue =	GetBlockLocatorOfAboveNeighbor().GetBlock().GetIndoorLightLevel();
+	int bottomNeightborLightValue = GetBlockLocatorOfBelowNeighbor().GetBlock().GetIndoorLightLevel();
+
+	if (eastNeighborLightValue > maxValue)
+		maxValue = eastNeighborLightValue;
+	if (westNeighborLightValue > maxValue)
+		maxValue = westNeighborLightValue;
+	if (northNeightborLightValue > maxValue)
+		maxValue = northNeightborLightValue;
+	if (southNeightborLightValue > maxValue)
+		maxValue = southNeightborLightValue;
+	if (aboveNeightborLightValue > maxValue)
+		maxValue = aboveNeightborLightValue;
+	if (bottomNeightborLightValue > maxValue)
+		maxValue = bottomNeightborLightValue;
+
+	return maxValue;
+}
+
+//-----------------------------------------------------------------------------------------------
+int BlockLocator::GetHighestOutdoorLightValueFromNeighbors()
+{
+	int maxValue = 0;
+
+	int eastNeighborLightValue = GetBlockLocatorOfEastNeighbor().GetBlock().GetOutdoorLightLevel();
+	int westNeighborLightValue = GetBlockLocatorOfNorthNeighbor().GetBlock().GetOutdoorLightLevel();
+	int northNeightborLightValue = GetBlockLocatorOfNorthNeighbor().GetBlock().GetOutdoorLightLevel();
+	int southNeightborLightValue = GetBlockLocatorOfSouthNeighbor().GetBlock().GetOutdoorLightLevel();
+	int aboveNeightborLightValue = GetBlockLocatorOfAboveNeighbor().GetBlock().GetOutdoorLightLevel();
+	int bottomNeightborLightValue = GetBlockLocatorOfBelowNeighbor().GetBlock().GetOutdoorLightLevel();
+
+	if (eastNeighborLightValue > maxValue)
+		maxValue = eastNeighborLightValue;
+	if (westNeighborLightValue > maxValue)
+		maxValue = westNeighborLightValue;
+	if (northNeightborLightValue > maxValue)
+		maxValue = northNeightborLightValue;
+	if (southNeightborLightValue > maxValue)
+		maxValue = southNeightborLightValue;
+	if (aboveNeightborLightValue > maxValue)
+		maxValue = aboveNeightborLightValue;
+	if (bottomNeightborLightValue > maxValue)
+		maxValue = bottomNeightborLightValue;
+
+	return maxValue;
+}
+
+//-----------------------------------------------------------------------------------------------
 bool BlockLocator::IsBlockOnEastEdge() const
 {
 	return ((m_indexOfBlock & CHUNK_X_MASK) == CHUNK_X_MASK);

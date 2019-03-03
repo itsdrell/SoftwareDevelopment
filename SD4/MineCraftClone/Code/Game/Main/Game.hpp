@@ -18,6 +18,7 @@ class Attract;
 class Playing;
 class Loading;
 class NetSession;
+class World;
 
 //=============================================================
 // ENUMS
@@ -59,7 +60,7 @@ public:
 
 	void		CheckKeyBoardInputs();
 	void		GoToGameStateFrom(GameStates theStateToGoTo, GameStates theStateItWas);
-
+	World*		GetCurrentWorld();
 
 public:
 

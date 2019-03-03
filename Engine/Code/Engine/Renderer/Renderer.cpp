@@ -1383,6 +1383,12 @@ void Renderer::EnableWireframe(bool check)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+//-----------------------------------------------------------------------------------------------
+void Renderer::SetPointSize(int size)
+{
+	glPointSize(size);
+}
+
 Texture* Renderer::CreateRenderTarget(int width, int height, eTextureFormat fmt /*= TEXTURE_FORMAT_RGBA8 */)
 {
 	Texture *tex = new Texture();
@@ -2154,7 +2160,7 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glTexSubImage2D);
 	GL_BIND_FUNCTION(glGenerateMipmap);
 	GL_BIND_FUNCTION(glSamplerParameterf);
-
+	GL_BIND_FUNCTION(glPointSize);
 }
 
 

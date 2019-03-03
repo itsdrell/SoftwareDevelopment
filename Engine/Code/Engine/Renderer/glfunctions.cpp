@@ -74,6 +74,7 @@ PFNGLDELETETEXTURESPROC glDeleteTextures = nullptr;
 PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D = nullptr;
 PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
 PFNGLSAMPLERPARAMETERFPROC glSamplerParameterf = nullptr;
+PFNGLPOINTSIZEPROC glPointSize = nullptr;
 
 // wgl
 PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = nullptr;

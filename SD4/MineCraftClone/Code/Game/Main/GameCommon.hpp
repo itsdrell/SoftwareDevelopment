@@ -40,6 +40,8 @@ constexpr float CHUNK_DEACTIVATION_DISTANCE_SQUARED = CHUNK_DEACTIVATION_DISTANC
 
 constexpr float RAYCAST_STEP_SIZE = .05f;
 
+constexpr int MAX_LIGHT_VALUE = 15;
+
 //====================================================================================
 // ENUMS
 //====================================================================================
