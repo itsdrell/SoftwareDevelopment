@@ -404,8 +404,9 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 
 	AABB2 uvs;
 	uint idx = 0;
+	Rgba theColor;
 
-	m_cpuMesh.SetColor(Rgba::WHITE);
+	//m_cpuMesh.SetColor(Rgba::WHITE);
 
 	BlockLocator myBlock = BlockLocator(this, theIndex);
 	BlockLocator northBlock = myBlock.GetBlockLocatorOfNorthNeighbor();
@@ -421,6 +422,11 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// br
 	if (!aboveBlock.IsFullyOpaque())
 	{
+		// replace with GetTintForBlock() or emily will break up with you
+		float value = RangeMapFloat( (float) aboveBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+
 		uvs = theDefinition->m_topUVs;
 
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -447,6 +453,10 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// Front face
 	if (!westBlock.IsFullyOpaque())
 	{
+		float value = RangeMapFloat((float)westBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+		
 		uvs = theDefinition->m_sideUVs;
 
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -473,6 +483,10 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// left
 	if (!northBlock.IsFullyOpaque())
 	{
+		float value = RangeMapFloat((float)northBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
 		idx = m_cpuMesh.PushVertex(Vector3((center.x - dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
@@ -498,6 +512,10 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// back
 	if (!eastBlock.IsFullyOpaque())
 	{
+		float value = RangeMapFloat((float)eastBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
 		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y + dimensions.y), (center.z - dimensions.z)));
@@ -523,6 +541,10 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// right face
 	if (!southBlock.IsFullyOpaque())
 	{
+		float value = RangeMapFloat((float)southBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
 		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));
@@ -548,6 +570,10 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// Bottom Face
 	if (!belowBlock.IsFullyOpaque())
 	{
+		float value = RangeMapFloat((float)belowBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.1f, 1.f);
+		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
+		m_cpuMesh.SetColor(theColor);
+		
 		uvs = theDefinition->m_bottomUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
 		idx = m_cpuMesh.PushVertex(Vector3((center.x + dimensions.x), (center.y - dimensions.y), (center.z - dimensions.z)));

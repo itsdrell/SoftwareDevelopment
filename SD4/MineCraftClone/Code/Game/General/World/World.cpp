@@ -122,6 +122,7 @@ void World::CheckKeyboardInputs()
 			BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
 			Block& theBlockWeHit = theLocator.GetBlock();
 			theBlockWeHit.m_type = BLOCK_TYPE_AIR;
+			MarkLightingDirty(theLocator);
 
 			m_targetBlockRaycast.m_impactBlock.m_chunk->Dirty();
 
@@ -142,6 +143,7 @@ void World::CheckKeyboardInputs()
 		{
 			Block& blockToEdit = nextToMeBlock.GetBlock();
 			blockToEdit.m_type = m_blockToPlace->m_type;
+			MarkLightingDirty(nextToMeBlock);
 
 			nextToMeBlock.m_chunk->Dirty();
 
@@ -625,7 +627,7 @@ void World::ProcessDirtyLightBlock()
 		if (southNeightborLightValue > maxOutdoorLightValue)
 			maxOutdoorLightValue = southNeightborLightValue;
 		if (aboveNeightborLightValue > maxOutdoorLightValue)
-			maxOutdoorLightValue = maxOutdoorLightValue;
+			maxOutdoorLightValue = aboveNeightborLightValue;
 		if (bottomNeightborLightValue > maxOutdoorLightValue)
 			maxOutdoorLightValue = bottomNeightborLightValue;
 	}
@@ -649,7 +651,7 @@ void World::ProcessDirtyLightBlock()
 		if (southNeightborLightValue > maxIndoorLightValue)
 			maxIndoorLightValue = southNeightborLightValue;
 		if (aboveNeightborLightValue > maxIndoorLightValue)
-			maxIndoorLightValue = maxOutdoorLightValue;
+			maxIndoorLightValue = aboveNeightborLightValue;
 		if (bottomNeightborLightValue > maxIndoorLightValue)
 			maxIndoorLightValue = bottomNeightborLightValue;
 	}
@@ -684,12 +686,12 @@ void World::ProcessDirtyLightBlock()
 	// spread the love
 	if (dirtyNeighbors)
 	{
-		MarkLightingDirty(eastNeighbor);
-		MarkLightingDirty(westNeighbor);
-		MarkLightingDirty(northNeighbor);
-		MarkLightingDirty(southNeighbor);
-		MarkLightingDirty(aboveNeighbor);
-		MarkLightingDirty(belowNeighbor);
+		if (!eastBlock.IsFullyOpaque()) { MarkLightingDirty(eastNeighbor);  }
+		if (!westBlock.IsFullyOpaque()) { MarkLightingDirty(westNeighbor);  }
+		if (!northBlock.IsFullyOpaque()) { MarkLightingDirty(northNeighbor); }
+		if (!southBlock.IsFullyOpaque()) { MarkLightingDirty(southNeighbor); }
+		if (!aboveBlock.IsFullyOpaque()) { MarkLightingDirty(aboveNeighbor); }
+		if (!belowBlock.IsFullyOpaque()) { MarkLightingDirty(belowNeighbor); }
 	}
 
 	m_dirtyBlocks.pop_front();

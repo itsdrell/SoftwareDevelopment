@@ -1,12 +1,12 @@
 #pragma once
 #include "Game/Main/GameCommon.hpp"
 #include "Game/General/World/BlockDefinition.hpp"
+#include "Game/General/World/Block.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
 class Chunk;
-class Block;
 
 //====================================================================================
 // Type Defs + Defines
@@ -51,6 +51,7 @@ public:
 	Vector3 GetCenterOfBlock() const;
 
 public:
+	inline int GetLightValueFromBlock();
 	int GetHighestIndoorLightValueFromNeighbors();
 	int GetHighestOutdoorLightValueFromNeighbors();
 
@@ -82,6 +83,12 @@ public:
 inline bool BlockLocator::IsFullyOpaque()
 {
 	return GetBlockDefinition()->m_isFullyOpaque;
+}
+
+//-----------------------------------------------------------------------------------------------
+inline int BlockLocator::GetLightValueFromBlock()
+{
+	return GetBlock().GetIndoorLightLevel();
 }
 
 //====================================================================================
