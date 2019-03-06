@@ -11,11 +11,25 @@ BlockLocator::BlockLocator(Chunk* theChunk, BlockIndex indexOfBlock)
 }
 
 //-----------------------------------------------------------------------------------------------
+BlockLocator::BlockLocator(Chunk* theChunk, const BlockCoords& theCoords)
+{
+	m_chunk = theChunk;
+	m_indexOfBlock = Chunk::GetBlockIndexForBlockCoords(theCoords);
+}
+
+//-----------------------------------------------------------------------------------------------
 Block & BlockLocator::GetBlock()
 {
 	if (m_chunk != nullptr)
 		return m_chunk->m_blocks[m_indexOfBlock];
 
+	return g_invalidBlock;
+}
+
+//-----------------------------------------------------------------------------------------------
+Block& BlockLocator::GetInvalidBlock()
+{
+	g_invalidBlock = Block(BLOCK_TYPE_TEST);
 	return g_invalidBlock;
 }
 
@@ -241,6 +255,23 @@ int BlockLocator::GetHighestOutdoorLightValueFromNeighbors()
 }
 
 //-----------------------------------------------------------------------------------------------
+Rgba BlockLocator::GetTintForBlock()
+{
+	Rgba theColor;
+
+	//( (1.f/16.f) * (float)( 1 + eastNeighbor.indoorExposure ) 
+	float indoorValue = (1.f / 16.f) * (float)(1 + GetIndoorLightValueFromBlock()); 
+
+	//( (1.f/15.f) * (float)( 0 + eastNeighbor.outdoorExposure ) )
+	float outdoorValue = (1.f / 15.f) * (float)(0 + GetOutdoorLightValueFromBlock()); 
+
+	//theColor.SetFromFloats(indoorValue, outdoorValue, 127, 255);
+	theColor.SetFromNormalizedFloats(indoorValue, outdoorValue, .5f, 1.f);
+
+	return theColor;
+}
+
+//-----------------------------------------------------------------------------------------------
 bool BlockLocator::IsBlockOnEastEdge() const
 {
 	return ((m_indexOfBlock & CHUNK_X_MASK) == CHUNK_X_MASK);
@@ -274,6 +305,14 @@ bool BlockLocator::IsBlockOnTopEdge() const
 bool BlockLocator::IsBlockOnBottomEdge() const
 {
 	return ((m_indexOfBlock & CHUNK_Z_MASK) == 0);
+}
+
+bool BlockLocator::IsBlockOnAChunkEdge() const
+{
+	if (IsBlockOnEastEdge() || IsBlockOnNorthEdge() || IsBlockOnSouthEdge() || IsBlockOnWestEdge())
+		return true;
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------------------------

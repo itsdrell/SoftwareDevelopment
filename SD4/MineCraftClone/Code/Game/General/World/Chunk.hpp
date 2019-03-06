@@ -49,6 +49,9 @@ public:
 	void Update();
 	void Render() const;
 
+	void OnActivation();
+
+private:
 	bool LoadFromFile();
 	void SaveToFile();
 	void WriteHeaderToBuffer();
@@ -60,6 +63,13 @@ public:
 	void GenerateBlocksFromFile();
 	void GenerateMesh();
 	void GenerateTestMesh();
+	void SetSkyBlocks();
+
+private:
+	void InitializeDirtyLighting();
+	void MarkChunkEdgeBlocksLightingDirty();
+	void SetSkyBlocksLightingAndMarkNeightborsDirty();
+	void MarkLightBlocksLightingAsDirty();
 
 public:
 
@@ -97,6 +107,7 @@ public:
 
 private:
 	std::vector<unsigned char>		m_fileData;
+
 };
 
 //====================================================================================

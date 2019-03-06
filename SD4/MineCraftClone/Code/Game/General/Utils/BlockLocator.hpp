@@ -30,10 +30,12 @@ class BlockLocator
 {
 public:
 	BlockLocator( Chunk* theChunk, BlockIndex indexOfBlock ); 
+	BlockLocator(Chunk* theChunk, const BlockCoords& theCoords);
 
 public:
 	Block& GetBlock();
 	inline bool IsValid() { return m_chunk != nullptr;  }
+	static Block& GetInvalidBlock();
 
 	inline bool IsFullyOpaque();
 	BlockDefinition* GetBlockDefinition();
@@ -51,9 +53,11 @@ public:
 	Vector3 GetCenterOfBlock() const;
 
 public:
-	inline int GetLightValueFromBlock();
+	inline int GetIndoorLightValueFromBlock();
+	inline int GetOutdoorLightValueFromBlock();
 	int GetHighestIndoorLightValueFromNeighbors();
 	int GetHighestOutdoorLightValueFromNeighbors();
+	Rgba GetTintForBlock();
 
 
 public:
@@ -63,6 +67,11 @@ public:
 	bool IsBlockOnSouthEdge() const;
 	bool IsBlockOnTopEdge() const;
 	bool IsBlockOnBottomEdge() const;
+	// NSWE check
+	bool IsBlockOnAChunkEdge() const;
+
+public:
+	inline bool IsSky() { return GetBlock().IsSky();  }
 
 public:
 	void MoveNorth();
@@ -73,7 +82,7 @@ public:
 	void MoveDown();
 
 public:
-	Chunk*			m_chunk;
+	Chunk*			m_chunk = nullptr;
 	BlockIndex		m_indexOfBlock;
 };
 
@@ -86,9 +95,15 @@ inline bool BlockLocator::IsFullyOpaque()
 }
 
 //-----------------------------------------------------------------------------------------------
-inline int BlockLocator::GetLightValueFromBlock()
+inline int BlockLocator::GetIndoorLightValueFromBlock()
 {
 	return GetBlock().GetIndoorLightLevel();
+}
+
+//-----------------------------------------------------------------------------------------------
+inline int BlockLocator::GetOutdoorLightValueFromBlock()
+{
+	return GetBlock().GetOutdoorLightLevel();
 }
 
 //====================================================================================

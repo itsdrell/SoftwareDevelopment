@@ -36,7 +36,9 @@ class Block
 {
 public:
 	Block() {}
-	Block(unsigned char type) { m_type = type; }
+	Block(unsigned char type) {
+		m_type = type; m_light = 0; m_bitFlags = 0;
+	}
 	~Block() {}
 
 public:
@@ -57,7 +59,7 @@ public:
 	inline int GetOutdoorLightLevel();
 
 public:
-	inline bool IsSky();
+	inline bool IsSky() const;
 	inline bool IsLightDirty();
 	inline bool IsSolid();
 	inline bool IsVisible();
@@ -75,8 +77,6 @@ private:
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
-
 
 //====================================================================================
 // Inlines
@@ -149,9 +149,9 @@ int Block::GetOutdoorLightLevel()
 }
 
 //-----------------------------------------------------------------------------------------------
-bool Block::IsSky()
+bool Block::IsSky() const
 {
-	return (m_light & BLOCK_BIT_IS_SKY) == BLOCK_BIT_IS_SKY;
+	return (m_bitFlags & BLOCK_BIT_IS_SKY) == BLOCK_BIT_IS_SKY;
 }
 
 //-----------------------------------------------------------------------------------------------

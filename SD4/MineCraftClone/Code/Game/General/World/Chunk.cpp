@@ -7,6 +7,8 @@
 #include "Engine/Core/Tools/DevConsole.hpp"
 #include "Game/Main/Game.hpp"
 #include "Game/General/World/World.hpp"
+#include "Engine/Core/General/EngineCommon.hpp"
+#include "Engine/Core/General/Blackboard.hpp"
 
 
 //===============================================================================================
@@ -25,6 +27,7 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	GenerateTestMesh();
 
 	m_isGPUDirty = true;
+	m_gpuMesh = nullptr;
 	m_cpuMesh.ReserveSpace(10'000);
 }
 
@@ -59,6 +62,13 @@ void Chunk::Render() const
 	r->DrawMesh(m_debugMeshBottom);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 	r->m_currentShader->SetCullMode(CULLMODE_FRONT);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::OnActivation()
+{
+	SetSkyBlocks();
+	InitializeDirtyLighting();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -362,6 +372,114 @@ Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 }
 
 //-----------------------------------------------------------------------------------------------
+void Chunk::SetSkyBlocks()
+{
+	int theTopHeight = CHUNK_HEIGHT - 1;
+	bool addSkyToDebugPoints = g_gameConfigBlackboard.GetValue("showSkyBlocks", false);
+
+	for (int yIndex = 0; yIndex < CHUNK_SIZE_Y; yIndex++)
+	{
+		BlockLocator currentLocator = BlockLocator(this, BlockCoords(0, yIndex, theTopHeight));
+
+		for (int xIndex = 0; xIndex < CHUNK_SIZE_X; xIndex++)
+		{
+			while (!currentLocator.IsFullyOpaque())
+			{
+				Block& currentBlock = currentLocator.GetBlock();
+				currentBlock.SetToSky();
+
+				//g_theGame->GetCurrentWorld()->AddSkyDebugPoint(currentLocator.GetCenterOfBlock());
+
+				currentLocator = currentLocator.GetBlockLocatorOfBelowNeighbor();
+			}
+			currentLocator = BlockLocator(this, BlockCoords(xIndex + 1, yIndex, theTopHeight));
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::InitializeDirtyLighting()
+{
+	//MarkChunkEdgeBlocksLightingDirty();
+	SetSkyBlocksLightingAndMarkNeightborsDirty();
+	MarkLightBlocksLightingAsDirty();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::MarkChunkEdgeBlocksLightingDirty()
+{
+	World* theWorld = g_theGame->GetCurrentWorld();
+
+	for (uint blockIndex = 0; blockIndex < AMOUNT_OF_BLOCKS_IN_CHUNK; blockIndex++)
+	{
+		Block& currentBlock = m_blocks[blockIndex];
+		BlockLocator theLocator = BlockLocator(this, blockIndex);
+
+		if (theLocator.IsBlockOnAChunkEdge() && !theLocator.IsFullyOpaque())
+		{
+			theWorld->MarkLightingDirty(theLocator);
+		}
+	}
+
+	return;
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::SetSkyBlocksLightingAndMarkNeightborsDirty()
+{
+	int theTopHeight = CHUNK_HEIGHT - 1;
+	World* theWorld = g_theGame->GetCurrentWorld();
+
+	for (int yIndex = 0; yIndex < CHUNK_SIZE_Y; yIndex++)
+	{
+		BlockLocator currentLocator = BlockLocator(this, BlockCoords(0, yIndex, theTopHeight));
+
+		for (int xIndex = 0; xIndex < CHUNK_SIZE_X; xIndex++)
+		{
+			while (!currentLocator.IsFullyOpaque())
+			{
+				Block& currentBlock = currentLocator.GetBlock();
+				
+				if (currentBlock.IsSky())
+				{
+					currentBlock.SetOutdoorLightLevel(MAX_LIGHT_VALUE);
+
+					BlockLocator eastNeighbor = currentLocator.GetBlockLocatorOfEastNeighbor();
+					BlockLocator westNeighbor = currentLocator.GetBlockLocatorOfEastNeighbor();
+					BlockLocator northNeighbor = currentLocator.GetBlockLocatorOfEastNeighbor();
+					BlockLocator southNeighbor = currentLocator.GetBlockLocatorOfEastNeighbor();
+
+					if (!eastNeighbor.IsSky() && !eastNeighbor.IsFullyOpaque()) { theWorld->MarkLightingDirty(eastNeighbor); }
+					if (!westNeighbor.IsSky() && !westNeighbor.IsFullyOpaque()) { theWorld->MarkLightingDirty(westNeighbor); }
+					if (!northNeighbor.IsSky() && !northNeighbor.IsFullyOpaque()) { theWorld->MarkLightingDirty(northNeighbor); }
+					if (!southNeighbor.IsSky() && !southNeighbor.IsFullyOpaque()) { theWorld->MarkLightingDirty(southNeighbor); }
+				}
+				currentLocator = currentLocator.GetBlockLocatorOfBelowNeighbor();
+			}
+			currentLocator = BlockLocator(this, BlockCoords(xIndex + 1, yIndex, theTopHeight));
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::MarkLightBlocksLightingAsDirty()
+{
+	World* theWorld = g_theGame->GetCurrentWorld();
+
+	for (uint blockIndex = 0; blockIndex < AMOUNT_OF_BLOCKS_IN_CHUNK; blockIndex++)
+	{
+		Block& currentBlock = m_blocks[blockIndex];
+		BlockDefinition* currentDef = BlockDefinition::GetDefinitionByType(currentBlock.m_type);
+
+		if (currentDef->m_lightLevel > 0)
+		{
+			BlockLocator theLocator = BlockLocator(this, blockIndex);
+			theWorld->MarkLightingDirty(theLocator);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void Chunk::SetBlockType(int blockX, int blockY, int blockZ, const String & name)
 {
 	BlockIndex theIndex = GetBlockIndexForBlockCoords(BlockCoords(blockX, blockY, blockZ));
@@ -384,9 +502,6 @@ void Chunk::SetBlockType(BlockIndex theIndex, Byte type)
 	if (theDef->m_isSolid)
 		theBlock.SetIsSolid();
 
-	// we don't set the value, we let the lighting fix it so it'll spread
-	if (theDef->m_lightLevel > 0)
-		g_theGame->GetCurrentWorld()->MarkLightingDirty(BlockLocator(this, theIndex));
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -422,10 +537,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// br
 	if (!aboveBlock.IsFullyOpaque())
 	{
-		// replace with GetTintForBlock() or emily will break up with you
-		float value = RangeMapFloat( (float) aboveBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(aboveBlock.GetTintForBlock());
 
 		uvs = theDefinition->m_topUVs;
 
@@ -453,9 +565,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// Front face
 	if (!westBlock.IsFullyOpaque())
 	{
-		float value = RangeMapFloat((float)westBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(westBlock.GetTintForBlock());
 		
 		uvs = theDefinition->m_sideUVs;
 
@@ -483,9 +593,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// left
 	if (!northBlock.IsFullyOpaque())
 	{
-		float value = RangeMapFloat((float)northBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(northBlock.GetTintForBlock());
 		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -512,9 +620,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// back
 	if (!eastBlock.IsFullyOpaque())
 	{
-		float value = RangeMapFloat((float)eastBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(eastBlock.GetTintForBlock());
 		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -541,9 +647,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// right face
 	if (!southBlock.IsFullyOpaque())
 	{
-		float value = RangeMapFloat((float)southBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(southBlock.GetTintForBlock());
 		
 		uvs = theDefinition->m_sideUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -570,9 +674,7 @@ void Chunk::AddVertsForBlock(BlockIndex theIndex)
 	// Bottom Face
 	if (!belowBlock.IsFullyOpaque())
 	{
-		float value = RangeMapFloat((float)belowBlock.GetLightValueFromBlock(), 0.f, 15.f, 0.1f, 1.f);
-		theColor.SetFromNormalizedFloats(value, value, value, 1.f);
-		m_cpuMesh.SetColor(theColor);
+		m_cpuMesh.SetColor(belowBlock.GetTintForBlock());
 		
 		uvs = theDefinition->m_bottomUVs;
 		m_cpuMesh.SetUV(uvs.maxs.x, uvs.mins.y);
@@ -664,7 +766,6 @@ STATIC ChunkCoords Chunk::GetChunkCoordsFromWorldPosition(const Vector3& worldPo
 
 	return ChunkCoords(x, y);
 }
-
 
 //===============================================================================================
 bool ChunkHeader::IsValid()

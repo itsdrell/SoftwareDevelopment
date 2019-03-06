@@ -1854,6 +1854,9 @@ void Renderer::SetShader(Shader* shader)
 
 	m_currentShader = shader;
 
+	// every time you set the shader, bind the state. You should modify the shader before setting state
+	BindRenderState(m_currentShader->m_state);
+
 	glUseProgram(m_currentShader->m_program->program_handle);					GL_CHECK_ERROR();
 }
 

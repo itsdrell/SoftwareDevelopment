@@ -77,7 +77,7 @@ void World::Update()
 	CheckAndRebuildChunkMesh();
 
 	//DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
-	DebugRenderLog(0.05f, std::to_string(m_debugDirtyLighting.size()), Rgba::YELLOW);
+	//DebugRenderLog(0.05f, std::to_string(m_debugDirtyLighting.size()), Rgba::YELLOW);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -274,7 +274,7 @@ void World::Render() const
 
 	if (g_gameConfigBlackboard.GetValue("useDebugLighting", false))
 	{
-		RenderDebugDirtyLighting();
+		RenderDebugPoints();
 	}
 
 	m_playerHUD->Render();
@@ -300,10 +300,12 @@ void World::RenderChunks() const
 		if (theMesh != nullptr)
 		{
 			r->DrawMesh(theIterator->second->m_gpuMesh);
+
+			// debug stuff
+			theIterator->second->Render();
 		}
 
-		// debug stuff
-		theIterator->second->Render();
+
 	}
 
 	r->SetCurrentTexture();
@@ -392,7 +394,7 @@ void World::RenderTargetBlock() const
 }
 
 //-----------------------------------------------------------------------------------------------
-void World::RenderDebugDirtyLighting() const
+void World::RenderDebugPoints() const
 {
 	Renderer* r = Renderer::GetInstance();
 	MeshBuilder mb;
@@ -403,6 +405,16 @@ void World::RenderDebugDirtyLighting() const
 		DebugPoint current = m_debugDirtyLighting.at(i);
 		
 		mb.AppendPoint(current.m_position, current.m_color);
+	}
+
+	if (g_gameConfigBlackboard.GetValue("showSkyBlocks", false))
+	{
+		for (uint j = 0; j < m_debugSkyPoints.size(); j++)
+		{
+			DebugPoint current = m_debugSkyPoints.at(j);
+
+			mb.AppendPoint(current.m_position, current.m_color);
+		}
 	}
 
 	mb.End();
@@ -499,6 +511,8 @@ void World::ActivateChunk(const ChunkCoords& theCoords)
 	if (theSouthNeighbor != nullptr)	{ theSouthNeighbor->m_northNeighbor		= newChunk; }
 	if (theEastNeighbor != nullptr)		{ theEastNeighbor->m_westNeighbor		= newChunk; }
 	if (theWestNeighbor != nullptr)		{ theWestNeighbor->m_eastNeighbor		= newChunk; }
+	
+	newChunk->OnActivation();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -578,13 +592,22 @@ void World::UpdateDirtyLighting()
 //-----------------------------------------------------------------------------------------------
 void World::ProcessDirtyLightBlock()
 {
-	BlockLocator& theLocator = m_dirtyBlocks.front();
+	BlockLocator theLocator = m_dirtyBlocks.front();
 
-	if(theLocator.m_chunk != nullptr)
-		theLocator.m_chunk->Dirty();
+	if (!theLocator.IsValid())
+	{
+		m_dirtyBlocks.pop_front();
+		return;
+	}
+	
+	theLocator.m_chunk->Dirty();
 	
 	Block& theBlock = theLocator.GetBlock();
 	theBlock.ClearIsLightDirty();
+
+	if (theLocator.IsBlockOnAChunkEdge() && theLocator.m_chunk->m_eastNeighbor == nullptr)
+		int i = 0;
+
 
 	// get my neighbors
 	BlockLocator eastNeighbor = theLocator.GetBlockLocatorOfEastNeighbor();
@@ -594,12 +617,21 @@ void World::ProcessDirtyLightBlock()
 	BlockLocator aboveNeighbor = theLocator.GetBlockLocatorOfAboveNeighbor();
 	BlockLocator belowNeighbor = theLocator.GetBlockLocatorOfBelowNeighbor();
 
-	Block& eastBlock = eastNeighbor.GetBlock();
-	Block& westBlock = westNeighbor.GetBlock();
-	Block& northBlock = northNeighbor.GetBlock();
-	Block& southBlock = southNeighbor.GetBlock();
-	Block& aboveBlock = aboveNeighbor.GetBlock();
-	Block& belowBlock = belowNeighbor.GetBlock();
+	
+
+	Block eastBlock =  BlockLocator::GetInvalidBlock();
+	Block westBlock =  BlockLocator::GetInvalidBlock();
+	Block northBlock = BlockLocator::GetInvalidBlock();
+	Block southBlock = BlockLocator::GetInvalidBlock();
+	Block aboveBlock = BlockLocator::GetInvalidBlock();
+	Block belowBlock = BlockLocator::GetInvalidBlock();
+
+	if (eastNeighbor.IsValid()) { eastBlock = eastNeighbor.GetBlock(); }
+	if (westNeighbor.IsValid()) { westBlock = westNeighbor.GetBlock(); }
+	if (northNeighbor.IsValid()) { northBlock = northNeighbor.GetBlock(); }
+	if (southNeighbor.IsValid()) { southBlock = southNeighbor.GetBlock(); }
+	if (aboveNeighbor.IsValid()) { aboveBlock = aboveNeighbor.GetBlock(); }
+	if (belowNeighbor.IsValid()) { belowBlock = belowNeighbor.GetBlock(); }
 
 	int maxIndoorLightValue = 0;
 	int maxOutdoorLightValue = 0;
@@ -611,12 +643,19 @@ void World::ProcessDirtyLightBlock()
 	}
 	else
 	{
-		int eastNeighborLightValue		=	eastBlock.GetOutdoorLightLevel();
-		int westNeighborLightValue		=	westBlock.GetOutdoorLightLevel();
-		int northNeightborLightValue	=	northBlock.GetOutdoorLightLevel();
-		int southNeightborLightValue	=	southBlock.GetOutdoorLightLevel();
-		int aboveNeightborLightValue	=	aboveBlock.GetOutdoorLightLevel();
-		int bottomNeightborLightValue	=	belowBlock.GetOutdoorLightLevel();
+		int eastNeighborLightValue		   = 0;
+		int westNeighborLightValue		   = 0;
+		int northNeightborLightValue	   = 0;
+		int southNeightborLightValue	   = 0;
+		int aboveNeightborLightValue	   = 0;
+		int bottomNeightborLightValue	   = 0;
+
+		if (eastNeighbor.IsValid()) { eastNeighborLightValue = eastBlock.GetOutdoorLightLevel(); }
+		if (westNeighbor.IsValid()) { westNeighborLightValue = westBlock.GetOutdoorLightLevel(); }
+		if (northNeighbor.IsValid()) { northNeightborLightValue = northBlock.GetOutdoorLightLevel(); }
+		if (southNeighbor.IsValid()) { southNeightborLightValue = southBlock.GetOutdoorLightLevel(); }
+		if (aboveNeighbor.IsValid()) { aboveNeightborLightValue = aboveBlock.GetOutdoorLightLevel(); }
+		if (belowNeighbor.IsValid()) { bottomNeightborLightValue = belowBlock.GetOutdoorLightLevel(); }
 
 		if (eastNeighborLightValue > maxOutdoorLightValue)
 			maxOutdoorLightValue = eastNeighborLightValue;
@@ -635,12 +674,19 @@ void World::ProcessDirtyLightBlock()
 	// indoor lighting check
 	if (!theBlock.IsFullyOpaque())
 	{
-		int eastNeighborLightValue		=	eastBlock.GetIndoorLightLevel();
-		int westNeighborLightValue		=	westBlock.GetIndoorLightLevel();
-		int northNeightborLightValue	=	northBlock.GetIndoorLightLevel();
-		int southNeightborLightValue	=	southBlock.GetIndoorLightLevel();
-		int aboveNeightborLightValue	=	aboveBlock.GetIndoorLightLevel();
-		int bottomNeightborLightValue	=	belowBlock.GetIndoorLightLevel();
+		int eastNeighborLightValue = 0;
+		int westNeighborLightValue = 0;
+		int northNeightborLightValue = 0;
+		int southNeightborLightValue = 0;
+		int aboveNeightborLightValue = 0;
+		int bottomNeightborLightValue = 0;
+
+		if (eastNeighbor.IsValid()) { eastNeighborLightValue = eastBlock.GetIndoorLightLevel(); }
+		if (westNeighbor.IsValid()) { westNeighborLightValue = westBlock.GetIndoorLightLevel(); }
+		if (northNeighbor.IsValid()) { northNeightborLightValue = northBlock.GetIndoorLightLevel(); }
+		if (southNeighbor.IsValid()) { southNeightborLightValue = southBlock.GetIndoorLightLevel(); }
+		if (aboveNeighbor.IsValid()) { aboveNeightborLightValue = aboveBlock.GetIndoorLightLevel(); }
+		if (belowNeighbor.IsValid()) { bottomNeightborLightValue = belowBlock.GetIndoorLightLevel(); }
 
 		if (eastNeighborLightValue > maxIndoorLightValue)
 			maxIndoorLightValue = eastNeighborLightValue;
@@ -686,6 +732,8 @@ void World::ProcessDirtyLightBlock()
 	// spread the love
 	if (dirtyNeighbors)
 	{
+		if (westNeighbor.m_chunk == nullptr)
+			int j = 1;
 		if (!eastBlock.IsFullyOpaque()) { MarkLightingDirty(eastNeighbor);  }
 		if (!westBlock.IsFullyOpaque()) { MarkLightingDirty(westNeighbor);  }
 		if (!northBlock.IsFullyOpaque()) { MarkLightingDirty(northNeighbor); }
@@ -704,7 +752,7 @@ void World::MarkLightingDirty(BlockLocator & blockToDirty)
 
 	// we mark them dirty when they are in the list, so if its already dirty,
 	// its already in the list. Early out
-	if (theBlock.IsLightDirty())
+	if (theBlock.IsLightDirty() || !blockToDirty.IsValid())
 		return;
 
 	theBlock.SetIsLightDirty();
@@ -720,6 +768,12 @@ void World::MarkLightingDirty(BlockLocator & blockToDirty)
 //-----------------------------------------------------------------------------------------------
 void World::UndirtyAllBlocksInChunk(const Chunk * theChunk)
 {
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::AddSkyDebugPoint(const Vector3& pos)
+{
+	m_debugSkyPoints.push_back(DebugPoint(pos, Rgba::RAINBOW_BLUE));
 }
 
 //-----------------------------------------------------------------------------------------------

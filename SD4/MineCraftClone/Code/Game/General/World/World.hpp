@@ -78,7 +78,7 @@ public:
 	void RenderBasis() const;
 	void RenderTargettedBlockRaycast() const;
 	void RenderTargetBlock() const;
-	void RenderDebugDirtyLighting() const;
+	void RenderDebugPoints() const;
 
 public:
 	void CheckAndActivateChunk();
@@ -96,6 +96,9 @@ public:
 	void UndirtyAllBlocksInChunk( const Chunk* theChunk );
 
 public:
+	void AddSkyDebugPoint(const Vector3& pos);
+
+public:
 	RaycastResult RayCast(const Vector3& start, const Vector3& forward, float maxDistance);
 
 public:
@@ -104,6 +107,7 @@ public:
 private:
 	std::deque<BlockLocator>		m_dirtyBlocks;
 	std::vector<DebugPoint>			m_debugDirtyLighting;
+	std::vector<DebugPoint>			m_debugSkyPoints;
 
 public:
 	Camera*					m_camera = nullptr;
