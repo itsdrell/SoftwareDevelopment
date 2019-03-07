@@ -183,11 +183,11 @@ void World::CheckKeyboardInputs()
 
 	if (IsKeyPressed(G_THE_LETTER_T))
 	{
-		m_worldScale = 20000.f;
+		m_worldScale = 20000;
 	}
 	else
 	{
-		m_worldScale = 1.f;
+		m_worldScale = 1;
 	}
 
 	if(IsKeyPressed(KEYBOARD_SHIFT))
@@ -381,7 +381,7 @@ void World::AddSkyDebugPointsForChunkIAmOn()
 	{
 		m_debugSkyPoints.clear();
 
-		ChunkCoords playerCoords = Chunk::GetChunkCoordsFromWorldPosition(Vector3((int)m_gameCamera->pos.x, (int)m_gameCamera->pos.y, 0.f));
+		ChunkCoords playerCoords = Chunk::GetChunkCoordsFromWorldPosition(Vector3(floor(m_gameCamera->pos.x), floor(m_gameCamera->pos.y), 0.f));
 		Chunk* theChunk = m_activeChunks[playerCoords];
 
 		for (uint i = 0; i < AMOUNT_OF_BLOCKS_IN_CHUNK; i++)
@@ -637,6 +637,8 @@ void World::CheckAndDeactivateChunk()
 
 	if (distanceSquaredForCurrent > CHUNK_DEACTIVATION_DISTANCE_SQUARED)
 	{
+		UndirtyAllBlocksInChunk(furthestChunk);
+		
 		furthestChunk->LeaveYourNeighbors();
 		
 		m_activeChunks.erase(furthestChunk->m_chunkCoords);
@@ -958,6 +960,17 @@ void World::MarkLightingDirty(BlockLocator & blockToDirty)
 //-----------------------------------------------------------------------------------------------
 void World::UndirtyAllBlocksInChunk(const Chunk * theChunk)
 {
+	for(uint i = 0; i < m_dirtyBlocks.size(); i++)
+	{
+		BlockLocator& current = m_dirtyBlocks.at(i);
+
+		// just making it invalid, will get cleaned out
+		if(current.m_chunk == theChunk)
+		{
+			current.m_chunk = nullptr;
+			current.m_indexOfBlock = -1;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
