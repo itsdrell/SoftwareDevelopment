@@ -16,6 +16,27 @@
 #include "Engine/Core/General/Blackboard.hpp"
 
 
+
+//===============================================================================================
+void WorldTime::Advance(float ds)
+{
+	m_time += ds / (60 * 60 * 24);
+}
+
+//-----------------------------------------------------------------------------------------------
+int WorldTime::GetDay()
+{
+	return (int)(ceil(m_time));
+}
+
+//-----------------------------------------------------------------------------------------------
+int WorldTime::GetHour()
+{
+	float time = GetFractionOf(m_time);
+	float hour = RangeMapFloat(time, 0.f, 1.f, 0.f, 24.f);
+	return (int)(floor(hour));
+}
+
 //===============================================================================================
 World::World()
 {
@@ -62,6 +83,8 @@ World::~World()
 //-----------------------------------------------------------------------------------------------
 void World::Update()
 {
+	m_theWorldTime.Advance(g_theGameClock->deltaTime * m_worldScale);
+	
 	DebugValidateAllChunks();
 	CheckAndActivateChunk();
 	DebugValidateAllChunks();
@@ -111,6 +134,15 @@ void World::CheckKeyboardInputs()
 	if (DidMouseWheelScrollDown())
 	{
 		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(-1, m_blockToPlace);
+	}
+
+	if (IsKeyPressed(G_THE_LETTER_T))
+	{
+		m_worldScale = 20000.f;
+	}
+	else
+	{
+		m_worldScale = 1.f;
 	}
 
 	if(IsKeyPressed(KEYBOARD_SHIFT))
@@ -939,3 +971,5 @@ RaycastResult World::RayCast(const Vector3& start, const Vector3& forward, float
 	theResult.m_impactFraction = 1.f;
 	return theResult;
 }
+
+

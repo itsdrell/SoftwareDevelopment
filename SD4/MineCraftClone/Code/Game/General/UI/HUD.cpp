@@ -32,6 +32,13 @@ void HUD::Render() const
 		theDef->m_sideUVs.maxs, 
 		Rgba::WHITE);
 
+
+	//-----------------------------------------------------------------------------------------------
+	g_theRenderer->SetCurrentTexture();
+	g_theRenderer->DrawAABB2(AABB2(-49.8f, 45.f, -40.f, 49.8f), Rgba::BLACK);
+	g_theRenderer->DrawText2D(Vector2(-49.f, 48.f), "Day: " + std::to_string(m_world->m_theWorldTime.GetDay()), 1.f);
+	g_theRenderer->DrawText2D(Vector2(-49.f, 46.f), "Hour: " + std::to_string(m_world->m_theWorldTime.GetHour()), 1.f);
+
 	g_theRenderer->SetShader();
 	
 	//DebugRenderLog(.1f, m_world->m_blockToPlace->m_name);

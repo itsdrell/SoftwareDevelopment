@@ -54,6 +54,18 @@ struct DebugPoint
 	Rgba		m_color;
 };
 
+//-----------------------------------------------------------------------------------------------
+struct WorldTime
+{
+public:
+	void Advance(float ds);
+	int GetDay();
+	int GetHour();
+	
+public:
+	float m_time = 0.f;
+};
+
 //====================================================================================
 // Classes
 //====================================================================================
@@ -126,6 +138,9 @@ public:
 	
 	bool					m_showTargettedBlockRaycast = false;
 	RaycastResult			m_targetBlockRaycast;
+
+	WorldTime				m_theWorldTime;
+	int						m_worldScale = 1;
 
 };
 
