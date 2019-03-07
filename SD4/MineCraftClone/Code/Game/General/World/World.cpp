@@ -14,6 +14,8 @@
 #include <xtgmath.h>
 #include "Engine/Core/General/EngineCommon.hpp"
 #include "Engine/Core/General/Blackboard.hpp"
+#include "Engine/Math/CubicSpline.hpp"
+#include "Engine/ThirdParty/SquirrelNoise/SmoothNoise.hpp"
 
 
 
@@ -35,6 +37,23 @@ int WorldTime::GetHour()
 	float time = GetFractionOf(m_time);
 	float hour = RangeMapFloat(time, 0.f, 1.f, 0.f, 24.f);
 	return (int)(floor(hour));
+}
+
+//-----------------------------------------------------------------------------------------------
+float WorldTime::GetNormalizedPercentThroughDay()
+{
+	return GetFractionOf(m_time);
+}
+
+//-----------------------------------------------------------------------------------------------
+bool WorldTime::IsNightTime()
+{
+	float time = GetFractionOf(m_time);
+
+	if (time < .25f && time > .75f)
+		return true;
+
+	return false;
 }
 
 //===============================================================================================
@@ -66,6 +85,9 @@ World::World()
 
 	m_blockToPlace = BlockDefinition::GetDefinitionByName("glowStone");
 
+	m_skyColor = Rgba(20, 20, 40, 255);
+	m_indoorLightColor.SetFromNormalizedFloats(1.0f, .9f, .8f, 1.f);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -84,6 +106,7 @@ World::~World()
 void World::Update()
 {
 	m_theWorldTime.Advance(g_theGameClock->deltaTime * m_worldScale);
+	UpdateSky();
 	
 	DebugValidateAllChunks();
 	CheckAndActivateChunk();
@@ -118,6 +141,28 @@ void World::UpdateChunks()
 	{
 		theIterator->second->Update();
 	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::UpdateSky()
+{	
+	float percentThroughDay = m_theWorldTime.GetNormalizedPercentThroughDay();
+
+	float cosValue = CosDegrees(percentThroughDay * 360.f);
+	float inverse = cosValue * -1.f;
+	float actualValue = RangeMapFloat(inverse, -1.f, 1.f, 0.f, 1.f);
+
+	m_skyColor = Interpolate(Rgba(20, 20, 40, 255), Rgba(200, 230, 255, 255), actualValue);
+
+	float lightningNoise = Compute1dPerlinNoise(g_theGameClock->totalTime, 1.0f , 9);
+	float lightningStrength = RangeMapFloat(lightningNoise, .6f, .9f, 0.f, 1.f);
+	lightningStrength = ClampFloat(lightningStrength, 0.f, 1.f);
+	m_skyColor = Interpolate(m_skyColor, Rgba::WHITE, lightningStrength);
+
+	float glowPerlin = Compute1dPerlinNoise(g_theGameClock->totalTime, 1.0f, 9);
+	float glowStrength = RangeMapFloat(glowPerlin, -1.f, 1.f, .8f, 1.f);
+	m_indoorLightFlickerStrength = ClampFloat(glowStrength,.8f, 1.f);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -352,7 +397,7 @@ void World::AddSkyDebugPointsForChunkIAmOn()
 //-----------------------------------------------------------------------------------------------
 void World::Render() const
 {
-	//Renderer* r = Renderer::GetInstance();
+	RenderSky();
 
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
@@ -379,6 +424,16 @@ void World::Render() const
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::RenderSky() const
+{
+	Renderer* r = Renderer::GetInstance();
+
+	Vector4 colorValues = m_skyColor.GetAsNormalizedVector4();
+
+	r->ClearScreen(colorValues);
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::RenderChunks() const
 {
 	Renderer* r = Renderer::GetInstance();
@@ -394,9 +449,10 @@ void World::RenderChunks() const
 	r->SetCamera(m_camera);
 
 	r->SetUniform("u_cameraPos", m_gameCamera->pos);
-	r->SetUniform("u_indoorLightRgb", Vector3(1.0f, .9f, .8f));
-	r->SetUniform("u_outdoorLightRgb", Vector3(.8f, .9f, 1.f));
-	r->SetUniform("u_skyColor", Vector3(0.f, 0.f, 0.f));
+	r->SetUniform("u_indoorLightRgb", m_indoorLightColor);
+	r->SetUniform("u_flickerStrength", m_indoorLightFlickerStrength);
+	r->SetUniform("u_outdoorLightRgb", m_skyColor);
+	r->SetUniform("u_skyColor", m_skyColor);
 	r->SetUniform("u_fogNearDistance", CHUNK_ACTIVATION_DISTANCE - 32);
 	r->SetUniform("u_fogFarDistance", CHUNK_ACTIVATION_DISTANCE);
 	

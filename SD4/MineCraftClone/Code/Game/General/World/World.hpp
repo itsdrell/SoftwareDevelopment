@@ -61,6 +61,8 @@ public:
 	void Advance(float ds);
 	int GetDay();
 	int GetHour();
+	float GetNormalizedPercentThroughDay();
+	bool IsNightTime();
 	
 public:
 	float m_time = 0.f;
@@ -78,6 +80,7 @@ public:
 public:
 	void Update();
 	void UpdateChunks();
+	void UpdateSky();
 	void CheckKeyboardInputs();
 	void DebugKeys();
 	void UpdateCamera();
@@ -86,6 +89,7 @@ public:
 
 public:
 	void Render() const;
+	void RenderSky() const;
 	void RenderChunks() const;
 	void RenderSkyBox() const;
 	void RenderBasis() const;
@@ -141,6 +145,10 @@ public:
 
 	WorldTime				m_theWorldTime;
 	int						m_worldScale = 1;
+
+	Rgba					m_skyColor;
+	Rgba					m_indoorLightColor;
+	float					m_indoorLightFlickerStrength = 0.8f;
 
 };
 

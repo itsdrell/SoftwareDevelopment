@@ -151,6 +151,7 @@ public:
 	//void Color4ub(Rgba color);
 	//void PopMatrix();
 	void ClearScreen( const Rgba& clearColor );
+	void ClearScreen( const Vector4& normalizedColor );
 	//void LoadIdentity();
 	void AdditiveBlend();
 	void RestoreAdditiveBlend();

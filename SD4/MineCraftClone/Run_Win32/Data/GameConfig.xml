@@ -9,9 +9,9 @@
   useDebugPoints="true"
 	stepDebugLighting="false"
 
-  showSkyBlocks="true"
+  showSkyBlocks="false"
 
-  useOldWorldShader="true"
+  useOldWorldShader="false"
 />
 
 

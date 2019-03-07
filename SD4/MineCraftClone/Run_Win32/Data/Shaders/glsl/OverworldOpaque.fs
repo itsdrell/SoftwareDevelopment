@@ -4,11 +4,12 @@
 layout(binding = 0) uniform sampler2D gTexDiffuse;
 
 uniform vec3 u_cameraPos;
-uniform vec3 u_indoorLightRgb;
-uniform vec3 u_outdoorLightRgb;
-uniform vec3 u_skyColor;
+uniform vec4 u_indoorLightRgb;
+uniform vec4 u_outdoorLightRgb;
+uniform vec4 u_skyColor;
 uniform float u_fogNearDistance;
 uniform float u_fogFarDistance;
+uniform float u_flickerStrength;
 
 //-----------------------------------------------------------------------------------------------
 // We match the name and type of the previous stages out
@@ -27,12 +28,12 @@ void main( void )
    // sample (gather) our texel colour for this UV
    vec4 diffuse = texture( gTexDiffuse, passUV ); 
    
-   float indoorLightLevel = passColor.r;
+   float indoorLightLevel = passColor.r * u_flickerStrength;
    float outdoorLightLevel = passColor.g;
    
-   vec3 indoorLightRgb = indoorLightLevel * u_indoorLightRgb;
-   vec3 outdoorLightRgb = outdoorLightLevel * u_outdoorLightRgb;
-   vec3 lightRgb = max(indoorLightRgb, outdoorLightRgb); //?
+   vec3 indoorLightRgb = (indoorLightLevel * u_indoorLightRgb).xyz;
+   vec4 outdoorLightRgb = outdoorLightLevel * u_outdoorLightRgb;
+   vec3 lightRgb = max(indoorLightRgb, outdoorLightRgb.xyz); //?
 
    lightRgb.r = max(indoorLightRgb.r, outdoorLightRgb.r);
    lightRgb.g = max(indoorLightRgb.g, outdoorLightRgb.g);
@@ -44,7 +45,7 @@ void main( void )
    float dist = distance( u_cameraPos, passWorldPosition);
    float fogFraction = (dist - u_fogNearDistance) / (u_fogFarDistance - u_fogNearDistance);
    fogFraction = clamp( fogFraction, 0.0, 1.0);
-   vec3 finalColor = mix( shadedTexel.rgb, u_skyColor, fogFraction);
+   vec3 finalColor = mix( shadedTexel.rgb, u_skyColor.xyz, fogFraction);
    
    outColor = vec4( finalColor, shadedTexel.a);
    outColor2 = vec4( passUV.x, passUV.y, 0.0, 1.0);  

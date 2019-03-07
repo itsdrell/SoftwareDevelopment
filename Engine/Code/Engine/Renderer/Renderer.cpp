@@ -1307,6 +1307,13 @@ void Renderer::ClearScreen(const Rgba& color)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
+//-----------------------------------------------------------------------------------------------
+void Renderer::ClearScreen(const Vector4& normalizedColor)
+{
+	glClearColor(normalizedColor.x, normalizedColor.y, normalizedColor.z, normalizedColor.z);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void Renderer::AdditiveBlend()
 {
 	glBlendFunc( GL_SRC_ALPHA, GL_ONE );
