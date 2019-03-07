@@ -50,6 +50,7 @@ public:
 	void Render() const;
 
 	void OnActivation();
+	void DebugValidateMe();
 
 private:
 	bool LoadFromFile();
@@ -72,7 +73,6 @@ private:
 	void MarkLightBlocksLightingAsDirty();
 
 public:
-
 	Vector3 GetWorldPositionOfColumn(int theX, int theY);
 	void SetBlockType(int blockX, int blockY, int blockZ, const String& name);
 	void SetBlockType(BlockIndex theIndex, Byte type);
@@ -89,6 +89,7 @@ public:
 
 
 public:
+	ChunkCoords		m_chunkCoords;
 	Chunk*			m_northNeighbor = nullptr;
 	Chunk*			m_southNeighbor = nullptr;
 	Chunk*			m_eastNeighbor = nullptr;
@@ -96,7 +97,6 @@ public:
 
 public:
 	Block			m_blocks[AMOUNT_OF_BLOCKS_IN_CHUNK];
-	ChunkCoords		m_chunkCoords;
 	AABB3			m_bounds;
 	MeshBuilder		m_cpuMesh;
 	Mesh*			m_gpuMesh = nullptr; // can be null

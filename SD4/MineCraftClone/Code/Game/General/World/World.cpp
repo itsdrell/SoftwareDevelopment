@@ -19,8 +19,8 @@
 //===============================================================================================
 World::World()
 {
-	m_skyBox = new TextureCube();
-	m_skyBox->make_from_image("Data/Images/galaxy2.png");
+	//m_skyBox = new TextureCube();
+	//m_skyBox->make_from_image("Data/Images/galaxy2.png");
 
 	m_chunkActivationCheatSheet = new Neighborhood(ACTIVATION_RADIUS_IN_CHUNKS);
 
@@ -62,10 +62,15 @@ World::~World()
 //-----------------------------------------------------------------------------------------------
 void World::Update()
 {
+	DebugValidateAllChunks();
 	CheckAndActivateChunk();
+	DebugValidateAllChunks();
 	CheckAndDeactivateChunk();
+	DebugValidateAllChunks();
 	FindPlayersTargetedBlock();
+	DebugValidateAllChunks();
 	CheckKeyboardInputs();
+	DebugValidateAllChunks();
 
 	// if this is false, we do it in check debug keys :)
 	if (g_gameConfigBlackboard.GetValue("stepDebugLighting", false) == false)
@@ -73,9 +78,11 @@ void World::Update()
 		m_debugDirtyLighting.clear();
 		UpdateDirtyLighting();
 	}
-		
+	DebugValidateAllChunks();
 	CheckAndRebuildChunkMesh();
+	DebugValidateAllChunks();
 
+	AddSkyDebugPointsForChunkIAmOn();
 	//DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
 	//DebugRenderLog(0.05f, std::to_string(m_debugDirtyLighting.size()), Rgba::YELLOW);
 }
@@ -121,9 +128,9 @@ void World::CheckKeyboardInputs()
 		{
 			BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
 			Block& theBlockWeHit = theLocator.GetBlock();
-			theBlockWeHit.m_type = BLOCK_TYPE_AIR;
-			MarkLightingDirty(theLocator);
+			theLocator.m_chunk->SetBlockType(theLocator.m_indexOfBlock, BLOCK_TYPE_AIR);
 
+			MarkLightingDirty(theLocator);
 			m_targetBlockRaycast.m_impactBlock.m_chunk->Dirty();
 
 			// check to dirty neighbors if edge block
@@ -131,18 +138,38 @@ void World::CheckKeyboardInputs()
 			if (theLocator.IsBlockOnWestEdge()) { theLocator.m_chunk->Dirty();}
 			if (theLocator.IsBlockOnNorthEdge()) { theLocator.m_chunk->Dirty(); }
 			if (theLocator.IsBlockOnSouthEdge()) { theLocator.m_chunk->Dirty(); }
+
+			if (theLocator.GetBlockLocatorOfAboveNeighbor().IsSky())
+			{
+				theBlockWeHit.SetToSky();
+
+				// we need to mark all blocks below as now being sky as well
+				BlockLocator belowNeighbor = theLocator.GetBlockLocatorOfBelowNeighbor();
+				while (!belowNeighbor.IsFullyOpaque())
+				{	
+					Block& currentBlock = belowNeighbor.GetBlock();
+					currentBlock.SetToSky();
+
+					MarkLightingDirty(belowNeighbor);
+
+					belowNeighbor.MoveBelow();
+				}
+			}
 		}
 	}
 
+	// placing
 	if (WasMouseButtonJustPressed(RIGHT_MOUSE_BUTTON))
 	{
-		BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
+		BlockLocator theLocator = m_targetBlockRaycast.m_impactBlock;
 		BlockLocator nextToMeBlock = theLocator.GetBlockLocatorNextToMeFromNormal(m_targetBlockRaycast.m_impactNormal);
 
 		if (nextToMeBlock.IsValid())
 		{
 			Block& blockToEdit = nextToMeBlock.GetBlock();
-			blockToEdit.m_type = m_blockToPlace->m_type;
+			bool wasSky = blockToEdit.IsSky(); // saving before we clear it
+			nextToMeBlock.m_chunk->SetBlockType(nextToMeBlock.m_indexOfBlock, m_blockToPlace->m_type);
+			
 			MarkLightingDirty(nextToMeBlock);
 
 			nextToMeBlock.m_chunk->Dirty();
@@ -152,6 +179,25 @@ void World::CheckKeyboardInputs()
 			if (nextToMeBlock.IsBlockOnWestEdge()) { nextToMeBlock.m_chunk->Dirty(); }
 			if (nextToMeBlock.IsBlockOnNorthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
 			if (nextToMeBlock.IsBlockOnSouthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
+
+			if (wasSky && m_blockToPlace->m_isFullyOpaque)
+			{
+				blockToEdit.ClearIsSky();
+
+				// we need to mark all blocks below as now being not sky as well
+				BlockLocator belowNeighbor = nextToMeBlock.GetBlockLocatorOfBelowNeighbor();
+				Block firstBlock = belowNeighbor.GetBlock();
+				while (!belowNeighbor.IsFullyOpaque())
+				{
+					Block& currentBlock = belowNeighbor.GetBlock();
+					currentBlock.ClearIsSky();
+
+					MarkLightingDirty(belowNeighbor);
+
+					belowNeighbor.MoveBelow();
+				}
+			}
+
 		}
 
 	}
@@ -252,6 +298,26 @@ void World::FindPlayersTargetedBlock()
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::AddSkyDebugPointsForChunkIAmOn()
+{
+	if (g_gameConfigBlackboard.GetValue("showSkyBlocks", false))
+	{
+		m_debugSkyPoints.clear();
+
+		ChunkCoords playerCoords = Chunk::GetChunkCoordsFromWorldPosition(Vector3((int)m_gameCamera->pos.x, (int)m_gameCamera->pos.y, 0.f));
+		Chunk* theChunk = m_activeChunks[playerCoords];
+
+		for (uint i = 0; i < AMOUNT_OF_BLOCKS_IN_CHUNK; i++)
+		{
+			BlockLocator current = BlockLocator(theChunk, i);
+
+			if (current.IsSky())
+				AddSkyDebugPoint(current.GetCenterOfBlock());
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::Render() const
 {
 	//Renderer* r = Renderer::GetInstance();
@@ -265,14 +331,14 @@ void World::Render() const
 	m_camera->m_cameraMatrix = theModel;
 	m_camera->m_viewMatrix = theView;
 
-	RenderSkyBox();
+	//RenderSkyBox();
 
 	RenderChunks();
 	RenderBasis();
 	RenderTargetBlock();
 	RenderTargettedBlockRaycast();
 
-	if (g_gameConfigBlackboard.GetValue("useDebugLighting", false))
+	if (g_gameConfigBlackboard.GetValue("useDebugPoints", false))
 	{
 		RenderDebugPoints();
 	}
@@ -285,15 +351,28 @@ void World::RenderChunks() const
 {
 	Renderer* r = Renderer::GetInstance();
 	
-	Shader* chunkShader = Shader::CreateOrGetShader("default");
-	chunkShader->SetCullMode(CULLMODE_FRONT);
+	Shader* chunkShader;
+	if (g_gameConfigBlackboard.GetValue("useOldWorldShader", false))
+		chunkShader = Shader::CreateOrGetShader("default");
+	else
+		chunkShader = Shader::CreateOrGetShader("Data/Shaders/OverworldOpaque.shader");
 
 	r->SetShader(chunkShader);
 	r->SetCurrentTexture(0, g_blockSpriteSheet.m_spriteSheetTexture);
 	r->SetCamera(m_camera);
+
+	r->SetUniform("u_cameraPos", m_gameCamera->pos);
+	r->SetUniform("u_indoorLightRgb", Vector3(1.0f, .9f, .8f));
+	r->SetUniform("u_outdoorLightRgb", Vector3(.8f, .9f, 1.f));
+	r->SetUniform("u_skyColor", Vector3(0.f, 0.f, 0.f));
+	r->SetUniform("u_fogNearDistance", CHUNK_ACTIVATION_DISTANCE - 32);
+	r->SetUniform("u_fogFarDistance", CHUNK_ACTIVATION_DISTANCE);
 	
 	for (auto theIterator = m_activeChunks.begin(); theIterator != m_activeChunks.end(); theIterator++)
 	{
+		if(theIterator->second == nullptr)
+			continue;
+		
 		Mesh* theMesh = theIterator->second->m_gpuMesh;
 
 		// sometimes the mesh isn't made yet
@@ -406,22 +485,31 @@ void World::RenderDebugPoints() const
 		
 		mb.AppendPoint(current.m_position, current.m_color);
 	}
-
-	if (g_gameConfigBlackboard.GetValue("showSkyBlocks", false))
+	
+	for (uint j = 0; j < m_debugSkyPoints.size(); j++)
 	{
-		for (uint j = 0; j < m_debugSkyPoints.size(); j++)
-		{
-			DebugPoint current = m_debugSkyPoints.at(j);
+		DebugPoint current = m_debugSkyPoints.at(j);
 
-			mb.AppendPoint(current.m_position, current.m_color);
-		}
+		mb.AppendPoint(current.m_position, current.m_color);
 	}
+	
 
 	mb.End();
 	Mesh* theMesh = mb.CreateMesh<Vertex3D_PCU>();
 
 	r->SetPointSize(5);
 	r->DrawMesh(theMesh, true);
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::DebugValidateAllChunks()
+{
+	std::map<ChunkCoords, Chunk*>::iterator chunkIter;
+	for (chunkIter = m_activeChunks.begin(); chunkIter != m_activeChunks.end(); ++chunkIter)
+	{
+		Chunk* chunk = chunkIter->second;
+		chunk->DebugValidateMe();
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -449,6 +537,9 @@ void World::CheckAndActivateChunk()
 void World::CheckAndDeactivateChunk()
 {
 	Chunk* furthestChunk = GetFarthestChunkFromPlayer(m_gameCamera->pos.xy());
+
+	if (furthestChunk == nullptr)
+		return;
 
 	Vector2 currentWorldPos = Vector2(
 		(float)(furthestChunk->m_chunkCoords.x * CHUNK_SIZE_X),
@@ -528,6 +619,9 @@ Chunk* World::GetFarthestChunkFromPlayer(const Vector2& playerWorldPos)
 {
 	std::map<ChunkCoords, Chunk*>::iterator theIterator = m_activeChunks.begin();
 	Chunk* currentFurthestChunk = theIterator->second;
+
+	if (currentFurthestChunk == nullptr)
+		return nullptr;
 	
 	Vector2 startingFurthestPos = Vector2(
 		(float)(currentFurthestChunk->m_chunkCoords.x * CHUNK_SIZE_X),
@@ -570,11 +664,12 @@ void World::UpdateDirtyLighting()
 {
 	if (g_gameConfigBlackboard.GetValue("stepDebugLighting", false))
 	{
-		int amountInQueAtStart = m_dirtyBlocks.size();
+		uint amountInQueAtStart = (uint) m_dirtyBlocks.size();
 
 		for (uint i = 0; i < amountInQueAtStart; i++)
 		{
 			ProcessDirtyLightBlock();
+			DebugValidateAllChunks();
 		}
 	}
 	else
@@ -583,6 +678,7 @@ void World::UpdateDirtyLighting()
 		{
 			// pops the front off and updates it's light
 			ProcessDirtyLightBlock();
+			DebugValidateAllChunks();
 		}
 	}
 	
@@ -592,22 +688,21 @@ void World::UpdateDirtyLighting()
 //-----------------------------------------------------------------------------------------------
 void World::ProcessDirtyLightBlock()
 {
+	DebugValidateAllChunks();
 	BlockLocator theLocator = m_dirtyBlocks.front();
+	m_dirtyBlocks.pop_front();
 
 	if (!theLocator.IsValid())
 	{
-		m_dirtyBlocks.pop_front();
 		return;
 	}
-	
+	theLocator.m_chunk->DebugValidateMe();
 	theLocator.m_chunk->Dirty();
-	
+	DebugValidateAllChunks();
+
 	Block& theBlock = theLocator.GetBlock();
 	theBlock.ClearIsLightDirty();
-
-	if (theLocator.IsBlockOnAChunkEdge() && theLocator.m_chunk->m_eastNeighbor == nullptr)
-		int i = 0;
-
+	DebugValidateAllChunks();
 
 	// get my neighbors
 	BlockLocator eastNeighbor = theLocator.GetBlockLocatorOfEastNeighbor();
@@ -616,8 +711,7 @@ void World::ProcessDirtyLightBlock()
 	BlockLocator southNeighbor = theLocator.GetBlockLocatorOfSouthNeighbor();
 	BlockLocator aboveNeighbor = theLocator.GetBlockLocatorOfAboveNeighbor();
 	BlockLocator belowNeighbor = theLocator.GetBlockLocatorOfBelowNeighbor();
-
-	
+	DebugValidateAllChunks();
 
 	Block eastBlock =  BlockLocator::GetInvalidBlock();
 	Block westBlock =  BlockLocator::GetInvalidBlock();
@@ -632,6 +726,7 @@ void World::ProcessDirtyLightBlock()
 	if (southNeighbor.IsValid()) { southBlock = southNeighbor.GetBlock(); }
 	if (aboveNeighbor.IsValid()) { aboveBlock = aboveNeighbor.GetBlock(); }
 	if (belowNeighbor.IsValid()) { belowBlock = belowNeighbor.GetBlock(); }
+	DebugValidateAllChunks();
 
 	int maxIndoorLightValue = 0;
 	int maxOutdoorLightValue = 0;
@@ -650,14 +745,15 @@ void World::ProcessDirtyLightBlock()
 		int aboveNeightborLightValue	   = 0;
 		int bottomNeightborLightValue	   = 0;
 
-		if (eastNeighbor.IsValid()) { eastNeighborLightValue = eastBlock.GetOutdoorLightLevel(); }
-		if (westNeighbor.IsValid()) { westNeighborLightValue = westBlock.GetOutdoorLightLevel(); }
-		if (northNeighbor.IsValid()) { northNeightborLightValue = northBlock.GetOutdoorLightLevel(); }
-		if (southNeighbor.IsValid()) { southNeightborLightValue = southBlock.GetOutdoorLightLevel(); }
-		if (aboveNeighbor.IsValid()) { aboveNeightborLightValue = aboveBlock.GetOutdoorLightLevel(); }
-		if (belowNeighbor.IsValid()) { bottomNeightborLightValue = belowBlock.GetOutdoorLightLevel(); }
+		if (eastNeighbor.IsValid() && !eastNeighbor.IsFullyOpaque()) { eastNeighborLightValue = eastBlock.GetOutdoorLightLevel(); }
+		if (westNeighbor.IsValid() && !westNeighbor.IsFullyOpaque()) { westNeighborLightValue = westBlock.GetOutdoorLightLevel(); }
+		if (northNeighbor.IsValid() && !northNeighbor.IsFullyOpaque()) { northNeightborLightValue = northBlock.GetOutdoorLightLevel(); }
+		if (southNeighbor.IsValid() && !southNeighbor.IsFullyOpaque()) { southNeightborLightValue = southBlock.GetOutdoorLightLevel(); }
+		if (aboveNeighbor.IsValid() && !aboveNeighbor.IsFullyOpaque()) { aboveNeightborLightValue = aboveBlock.GetOutdoorLightLevel(); }
+		if (belowNeighbor.IsValid() && !belowNeighbor.IsFullyOpaque()) { bottomNeightborLightValue = belowBlock.GetOutdoorLightLevel(); }
+		DebugValidateAllChunks();
 
-		if (eastNeighborLightValue > maxOutdoorLightValue)
+		if (eastNeighborLightValue > maxOutdoorLightValue) 
 			maxOutdoorLightValue = eastNeighborLightValue;
 		if (westNeighborLightValue > maxOutdoorLightValue)
 			maxOutdoorLightValue = westNeighborLightValue;
@@ -687,6 +783,7 @@ void World::ProcessDirtyLightBlock()
 		if (southNeighbor.IsValid()) { southNeightborLightValue = southBlock.GetIndoorLightLevel(); }
 		if (aboveNeighbor.IsValid()) { aboveNeightborLightValue = aboveBlock.GetIndoorLightLevel(); }
 		if (belowNeighbor.IsValid()) { bottomNeightborLightValue = belowBlock.GetIndoorLightLevel(); }
+		DebugValidateAllChunks();
 
 		if (eastNeighborLightValue > maxIndoorLightValue)
 			maxIndoorLightValue = eastNeighborLightValue;
@@ -714,6 +811,7 @@ void World::ProcessDirtyLightBlock()
 	{
 		expectedIndoorValue = theDef->m_lightLevel;
 	}
+	DebugValidateAllChunks();
 
 	// Check to see if we changed (were wrong!), if we did, dirty the neighbors
 	bool dirtyNeighbors = false;
@@ -722,37 +820,41 @@ void World::ProcessDirtyLightBlock()
 		theBlock.SetIndoorLightLevel(expectedIndoorValue);
 		dirtyNeighbors = true;
 	}
+	DebugValidateAllChunks();
 
 	if (theBlock.GetOutdoorLightLevel() != expectedOutdoorValue)
 	{
 		theBlock.SetOutdoorLightLevel(expectedOutdoorValue);
 		dirtyNeighbors = true;
 	}
+	DebugValidateAllChunks();
 
 	// spread the love
 	if (dirtyNeighbors)
 	{
-		if (westNeighbor.m_chunk == nullptr)
-			int j = 1;
+		DebugValidateAllChunks();
 		if (!eastBlock.IsFullyOpaque()) { MarkLightingDirty(eastNeighbor);  }
 		if (!westBlock.IsFullyOpaque()) { MarkLightingDirty(westNeighbor);  }
 		if (!northBlock.IsFullyOpaque()) { MarkLightingDirty(northNeighbor); }
 		if (!southBlock.IsFullyOpaque()) { MarkLightingDirty(southNeighbor); }
 		if (!aboveBlock.IsFullyOpaque()) { MarkLightingDirty(aboveNeighbor); }
 		if (!belowBlock.IsFullyOpaque()) { MarkLightingDirty(belowNeighbor); }
+		DebugValidateAllChunks();
 	}
-
-	m_dirtyBlocks.pop_front();
 }
 
 //-----------------------------------------------------------------------------------------------
 void World::MarkLightingDirty(BlockLocator & blockToDirty)
 {
+	if (!blockToDirty.IsValid())
+		return;
+
+	blockToDirty.m_chunk->DebugValidateMe();
 	Block& theBlock = blockToDirty.GetBlock();
 
 	// we mark them dirty when they are in the list, so if its already dirty,
 	// its already in the list. Early out
-	if (theBlock.IsLightDirty() || !blockToDirty.IsValid())
+	if (theBlock.IsLightDirty() )
 		return;
 
 	theBlock.SetIsLightDirty();

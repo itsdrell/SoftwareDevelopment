@@ -15,8 +15,9 @@
 Chunk::Chunk(const ChunkCoords& myCoords)
 	: m_chunkCoords(myCoords)
 {	
+	DebugValidateMe();
 	GenerateMyBounds();
-	if (LoadFromFile())
+	if (LoadFromFile	())
 	{
 		GenerateBlocksFromFile();
 	}
@@ -27,8 +28,8 @@ Chunk::Chunk(const ChunkCoords& myCoords)
 	GenerateTestMesh();
 
 	m_isGPUDirty = true;
-	m_gpuMesh = nullptr;
 	m_cpuMesh.ReserveSpace(10'000);
+	DebugValidateMe();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -69,6 +70,18 @@ void Chunk::OnActivation()
 {
 	SetSkyBlocks();
 	InitializeDirtyLighting();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Chunk::DebugValidateMe()
+{
+	return;
+	GUARANTEE_OR_DIE(abs(m_chunkCoords.x) < 100 && abs(m_chunkCoords.y) < 100, "");
+	GUARANTEE_OR_DIE(!m_gpuMesh || m_gpuMesh->m_vbo.m_vertexCount < 1000000, "" );
+	GUARANTEE_OR_DIE(!m_eastNeighbor || (size_t) m_eastNeighbor < 0x1000000000000000, "");
+	GUARANTEE_OR_DIE(!m_westNeighbor || (size_t) m_westNeighbor < 0x1000000000000000, "");
+	GUARANTEE_OR_DIE(!m_northNeighbor || (size_t) m_northNeighbor < 0x1000000000000000, "");
+	GUARANTEE_OR_DIE(!m_southNeighbor || (size_t) m_southNeighbor < 0x1000000000000000, "");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -375,7 +388,7 @@ Vector3 Chunk::GetWorldPositionOfColumn(int theX, int theY)
 void Chunk::SetSkyBlocks()
 {
 	int theTopHeight = CHUNK_HEIGHT - 1;
-	bool addSkyToDebugPoints = g_gameConfigBlackboard.GetValue("showSkyBlocks", false);
+	//bool addSkyToDebugPoints = g_gameConfigBlackboard.GetValue("showSkyBlocks", false);
 
 	for (int yIndex = 0; yIndex < CHUNK_SIZE_Y; yIndex++)
 	{
@@ -412,7 +425,6 @@ void Chunk::MarkChunkEdgeBlocksLightingDirty()
 
 	for (uint blockIndex = 0; blockIndex < AMOUNT_OF_BLOCKS_IN_CHUNK; blockIndex++)
 	{
-		Block& currentBlock = m_blocks[blockIndex];
 		BlockLocator theLocator = BlockLocator(this, blockIndex);
 
 		if (theLocator.IsBlockOnAChunkEdge() && !theLocator.IsFullyOpaque())
@@ -493,6 +505,7 @@ void Chunk::SetBlockType(BlockIndex theIndex, Byte type)
 {
 	Block& theBlock = m_blocks[theIndex];
 	theBlock.m_type = type;
+	theBlock.ClearFlagBits();
 
 	BlockDefinition* theDef = BlockDefinition::GetDefinitionByType(type);
 	if (theDef->m_isFullyOpaque)
@@ -725,10 +738,10 @@ void Chunk::LeaveYourNeighbors()
 	if (m_northNeighbor) { m_northNeighbor->m_southNeighbor = nullptr; }
 
 	// make them dirty
-	if (m_eastNeighbor) {  m_eastNeighbor->m_isGPUDirty = true;	 }
-	if (m_westNeighbor) {  m_westNeighbor->m_isGPUDirty = true;	 }
-	if (m_southNeighbor) { m_southNeighbor->m_isGPUDirty = true; }
-	if (m_northNeighbor) { m_northNeighbor->m_isGPUDirty = true; }
+	//if (m_eastNeighbor) {  m_eastNeighbor->m_isGPUDirty = true;	 }
+	//if (m_westNeighbor) {  m_westNeighbor->m_isGPUDirty = true;	 }
+	//if (m_southNeighbor) { m_southNeighbor->m_isGPUDirty = true; }
+	//if (m_northNeighbor) { m_northNeighbor->m_isGPUDirty = true; }
 }
 
 //-----------------------------------------------------------------------------------------------

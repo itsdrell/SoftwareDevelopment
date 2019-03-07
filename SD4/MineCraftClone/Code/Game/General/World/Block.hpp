@@ -51,6 +51,7 @@ public:
 	inline void SetIsVisible();
 
 public:
+	inline void ClearFlagBits();
 	inline void ClearIsSky();
 	inline void ClearIsLightDirty();
 
@@ -84,14 +85,14 @@ private:
 void Block::SetIndoorLightLevel(int lightLevel)
 {
 	Byte value = (Byte)m_light & ~BLOCK_LIGHT_MASK_INDOOR; // clears indoor bits
-	m_light = value | lightLevel; // set indoor bits
+	m_light = value | ((Byte)lightLevel); // set indoor bits
 }
 
 //-----------------------------------------------------------------------------------------------
 void Block::SetOutdoorLightLevel(int lightLevel)
 {
 	Byte value = (Byte)m_light & ~BLOCK_LIGHT_MASK_OUTDOOR;
-	m_light = value | (lightLevel << 4);
+	m_light = value | (((Byte)lightLevel) << 4);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -122,6 +123,12 @@ inline void Block::SetIsSolid()
 inline void Block::SetIsVisible()
 {
 	m_bitFlags |= BLOCK_BIT_IS_VISIBLE;
+}
+
+//-----------------------------------------------------------------------------------------------
+void Block::ClearFlagBits()
+{
+	m_bitFlags = 0;
 }
 
 //-----------------------------------------------------------------------------------------------

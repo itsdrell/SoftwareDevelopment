@@ -1386,7 +1386,7 @@ void Renderer::EnableWireframe(bool check)
 //-----------------------------------------------------------------------------------------------
 void Renderer::SetPointSize(int size)
 {
-	glPointSize(size);
+	glPointSize((GLfloat) size);
 }
 
 Texture* Renderer::CreateRenderTarget(int width, int height, eTextureFormat fmt /*= TEXTURE_FORMAT_RGBA8 */)

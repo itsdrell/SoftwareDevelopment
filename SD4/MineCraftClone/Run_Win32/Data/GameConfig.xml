@@ -6,10 +6,12 @@
   mouseMode="relative"
   showCursor="true"
 
-  useDebugLighting="true"
-	stepDebugLighting="true"
+  useDebugPoints="true"
+	stepDebugLighting="false"
 
   showSkyBlocks="true"
+
+  useOldWorldShader="true"
 />
 
 

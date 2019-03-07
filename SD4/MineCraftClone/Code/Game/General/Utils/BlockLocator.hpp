@@ -78,8 +78,8 @@ public:
 	void MoveSouth();
 	void MoveEast();
 	void MoveWest();
-	void MoveUp();
-	void MoveDown();
+	void MoveAbove();
+	void MoveBelow();
 
 public:
 	Chunk*			m_chunk = nullptr;

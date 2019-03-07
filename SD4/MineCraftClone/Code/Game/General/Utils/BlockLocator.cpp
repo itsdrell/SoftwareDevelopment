@@ -336,11 +336,10 @@ void BlockLocator::MoveWest()
 }
 
 //-----------------------------------------------------------------------------------------------
-void BlockLocator::MoveUp()
+void BlockLocator::MoveBelow()
 {
+	BlockLocator below = GetBlockLocatorOfBelowNeighbor();
+	m_indexOfBlock = below.m_indexOfBlock;
+	m_chunk = below.m_chunk;
 }
 
-//-----------------------------------------------------------------------------------------------
-void BlockLocator::MoveDown()
-{
-}

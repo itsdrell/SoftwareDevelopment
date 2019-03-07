@@ -70,6 +70,7 @@ public:
 	void DebugKeys();
 	void UpdateCamera();
 	void FindPlayersTargetedBlock();
+	void AddSkyDebugPointsForChunkIAmOn();
 
 public:
 	void Render() const;
@@ -81,6 +82,7 @@ public:
 	void RenderDebugPoints() const;
 
 public:
+	void DebugValidateAllChunks();
 	void CheckAndActivateChunk();
 	void CheckAndDeactivateChunk();
 	void CheckAndRebuildChunkMesh();
