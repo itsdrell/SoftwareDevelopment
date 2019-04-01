@@ -61,6 +61,12 @@
     <ClCompile Include="General\UI\HUD.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="General\Entities\Player.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="General\Entities\Entity.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main\EngineBuildPreferences.hpp">
@@ -91,5 +97,7 @@
     <ClInclude Include="General\Utils\Neighborhood.hpp" />
     <ClInclude Include="General\Utils\BlockLocator.hpp" />
     <ClInclude Include="General\UI\HUD.hpp" />
+    <ClInclude Include="General\Entities\Entity.hpp" />
+    <ClInclude Include="General\Entities\Player.hpp" />
   </ItemGroup>
 </Project>

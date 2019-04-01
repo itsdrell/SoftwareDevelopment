@@ -1,10 +1,13 @@
 #pragma once
-
+#include "Game/General/Entities/Entity.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class Player;
+class World;
+class HUD;
+class BlockDefinition;
+class GameCamera;
 
 //====================================================================================
 // Type Defs + Defines
@@ -24,19 +27,34 @@ class Player;
 //====================================================================================
 // Classes
 //====================================================================================
-class HUD
+class Player : public Entity
 {
 public:
-	HUD(Player* thePlayer); 
+	Player(const Vector3& pos);
 
 public:
-	void Render() const;
-	void RenderBlockToPlace() const;
-	void RenderTime() const;
-	void RenderDebugHelpers() const;
+	virtual void CreateMesh();
 
 public:
-	Player*			m_player = nullptr;
+	virtual void Update();
+	void CheckKeyboardInput();
+	void CheckAndApplyMovementAndRotation();
+
+public:
+	virtual void Render() const;
+	void DrawSelf() const;
+
+public:
+	void Dig();
+	void Place();
+
+
+public:
+	HUD*					m_playerHUD = nullptr;
+	BlockDefinition*		m_blockToPlace = nullptr;
+	//GameCamera*				m_gameCamera = nullptr;
+
+	float					m_movementSpeed = 2.f;
 };
 
 //====================================================================================
@@ -50,5 +68,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [2/28/2019]
+// Written by Zachary Bracken : [3/30/2019]
 //====================================================================================

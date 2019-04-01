@@ -1,10 +1,12 @@
 #pragma once
-
+#include "Game/Main/GameCommon.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
+#include "Engine/Math/Matrices/Matrix44.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class Player;
+class World;
 
 //====================================================================================
 // Type Defs + Defines
@@ -24,19 +26,37 @@ class Player;
 //====================================================================================
 // Classes
 //====================================================================================
-class HUD
+class Entity
 {
 public:
-	HUD(Player* thePlayer); 
+	Entity();
+	Entity(const Vector3& position);
 
 public:
-	void Render() const;
-	void RenderBlockToPlace() const;
-	void RenderTime() const;
-	void RenderDebugHelpers() const;
+	virtual void CreateMesh() = 0;
 
 public:
-	Player*			m_player = nullptr;
+	virtual void Update();
+	virtual void Render() const;
+
+public:
+	virtual void GetForward();
+	virtual Matrix44 GetModelMatrix();
+	virtual Matrix44 GetViewMatrix();
+
+public:
+	PhysicsMode		m_physicsType = PHYSICS_MODE_NO_CLIP;
+	
+	float yawDegreesAboutZ = 0.f;
+	float pitchDegreesAboutY = 0.f;
+	float rollDegreesAboutX = 0.f;
+	
+	Vector3		m_position = Vector3::ZERO;
+	Vector3		m_velocity = Vector3::ZERO;
+
+public:
+	World*	m_worldTheyAreIn = nullptr;
+
 };
 
 //====================================================================================
@@ -50,5 +70,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [2/28/2019]
+// Written by Zachary Bracken : [3/30/2019]
 //====================================================================================

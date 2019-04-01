@@ -16,6 +16,7 @@
 #include "Engine/Core/General/Blackboard.hpp"
 #include "Engine/Math/CubicSpline.hpp"
 #include "Engine/ThirdParty/SquirrelNoise/SmoothNoise.hpp"
+#include "Game/General/Entities/Player.hpp"
 
 
 
@@ -76,14 +77,13 @@ World::World()
 	g_theRenderer->SetCamera();
 	DebugRenderSet3DCamera(m_camera);
 
+	AddPlayer(Vector3(-21.f, 6.f, 129.f));
+
 	m_gameCamera = new GameCamera();
 	m_gameCamera->pos = Vector3(0.f, 0.f, 200.f);
 	m_gameCamera->pitchDegreesAboutY = 89.f;
-
-	m_playerHUD = new HUD();
-	m_playerHUD->m_world = this;
-
-	m_blockToPlace = BlockDefinition::GetDefinitionByName("glowStone");
+	m_gameCamera->m_entityToFollow = m_player;
+	m_gameCamera->SetCameraMode(CAMERA_MODE_FIRST_PERSON);
 
 	m_skyColor = Rgba(20, 20, 40, 255);
 	m_indoorLightColor.SetFromNormalizedFloats(1.0f, .9f, .8f, 1.f);
@@ -107,16 +107,12 @@ void World::Update()
 {
 	m_theWorldTime.Advance(g_theGameClock->deltaTime * m_worldScale);
 	UpdateSky();
-	
-	DebugValidateAllChunks();
+
 	CheckAndActivateChunk();
-	DebugValidateAllChunks();
 	CheckAndDeactivateChunk();
-	DebugValidateAllChunks();
-	FindPlayersTargetedBlock();
-	DebugValidateAllChunks();
-	CheckKeyboardInputs();
-	DebugValidateAllChunks();
+	UpdateEntities();
+	FindPlayersTargetedBlock(); // move to player
+	CheckKeyboardInputs(); // move to player
 
 	// if this is false, we do it in check debug keys :)
 	if (g_gameConfigBlackboard.GetValue("stepDebugLighting", false) == false)
@@ -124,10 +120,7 @@ void World::Update()
 		m_debugDirtyLighting.clear();
 		UpdateDirtyLighting();
 	}
-	DebugValidateAllChunks();
 	CheckAndRebuildChunkMesh();
-	DebugValidateAllChunks();
-
 	AddSkyDebugPointsForChunkIAmOn();
 	//DebugRenderLog(.1f, "Active Chunks: " + std::to_string(m_activeChunks.size()));
 	//DebugRenderLog(0.05f, std::to_string(m_debugDirtyLighting.size()), Rgba::YELLOW);
@@ -168,19 +161,6 @@ void World::UpdateSky()
 //-----------------------------------------------------------------------------------------------
 void World::CheckKeyboardInputs()
 {
-	if (IsDevConsoleOpen())
-		return;
-	
-	if (DidMouseWheelScrollUp())
-	{
-		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(1, m_blockToPlace);
-	}
-
-	if (DidMouseWheelScrollDown())
-	{
-		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(-1, m_blockToPlace);
-	}
-
 	if (IsKeyPressed(G_THE_LETTER_T))
 	{
 		m_worldScale = 20000;
@@ -190,99 +170,7 @@ void World::CheckKeyboardInputs()
 		m_worldScale = 1;
 	}
 
-	if(IsKeyPressed(KEYBOARD_SHIFT))
-	{
-		m_cameraSpeed = 50.f;
-	}
-	else
-	{
-		m_cameraSpeed = 10.f;
-	}
-
-	if (WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
-	{
-		if (m_targetBlockRaycast.DidImpact())
-		{
-			BlockLocator& theLocator = m_targetBlockRaycast.m_impactBlock;
-			Block& theBlockWeHit = theLocator.GetBlock();
-			theLocator.m_chunk->SetBlockType(theLocator.m_indexOfBlock, BLOCK_TYPE_AIR);
-
-			MarkLightingDirty(theLocator);
-			m_targetBlockRaycast.m_impactBlock.m_chunk->Dirty();
-
-			// check to dirty neighbors if edge block
-			if (theLocator.IsBlockOnEastEdge()) { theLocator.m_chunk->Dirty(); }
-			if (theLocator.IsBlockOnWestEdge()) { theLocator.m_chunk->Dirty();}
-			if (theLocator.IsBlockOnNorthEdge()) { theLocator.m_chunk->Dirty(); }
-			if (theLocator.IsBlockOnSouthEdge()) { theLocator.m_chunk->Dirty(); }
-
-			if (theLocator.GetBlockLocatorOfAboveNeighbor().IsSky())
-			{
-				theBlockWeHit.SetToSky();
-
-				// we need to mark all blocks below as now being sky as well
-				BlockLocator belowNeighbor = theLocator.GetBlockLocatorOfBelowNeighbor();
-				while (!belowNeighbor.IsFullyOpaque())
-				{	
-					Block& currentBlock = belowNeighbor.GetBlock();
-					currentBlock.SetToSky();
-
-					MarkLightingDirty(belowNeighbor);
-
-					belowNeighbor.MoveBelow();
-				}
-			}
-		}
-	}
-
-	// placing
-	if (WasMouseButtonJustPressed(RIGHT_MOUSE_BUTTON))
-	{
-		BlockLocator theLocator = m_targetBlockRaycast.m_impactBlock;
-		BlockLocator nextToMeBlock = theLocator.GetBlockLocatorNextToMeFromNormal(m_targetBlockRaycast.m_impactNormal);
-
-		if (nextToMeBlock.IsValid())
-		{
-			Block& blockToEdit = nextToMeBlock.GetBlock();
-			bool wasSky = blockToEdit.IsSky(); // saving before we clear it
-			nextToMeBlock.m_chunk->SetBlockType(nextToMeBlock.m_indexOfBlock, m_blockToPlace->m_type);
-			
-			MarkLightingDirty(nextToMeBlock);
-
-			nextToMeBlock.m_chunk->Dirty();
-
-			// check to dirty neighbors if edge block
-			if (nextToMeBlock.IsBlockOnEastEdge()) { nextToMeBlock.m_chunk->Dirty(); }
-			if (nextToMeBlock.IsBlockOnWestEdge()) { nextToMeBlock.m_chunk->Dirty(); }
-			if (nextToMeBlock.IsBlockOnNorthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
-			if (nextToMeBlock.IsBlockOnSouthEdge()) { nextToMeBlock.m_chunk->Dirty(); }
-
-			if (wasSky && m_blockToPlace->m_isFullyOpaque)
-			{
-				blockToEdit.ClearIsSky();
-
-				// we need to mark all blocks below as now being not sky as well
-				BlockLocator belowNeighbor = nextToMeBlock.GetBlockLocatorOfBelowNeighbor();
-				Block firstBlock = belowNeighbor.GetBlock();
-				while (!belowNeighbor.IsFullyOpaque())
-				{
-					Block& currentBlock = belowNeighbor.GetBlock();
-					currentBlock.ClearIsSky();
-
-					MarkLightingDirty(belowNeighbor);
-
-					belowNeighbor.MoveBelow();
-				}
-			}
-
-		}
-
-	}
-
 	DebugKeys();
-
-	// do this last cause it'll move the mouse 
-	UpdateCamera();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -366,11 +254,26 @@ void World::UpdateCamera()
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::UpdateEntities()
+{
+	for (uint i = 0; i < m_entities.size(); i++)
+	{
+		Entity*& current = m_entities.at(i);
+
+		current->Update();
+	}
+
+	// not sure if this should be an entity
+	m_gameCamera->Update();
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::FindPlayersTargetedBlock()
 {
-	if (!m_showTargettedBlockRaycast)
+	// locking the camera as well
+	if (!m_showTargettedBlockRaycast && m_gameCamera->m_mode != CAMERA_MODE_MANUAL)
 	{
-		m_targetBlockRaycast = RayCast(m_gameCamera->pos, m_camera->GetForward(), 8.f);
+		m_targetBlockRaycast = RayCast(m_player->m_position, m_camera->GetForward(), 8.f);
 	}
 }
 
@@ -398,29 +301,18 @@ void World::AddSkyDebugPointsForChunkIAmOn()
 void World::Render() const
 {
 	RenderSky();
-
-	// Set up Cameras
-	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
-
-	//m_camera->m_cameraMatrix = m_camera->transform.GetLocalMatrix();//Matrix44(); //modelMatrix;
-	Matrix44 theModel = m_gameCamera->GetModelMatrix();
-	Matrix44 theView = m_gameCamera->GetViewMatrix();
-	m_camera->m_cameraMatrix = theModel;
-	m_camera->m_viewMatrix = theView;
-
-	//RenderSkyBox();
+	HammerCameraValuesToEngineCamera();
 
 	RenderChunks();
 	RenderBasis();
 	RenderTargetBlock();
+	RenderEntities();
 	RenderTargettedBlockRaycast();
 
 	if (g_gameConfigBlackboard.GetValue("useDebugPoints", false))
 	{
 		RenderDebugPoints();
 	}
-
-	m_playerHUD->Render();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -590,6 +482,27 @@ void World::RenderDebugPoints() const
 }
 
 //-----------------------------------------------------------------------------------------------
+void World::RenderEntities() const
+{
+	for (uint i = 0; i < m_entities.size(); i++)
+	{
+		Entity* current = m_entities.at(i);
+
+		current->Render();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::AddPlayer(const Vector3& position)
+{
+	m_player = new Player(position);
+	m_player->m_worldTheyAreIn = this;
+	//m_player->m_gameCamera = m_gameCamera;
+
+	m_entities.push_back(m_player);
+}
+
+//-----------------------------------------------------------------------------------------------
 void World::DebugValidateAllChunks()
 {
 	std::map<ChunkCoords, Chunk*>::iterator chunkIter;
@@ -747,6 +660,29 @@ Chunk* World::GetChunkFromChunkCoords(const ChunkCoords& theCoords)
 		return nullptr;
 
 	return theIterator->second;
+}
+
+//-----------------------------------------------------------------------------------------------
+void World::HammerCameraValuesToEngineCamera() const
+{
+	// Set up Cameras
+	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
+	
+	if (m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
+	{
+		Matrix44 theModel = m_gameCamera->GetModelMatrix();
+		Matrix44 theView = m_gameCamera->GetViewMatrix();
+		m_camera->m_cameraMatrix = theModel;
+		m_camera->m_viewMatrix = theView;
+	}
+	else
+	{
+		Matrix44 theModel = m_player->GetModelMatrix();
+		Matrix44 theView = m_player->GetViewMatrix();
+		m_camera->m_cameraMatrix = theModel;
+		m_camera->m_viewMatrix = theView;
+	}
+
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -14,6 +14,8 @@ class TextureCube;
 class Mesh;
 class Neighborhood;
 class HUD;
+class Player;
+class Entity;
 
 //====================================================================================
 // Type Defs + Defines
@@ -81,9 +83,10 @@ public:
 	void Update();
 	void UpdateChunks();
 	void UpdateSky();
+	void UpdateCamera();
+	void UpdateEntities();
 	void CheckKeyboardInputs();
 	void DebugKeys();
-	void UpdateCamera();
 	void FindPlayersTargetedBlock();
 	void AddSkyDebugPointsForChunkIAmOn();
 
@@ -96,6 +99,10 @@ public:
 	void RenderTargettedBlockRaycast() const;
 	void RenderTargetBlock() const;
 	void RenderDebugPoints() const;
+	void RenderEntities() const;
+
+public:
+	void AddPlayer(const Vector3& position);
 
 public:
 	void DebugValidateAllChunks();
@@ -106,6 +113,7 @@ public:
 	bool IsChunkActivated(const ChunkCoords& theCoords);
 	Chunk* GetFarthestChunkFromPlayer(const Vector2& playerWorldPos);
 	Chunk* GetChunkFromChunkCoords( const ChunkCoords& theCoords );
+	void HammerCameraValuesToEngineCamera() const;
 
 public:
 	void UpdateDirtyLighting();
@@ -128,12 +136,13 @@ private:
 	std::vector<DebugPoint>			m_debugSkyPoints;
 
 public:
-	Camera*					m_camera = nullptr;
+	Player*					m_player = nullptr;
 	GameCamera*				m_gameCamera = nullptr;
-	float					m_cameraSpeed = 10.f;
+	std::vector<Entity*>	m_entities;
 
-	BlockDefinition*		m_blockToPlace = nullptr;
-	HUD*					m_playerHUD = nullptr;
+public:
+	Camera*					m_camera = nullptr;
+	float					m_cameraSpeed = 10.f;
 
 	TextureCube*			m_skyBox = nullptr;
 	Mesh*					m_skyMesh = nullptr;
