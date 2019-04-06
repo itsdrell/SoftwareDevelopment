@@ -1,14 +1,10 @@
 #pragma once
-#include "Game/General/Entities/Entity.hpp"
-#include "Engine/Math/Geometry/Sphere.hpp"
+#include "Engine/Math/Vectors/Vector3.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-class World;
-class HUD;
-class BlockDefinition;
-class GameCamera;
+class AABB3;
 
 //====================================================================================
 // Type Defs + Defines
@@ -28,48 +24,21 @@ class GameCamera;
 //====================================================================================
 // Classes
 //====================================================================================
-class Player : public Entity
+class Sphere
 {
 public:
-	Player(const Vector3& pos);
+	Sphere() {}
+	Sphere(const Vector3& theCenter, float theRadius);
 
 public:
-	virtual void CreateMesh();
-
-public:
-	virtual void Update() override;
-	virtual void CheckKeyboardInput() override;
-	virtual void UpdateCollisionVolumesPositions() override;
-	void CorrectivePhysics();
-	
-	void GetMoveIntentions(const Vector3& forward, const Vector3& right);
-	void CheckAndApplyMovementAndRotation();
-
-public:
-	virtual void Render() const;
-	void DrawSelf() const;
-
-public:
-	void Dig();
-	void Place();
-	void NoClipAndFlyingMovement(const Vector3& forward, const Vector3& right);
-	void MovementWithForces(const Vector3& forward, const Vector3& right);
-
-public:
-	HUD*					m_playerHUD = nullptr;
-	BlockDefinition*		m_blockToPlace = nullptr;
-	//GameCamera*				m_gameCamera = nullptr;
-
-	Vector3					m_spawnLocation;
-	Sphere					m_bottomPhysicsSphere;
-
-	AABB3					m_collisionBox;
-	
+	Vector3			center = Vector3::ZERO;
+	float			radius = 1.f;
 };
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
+Vector3 CorrectiveSphereVsAABB3(const Sphere& theSphere, const AABB3& theBox);
 
 
 //====================================================================================
@@ -78,5 +47,5 @@ public:
 
 
 //====================================================================================
-// Written by Zachary Bracken : [3/30/2019]
+// Written by Zachary Bracken : [4/6/2019]
 //====================================================================================

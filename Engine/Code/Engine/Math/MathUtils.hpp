@@ -58,7 +58,7 @@ void DecomposeVectorIntoBasis( const Vector2& originalVector,
 Vector2 Reflect(const Vector2& incoming, const Vector2& surfaceNormal);
 
 float GetDistance(Vector2 firstVector, Vector2 secondVector);
-float GetDistance(Vector3& firstVector, Vector3& secondVector);
+float GetDistance(const Vector3& firstVector, const Vector3& secondVector);
 float GetDistanceSquared(Vector2 firstVector, Vector2 secondVector);
 
 void GenerateArbitraryTangents(Vector3* tangent, Vector3* bitangent, const Vector3& normal);

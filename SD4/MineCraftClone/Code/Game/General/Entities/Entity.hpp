@@ -31,13 +31,19 @@ class Entity
 public:
 	Entity();
 	Entity(const Vector3& position);
+	virtual ~Entity() {}
 
 public:
 	virtual void CreateMesh() = 0;
 
 public:
 	virtual void Update();
+	virtual void CheckKeyboardInput();
+	virtual void UpdateCollisionVolumesPositions() = 0;
 	virtual void Render() const;
+
+public:
+	virtual void ApplyForces();
 
 public:
 	virtual void GetForward();
@@ -51,8 +57,22 @@ public:
 	float pitchDegreesAboutY = 0.f;
 	float rollDegreesAboutX = 0.f;
 	
+
+public:
 	Vector3		m_position = Vector3::ZERO;
+	Vector3		m_acceleration = Vector3::ZERO;
 	Vector3		m_velocity = Vector3::ZERO;
+	Vector3		m_willPowerMoveIntentions = Vector3::ZERO;
+	Vector3		m_spawnLocation = Vector3::ZERO;
+	Vector3		m_eyeOffsetFromCenter = Vector3::ZERO;
+
+public:
+	float		m_willPowerStrength = 5.f;
+	float		m_maxVelocity = 5.f;
+	float		m_movementSpeed = 2.f;
+	float		m_jumpForce = GRAVITY_SCALE * .5f;
+	bool		m_isOnGround = false;
+	
 
 public:
 	World*	m_worldTheyAreIn = nullptr;

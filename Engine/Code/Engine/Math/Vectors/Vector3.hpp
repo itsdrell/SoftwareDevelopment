@@ -83,3 +83,7 @@ Vector3 Average( const Vector3& a, const Vector3& b);
 
 Vector3 Slerp(const Vector3& a, const Vector3& b, float t);
 Vector3 SlerpUnit(const Vector3& a, const Vector3& b, float t);
+
+Vector3 Clamp(Vector3 in, const Vector3& clampMin, const Vector3& clampMax);
+
+float GetDistanceSquared(const Vector3& a, const Vector3& b);

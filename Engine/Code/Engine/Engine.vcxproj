@@ -387,6 +387,7 @@
     <ClCompile Include="Math\Geometry\OBB2.cpp" />
     <ClCompile Include="Math\Geometry\OBB3.cpp" />
     <ClCompile Include="Math\Geometry\Plane.cpp" />
+    <ClCompile Include="Math\Geometry\Sphere.cpp" />
     <ClCompile Include="Math\MathUtils.cpp" />
     <ClCompile Include="Math\Matrices\Matrix33.cpp" />
     <ClCompile Include="Math\Matrices\Matrix44.cpp" />
@@ -536,6 +537,7 @@
     <ClInclude Include="Math\Geometry\OBB2.hpp" />
     <ClInclude Include="Math\Geometry\OBB3.hpp" />
     <ClInclude Include="Math\Geometry\Plane.hpp" />
+    <ClInclude Include="Math\Geometry\Sphere.hpp" />
     <ClInclude Include="Math\MathUtils.hpp" />
     <ClInclude Include="Math\Matrices\Matrix33.hpp" />
     <ClInclude Include="Math\Matrices\Matrix44.hpp" />

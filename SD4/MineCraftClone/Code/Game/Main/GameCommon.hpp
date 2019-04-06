@@ -31,7 +31,7 @@ constexpr int CHUNK_Y_MASK = 0b1111'0000;
 constexpr int CHUNK_Z_MASK = 0b1111'1111'0000'0000;
 
 
-constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 8; // 13 is a good number, 15 gets me 60 fps
+constexpr int ACTIVATION_RADIUS_IN_CHUNKS = 10; // 13 is a good number, 15 gets me 60 fps
 constexpr float CHUNK_ACTIVATION_DISTANCE = ACTIVATION_RADIUS_IN_CHUNKS * CHUNK_SIZE_X;
 constexpr float CHUNK_ACTIVATION_DISTANCE_SQUARED = CHUNK_ACTIVATION_DISTANCE * CHUNK_ACTIVATION_DISTANCE;
 
@@ -41,6 +41,9 @@ constexpr float CHUNK_DEACTIVATION_DISTANCE_SQUARED = CHUNK_DEACTIVATION_DISTANC
 constexpr float RAYCAST_STEP_SIZE = .05f;
 
 constexpr int MAX_LIGHT_VALUE = 15;
+
+constexpr float GRAVITY_SCALE = 9.76f;
+constexpr float FRICTION_SCALE = 2.f;
 
 //====================================================================================
 // ENUMS

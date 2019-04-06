@@ -87,7 +87,7 @@ public:
 	
 	//void DrawAABB3(const AABB3& bounds, Rgba theColor = Rgba::WHITE, bool wireFramed = false);
 	//void DrawQuad(const Vector3& position, AABB2& bounds, Rgba theColor = Rgba::WHITE, Texture* theTexture = nullptr, Vector3 right = Vector3::RIGHT, Vector3 up = Vector3::UP);
-	//void DrawSphere(const Vector3& position, float radius = 1.f, Rgba theColor = Rgba::WHITE, uint wedges = 8, uint slices = 8, bool wireFramed = false);
+	void DrawSphere(const Vector3& position, float radius = 1.f, Rgba theColor = Rgba::WHITE, uint wedges = 8, uint slices = 8, bool wireFramed = false);
 
 	// 3D
 	void DrawCube(Vector3 const &center, 

@@ -454,6 +454,9 @@
     <ClCompile Include="Core\General\EngineLuaFunctionBindings.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Geometry\Sphere.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -617,6 +620,7 @@
     <ClInclude Include="Core\General\EngineLuaFunctionBindings.hpp" />
     <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapper.hpp" />
     <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapperutil.hpp" />
+    <ClInclude Include="Math\Geometry\Sphere.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

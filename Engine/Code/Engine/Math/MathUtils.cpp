@@ -597,7 +597,7 @@ float GetDistance(Vector2 firstVector, Vector2 secondVector)
 	return answer;
 }
 
-float GetDistance(Vector3& firstVector, Vector3& secondVector)
+float GetDistance(const Vector3& firstVector, const Vector3& secondVector)
 {
 	// This can be optimized later if needed, I prefer breaking it down this way
 	float firstStep = (secondVector.x - firstVector.x) * (secondVector.x - firstVector.x);
@@ -611,7 +611,10 @@ float GetDistance(Vector3& firstVector, Vector3& secondVector)
 
 float GetDistanceSquared(Vector2 firstVector, Vector2 secondVector)
 {
-	return GetDistance(firstVector,secondVector) * GetDistance(firstVector,secondVector);
+	// this is just distance formula without the square root
+	// (b.x - a.x)2 + (b.y - a.y)2
+	return ((secondVector.x - firstVector.x) * (secondVector.x - firstVector.x))
+		+ ((secondVector.y - firstVector.y) * (secondVector.y - firstVector.y));
 }
 
 void GenerateArbitraryTangents(Vector3* tangent, Vector3* bitangent, const Vector3& normal)

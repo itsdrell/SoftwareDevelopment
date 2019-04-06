@@ -914,6 +914,20 @@ void Renderer::DrawBasis(const Matrix44& basis, float lengthOfLine, float lineTh
 	DrawLine3D(position, z, lineThickness, Rgba::BLUE);
 }
 
+//-----------------------------------------------------------------------------------------------
+void Renderer::DrawSphere(const Vector3& position, float radius /*= 1.f*/, 
+	Rgba theColor /*= Rgba::WHITE*/, uint wedges /*= 8*/, uint slices /*= 8*/, bool wireFramed /*= false*/)
+{
+	if (wireFramed)
+		EnableWireframe(wireFramed);
+	
+	MeshBuilder mb;
+	mb.AddUVSphere(position, radius, wedges, slices, theColor);
+	Mesh* mesh = mb.CreateMesh<Vertex3D_PCU>();
+
+	DrawMesh(mesh, true);
+}
+
 void Renderer::DrawCube(Vector3 const &center, Vector3 const &dimensions, Texture* textureToUse, Rgba const &color /*= Rgba::WHITE*/, Rect uv_top /*= Rect::ZERO_TO_ONE*/, Rect uv_side /*= Rect::ZERO_TO_ONE*/, Rect uv_bottom /*= Rect::ZERO_TO_ONE */)
 {
 	GL_CHECK_ERROR();

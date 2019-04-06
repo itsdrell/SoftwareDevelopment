@@ -14,6 +14,11 @@ Player::Player(const Vector3 & pos)
 	: Entity(pos)
 {
 	m_playerHUD = new HUD(this);
+	m_physicsType = PHYSICS_MODE_GRAVITY;
+	m_spawnLocation = pos;
+	m_eyeOffsetFromCenter = Vector3(0.f, 0.f, .75f);
+
+	m_bottomPhysicsSphere = Sphere(m_position, .3f);
 
 	m_blockToPlace = BlockDefinition::GetDefinitionByName("glowStone");
 	
@@ -28,7 +33,46 @@ void Player::CreateMesh()
 //-----------------------------------------------------------------------------------------------
 void Player::Update()
 {
-	CheckKeyboardInput();
+	CheckAndApplyMovementAndRotation();
+	Entity::Update();
+	UpdateCollisionVolumesPositions();
+
+	CorrectivePhysics();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Player::GetMoveIntentions(const Vector3& forward, const Vector3& right)
+{
+	m_willPowerMoveIntentions = Vector3::ZERO;
+
+	if (!m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
+	{
+		// figure out the willpower that I wanna go
+		if (IsKeyPressed(G_THE_LETTER_W))
+			m_willPowerMoveIntentions += forward;
+		if (IsKeyPressed(G_THE_LETTER_S))
+			m_willPowerMoveIntentions += -forward;
+		if (IsKeyPressed(G_THE_LETTER_A))
+			m_willPowerMoveIntentions += -right;
+		if (IsKeyPressed(G_THE_LETTER_D))
+			m_willPowerMoveIntentions += right;
+		
+		// jump
+		if (WasKeyJustPressed(KEYBOARD_SPACE) && m_physicsType == PHYSICS_MODE_GRAVITY && m_isOnGround)
+		{
+			m_velocity.z += m_jumpForce;
+			m_isOnGround = false;
+		}
+
+		// up and down vertical
+		if (m_physicsType == PHYSICS_MODE_FLYING || m_physicsType == PHYSICS_MODE_NO_CLIP)
+		{
+			if (IsKeyPressed(G_THE_LETTER_A))
+				m_willPowerMoveIntentions += -right;
+			if (IsKeyPressed(G_THE_LETTER_D))
+				m_willPowerMoveIntentions += right;
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -36,6 +80,8 @@ void Player::CheckKeyboardInput()
 {
 	if (IsDevConsoleOpen())
 		return;
+
+	Entity::CheckKeyboardInput();
 
 	if (DidMouseWheelScrollUp())
 	{
@@ -45,15 +91,6 @@ void Player::CheckKeyboardInput()
 	if (DidMouseWheelScrollDown())
 	{
 		m_blockToPlace = BlockDefinition::GetNextBlockDefinition(-1, m_blockToPlace);
-	}
-
-	if (IsKeyPressed(KEYBOARD_SHIFT))
-	{
-		m_movementSpeed = 50.f;
-	}
-	else
-	{
-		m_movementSpeed = 10.f;
 	}
 
 	if (WasMouseButtonJustPressed(LEFT_MOUSE_BUTTON))
@@ -66,18 +103,55 @@ void Player::CheckKeyboardInput()
 	{
 		Place();
 	}
-
 	
 	CheckAndApplyMovementAndRotation();
+}
+
+//-----------------------------------------------------------------------------------------------
+void Player::UpdateCollisionVolumesPositions()
+{
+	m_bottomPhysicsSphere.center = m_position - Vector3(0.f, 0.f, .6f);
+}
+
+//-----------------------------------------------------------------------------------------------
+void Player::CorrectivePhysics()
+{
+	// Get box bellow me
+	ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(m_position);
+	Chunk* myChunk = m_worldTheyAreIn->GetChunkFromChunkCoords(theChunkCoords);
+	if (myChunk == nullptr) return;
+	BlockIndex bi = myChunk->GetBlockIndexForWorldCoords(m_position);
+
+	BlockLocator myLocator = BlockLocator(myChunk, bi);
+	if (!myLocator.IsValid()) return;
+
+	BlockLocator belowBlock = myLocator.GetBlockLocatorOfBelowNeighbor();
+	if (!belowBlock.IsValid() || !belowBlock.GetBlock().IsSolid()) return;
+	m_isOnGround = true;
+	
+	Vector3 centerOfBox = belowBlock.GetCenterOfBlock();
+	m_collisionBox = AABB3(centerOfBox - Vector3(.5f), centerOfBox + Vector3(.5f));
+
+	// Push Disc out of box
+	Vector3 pushoutAmount = CorrectiveSphereVsAABB3(m_bottomPhysicsSphere, m_collisionBox);
+
+	// apply that amount to position
+	m_position += pushoutAmount;
+
+	// kill velocity (just z for now)
+	m_velocity.z = 0.f;
+
+	UpdateCollisionVolumesPositions();
+	
 }
 
 //-----------------------------------------------------------------------------------------------
 void Player::CheckAndApplyMovementAndRotation()
 {
 	// we are driving the camera no the player
-	if (m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
-		return;
-	
+	//if (m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
+	//	return;
+
 	// Apply Rotation
 	Vector2 mouse_delta = g_theInput->GetMouseDelta();
 
@@ -87,38 +161,17 @@ void Player::CheckAndApplyMovementAndRotation()
 	pitchDegreesAboutY = ClampFloat(pitchDegreesAboutY, -90.f, 90.f);
 	yawDegreesAboutZ = fmod(yawDegreesAboutZ, 360.f);
 
-	// movement
-	Vector3 amountToMove = Vector3::ZERO;
-	float ds = g_theGameClock->deltaTime;
-
 	Vector3 forward = Vector3(CosDegrees(yawDegreesAboutZ), SinDegrees(yawDegreesAboutZ), 0.f);
 	Vector3 right = Vector3(forward.y, -forward.x, 0.f);
 
-	if (IsKeyPressed(G_THE_LETTER_W))
-		amountToMove = forward;
-	if (IsKeyPressed(G_THE_LETTER_S))
-		amountToMove = -forward;
-	if (IsKeyPressed(G_THE_LETTER_A))
-		amountToMove = -right;
-	if (IsKeyPressed(G_THE_LETTER_D))
-		amountToMove = right;
+	GetMoveIntentions(forward, right);
 
-	if (m_physicsType == PHYSICS_MODE_FLYING || m_physicsType == PHYSICS_MODE_NO_CLIP)
-	{
-		if (IsKeyPressed(G_THE_LETTER_E))
-			amountToMove = Vector3::UP;
-		if (IsKeyPressed(G_THE_LETTER_Q))
-			amountToMove = Vector3::DOWN;
-	}
-
-
-	if (amountToMove != Vector3::ZERO)
-		m_position += (amountToMove * ds * m_movementSpeed);
 }
 
 //-----------------------------------------------------------------------------------------------
 void Player::Render() const
 {
+	Entity::Render();
 	DrawSelf();
 
 	m_playerHUD->Render();
@@ -127,12 +180,18 @@ void Player::Render() const
 //-----------------------------------------------------------------------------------------------
 void Player::DrawSelf() const
 {
+	if (m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_FIRST_PERSON)
+		return;
+	
 	Renderer* r = Renderer::GetInstance();
-	r->SetShader(Shader::CreateOrGetShader("default"));
+	r->SetShader(Shader::CreateOrGetShader("Data/Shaders/defaultWireframe.shader"));
 	r->SetCurrentTexture();
 	r->SetCamera(m_worldTheyAreIn->m_camera);
 
-	r->DrawWireFramedCube(m_position, Vector3(.3, .3, .8));
+	r->DrawWireFramedCube(m_position, Vector3(.3f, .3f, .9f));
+	r->DrawWireFramedCube(m_collisionBox.GetCenter(), m_collisionBox.GetDimensions() * .5f, 1.f, Rgba::RED);
+	r->DrawSphere(m_bottomPhysicsSphere.center, m_bottomPhysicsSphere.radius, Rgba::RAINBOW_BLUE);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -212,5 +271,52 @@ void Player::Place()
 			}
 		}
 
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Player::NoClipAndFlyingMovement(const Vector3& forward, const Vector3& right)
+{
+	// movement
+	Vector3 direction = Vector3::ZERO;
+	float ds = g_theGameClock->deltaTime;
+
+	if (IsKeyPressed(G_THE_LETTER_W))
+		direction = forward;
+	if (IsKeyPressed(G_THE_LETTER_S))
+		direction = -forward;
+	if (IsKeyPressed(G_THE_LETTER_A))
+		direction = -right;
+	if (IsKeyPressed(G_THE_LETTER_D))
+		direction = right;
+	if (IsKeyPressed(G_THE_LETTER_E))
+		direction = Vector3::UP;
+	if (IsKeyPressed(G_THE_LETTER_Q))
+		direction = Vector3::DOWN;
+
+	if (direction != Vector3::ZERO)
+	{
+		m_position += (direction * ds * m_movementSpeed);
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+void Player::MovementWithForces(const Vector3& forward, const Vector3& right)
+{
+	m_willPowerMoveIntentions = Vector3::ZERO;
+
+	if (!m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
+	{
+		// figure out the willpower that I wanna go
+		if (IsKeyPressed(G_THE_LETTER_W))
+			m_willPowerMoveIntentions += forward;
+		if (IsKeyPressed(G_THE_LETTER_S))
+			m_willPowerMoveIntentions += -forward;
+		if (IsKeyPressed(G_THE_LETTER_A))
+			m_willPowerMoveIntentions += -right;
+		if (IsKeyPressed(G_THE_LETTER_D))
+			m_willPowerMoveIntentions += right;
+		if (IsKeyPressed(KEYBOARD_SPACE))
+			m_willPowerMoveIntentions += Vector3::UP;
 	}
 }

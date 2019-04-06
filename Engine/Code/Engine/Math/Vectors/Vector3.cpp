@@ -384,3 +384,23 @@ Vector3 SlerpUnit(const Vector3 & a, const Vector3 & b, float t)
 		return (a * (neg_num / den)) + (b * (pos_num / den));
 	}
 }
+
+//-----------------------------------------------------------------------------------------------
+Vector3 Clamp(Vector3 in, const Vector3& clampMin, const Vector3& clampMax)
+{
+	Vector3 result;
+
+	result.x = ClampFloat(in.x, clampMin.x, clampMax.x);
+	result.y = ClampFloat(in.y, clampMin.y, clampMax.y);
+	result.z = ClampFloat(in.z, clampMin.z, clampMax.z);
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------------
+float GetDistanceSquared(const Vector3& a, const Vector3& b)
+{
+	return ((b.x - a.x) * (b.x - a.x))
+		+ ((b.y - a.y) * (b.y - a.y))
+		+ ((b.z - a.z) * (b.z - a.z));
+}
