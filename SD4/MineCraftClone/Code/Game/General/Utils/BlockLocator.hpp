@@ -50,7 +50,9 @@ public:
 
 	BlockLocator GetBlockLocatorNextToMeFromNormal(const Vector3& theNormal);
 
+public:
 	Vector3 GetCenterOfBlock() const;
+	AABB3 GetBlockBounds() const;
 
 public:
 	inline int GetIndoorLightValueFromBlock();
@@ -72,6 +74,7 @@ public:
 
 public:
 	inline bool IsSky() { return GetBlock().IsSky();  }
+	inline bool IsSolid() { return GetBlock().IsSolid(); }
 
 public:
 	void MoveNorth();

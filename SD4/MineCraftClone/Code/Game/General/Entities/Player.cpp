@@ -17,6 +17,7 @@ Player::Player(const Vector3 & pos)
 	m_physicsType = PHYSICS_MODE_GRAVITY;
 	m_spawnLocation = pos;
 	m_eyeOffsetFromCenter = Vector3(0.f, 0.f, .75f);
+	m_bottomOfEntityOffset = Vector3(0.f, 0.f, 1.f);
 
 	m_bottomPhysicsSphere = Sphere(m_position, .3f);
 
@@ -35,9 +36,6 @@ void Player::Update()
 {
 	CheckAndApplyMovementAndRotation();
 	Entity::Update();
-	UpdateCollisionVolumesPositions();
-
-	CorrectivePhysics();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -116,33 +114,7 @@ void Player::UpdateCollisionVolumesPositions()
 //-----------------------------------------------------------------------------------------------
 void Player::CorrectivePhysics()
 {
-	// Get box bellow me
-	ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(m_position);
-	Chunk* myChunk = m_worldTheyAreIn->GetChunkFromChunkCoords(theChunkCoords);
-	if (myChunk == nullptr) return;
-	BlockIndex bi = myChunk->GetBlockIndexForWorldCoords(m_position);
-
-	BlockLocator myLocator = BlockLocator(myChunk, bi);
-	if (!myLocator.IsValid()) return;
-
-	BlockLocator belowBlock = myLocator.GetBlockLocatorOfBelowNeighbor();
-	if (!belowBlock.IsValid() || !belowBlock.GetBlock().IsSolid()) return;
-	m_isOnGround = true;
-	
-	Vector3 centerOfBox = belowBlock.GetCenterOfBlock();
-	m_collisionBox = AABB3(centerOfBox - Vector3(.5f), centerOfBox + Vector3(.5f));
-
-	// Push Disc out of box
-	Vector3 pushoutAmount = CorrectiveSphereVsAABB3(m_bottomPhysicsSphere, m_collisionBox);
-
-	// apply that amount to position
-	m_position += pushoutAmount;
-
-	// kill velocity (just z for now)
-	m_velocity.z = 0.f;
-
-	UpdateCollisionVolumesPositions();
-	
+	PushSphereOutOfBoxes(m_bottomPhysicsSphere);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -191,6 +163,10 @@ void Player::DrawSelf() const
 	r->DrawWireFramedCube(m_position, Vector3(.3f, .3f, .9f));
 	r->DrawWireFramedCube(m_collisionBox.GetCenter(), m_collisionBox.GetDimensions() * .5f, 1.f, Rgba::RED);
 	r->DrawSphere(m_bottomPhysicsSphere.center, m_bottomPhysicsSphere.radius, Rgba::RAINBOW_BLUE);
+
+	r->SetShader(Shader::CreateOrGetShader("default"));
+	r->DrawCube(m_position + m_eyeOffsetFromCenter + Vector3(-.1f, 0.f, 0.f), Vector3(.05f), nullptr, Rgba::YELLOW);
+	r->DrawCube(m_position + m_eyeOffsetFromCenter + Vector3(.1f, 0.f, 0.f), Vector3(.05f), nullptr, Rgba::YELLOW);
 
 }
 

@@ -68,7 +68,7 @@ void GameCamera::ManualUpdate()
 //-----------------------------------------------------------------------------------------------
 void GameCamera::FirstPersonUpdate()
 {
-	pos = m_entityToFollow->m_position;
+	pos = (m_entityToFollow->m_position + m_entityToFollow->m_eyeOffsetFromCenter);
 
 	rollDegreesAboutX = m_entityToFollow->rollDegreesAboutX;
 	pitchDegreesAboutY = m_entityToFollow->pitchDegreesAboutY;

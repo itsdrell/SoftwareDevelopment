@@ -39,6 +39,7 @@ public:
 // Standalone C Functions
 //====================================================================================
 Vector3 CorrectiveSphereVsAABB3(const Sphere& theSphere, const AABB3& theBox);
+bool DoesSphereOverlapBox(const Sphere& theSphere, const AABB3& theBox);
 
 
 //====================================================================================

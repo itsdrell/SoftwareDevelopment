@@ -668,20 +668,10 @@ void World::HammerCameraValuesToEngineCamera() const
 	// Set up Cameras
 	m_camera->SetPerspective(45.f, (16.f / 9.f), .1f, 400.f);
 	
-	if (m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
-	{
-		Matrix44 theModel = m_gameCamera->GetModelMatrix();
-		Matrix44 theView = m_gameCamera->GetViewMatrix();
-		m_camera->m_cameraMatrix = theModel;
-		m_camera->m_viewMatrix = theView;
-	}
-	else
-	{
-		Matrix44 theModel = m_player->GetModelMatrix();
-		Matrix44 theView = m_player->GetViewMatrix();
-		m_camera->m_cameraMatrix = theModel;
-		m_camera->m_viewMatrix = theView;
-	}
+	Matrix44 theModel = m_gameCamera->GetModelMatrix();
+	Matrix44 theView = m_gameCamera->GetViewMatrix();
+	m_camera->m_cameraMatrix = theModel;
+	m_camera->m_viewMatrix = theView;
 
 }
 

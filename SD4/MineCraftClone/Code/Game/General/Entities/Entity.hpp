@@ -2,11 +2,14 @@
 #include "Game/Main/GameCommon.hpp"
 #include "Engine/Math/Vectors/Vector3.hpp"
 #include "Engine/Math/Matrices/Matrix44.hpp"
+#include "Game/General/Utils/BlockLocator.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
 class World;
+class Sphere;
+class AABB3;
 
 //====================================================================================
 // Type Defs + Defines
@@ -44,11 +47,20 @@ public:
 
 public:
 	virtual void ApplyForces();
+	virtual void CorrectivePhysics();
+	virtual void PushSphereOutOfBoxes( Sphere& theSphere);
+	virtual bool PushSphereEntityOutOfBox( Sphere& collider, const AABB3& theBox);
 
 public:
 	virtual void GetForward();
 	virtual Matrix44 GetModelMatrix();
 	virtual Matrix44 GetViewMatrix();
+	void GetAllPossibleCollisionBoxes( BlockLocator& centerBlockLocator, std::vector<BlockLocator>& boxes);
+
+public:
+	BlockLocator GetMyPositionsBlockLocator();
+	BlockLocator GetBlockLocatorOfOffsetFromPosition(const Vector3& offset);
+	BlockLocator GetBlockLocatorForColliderCenter( const Sphere& collider) const;
 
 public:
 	PhysicsMode		m_physicsType = PHYSICS_MODE_NO_CLIP;
@@ -65,6 +77,7 @@ public:
 	Vector3		m_willPowerMoveIntentions = Vector3::ZERO;
 	Vector3		m_spawnLocation = Vector3::ZERO;
 	Vector3		m_eyeOffsetFromCenter = Vector3::ZERO;
+	Vector3		m_bottomOfEntityOffset = Vector3::ZERO;
 
 public:
 	float		m_willPowerStrength = 5.f;

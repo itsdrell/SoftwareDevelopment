@@ -2,6 +2,9 @@
 #include "Game/General/World/World.hpp"
 #include "Engine/Core/Tools/Clock.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Math/Geometry/Sphere.hpp"
+#include "Engine/Math/Geometry/AABB3.hpp"
+#include "../World/Chunk.hpp"
 
 //===============================================================================================
 Entity::Entity()
@@ -20,6 +23,9 @@ void Entity::Update()
 {
 	CheckKeyboardInput();
 	ApplyForces();
+	UpdateCollisionVolumesPositions();
+	CorrectivePhysics();
+	UpdateCollisionVolumesPositions();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -97,6 +103,68 @@ void Entity::ApplyForces()
 }
 
 //-----------------------------------------------------------------------------------------------
+void Entity::CorrectivePhysics()
+{
+}
+
+//-----------------------------------------------------------------------------------------------
+void Entity::PushSphereOutOfBoxes( Sphere & theSphere)
+{
+	BlockLocator myBlockLocator = GetBlockLocatorForColliderCenter(theSphere);
+	std::vector<BlockLocator> rubixCube;
+	GetAllPossibleCollisionBoxes(myBlockLocator, rubixCube);
+
+	for (uint i = 0; i < rubixCube.size(); i++)
+	{
+		BlockLocator& current = rubixCube.at(i);
+
+		if (current.IsSolid())
+		{
+			AABB3 bounds = current.GetBlockBounds();
+			bool didWePush = PushSphereEntityOutOfBox(theSphere, bounds);
+
+			if (i == 0)
+				m_isOnGround = didWePush;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+bool Entity::PushSphereEntityOutOfBox(Sphere & collider, const AABB3 & theBox)
+{
+	// get the closest point
+	Vector3 closestPoint = Clamp(collider.center, theBox.mins, theBox.maxs);
+
+	// get distance from closest point and center sphere
+	float distance = GetDistance(closestPoint, collider.center);
+
+	// see how much overlap there is, if it is negative then there is an overlap
+	float overlap = (distance - collider.radius);
+
+	// if it is less than disc radius squared, collision
+	if (overlap < 0)
+	{
+		// get displacement
+		Vector3 displacement = closestPoint - collider.center;
+		Vector3 direction = displacement.Normalize();
+
+		Vector3 amountToPush = direction * overlap;
+
+		// move the position AND the collider
+		m_position += amountToPush;
+		collider.center += amountToPush;
+
+		// kill velocity
+		float displacementProjectOnVelocityStrength = DotProduct(direction, m_velocity);
+		m_velocity -= (direction * displacementProjectOnVelocityStrength);
+
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------------------------
 void Entity::GetForward()
 {
 
@@ -131,3 +199,81 @@ Matrix44 Entity::GetViewMatrix()
 
 	return view;
 }
+
+//-----------------------------------------------------------------------------------------------
+void Entity::GetAllPossibleCollisionBoxes( BlockLocator& centerBlockLocator, std::vector<BlockLocator>& boxes)
+{
+	// tier one is cardinal 
+	
+	// below is always first so we can check for is ground
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfBelowNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfAboveNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfWestNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor());
+
+	// tier two
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor().GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor().GetBlockLocatorOfWestNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor().GetBlockLocatorOfAboveNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor().GetBlockLocatorOfBelowNeighbor());
+
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor().GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor().GetBlockLocatorOfWestNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor().GetBlockLocatorOfAboveNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor().GetBlockLocatorOfBelowNeighbor());
+
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfAboveNeighbor().GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfAboveNeighbor().GetBlockLocatorOfWestNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfBelowNeighbor().GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfBelowNeighbor().GetBlockLocatorOfWestNeighbor());
+
+
+	// tier three is 
+
+}
+
+//-----------------------------------------------------------------------------------------------
+BlockLocator Entity::GetMyPositionsBlockLocator()
+{
+	ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(m_position);
+	Chunk* myChunk = m_worldTheyAreIn->GetChunkFromChunkCoords(theChunkCoords);
+	if (myChunk == nullptr) return BlockLocator(nullptr, -1);
+	BlockIndex bi = myChunk->GetBlockIndexForWorldCoords(m_position);
+
+	BlockLocator myLocator = BlockLocator(myChunk, bi);
+	if (!myLocator.IsValid()) return BlockLocator(nullptr, -1);
+
+	return myLocator;
+}
+
+//-----------------------------------------------------------------------------------------------
+BlockLocator Entity::GetBlockLocatorOfOffsetFromPosition(const Vector3& offset)
+{
+	ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(m_position + offset);
+	Chunk* myChunk = m_worldTheyAreIn->GetChunkFromChunkCoords(theChunkCoords);
+	if (myChunk == nullptr) return BlockLocator(nullptr, -1);
+	BlockIndex bi = myChunk->GetBlockIndexForWorldCoords(m_position + offset);
+
+	BlockLocator myLocator = BlockLocator(myChunk, bi);
+	if (!myLocator.IsValid()) return BlockLocator(nullptr, -1);
+
+	return myLocator;
+}
+
+//-----------------------------------------------------------------------------------------------
+BlockLocator Entity::GetBlockLocatorForColliderCenter(const Sphere& collider) const
+{
+	ChunkCoords theChunkCoords = Chunk::GetChunkCoordsFromWorldPosition(collider.center);
+	Chunk* myChunk = m_worldTheyAreIn->GetChunkFromChunkCoords(theChunkCoords);
+	if (myChunk == nullptr) return BlockLocator(nullptr, -1);
+	BlockIndex bi = myChunk->GetBlockIndexForWorldCoords(collider.center);
+
+	BlockLocator myLocator = BlockLocator(myChunk, bi);
+	if (!myLocator.IsValid()) return BlockLocator(nullptr, -1);
+
+	return myLocator;
+}
+
+

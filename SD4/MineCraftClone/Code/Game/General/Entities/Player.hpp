@@ -40,7 +40,7 @@ public:
 	virtual void Update() override;
 	virtual void CheckKeyboardInput() override;
 	virtual void UpdateCollisionVolumesPositions() override;
-	void CorrectivePhysics();
+	virtual void CorrectivePhysics() override;
 	
 	void GetMoveIntentions(const Vector3& forward, const Vector3& right);
 	void CheckAndApplyMovementAndRotation();

@@ -199,6 +199,13 @@ Vector3 BlockLocator::GetCenterOfBlock() const
 }
 
 //-----------------------------------------------------------------------------------------------
+AABB3 BlockLocator::GetBlockBounds() const
+{
+	Vector3 centerOfBox = GetCenterOfBlock();
+	return AABB3(centerOfBox - Vector3(.5f), centerOfBox + Vector3(.5f));
+}
+
+//-----------------------------------------------------------------------------------------------
 int BlockLocator::GetHighestIndoorLightValueFromNeighbors()
 {
 	int maxValue = 0;
