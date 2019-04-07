@@ -273,7 +273,10 @@ void World::FindPlayersTargetedBlock()
 	// locking the camera as well
 	if (!m_showTargettedBlockRaycast && m_gameCamera->m_mode != CAMERA_MODE_MANUAL)
 	{
-		m_targetBlockRaycast = RayCast(m_player->m_position, m_camera->GetForward(), 8.f);
+		//m_targetBlockRaycast = RayCast(m_player->m_position, m_camera->GetForward(), 8.f);
+		m_targetBlockRaycast = RayCast((m_player->m_position + m_player->m_eyeOffsetFromCenter),
+			m_player->GetForward(), 8.f);
+
 	}
 }
 

@@ -9,7 +9,8 @@ class Entity;
 //====================================================================================
 // Type Defs + Defines
 //====================================================================================
-
+constexpr float CAMERA_THIRD_PERSON_DISTANCE = 4.f;
+constexpr float CAMERA_FIXED_ANGLE_DISTANCE = 10.f;
 
 //====================================================================================
 // ENUMS
@@ -20,7 +21,6 @@ enum CameraMode
 	CAMERA_MODE_FIRST_PERSON,
 	CAMERA_MODE_OVER_THE_SHOULDER,
 	CAMERA_MODE_FIXED_ANGLE_TRACKING,
-	CAMERA_MODE_INDEPENDENT, // neesargs thesis
 	NUM_OF_CAMERA_MODES
 };
 String CameraModeToString(CameraMode mode);
@@ -44,6 +44,8 @@ public:
 	virtual void Update();
 	void ManualUpdate();
 	void FirstPersonUpdate();
+	void OverTheShoulderUpdate();
+	void FixedAngleUpdate();
 
 
 public:

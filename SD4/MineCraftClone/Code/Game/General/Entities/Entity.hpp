@@ -19,7 +19,14 @@ class AABB3;
 //====================================================================================
 // ENUMS
 //====================================================================================
-
+enum PhysicsMode
+{
+	PHYSICS_MODE_NO_CLIP,
+	PHYSICS_MODE_GRAVITY,
+	PHYSICS_MODE_FLYING,
+	NUM_PHYSICS_MODES
+};
+String PhysicsModeToString(PhysicsMode theMode);
 
 //====================================================================================
 // Structs
@@ -52,7 +59,8 @@ public:
 	virtual bool PushSphereEntityOutOfBox( Sphere& collider, const AABB3& theBox);
 
 public:
-	virtual void GetForward();
+	virtual Vector3 GetForwardXY0();
+	virtual Vector3 GetForward();
 	virtual Matrix44 GetModelMatrix();
 	virtual Matrix44 GetViewMatrix();
 	void GetAllPossibleCollisionBoxes( BlockLocator& centerBlockLocator, std::vector<BlockLocator>& boxes);
@@ -83,7 +91,7 @@ public:
 	float		m_willPowerStrength = 5.f;
 	float		m_maxVelocity = 5.f;
 	float		m_movementSpeed = 2.f;
-	float		m_jumpForce = GRAVITY_SCALE * .5f;
+	float		m_jumpForce = GRAVITY_SCALE * .6f;
 	bool		m_isOnGround = false;
 	
 

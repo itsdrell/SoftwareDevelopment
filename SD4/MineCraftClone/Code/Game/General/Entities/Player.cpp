@@ -65,10 +65,10 @@ void Player::GetMoveIntentions(const Vector3& forward, const Vector3& right)
 		// up and down vertical
 		if (m_physicsType == PHYSICS_MODE_FLYING || m_physicsType == PHYSICS_MODE_NO_CLIP)
 		{
-			if (IsKeyPressed(G_THE_LETTER_A))
-				m_willPowerMoveIntentions += -right;
-			if (IsKeyPressed(G_THE_LETTER_D))
-				m_willPowerMoveIntentions += right;
+			if (IsKeyPressed(G_THE_LETTER_E))
+				m_willPowerMoveIntentions += Vector3(0.f, 0.f, 1.f);
+			if (IsKeyPressed(G_THE_LETTER_Q))
+				m_willPowerMoveIntentions += -Vector3(0.f, 0.f, 1.f);
 		}
 	}
 }
@@ -120,10 +120,6 @@ void Player::CorrectivePhysics()
 //-----------------------------------------------------------------------------------------------
 void Player::CheckAndApplyMovementAndRotation()
 {
-	// we are driving the camera no the player
-	//if (m_worldTheyAreIn->m_gameCamera->m_mode == CAMERA_MODE_MANUAL)
-	//	return;
-
 	// Apply Rotation
 	Vector2 mouse_delta = g_theInput->GetMouseDelta();
 
@@ -168,6 +164,16 @@ void Player::DrawSelf() const
 	r->DrawCube(m_position + m_eyeOffsetFromCenter + Vector3(-.1f, 0.f, 0.f), Vector3(.05f), nullptr, Rgba::YELLOW);
 	r->DrawCube(m_position + m_eyeOffsetFromCenter + Vector3(.1f, 0.f, 0.f), Vector3(.05f), nullptr, Rgba::YELLOW);
 
+
+	if (m_worldTheyAreIn->m_targetBlockRaycast.DidImpact())
+	{
+		r->DrawLine3D(m_position + m_eyeOffsetFromCenter, m_worldTheyAreIn->m_targetBlockRaycast.m_endPosition, 3.f, Rgba::GREEN);
+		r->HighlightPoint(m_worldTheyAreIn->m_targetBlockRaycast.m_impactPosition, .1f, Rgba::MAGENTA);
+	}
+	else
+	{
+		r->DrawLine3D(m_position + m_eyeOffsetFromCenter, m_worldTheyAreIn->m_targetBlockRaycast.m_endPosition, 3.f, Rgba::RED);
+	}
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -4,8 +4,7 @@
 #include "Engine/Core/Tools/Clock.hpp"
 #include "Game/General/Entities/Entity.hpp"
 
-
-//-----------------------------------------------------------------------------------------------
+//===============================================================================================
 String CameraModeToString(CameraMode mode)
 {
 	switch (mode)
@@ -22,9 +21,6 @@ String CameraModeToString(CameraMode mode)
 	case CAMERA_MODE_FIXED_ANGLE_TRACKING:
 		return "fixed angle tracking";
 		break;
-	case CAMERA_MODE_INDEPENDENT:
-		return "independent";
-		break;
 	case NUM_OF_CAMERA_MODES:
 		break;
 	default:
@@ -32,7 +28,7 @@ String CameraModeToString(CameraMode mode)
 	}
 }
 
-//-----------------------------------------------------------------------------------------------
+//===============================================================================================
 void GameCamera::Update()
 {
 	switch (m_mode)
@@ -44,10 +40,10 @@ void GameCamera::Update()
 		FirstPersonUpdate();
 		break;
 	case CAMERA_MODE_OVER_THE_SHOULDER:
+		OverTheShoulderUpdate();
 		break;
 	case CAMERA_MODE_FIXED_ANGLE_TRACKING:
-		break;
-	case CAMERA_MODE_INDEPENDENT:
+		FixedAngleUpdate();
 		break;
 	case NUM_OF_CAMERA_MODES:
 		break;
@@ -55,7 +51,7 @@ void GameCamera::Update()
 		break;
 	}
 
-	if (WasKeyJustPressed(G_THE_LETTER_C))
+	if (WasKeyJustPressed(KEYBOARD_F2))
 		SwapCameraMode();
 }
 
@@ -77,23 +73,35 @@ void GameCamera::FirstPersonUpdate()
 }
 
 //-----------------------------------------------------------------------------------------------
+void GameCamera::OverTheShoulderUpdate()
+{
+	Vector3 playerForward = m_entityToFollow->GetForwardXY0();
+
+	Vector3 amountToMove = -playerForward * CAMERA_THIRD_PERSON_DISTANCE;
+	pos = (m_entityToFollow->m_position + m_entityToFollow->m_eyeOffsetFromCenter) 
+		+  amountToMove + Vector3(0.f, 0.f, .5f);
+
+	rollDegreesAboutX = m_entityToFollow->rollDegreesAboutX;
+	pitchDegreesAboutY = m_entityToFollow->pitchDegreesAboutY;
+	yawDegreesAboutZ = m_entityToFollow->yawDegreesAboutZ;
+}
+
+//-----------------------------------------------------------------------------------------------
+void GameCamera::FixedAngleUpdate()
+{
+	Vector3 direction = Vector3(CosDegrees(40.f), SinDegrees(30.f), 0.f);
+
+	Vector3 amountToMove = -direction * CAMERA_FIXED_ANGLE_DISTANCE;
+	pos = (m_entityToFollow->m_position + m_entityToFollow->m_eyeOffsetFromCenter) + Vector3(amountToMove.x, amountToMove.y, CAMERA_FIXED_ANGLE_DISTANCE);
+
+	pitchDegreesAboutY = 30.f;
+	yawDegreesAboutZ = 40.f;
+}
+
+//-----------------------------------------------------------------------------------------------
 void GameCamera::SwapCameraMode()
 {
-	if (m_mode == CAMERA_MODE_FIRST_PERSON)
-	{
-		m_mode = CAMERA_MODE_MANUAL;
-		return;
-	}
-	else
-	{
-		m_mode = CAMERA_MODE_FIRST_PERSON;
-	}
-
-	
-	//m_mode = (CameraMode)(m_mode + 1);
-	//
-	//if (m_mode == NUM_OF_CAMERA_MODES)
-	//	m_mode = (CameraMode)0;
+	m_mode = (CameraMode)((m_mode + 1) % NUM_OF_CAMERA_MODES);
 }
 
 //-----------------------------------------------------------------------------------------------

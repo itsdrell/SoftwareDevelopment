@@ -63,14 +63,17 @@ void HUD::RenderTime() const
 //-----------------------------------------------------------------------------------------------
 void HUD::RenderDebugHelpers() const
 {
-	String text = "Position: " + m_player->m_position.ToString();
-	g_theRenderer->DrawText2D(Vector2(-49.f, -48.f), text, 1.7f);
+	String playerPhysicsMode = "(F1) Physics Mode " + PhysicsModeToString(m_player->m_physicsType);
+	g_theRenderer->DrawText2D(Vector2(-49.f, -46.f), playerPhysicsMode, 1.7f);
 
-	String theMode = "Camera Mode: " + CameraModeToString(m_player->m_worldTheyAreIn->m_gameCamera->m_mode);
-	g_theRenderer->DrawText2D(Vector2(-49.f, -46.f), theMode, 1.7f);
+	String theMode = "(F2) Camera Mode: " + CameraModeToString(m_player->m_worldTheyAreIn->m_gameCamera->m_mode);
+	g_theRenderer->DrawText2D(Vector2(-49.f, -48.f), theMode, 1.7f);
 
 	String velocity = "Velocity: " + m_player->m_velocity.ToString();
 	g_theRenderer->DrawText2D(Vector2(-49.f, -44.f), velocity, 1.7f);
+
+	String text = "Position: " + m_player->m_position.ToString();
+	g_theRenderer->DrawText2D(Vector2(-49.f, -42.f), text, 1.7f);
 
 	String isOnGround = "IsOnGround: " + std::to_string(m_player->m_isOnGround);
 	g_theRenderer->DrawText2D(Vector2(20.f, -48.f), isOnGround, 1.7f);

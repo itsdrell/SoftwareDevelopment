@@ -6,6 +6,25 @@
 #include "Engine/Math/Geometry/AABB3.hpp"
 #include "../World/Chunk.hpp"
 
+
+//===============================================================================================
+String PhysicsModeToString(PhysicsMode theMode)
+{
+	switch (theMode)
+	{
+	case PHYSICS_MODE_NO_CLIP:
+		return "No Clip";
+	case PHYSICS_MODE_GRAVITY:
+		return "Gravity";
+	case PHYSICS_MODE_FLYING:
+		return "Flying";
+	case NUM_PHYSICS_MODES:
+		return "number";
+	default:
+		return "number";
+	}
+}
+
 //===============================================================================================
 Entity::Entity()
 {
@@ -24,7 +43,7 @@ void Entity::Update()
 	CheckKeyboardInput();
 	ApplyForces();
 	UpdateCollisionVolumesPositions();
-	CorrectivePhysics();
+	if(m_physicsType != PHYSICS_MODE_NO_CLIP) CorrectivePhysics();
 	UpdateCollisionVolumesPositions();
 }
 
@@ -67,14 +86,20 @@ void Entity::ApplyForces()
 	float ds = g_theGameClock->deltaTime;
 	
 	Vector2 frictionForceXY = Vector2(-m_velocity.x * FRICTION_SCALE, -m_velocity.y * FRICTION_SCALE);
+	float frictionForceZ = -m_velocity.z * FRICTION_SCALE;
+	if (m_physicsType == PHYSICS_MODE_GRAVITY) frictionForceZ = 0.f;
 
 	// make some forces
 	Vector2 willPowerForceXY = FRICTION_SCALE * m_willPowerStrength * m_willPowerMoveIntentions.xy();
-	float willPowerForceZ = m_willPowerStrength * m_willPowerMoveIntentions.z;  // should be frictionZ * m_flyStrength * m_willPowerMoveIntentions.z
+	float willPowerForceZ = FRICTION_SCALE* m_willPowerStrength * m_willPowerMoveIntentions.z;  // should be frictionZ * m_flyStrength * m_willPowerMoveIntentions.z
 
 	// compute total fores
 	Vector2 totalForceXY = willPowerForceXY + frictionForceXY; // gravitForceXY + willpowerForceXY + frictionForceXY
-	float totalForceZ = -GRAVITY_SCALE + willPowerForceZ; // gravityFroceZ + willpowerForceZ + frictionForceZ
+
+	float gravityScale = GRAVITY_SCALE;
+	if (m_physicsType != PHYSICS_MODE_GRAVITY)
+		gravityScale = 0;
+	float totalForceZ = -gravityScale + willPowerForceZ + frictionForceZ; // gravityFroceZ + willpowerForceZ + frictionForceZ
 
 	float speedBeforeXY = m_velocity.xy().GetLength();
 	float speedBeforeZ = m_velocity.z;
@@ -165,9 +190,21 @@ bool Entity::PushSphereEntityOutOfBox(Sphere & collider, const AABB3 & theBox)
 }
 
 //-----------------------------------------------------------------------------------------------
-void Entity::GetForward()
+Vector3 Entity::GetForwardXY0()
 {
+	return Vector3(CosDegrees(yawDegreesAboutZ), SinDegrees(yawDegreesAboutZ), 0);
+}
 
+//-----------------------------------------------------------------------------------------------
+Vector3 Entity::GetForward()
+{
+	Matrix44 theMatrix = Matrix44();
+
+	theMatrix.Append(Matrix44::MakeRotationDegreesAroundZ(yawDegreesAboutZ));
+	theMatrix.Append(Matrix44::MakeRotationDegreesAroundY(pitchDegreesAboutY));
+	theMatrix.Append(Matrix44::MakeRotationDegreesAroundX(rollDegreesAboutX));
+
+	return theMatrix.GetForward();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -208,10 +245,10 @@ void Entity::GetAllPossibleCollisionBoxes( BlockLocator& centerBlockLocator, std
 	// below is always first so we can check for is ground
 	boxes.push_back(centerBlockLocator.GetBlockLocatorOfBelowNeighbor());
 	boxes.push_back(centerBlockLocator.GetBlockLocatorOfAboveNeighbor());
-	boxes.push_back(centerBlockLocator.GetBlockLocatorOfEastNeighbor());
-	boxes.push_back(centerBlockLocator.GetBlockLocatorOfWestNeighbor());
 	boxes.push_back(centerBlockLocator.GetBlockLocatorOfNorthNeighbor());
 	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfEastNeighbor());
+	boxes.push_back(centerBlockLocator.GetBlockLocatorOfWestNeighbor());
 
 	// tier two
 	boxes.push_back(centerBlockLocator.GetBlockLocatorOfSouthNeighbor().GetBlockLocatorOfEastNeighbor());
@@ -275,5 +312,6 @@ BlockLocator Entity::GetBlockLocatorForColliderCenter(const Sphere& collider) co
 
 	return myLocator;
 }
+
 
 
