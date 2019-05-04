@@ -363,8 +363,8 @@ void World::RenderChunks() const
 		{
 			r->DrawMesh(theIterator->second->m_gpuMesh);
 
-			// debug stuff
-			theIterator->second->Render();
+			// debug stuff - cuts half fps cause of texture binding
+			//theIterator->second->Render();
 		}
 
 

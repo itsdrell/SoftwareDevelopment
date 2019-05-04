@@ -4,6 +4,7 @@
 #include "Engine\Core\Tools\DevConsole.hpp"
 #include "Engine\Core\Utils\StringUtils.hpp"
 #include "Engine\Core\Platform\Time.hpp"
+#include "Engine\Core\General\NamedProperties.hpp"
 
 
 
@@ -11,7 +12,28 @@
 // Put stuff in here if you just wanna test it once and it'll happen in startup
 void Playground::RunTestOnce()
 {
-	
+	std::string lastName("Eiserloh");
+	NamedProperties employmentInfoProperties;
+	// ...
+
+	NamedProperties p;
+	p.Set("FirstName", "Squirrel"); 	// Setting as c-string (const char*) data...
+	p.Set("LastName", lastName);	// Setting as std::string data...
+	p.Set("Height", 1.93f);
+	p.Set("Age", 45);
+	p.Set("IsMarried", true);
+	p.Set("Position", Vector2(3.5f, 6.2f));
+	p.Set("EyeColor", Rgba(77, 38, 23));
+	p.Set("EmploymentInfo", employmentInfoProperties); // NamedProperties inside NamedProperties
+
+	float health = p.Get("Height", 1.75f);
+
+	std::string first_name = p.Get("FirstName", "UNKNOWN");
+	std::string last_name = p.Get("LastName", "UNKNOWN");
+
+	std::string firstName = p.Get("FirstName", "idk");
+	std::string m_lastName = p.Get("LastName", lastName);
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -21,58 +43,4 @@ void Playground::RunTestOnUpdate()
 
 }
 
-//===============================================================================================
-bool OnAdd( NetMessage & msg, const NetSender & from)
-{
-	float val0 = 0.f;
-	float val1 = 0.f; 
-	float sum = 0.f;
 
-	bool checkForFirstNumber = msg.ReadBytes( &val0, sizeof(float) );
-	bool checkForSecondNumber = msg.ReadBytes( &val1, sizeof(float) );
-
-	if (!checkForFirstNumber || !checkForSecondNumber) {
-		// this probaby isn't a real connection to send us a bad message
-		return false; 
-	}
-
-	sum = val0 + val1; 
-	DevConsole::AddConsoleDialogue( Stringf("Add: %f + %f = %f", val0, val1, sum )); 
-
-	
-	// send response
-	NetMessage* response = new NetMessage( "add_response" ); 
-	response->WriteBytes(sizeof(float), &val0);
-	response->WriteBytes(sizeof(float), &val1);
-	response->WriteBytes(sizeof(float), &sum);
-
-	from.m_connection->Send( *response ); 
-
-	return true; 
-}
-
-//-----------------------------------------------------------------------------------------------
-bool OnAddResponse(NetMessage& msg, const NetSender& from)
-{
-	float val0 = 0.f;
-	float val1 = 0.f; 
-	float sum = 0.f;
-
-	bool checkForFirstNumber = msg.ReadBytes( &val0, sizeof(float) );
-	bool checkForSecondNumber = msg.ReadBytes( &val1, sizeof(float) );
-	bool checkForSum = msg.ReadBytes(&sum, sizeof(float));
-
-	if (!checkForFirstNumber || !checkForSecondNumber || !checkForSum) 
-	{
-		// this probaby isn't a real connection to send us a bad message
-		return false; 
-	}
-
-	DevConsole::AddConsoleDialogue( Stringf("Answer from %s : %f + %f = %f", 
-		from.m_connection->m_address.ToString().c_str(), 
-		val0, 
-		val1, 
-		sum )); 
-	
-	return true;
-}

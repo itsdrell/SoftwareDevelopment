@@ -621,6 +621,7 @@
     <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapper.hpp" />
     <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapperutil.hpp" />
     <ClInclude Include="Math\Geometry\Sphere.hpp" />
+    <ClInclude Include="Core\General\NamedProperties.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

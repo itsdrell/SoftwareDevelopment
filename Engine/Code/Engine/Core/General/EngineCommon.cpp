@@ -9,7 +9,7 @@
 #include "Engine/Async/Threading.hpp"
 #include "Engine/Net/Net.hpp"
 #include "../Tools/RemoteCommandService.hpp"
-
+#include "Game/Main/EngineBuildPreferences.hpp"
 
 //====================================================================================
 Blackboard g_gameConfigBlackboard = Blackboard();
@@ -29,6 +29,10 @@ void EngineStartUp()
 	renderer->RenderStartup(Window::GetInstance()->GetHandle()); // call the static variable
 
 	RemoteCommandService::GetInstance(); // create
+
+#ifdef PROFILING_ENABLED 
+	Profiler::GetInstance();
+#endif
 
 	audio = nullptr;
 	input = nullptr;

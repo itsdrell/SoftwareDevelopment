@@ -503,6 +503,7 @@
     <ClInclude Include="Core\General\GameObject.hpp" />
     <ClInclude Include="Core\General\GameObject2D.hpp" />
     <ClInclude Include="Core\General\HeatMap.hpp" />
+    <ClInclude Include="Core\General\NamedProperties.hpp" />
     <ClInclude Include="Core\General\Rgba.hpp" />
     <ClInclude Include="Core\General\Tags.hpp" />
     <ClInclude Include="Core\General\Transform.hpp" />
