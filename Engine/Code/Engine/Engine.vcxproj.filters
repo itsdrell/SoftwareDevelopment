@@ -457,6 +457,9 @@
     <ClCompile Include="Math\Geometry\Sphere.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\EventSystem.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">
@@ -622,6 +625,9 @@
     <ClInclude Include="ThirdParty\Lua\LuaWrapper\luawrapperutil.hpp" />
     <ClInclude Include="Math\Geometry\Sphere.hpp" />
     <ClInclude Include="Core\General\NamedProperties.hpp" />
+    <ClInclude Include="Core\Tools\EventSystem.hpp" />
+    <ClInclude Include="Core\Tools\JobSystem.hpp" />
+    <ClInclude Include="Core\Tools\JobWorkerThread.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="ThirdParty\fmod\fmod_vc.lib" />

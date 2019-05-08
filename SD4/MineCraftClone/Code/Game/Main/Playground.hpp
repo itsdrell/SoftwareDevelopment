@@ -1,6 +1,5 @@
 #pragma once
-#include "Engine\Net\NetMessage.hpp"
-#include "Engine\Net\NetSession.hpp"
+#include "Engine/Core/General/NamedProperties.hpp"
 
 //====================================================================================
 // Forward Declare
@@ -23,9 +22,8 @@ namespace Playground // just doing a name space to learn about em could just be 
 //===============================================================================================
 // Throw away C functions
 //===============================================================================================
+bool MyTestEventFunction(NamedProperties& args);
 
-bool OnAdd( NetMessage& msg, const NetSender& from);
-bool OnAddResponse(NetMessage& msg, const NetSender& from);
 
 //====================================================================================
 // Written by Zachary Bracken : [9/15/2018]

@@ -365,6 +365,7 @@
     <ClCompile Include="Core\Tools\Command.cpp" />
     <ClCompile Include="Core\Tools\DevConsole.cpp" />
     <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp" />
+    <ClCompile Include="Core\Tools\EventSystem.cpp" />
     <ClCompile Include="Core\Tools\LogSystem.cpp" />
     <ClCompile Include="Core\Tools\Profiling\Profiler.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ProfilerReport.cpp" />
@@ -515,6 +516,9 @@
     <ClInclude Include="Core\Tools\Command.hpp" />
     <ClInclude Include="Core\Tools\DevConsole.hpp" />
     <ClInclude Include="Core\Tools\ErrorWarningAssert.hpp" />
+    <ClInclude Include="Core\Tools\EventSystem.hpp" />
+    <ClInclude Include="Core\Tools\JobSystem.hpp" />
+    <ClInclude Include="Core\Tools\JobWorkerThread.hpp" />
     <ClInclude Include="Core\Tools\LogSystem.hpp" />
     <ClInclude Include="Core\Tools\Profiling\Profiler.hpp" />
     <ClInclude Include="Core\Tools\Profiling\ProfilerReport.hpp" />

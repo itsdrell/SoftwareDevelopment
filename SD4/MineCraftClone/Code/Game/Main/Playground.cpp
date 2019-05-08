@@ -5,6 +5,7 @@
 #include "Engine\Core\Utils\StringUtils.hpp"
 #include "Engine\Core\Platform\Time.hpp"
 #include "Engine\Core\General\NamedProperties.hpp"
+#include "Engine\Core\Tools\EventSystem.hpp"
 
 
 
@@ -30,10 +31,30 @@ void Playground::RunTestOnce()
 
 	std::string first_name = p.Get("FirstName", "UNKNOWN");
 	std::string last_name = p.Get("LastName", "UNKNOWN");
+	double test = p.Get("Height", 1.93);
 
 	std::string firstName = p.Get("FirstName", "idk");
 	std::string m_lastName = p.Get("LastName", lastName);
 
+	UNUSED(health);
+	UNUSED(first_name);
+	UNUSED(lastName);
+	UNUSED(test);
+	UNUSED(firstName);
+	UNUSED(m_lastName);
+
+
+	//-----------------------------------------------------------------------------------------------
+	FireEvent("sunshine");
+	SubscribeEventCallbackFunction("Sunrise", MyTestEventFunction);
+	FireEvent("Sunrise");		//now MyTestEventFunction fires
+	UnsubscribeEventCallbackFunction("Sunrise", MyTestEventFunction);
+	FireEvent("Sunrise");		//back to no friends, does nothing
+	
+	SubscribeEventCallbackMethod("Test", *g_theEventSystem, &EventSystem::TestMember);
+	FireEvent("Test");
+	UnSubscribeEventCallbackMethod("Test", *g_theEventSystem, &EventSystem::TestMember);
+	FireEvent("Test");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -43,4 +64,11 @@ void Playground::RunTestOnUpdate()
 
 }
 
+
+bool MyTestEventFunction(NamedProperties& args)
+{
+	UNUSED(args);
+	DevConsole::AddConsoleDialogue("Test function fired");
+	return false;
+}
 
