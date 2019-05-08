@@ -366,6 +366,8 @@
     <ClCompile Include="Core\Tools\DevConsole.cpp" />
     <ClCompile Include="Core\Tools\ErrorWarningAssert.cpp" />
     <ClCompile Include="Core\Tools\EventSystem.cpp" />
+    <ClCompile Include="Core\Tools\JobSystem.cpp" />
+    <ClCompile Include="Core\Tools\JobWorkerThread.cpp" />
     <ClCompile Include="Core\Tools\LogSystem.cpp" />
     <ClCompile Include="Core\Tools\Profiling\Profiler.cpp" />
     <ClCompile Include="Core\Tools\Profiling\ProfilerReport.cpp" />

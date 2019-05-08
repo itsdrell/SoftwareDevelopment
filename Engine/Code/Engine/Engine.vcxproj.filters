@@ -460,6 +460,12 @@
     <ClCompile Include="Core\Tools\EventSystem.cpp">
       <Filter>General</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Tools\JobSystem.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Tools\JobWorkerThread.cpp">
+      <Filter>General</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathUtils.hpp">

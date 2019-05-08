@@ -53,6 +53,9 @@ constexpr unsigned long KILOBYTE = 1024;
 constexpr unsigned long MEGABYTE = 1024 * 1024;
 constexpr unsigned long GIGABYTE = 1024 * 1024 * 1024;
 
+constexpr Byte DEFAULT_JOB_FLAG = 0;
+constexpr Byte DEFAULT_JOB_TYPE = 0;
+
 //TODO("Make an actual uniform buffer pls");
 typedef RenderBuffer				UniformBuffer; 
 

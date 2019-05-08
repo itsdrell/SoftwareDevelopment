@@ -78,6 +78,15 @@ public:
 		return has_item; 
 	}
 
+
+	//-----------------------------------------------------------------------------------------------
+	// You need to call lock outside of these before for looping!
+	uint Size() { return (uint)m_data.size(); }
+	T At(uint idx) { return m_data.at(idx); }
+
+	void Lock() { m_lock.Enter(); }
+	void Unlock() { m_lock.Leave(); }
+
 public:
 	std::deque<T>			m_data; 
 	SpinLock				m_lock; 

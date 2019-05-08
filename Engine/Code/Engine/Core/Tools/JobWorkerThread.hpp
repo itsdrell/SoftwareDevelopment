@@ -1,9 +1,10 @@
 #pragma once
+#include "Engine/Core/General/EngineCommon.hpp"
 
 //====================================================================================
 // Forward Declare
 //====================================================================================
-
+class Job;
 
 //====================================================================================
 // Type Defs + Defines
@@ -25,13 +26,24 @@
 //====================================================================================
 class JobWorkerThread
 {
+public:
+	JobWorkerThread(const char* uniqueName, Byte workerJobChannels = DEFAULT_JOB_FLAG);
 
+public:
+	Job* GetJobFromJobSystem();
+	void FinishJob(Job* theJob);
+
+public:
+	String		m_name;
+	Byte        m_workerJobChannels = DEFAULT_JOB_FLAG;
+	bool		m_isDone = false;
+	bool		m_threadHasDestroyed = false; // lets the job system know we are done
 };
 
 //====================================================================================
 // Standalone C Functions
 //====================================================================================
-
+void WorkerThreadLoop(void* userData);
 
 //====================================================================================
 // Externs
